@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -40,7 +40,6 @@
 #include "lomse_logger.h"
 
 //other
-#include <boost/format.hpp>
 #include "utf8.h"
 
 namespace lomse
@@ -55,9 +54,9 @@ EngroutersCreator::EngroutersCreator(LibraryScope& libraryScope,
     : m_libraryScope(libraryScope)
     , m_itCurContent(itStart)
     , m_itEndContent(itEnd)
-    , m_pTextSplitter(NULL)
-    , m_pCurText(NULL)
-    , m_pPendingEngr(NULL)
+    , m_pTextSplitter(nullptr)
+    , m_pCurText(nullptr)
+    , m_pPendingEngr(nullptr)
 {
 }
 
@@ -71,7 +70,7 @@ EngroutersCreator::~EngroutersCreator()
 //---------------------------------------------------------------------------------------
 bool EngroutersCreator::more_content()
 {
-    return m_itCurContent != m_itEndContent || m_pPendingEngr != NULL;
+    return m_itCurContent != m_itEndContent || m_pPendingEngr != nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -80,25 +79,25 @@ Engrouter* EngroutersCreator::create_next_engrouter(LUnits maxSpace, bool fFirst
     if (!more_content())
     {
         LOMSE_LOG_DEBUG(Logger::k_layout, "No more content");
-        return NULL;
+        return nullptr;
     }
 
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
-    Engrouter* pEngr = NULL;
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
+    Engrouter* pEngr = nullptr;
     if (!is_there_a_pending_engrouter())
     {
         ImoInlineLevelObj* pImo = static_cast<ImoInlineLevelObj*>( *m_itCurContent );
-        LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format(
-            "Trying to create the EngroutersCreator for Imo id %d %s")
-            % pImo->get_id() % pImo->get_name() ));
+        LOMSE_LOG_TRACE(Logger::k_layout,
+            "Trying to create the EngroutersCreator for Imo id %d %s",
+            pImo->get_id(), pImo->get_name().c_str() );
 
         //composite content objects
         if (pImo->is_text_item())
         {
             ImoTextItem* pText = static_cast<ImoTextItem*>(pImo);
             pEngr = create_next_text_engrouter_for(pText, maxSpace, fFirstOfLine);
-            LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format(
-                "Text item [%s]") % pText->get_text() ));
+            LOMSE_LOG_TRACE(Logger::k_layout,
+                "Text item [%s]", pText->get_text().c_str() );
         }
         else if (pImo->is_box_inline())
         {
@@ -130,17 +129,17 @@ Engrouter* EngroutersCreator::create_next_engrouter(LUnits maxSpace, bool fFirst
             return pEngr;
         else
         {
-            LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format(
-                "Not enough space for engrouter. Needed=%.02f, available=%.02f")
-                % width % maxSpace ));
+            LOMSE_LOG_TRACE(Logger::k_layout,
+                "Not enough space for engrouter. Needed=%.02f, available=%.02f",
+                width, maxSpace );
             save_engrouter_for_next_call(pEngr);
-            return NULL;
+            return nullptr;
         }
     }
     else
     {
         LOMSE_LOG_TRACE(Logger::k_layout, "Error: Engrouter not created!");
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -163,12 +162,12 @@ Engrouter* EngroutersCreator::create_engrouter_for(ImoInlineLevelObj* pImo)
     }
     else
     {
-        string msg = str( boost::format(
-                            "[EngroutersCreator::create_engrouter_for] invalid object %d")
-                            % pImo->get_obj_type() );
-        cout << "Throw: " << msg << endl;
-        LOMSE_LOG_ERROR(msg);
-        throw std::runtime_error(msg);
+        stringstream msg;
+        msg << "[EngroutersCreator::create_engrouter_for] invalid object " <<
+               pImo->get_obj_type();
+        cout << "Throw: " << msg.str() << endl;
+        LOMSE_LOG_ERROR(msg.str());
+        throw std::runtime_error(msg.str());
     }
 }
 
@@ -271,41 +270,45 @@ Engrouter::Engrouter(ImoContentObj* pCreatorImo, LibraryScope& libraryScope)
 }
 
 //---------------------------------------------------------------------------------------
-LUnits Engrouter::shift_for_vertical_alignment(LineReferences& refs)
+LUnits Engrouter::shift_for_vertical_alignment(LineReferences& UNUSED(refs))
 {
-    if (refs.lineHeight == 0.0f)
-        return 0.0f;
+    //TODO shift_for_vertical_alignment() method
 
-    int valign = k_valign_top;  //m_pStyle->vertical_align();
-    switch (valign)
-    {
-        case ImoStyle::k_valign_baseline:
-            return refs.baseline - m_refLines.baseline;
+    return 0.0f;
 
-        case ImoStyle::k_valign_sub:
-            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
-
-        case ImoStyle::k_valign_super:
-            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
-
-        case ImoStyle::k_valign_top:
-            return 0.0f;
-
-        case ImoStyle::k_valign_text_top:
-            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
-
-        case ImoStyle::k_valign_middle:
-            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
-
-        case ImoStyle::k_valign_bottom:
-            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
-
-        case ImoStyle::k_valign_text_bottom:
-            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
-
-        default:
-            return 0.0f;
-    }
+//    if (refs.lineHeight == 0.0f)
+//        return 0.0f;
+//
+//    int valign = m_pStyle->vertical_align();
+//    switch (valign)
+//    {
+//        case ImoStyle::k_valign_baseline:
+//            return refs.baseline - m_refLines.baseline;
+//
+//        case ImoStyle::k_valign_sub:
+//            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
+//
+//        case ImoStyle::k_valign_super:
+//            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
+//
+//        case ImoStyle::k_valign_top:
+//            return 0.0f;
+//
+//        case ImoStyle::k_valign_text_top:
+//            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
+//
+//        case ImoStyle::k_valign_middle:
+//            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
+//
+//        case ImoStyle::k_valign_bottom:
+//            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
+//
+//        case ImoStyle::k_valign_text_bottom:
+//            return 0.0f;    //TODO: Engrouter::shift_for_vertical_alignment
+//
+//        default:
+//            return 0.0f;
+//    }
 }
 
 
@@ -478,12 +481,12 @@ void BoxEngrouter::add_engrouter_shape(GmoObj* pGmo, GmoBox* pBox)
     {
         if (pGmo->is_shape())
         {
-            GmoShape* pShape = dynamic_cast<GmoShape*>(pGmo);
+            GmoShape* pShape = static_cast<GmoShape*>(pGmo);
             pBox->add_shape(pShape, GmoShape::k_layer_staff);
         }
         else if (pGmo->is_box())
         {
-            GmoBox* pChildBox = dynamic_cast<GmoBox*>(pGmo);
+            GmoBox* pChildBox = static_cast<GmoBox*>(pGmo);
             pBox->add_child_box(pChildBox);
         }
     }
@@ -497,7 +500,7 @@ void BoxEngrouter::add_engrouter_shape(GmoObj* pGmo, GmoBox* pBox)
 GmoObj* ImageEngrouter::create_gm_object(UPoint pos, LineReferences& refs)
 {
     pos.y += shift_for_vertical_alignment(refs);
-    ImoImage* pImage = dynamic_cast<ImoImage*>(m_pCreatorImo);
+    ImoImage* pImage = static_cast<ImoImage*>(m_pCreatorImo);
     SpImage image = pImage->get_image();
     return LOMSE_NEW GmoShapeImage(m_pCreatorImo, image, pos, m_size);
 }
@@ -526,6 +529,9 @@ WordEngrouter::WordEngrouter(ImoContentObj* pCreatorImo, LibraryScope& librarySc
                              const wstring& text)
     : Engrouter(pCreatorImo, libraryScope)
     , m_text(text)
+    , m_descent(0.0f)
+    , m_ascent(0.0f)
+    , m_halfLeading(0.0f)
 {
     ImoTextItem* pText = dynamic_cast<ImoTextItem*>( pCreatorImo );
     if (pText)
@@ -655,12 +661,12 @@ void InlineWrapperEngrouter::add_engrouter_shape(GmoObj* pGmo, GmoBox* pBox)
 {
     if (pGmo->is_shape())
     {
-        GmoShape* pShape = dynamic_cast<GmoShape*>(pGmo);
+        GmoShape* pShape = static_cast<GmoShape*>(pGmo);
         pBox->add_shape(pShape, GmoShape::k_layer_staff);
     }
     else if (pGmo->is_box())
     {
-        GmoBox* pBox = dynamic_cast<GmoBox*>(pGmo);
+        GmoBox* pBox = static_cast<GmoBox*>(pGmo);
         pBox->add_child_box(pBox);
     }
 }

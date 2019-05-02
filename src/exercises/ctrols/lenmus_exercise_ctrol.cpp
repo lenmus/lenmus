@@ -1234,6 +1234,9 @@ void OneScoreCtrol::play(bool fVisualTracking)
         Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
         m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 
+        if (m_pCanvas && pInteractor)
+            m_pCanvas->customize_playback(spInteractor);
+
         //AWARE The link label is restored to "play" when the EndOfPlay event is
         //received.
     }
@@ -1248,7 +1251,7 @@ void OneScoreCtrol::play(bool fVisualTracking)
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::on_end_of_playback()
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, string(""));
 
     m_pPlayButton->change_label(to_std_string( _("Play") ));
     if (is_play_again_message_allowed())
@@ -1286,7 +1289,7 @@ void OneScoreCtrol::display_solution()
     if (remove_problem_text_when_displaying_solution())
         m_pDisplay->set_problem_text("");
 
-	if (m_pSolutionScore)
+    if (m_pSolutionScore)
     {
         //if there is a solution score, display it as solution
         m_pDisplay->set_problem_score(m_pSolutionScore);

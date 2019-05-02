@@ -35,7 +35,7 @@
 using namespace lomse;
 
 //wxWidgets
-#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
+//#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 #include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/config.h>
@@ -123,6 +123,10 @@ protected:
     bool m_fReleaseBehaviour;
     bool m_fShowDebugLinks;
     bool m_fExperimentalFeatures;
+    int m_trackingMode;
+    LUnits m_tempoLineWidth;
+
+    static wxString m_language;
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -139,7 +143,7 @@ public:
     inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
     inline void set_edit_gui(EditInterface* pGui) { m_pEditGui = pGui; }
     void initialize_help(wxWindow* pParent);
-    void on_language_changed();
+    void on_language_changed(wxString lang);
 
     //access to global objects/variables
     Paths* get_paths();
@@ -169,6 +173,7 @@ public:
     wxString get_version_string();
     wxString get_long_version_string();
     wxString get_app_full_name();
+    static wxString get_language();
 
     //global options
     inline bool are_answer_sounds_enabled() { return m_fAnswerSoundsEnabled; }
@@ -181,6 +186,10 @@ public:
     inline bool show_debug_links() { return m_fShowDebugLinks; }
     inline void enable_experimental_features(bool value) { m_fExperimentalFeatures = value; }
 	inline bool are_experimental_features_enabled() { return m_fExperimentalFeatures; }
+    inline void set_visual_tracking_mode(int value) { m_trackingMode = value; }
+    inline int get_visual_tracking_mode() { return m_trackingMode; }
+    inline void set_tempo_line_width(LUnits value) { m_tempoLineWidth = value; }
+    inline LUnits get_tempo_line_width() { return m_tempoLineWidth; }
 
     //global optionf for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }

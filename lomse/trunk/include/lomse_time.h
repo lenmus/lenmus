@@ -32,8 +32,13 @@
 
 #include "lomse_basic.h"
 
+#include <chrono>
+
 namespace lomse
 {
+//some constants
+#define LOMSE_NO_DURATION   100000000000000.0f  //any too high value for a note duration
+#define LOMSE_NO_TIME       100000000000000.0f  //any impossible high value for a timepos
 
 //helper functions to compare times (two floating point numbers)
 
@@ -47,6 +52,7 @@ extern bool is_greater_time(TimeUnits t1, TimeUnits t2);
 
 TimeUnits round_half_up(TimeUnits num);
 
+string to_simple_string(chrono::time_point<chrono::system_clock> time, bool microsec = false);
 
 }   //namespace lomse
 

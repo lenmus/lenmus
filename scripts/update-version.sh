@@ -14,7 +14,7 @@
 
 E_SUCCESS=0         # success
 E_NOARGS=65         # no arguments
-E_BADPATH=66        # not running from lenmus/trunk/scripts
+E_BADPATH=66        # not running from lenmus/scripts
 
 #get current directory and check we are running from <root>/scripts.
 #For this I just check that "src" folder exists

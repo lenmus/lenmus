@@ -79,7 +79,7 @@ public:
     static void wrapper_update_window(void* pThis, SpEventInfo pEvent);
     static void wrapper_play_score(void* pThis, SpEventInfo pEvent);
     static void wrapper_on_click_event(void* pThis, SpEventInfo pEvent);
-    static void wrapper_on_command_event(void* pThis, SpEventInfo pEvent);
+    static void wrapper_on_action_event(void* pThis, SpEventInfo pEvent);
 
     //commands from main frame
     void display_document(const string& filename, int viewType);
@@ -132,6 +132,7 @@ public:
 
     Document* get_document() const;
     inline wxString& get_filename() { return m_filename; }
+    inline wxString& get_full_filename() { return m_fullNameWithPath; }
     inline int get_zoom_mode() const { return m_zoomMode; }
     bool is_edition_enabled();
     inline bool is_loading_document() { return m_fLoadingDocument; }
@@ -154,13 +155,19 @@ public:
 //    void change_mouse_mode(EMouseMode mode);
     void edit_top_level(int type);
 
+    //support for playback in exercises
+    void customize_playback(SpInteractor spInteractor);
 
     //debug. Commands from MainFrame
     void debug_display_ldp_source();
     void debug_display_lmd_source();
+    void debug_display_mnx_source();
     void debug_display_checkpoint_data();
+    void debug_dump_spacing_data();
     void debug_display_cursor_state();
     void debug_dump_internal_model();
+    void debug_display_document_ids();
+    void debug_do_api_test();
     void set_debug_draw_box(int boxType);
     void remove_drawn_boxes();
 
@@ -225,7 +232,8 @@ protected:
     void on_erase_background(wxEraseEvent& WXUNUSED(event)) {}
     void on_size(wxSizeEvent& WXUNUSED(event));
     void on_mouse_event(wxMouseEvent& event);
-    void on_visual_highlight(lmScoreHighlightEvent& event);
+    void on_visual_tracking(lmVisualTrackingEvent& event);
+    void on_update_viewport(lmUpdateViewportEvent& event);
     void on_end_of_playback(lmEndOfPlaybackEvent& event);
     void on_show_contextual_menu(lmShowContextualMenuEvent& event);
     void on_scroll(wxScrollWinEvent& event);
@@ -239,7 +247,7 @@ protected:
     void on_play_score(SpEventInfo pEvent);
     void play_score(SpEventInfo pEvent);
     void on_click_event(SpEventInfo pEvent);
-    void on_command_event(SpEventInfo pEvent);
+    void on_action_event(SpEventInfo pEvent);
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);
@@ -265,32 +273,18 @@ protected:
     //access to information
     string generate_ldp_source();
     string generate_lmd_source(int scoreFormat);
+    string generate_mnx_source();
     string generate_checkpoint_data();
     string dump_cursor();
     string dump_selection();
     wxString help_for_console_commands();
 
 	//contextual menus
-//	void ShowContextualMenu(ImoObj* pOwner, GmoObj* pGMO, wxMenu* pMenu, int x, int y);
 	wxMenu* get_contextual_menu(bool fInitialize = true);
 
 	//event handlers for contextual menus
 	void on_popup_cut(wxCommandEvent& event);
-//    void OnCopy(wxCommandEvent& event);
-//    void OnPaste(wxCommandEvent& event);
-//    void OnColor(wxCommandEvent& event);
     void on_popup_properties(wxCommandEvent& event);
-//    void OnDeleteTiePrev(wxCommandEvent& event);
-//    void OnAttachText(wxCommandEvent& event);
-//    void OnScoreTitles(wxCommandEvent& event);
-//    void OnViewPageMargins(wxCommandEvent& event);
-//    void OnToggleStem(wxCommandEvent& event);
-//#ifdef _LM_DEBUG_
-//	void OnDumpShape(wxCommandEvent& event);
-//#endif
-//
-//	//event handlers for ToolBox contextual menus
-//    void OnToolPopUpMenuEvent(wxCommandEvent& event);
 
     //other
     void clear_document_modified_flag();

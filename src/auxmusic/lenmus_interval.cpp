@@ -30,77 +30,77 @@ using namespace std;
 namespace lenmus
 {
 
-//=======================================================================================
-// Implementation of FIntval
-//=======================================================================================
+////=======================================================================================
+//// Implementation of FIntval
+////=======================================================================================
 
 static wxString m_sIntervalName[16];
-static bool m_fStringsInitialized = false;
+static wxString m_language = "??";
 
-//interval names. The index in this array is the FIntval value
-wxString m_sFIntvalCode[41] = {
-    "p1",  "a1",  "da1", "dd2", "d2", "m2",  "M2",  "a2",
-    "da2", "dd3", "d3",  "m3",  "M3", "a3",  "da3", "dd4",
-    "d4",  "p4",  "a4",  "da4", "--", "dd5", "d5",  "p5",
-    "a5",  "da5", "dd6", "d6",  "m6", "M6",  "a6",  "da6",
-    "dd7", "d7",  "m7",  "M7",  "a7", "da7", "dd8", "d8",
-    "p8"
-};
-
-// an entry for the table of intervals data
-typedef struct {
-    EIntervalType   nType;
-    int             nNumIntv;
-    int             nNumSemitones;
-} IntervalData;
-
-static const IntervalData m_aIntvData[40] =
-{
-    {/*  0 - lm_p1  */  k_perfect,            1,  0 },
-    {/*  1 - lm_a1  */  k_augmented,          1,  1 },
-    {/*  2 - lm_da1 */  k_double_augmented,   1,  2 },
-    {/*  3 - lm_dd2 */  k_double_diminished,  2, -1 },
-    {/*  4 - lm_d2  */  k_diminished,         2,  0 },
-    {/*  5 - lm_m2  */  k_minor,              2,  1 },
-    {/*  6 - lm_M2  */  k_major,              2,  2 },
-    {/*  7 - lm_a2  */  k_augmented,          2,  3 },
-    {/*  8 - lm_da2 */  k_double_augmented,   2,  4 },
-    {/*  9 - lm_dd3 */  k_double_diminished,  3,  1 },
-    {/* 10 - lm_d3  */  k_diminished,         3,  2 },
-    {/* 11 - lm_m3  */  k_minor,              3,  3 },
-    {/* 12 - lm_M3  */  k_major,              3,  4 },
-    {/* 13 - lm_a3  */  k_augmented,          3,  5 },
-    {/* 14 - lm_da3 */  k_double_augmented,   3,  6 },
-    {/* 15 - lm_dd4 */  k_double_diminished,  4,  3 },
-    {/* 16 - lm_d4  */  k_diminished,         4,  4 },
-    {/* 17 - lm_p4  */  k_perfect,            4,  5 },
-    {/* 18 - lm_a4  */  k_augmented,          4,  6 },
-    {/* 19 - lm_da4 */  k_double_augmented,   4,  7 },
-    {/*empty*/          (EIntervalType)0,     0,  0 },
-    {/* 21 - lm_dd5 */  k_double_diminished,  5,  5 },
-    {/* 22 - lm_d5  */  k_diminished,         5,  6 },
-    {/* 23 - lm_p5  */  k_perfect,            5,  7 },
-    {/* 24 - lm_a5  */  k_augmented,          5,  8 },
-    {/* 25 - lm_da5 */  k_double_augmented,   5,  9 },
-    {/* 26 - lm_dd6 */  k_double_diminished,  6,  6 },
-    {/* 27 - lm_d6  */  k_diminished,         6,  7 },
-    {/* 28 - lm_m6  */  k_minor,              6,  8 },
-    {/* 29 - lm_M6  */  k_major,              6,  9 },
-    {/* 30 - lm_a6  */  k_augmented,          6, 10 },
-    {/* 31 - lm_da6 */  k_double_augmented,   6, 10 },
-    {/* 32 - lm_dd7 */  k_double_diminished,  7,  8 },
-    {/* 33 - lm_d7  */  k_diminished,         7,  9 },
-    {/* 34 - lm_m7  */  k_minor,              7, 10 },
-    {/* 35 - lm_M7  */  k_major,              7, 11 },
-    {/* 36 - lm_a7  */  k_augmented,          7, 12 },
-    {/* 37 - lm_da7 */  k_double_augmented,   7, 13 },
-    {/* 38 - lm_dd8 */  k_double_diminished,  8, 10 },
-    {/* 39 - lm_d8  */  k_diminished,         8, 11 },
-};
-
+////interval names. The index in this array is the FIntval value
+//wxString m_sFIntvalCode[41] = {
+//    "p1",  "a1",  "da1", "dd2", "d2", "m2",  "M2",  "a2",
+//    "da2", "dd3", "d3",  "m3",  "M3", "a3",  "da3", "dd4",
+//    "d4",  "p4",  "a4",  "da4", "--", "dd5", "d5",  "p5",
+//    "a5",  "da5", "dd6", "d6",  "m6", "M6",  "a6",  "da6",
+//    "dd7", "d7",  "m7",  "M7",  "a7", "da7", "dd8", "d8",
+//    "p8"
+//};
+//
+//// an entry for the table of intervals data
+//typedef struct {
+//    EIntervalType   nType;
+//    int             nNumIntv;
+//    int             nNumSemitones;
+//} IntervalData;
+//
+//static const IntervalData m_aIntvData[40] =
+//{
+//    {/*  0 - lm_p1  */  k_perfect,            1,  0 },
+//    {/*  1 - lm_a1  */  k_augmented,          1,  1 },
+//    {/*  2 - lm_da1 */  k_double_augmented,   1,  2 },
+//    {/*  3 - lm_dd2 */  k_double_diminished,  2, -1 },
+//    {/*  4 - lm_d2  */  k_diminished,         2,  0 },
+//    {/*  5 - lm_m2  */  k_minor,              2,  1 },
+//    {/*  6 - lm_M2  */  k_major,              2,  2 },
+//    {/*  7 - lm_a2  */  k_augmented,          2,  3 },
+//    {/*  8 - lm_da2 */  k_double_augmented,   2,  4 },
+//    {/*  9 - lm_dd3 */  k_double_diminished,  3,  1 },
+//    {/* 10 - lm_d3  */  k_diminished,         3,  2 },
+//    {/* 11 - lm_m3  */  k_minor,              3,  3 },
+//    {/* 12 - lm_M3  */  k_major,              3,  4 },
+//    {/* 13 - lm_a3  */  k_augmented,          3,  5 },
+//    {/* 14 - lm_da3 */  k_double_augmented,   3,  6 },
+//    {/* 15 - lm_dd4 */  k_double_diminished,  4,  3 },
+//    {/* 16 - lm_d4  */  k_diminished,         4,  4 },
+//    {/* 17 - lm_p4  */  k_perfect,            4,  5 },
+//    {/* 18 - lm_a4  */  k_augmented,          4,  6 },
+//    {/* 19 - lm_da4 */  k_double_augmented,   4,  7 },
+//    {/*empty*/          (EIntervalType)0,     0,  0 },
+//    {/* 21 - lm_dd5 */  k_double_diminished,  5,  5 },
+//    {/* 22 - lm_d5  */  k_diminished,         5,  6 },
+//    {/* 23 - lm_p5  */  k_perfect,            5,  7 },
+//    {/* 24 - lm_a5  */  k_augmented,          5,  8 },
+//    {/* 25 - lm_da5 */  k_double_augmented,   5,  9 },
+//    {/* 26 - lm_dd6 */  k_double_diminished,  6,  6 },
+//    {/* 27 - lm_d6  */  k_diminished,         6,  7 },
+//    {/* 28 - lm_m6  */  k_minor,              6,  8 },
+//    {/* 29 - lm_M6  */  k_major,              6,  9 },
+//    {/* 30 - lm_a6  */  k_augmented,          6, 10 },
+//    {/* 31 - lm_da6 */  k_double_augmented,   6, 10 },
+//    {/* 32 - lm_dd7 */  k_double_diminished,  7,  8 },
+//    {/* 33 - lm_d7  */  k_diminished,         7,  9 },
+//    {/* 34 - lm_m7  */  k_minor,              7, 10 },
+//    {/* 35 - lm_M7  */  k_major,              7, 11 },
+//    {/* 36 - lm_a7  */  k_augmented,          7, 12 },
+//    {/* 37 - lm_da7 */  k_double_augmented,   7, 13 },
+//    {/* 38 - lm_dd8 */  k_double_diminished,  8, 10 },
+//    {/* 39 - lm_d8  */  k_diminished,         8, 11 },
+//};
+//
 
 //---------------------------------------------------------------------------------------
-void FIntval::initialize_strings()
+void initialize_strings()
 {
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -122,125 +122,124 @@ void FIntval::initialize_strings()
     m_sIntervalName[14] = _("14th");
     m_sIntervalName[15] = _("Two octaves");
 
-    m_fStringsInitialized = true;
+    m_language = ApplicationScope::get_language();
 }
 
+////---------------------------------------------------------------------------------------
+//FIntval::FIntval(const wxString& sName)
+//{
+//    // unison
+//    if (sName == "p1") m_interval = lm_p1;
+//    else if (sName == "a1") m_interval = lm_a1;
+//    // second
+//    else if (sName == "d2") m_interval = lm_d2;
+//    else if (sName == "m2") m_interval = lm_m2;
+//    else if (sName == "M2") m_interval = lm_M2;
+//    else if (sName == "a2") m_interval = lm_a2;
+//    // third
+//    else if (sName == "d3") m_interval = lm_d3;
+//    else if (sName == "m3") m_interval = lm_m3;
+//    else if (sName == "M3") m_interval = lm_M3;
+//    else if (sName == "a3") m_interval = lm_a3;
+//    // fourth
+//    else if (sName == "d4") m_interval = lm_d4;
+//    else if (sName == "p4") m_interval = lm_p4;
+//    else if (sName == "a4") m_interval = lm_a4;
+//    // fifth
+//    else if (sName == "d5") m_interval = lm_d5;
+//    else if (sName == "p5") m_interval = lm_p5;
+//    else if (sName == "a5") m_interval = lm_a5;
+//    //sixth
+//    else if (sName == "d6") m_interval = lm_d6;
+//    else if (sName == "m6") m_interval = lm_m6;
+//    else if (sName == "M6") m_interval = lm_M6;
+//    else if (sName == "a6") m_interval = lm_a6;
+//    // seventh
+//    else if (sName == "d7") m_interval = lm_d7;
+//    else if (sName == "m7") m_interval = lm_m7;
+//    else if (sName == "M7") m_interval = lm_M7;
+//    else if (sName == "a7") m_interval = lm_a7;
+//    // octave
+//    else if (sName == "d8") m_interval = lm_d8;
+//    else if (sName == "p8") m_interval = lm_p8;
+//
+//    else
+//        m_interval = lmNULL_FIntval;
+//}
+//
+////---------------------------------------------------------------------------------------
+//FIntval::FIntval (int intv, EIntervalType type)
+//{
+//    int i;
+//    for (i=0; i < 40; i++)
+//    {
+//        if (m_aIntvData[i].nNumIntv == intv && m_aIntvData[i].nType == type)
+//            break;
+//    }
+//    if (i < 40)
+//        m_interval = i;
+//    else
+//        wxASSERT(false);
+//}
+//
+////---------------------------------------------------------------------------------------
+//int FIntval::get_number()
+//{
+//    //returns interval number: 1=unison, 2=2nd, ..., 8=8ve, 9=9th, ..., 15=2 octaves, ...
+//
+//    int octave = (m_interval / 40) * 7;
+//    int num = m_interval % 40;     //num = 0..39
+//
+//    return m_aIntvData[num].nNumIntv + octave;
+//}
+//
+////---------------------------------------------------------------------------------------
+//wxString FIntval::get_code()
+//{
+//    //returns interval code
+//
+//    int nOctave = ((m_interval / 40) * 7);
+//    int num = m_interval % 40;     //num = 0..39
+//    nOctave += m_aIntvData[num].nNumIntv;
+//
+//    wxString sCode = "";
+//    switch (m_aIntvData[num].nType)
+//    {
+//        case k_diminished:        return wxString::Format("d%d", nOctave);
+//        case k_minor:             return wxString::Format("m%d", nOctave);
+//        case k_major:             return wxString::Format("M%d", nOctave);
+//        case k_augmented:         return wxString::Format("a%d", nOctave);
+//        case k_perfect:           return wxString::Format("p%d", nOctave);
+//        case k_double_augmented:  return wxString::Format("da%d", nOctave);
+//        case k_double_diminished: return wxString::Format("dd%d", nOctave);
+//        default:
+//            wxASSERT(false);
+//    }
+//    return wxEmptyString;
+//}
+//
 //---------------------------------------------------------------------------------------
-FIntval::FIntval(const wxString& sName)
-{
-    // unison
-    if (sName == "p1") m_interval = lm_p1;
-    else if (sName == "a1") m_interval = lm_a1;
-    // second
-    else if (sName == "d2") m_interval = lm_d2;
-    else if (sName == "m2") m_interval = lm_m2;
-    else if (sName == "M2") m_interval = lm_M2;
-    else if (sName == "a2") m_interval = lm_a2;
-    // third
-    else if (sName == "d3") m_interval = lm_d3;
-    else if (sName == "m3") m_interval = lm_m3;
-    else if (sName == "M3") m_interval = lm_M3;
-    else if (sName == "a3") m_interval = lm_a3;
-    // fourth
-    else if (sName == "d4") m_interval = lm_d4;
-    else if (sName == "p4") m_interval = lm_p4;
-    else if (sName == "a4") m_interval = lm_a4;
-    // fifth
-    else if (sName == "d5") m_interval = lm_d5;
-    else if (sName == "p5") m_interval = lm_p5;
-    else if (sName == "a5") m_interval = lm_a5;
-    //sixth
-    else if (sName == "d6") m_interval = lm_d6;
-    else if (sName == "m6") m_interval = lm_m6;
-    else if (sName == "M6") m_interval = lm_M6;
-    else if (sName == "a6") m_interval = lm_a6;
-    // seventh
-    else if (sName == "d7") m_interval = lm_d7;
-    else if (sName == "m7") m_interval = lm_m7;
-    else if (sName == "M7") m_interval = lm_M7;
-    else if (sName == "a7") m_interval = lm_a7;
-    // octave
-    else if (sName == "d8") m_interval = lm_d8;
-    else if (sName == "p8") m_interval = lm_p8;
-
-    else
-        m_interval = lmNULL_FIntval;
-}
-
-//---------------------------------------------------------------------------------------
-FIntval::FIntval (int intv, EIntervalType type)
-{
-    int i;
-    for (i=0; i < 40; i++)
-    {
-        if (m_aIntvData[i].nNumIntv == intv && m_aIntvData[i].nType == type)
-            break;
-    }
-    if (i < 40)
-        m_interval = i;
-    else
-        wxASSERT(false);
-}
-
-//---------------------------------------------------------------------------------------
-int FIntval::get_number()
-{
-    //returns interval number: 1=unison, 2=2nd, ..., 8=8ve, 9=9th, ..., 15=2 octaves, ...
-
-    int octave = (m_interval / 40) * 7;
-    int num = m_interval % 40;     //num = 0..39
-
-    return m_aIntvData[num].nNumIntv + octave;
-}
-
-//---------------------------------------------------------------------------------------
-wxString FIntval::get_code()
-{
-    //returns interval code
-
-    int nOctave = ((m_interval / 40) * 7);
-    int num = m_interval % 40;     //num = 0..39
-    nOctave += m_aIntvData[num].nNumIntv;
-
-    wxString sCode = "";
-    switch (m_aIntvData[num].nType)
-    {
-        case k_diminished:        return wxString::Format("d%d", nOctave);
-        case k_minor:             return wxString::Format("m%d", nOctave);
-        case k_major:             return wxString::Format("M%d", nOctave);
-        case k_augmented:         return wxString::Format("a%d", nOctave);
-        case k_perfect:           return wxString::Format("p%d", nOctave);
-        case k_double_augmented:  return wxString::Format("da%d", nOctave);
-        case k_double_diminished: return wxString::Format("dd%d", nOctave);
-        default:
-            wxASSERT(false);
-    }
-    return wxEmptyString;
-}
-
-//---------------------------------------------------------------------------------------
-wxString FIntval::get_name()
+wxString get_FIntval_name(FIntval intv)
 {
     //AWARE: This method is restricted to two octaves
 
-    wxASSERT(m_interval < 81);      // 80 = two octaves
-    if (!m_fStringsInitialized)
+    int interval = int(intv);
+    wxASSERT(interval < 81);      // 80 = two octaves
+    if (m_language != ApplicationScope::get_language())
         initialize_strings();
 
-    int octave = (m_interval / 40) * 7;
-    int num = m_interval % 40;     //num = 0..39
-    int nNumIntv = m_aIntvData[num].nNumIntv + octave;      // 0..15
+    int nNumIntv = intv.get_number();   // 0..15
 
     wxString sName = m_sIntervalName[nNumIntv];
-    if (m_interval == 0)
+    if (interval == 0)
         sName = _("Unison");
-    else if (m_interval == 1)
+    else if (interval == 1)
         sName = _("Chromatic semitone");
-    else if (m_interval == 2)
+    else if (interval == 2)
         sName = _("Chromatic tone");
     else
     {
-        switch (m_aIntvData[num].nType)
+        switch (intv.get_type())
         {
             case k_diminished:        sName += _(" diminished");          break;
             case k_minor:             sName += _(" minor");               break;
@@ -256,20 +255,20 @@ wxString FIntval::get_name()
     return sName;
 }
 
-//---------------------------------------------------------------------------------------
-EIntervalType FIntval::get_type()
-{
-    int num = m_interval % 40;   //num = 0..39
-    return m_aIntvData[num].nType;
-}
-
-//---------------------------------------------------------------------------------------
-int FIntval::get_num_semitones()
-{
-    int num = m_interval % 40;   //num = 0..39
-    int octaves = (m_interval / 40) * 12;
-    return m_aIntvData[num].nNumSemitones + octaves;
-}
+////---------------------------------------------------------------------------------------
+//EIntervalType FIntval::get_type()
+//{
+//    int num = m_interval % 40;   //num = 0..39
+//    return m_aIntvData[num].nType;
+//}
+//
+////---------------------------------------------------------------------------------------
+//int FIntval::get_num_semitones()
+//{
+//    int num = m_interval % 40;   //num = 0..39
+//    int octaves = (m_interval / 40) * 12;
+//    return m_aIntvData[num].nNumSemitones + octaves;
+//}
 
 
 //=======================================================================================
@@ -289,17 +288,19 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
 
     //posible valid intervals for aural training
     static FIntval m_interval[25] = {
-        lm_p1,  lm_m2,  lm_M2,  lm_m3,  lm_M3, lm_p4,  lm_a4,  lm_p5,  lm_m6,  lm_M6,
-        lm_m7,  lm_M7,  lm_p8,  lm_m9,  lm_M9, lm_m10, lm_M10, lm_p11, lm_a11, lm_p12,
-        lm_m13, lm_M13, lm_m14, lm_M14, lm_p15
+        k_interval_p1,  k_interval_m2,  k_interval_M2,  k_interval_m3,  k_interval_M3,
+        k_interval_p4,  k_interval_a4,  k_interval_p5,  k_interval_m6,  k_interval_M6,
+        k_interval_m7,  k_interval_M7,  k_interval_p8,  k_interval_m9,  k_interval_M9,
+        k_interval_m10, k_interval_M10, k_interval_p11, k_interval_a11, k_interval_p12,
+        k_interval_m13, k_interval_M13, k_interval_m14, k_interval_M14, k_interval_p15
     };
 
     //compute max allowed interval for the specified notes range
     FPitch fpMin = dpMin.to_FPitch(nKey);
     FPitch fpMax = dpMax.to_FPitch(nKey);
     FIntval maxIntv = FIntval(fpMax - fpMin);
-    if (maxIntv > lm_p15)
-        maxIntv = lm_p15;
+    if (maxIntv > k_interval_p15)
+        maxIntv = k_interval_p15;
 
     //extract and count allowed intervals
     int nAllowedIntv[25];
@@ -319,12 +320,12 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
     //intervals have the same probability. Other algorithms that I have tried
     //don't work because give more probability to some intervals
     vector<FPitch> validNotes;
-    int selIntv;
+    FIntval selIntv;
     while(nNumIntv != 0)
     {
         //select interval
         int iSel = RandomGenerator::random_number(0, nNumIntv - 1);
-        selIntv = (int)m_interval[ nAllowedIntv[iSel] ];
+        selIntv = m_interval[ nAllowedIntv[iSel] ];
 //        LogMessage("[Interval::Interval] iSel=%d, selIntv=%d", iSel, selIntv);
 
         //determine max minimum note for the selected interval
@@ -416,8 +417,8 @@ int Interval::get_num_semitones()
 //---------------------------------------------------------------------------------------
 wxString Interval::get_interval_name()
 {
-    wxString name = get_interval().get_name();
-    if (get_interval() != lm_p1)
+    wxString name = get_FIntval_name(get_interval());
+    if (get_interval() != k_interval_p1)
     {
         name += ", ";
         name += (m_fp[1] > m_fp[0] ? _("ascending") : _("descending") );

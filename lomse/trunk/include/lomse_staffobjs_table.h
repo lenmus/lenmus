@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -41,12 +41,14 @@ using namespace std;
 namespace lomse
 {
 
+#define LOMSE_NO_NOTE_DURATION  100000000.0f    //any too high value for note/rest
+
 //forward declarations
 class ImoObj;
 class ImoStaffObj;
 class ImoGoBackFwd;
 class ImoAuxObj;
-class ImoSpacer;
+class ImoDirection;
 class ImoScore;
 class ImoTimeSignature;
 class ImoGoBackFwd;
@@ -75,8 +77,8 @@ public:
         , m_line(line)
         , m_staff(staff)
         , m_pImo(pImo)
-        , m_pNext(NULL)
-        , m_pPrev(NULL)
+        , m_pNext(nullptr)
+        , m_pPrev(nullptr)
     {
     }
 
@@ -125,6 +127,7 @@ protected:
     int m_numLines;
     int m_numEntries;
     TimeUnits m_rMissingTime;
+    TimeUnits m_minNoteDuration;
 
     ColStaffObjsEntry* m_pFirst;
     ColStaffObjsEntry* m_pLast;
@@ -138,14 +141,11 @@ public:
     inline int num_lines() { return m_numLines; }
     inline bool is_anacrusis_start() { return is_greater_time(m_rMissingTime, 0.0); }
     inline TimeUnits anacrusis_missing_time() { return m_rMissingTime; }
+    inline TimeUnits min_note_duration() { return m_minNoteDuration; }
 
     //table management
     void add_entry(int measure, int instr, int voice, int staff, ImoStaffObj* pImo);
-    inline void set_total_lines(int number) { m_numLines = number; }
-    inline void set_anacrusis_missing_time(TimeUnits rTime) { m_rMissingTime = rTime; }
     void delete_entry_for(ImoStaffObj* pSO);
-    void sort_table();
-    static bool is_lower_entry(ColStaffObjsEntry* b, ColStaffObjsEntry* a);
 
     //iterator related
     class iterator
@@ -157,9 +157,9 @@ public:
             ColStaffObjsEntry* m_pNext;
 
         public:
-            iterator() : m_pCurrent(NULL), m_pPrev(NULL), m_pNext(NULL) {}
+            iterator() : m_pCurrent(nullptr), m_pPrev(nullptr), m_pNext(nullptr) {}
 
-            ///AWARE: This constructor requires pEntry != NULL.
+            ///AWARE: This constructor requires pEntry != nullptr.
             iterator(ColStaffObjsEntry* pEntry)
             {
                 m_pCurrent = pEntry;
@@ -171,8 +171,8 @@ public:
                 else
                 {
                     //is at end. But it is impossible to access any element!!!
-                    m_pPrev = NULL;
-                    m_pNext = NULL;
+                    m_pPrev = nullptr;
+                    m_pNext = nullptr;
                 }
             }
 
@@ -220,7 +220,7 @@ public:
     };
 
 	inline iterator begin() { return iterator(m_pFirst); }
-	inline iterator end() { return iterator(NULL); }
+	inline iterator end() { return iterator(nullptr); }
     inline ColStaffObjsEntry* back() { return m_pLast; }
     inline ColStaffObjsEntry* front() { return m_pFirst; }
     inline iterator find(ImoStaffObj* pSO) { return iterator(find_entry_for(pSO)); }
@@ -229,6 +229,18 @@ public:
     string dump(bool fWithIds=true);
 
 protected:
+
+    friend class ColStaffObjsBuilder;
+    friend class ColStaffObjsBuilderEngine;
+    friend class ColStaffObjsBuilderEngine1x;
+    friend class ColStaffObjsBuilderEngine2x;
+
+    inline void set_total_lines(int number) { m_numLines = number; }
+    inline void set_anacrusis_missing_time(TimeUnits rTime) { m_rMissingTime = rTime; }
+    void sort_table();
+    static bool is_lower_entry(ColStaffObjsEntry* b, ColStaffObjsEntry* a);
+    inline void set_min_note(TimeUnits duration) { m_minNoteDuration = duration; }
+
     void add_entry_to_list(ColStaffObjsEntry* pEntry);
     ColStaffObjsEntry* find_entry_for(ImoStaffObj* pSO);
 
@@ -291,9 +303,17 @@ protected:
     int         m_nCurMeasure;
     TimeUnits   m_rMaxSegmentTime;
     TimeUnits   m_rStartSegmentTime;
+    TimeUnits   m_minNoteDuration;
     StaffVoiceLineTable  m_lines;
 
-    ColStaffObjsBuilderEngine(ImoScore* pScore) : m_pImScore(pScore) {}
+    ColStaffObjsBuilderEngine(ImoScore* pScore)
+        : m_pColStaffObjs(nullptr)
+        , m_pImScore(pScore)
+        , m_nCurMeasure(0)
+        , m_rMaxSegmentTime(0.0)
+        , m_rStartSegmentTime(0.0)
+        , m_minNoteDuration(LOMSE_NO_NOTE_DURATION)
+    {}
 
 public:
     virtual ~ColStaffObjsBuilderEngine() {}
@@ -304,26 +324,34 @@ protected:
     virtual void initializations()=0;
     virtual void determine_timepos(ImoStaffObj* pSO)=0;
     virtual void create_entries(int nInstr)=0;
+    virtual void prepare_for_next_instrument()=0;
 
     void create_table();
     void collect_anacrusis_info();
     int get_line_for(int nVoice, int nStaff);
     void set_num_lines();
     void add_entries_for_key_or_time_signature(ImoObj* pImo, int nInstr);
-    void prepare_for_next_instrument();
+    void set_min_note_duration();
 
 };
 
 
 //---------------------------------------------------------------------------------------
 // ColStaffObjsBuilderEngine1x: algorithm to create a ColStaffObjs table for LDP 1.x
+// Notes/rests for the different voices go intermixed. goBack & goFwd elements exist.
+// No longer needed for LDP but this is the model followed by MusicXML, so must be
+// maintained for importing MusicXML files.
 //---------------------------------------------------------------------------------------
 class ColStaffObjsBuilderEngine1x : public ColStaffObjsBuilderEngine
 {
 protected:
 
 public:
-    ColStaffObjsBuilderEngine1x(ImoScore* pScore) : ColStaffObjsBuilderEngine(pScore) {}
+    ColStaffObjsBuilderEngine1x(ImoScore* pScore)
+        : ColStaffObjsBuilderEngine(pScore)
+        , m_rCurTime(0.0)
+    {
+    }
     virtual ~ColStaffObjsBuilderEngine1x() {}
 
 private:
@@ -336,22 +364,31 @@ private:
     void update_measure(ImoStaffObj* pSO);
     void update_time_counter(ImoGoBackFwd* pGBF);
     void add_entry_for_staffobj(ImoObj* pImo, int nInstr);
-    ImoSpacer* anchor_object(ImoAuxObj* pImo);
+    ImoDirection* anchor_object(ImoAuxObj* pImo);
     void delete_node(ImoGoBackFwd* pGBF, ImoMusicData* pMusicData);
+    void prepare_for_next_instrument();
 
 };
 
 
 //---------------------------------------------------------------------------------------
 // ColStaffObjsBuilderEngine2x: algorithm to create a ColStaffObjs table for LDP 2.x
+// Notes/rests for the different voices DO NOT go intermixed. Instead, voices are
+// defined in sequence. goBack elements do not exist. goFwd elements exist.
+// This is the model for LDP >= 2.0.
 //---------------------------------------------------------------------------------------
 class ColStaffObjsBuilderEngine2x : public ColStaffObjsBuilderEngine
 {
 protected:
     vector<TimeUnits> m_rCurTime;
+    int m_curVoice;
 
 public:
-    ColStaffObjsBuilderEngine2x(ImoScore* pScore) : ColStaffObjsBuilderEngine(pScore) {}
+    ColStaffObjsBuilderEngine2x(ImoScore* pScore)
+        : ColStaffObjsBuilderEngine(pScore)
+        , m_curVoice(0)
+    {
+    }
     virtual ~ColStaffObjsBuilderEngine2x() {}
 
 private:
@@ -361,68 +398,7 @@ private:
     void determine_timepos(ImoStaffObj* pSO);
     void update_measure();
     void add_entry_for_staffobj(ImoObj* pImo, int nInstr);
-
-};
-
-
-
-
-enum EOverlaps
-{                           //old note      ===========       overlap marked as ++++++
-    k_overlap_at_end=0,     //new note           ++++++...
-    k_overlap_full,         //new note   ...+++++++++++...
-    k_overlap_at_start,     //new note   ...+++++++
-};
-
-//---------------------------------------------------------------------------------------
-// OverlappedNoteRest. Helper struct with info about an overlapped note/rest
-class OverlappedNoteRest
-{
-public:
-    ImoNoteRest* pNR;
-    int          type;
-    TimeUnits    overlap;
-
-    OverlappedNoteRest(ImoNoteRest* p, int t, TimeUnits d)
-        : pNR(p), type(t), overlap(d) {}
-    OverlappedNoteRest(ImoNoteRest* p)
-        : pNR(p), type(-1), overlap(0.0) {}
-};
-
-//---------------------------------------------------------------------------------------
-// ScoreAlgorithms
-//  General methods for dealing with the staffobjs collection
-//---------------------------------------------------------------------------------------
-class ScoreAlgorithms
-{
-protected:
-
-public:
-    ScoreAlgorithms() {}
-    ~ScoreAlgorithms() {}
-
-    ///try to find a note that can be tied (as end of tie) with pStartNote
-    static ImoNote* find_possible_end_of_tie(ColStaffObjs* pColStaffObjs,
-                                             ImoNote* pStartNote);
-
-    ///finds applicable clef at specified timepos
-    static int get_applicable_clef_for(ImoScore* pScore,
-                                       int iInstr, int iStaff, TimeUnits time);
-
-    ///
-    static ImoNoteRest* find_noterest_at(ImoScore* pScore,
-                                         int instr, int voice, TimeUnits time);
-    static list<OverlappedNoteRest*>
-            find_and_classify_overlapped_noterests_at(ImoScore* pScore,
-                         int instr, int voice, TimeUnits time, TimeUnits duration);
-
-    ///finds end timepos for given voice, lower or equal than maxTime
-    static TimeUnits find_end_time_for_voice(ImoScore* pScore,
-                                             int instr, int voice, TimeUnits maxTime);
-
-protected:
-    static ColStaffObjsIterator find_barline_with_time_lower_or_equal(ImoScore* pScore,
-                                             int instr, TimeUnits maxTime);
+    void prepare_for_next_instrument();
 
 };
 

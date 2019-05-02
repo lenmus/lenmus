@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ class LibraryScope;
 class MxlElementAnalyser;
 class LdpFactory;
 class MxlAnalyser;
-class InternalModel;
+class ImoObj;
 class ImoNote;
 class ImoRest;
 
@@ -62,13 +62,12 @@ public:
         : RelationBuilder<ImoTieDto, MxlAnalyser>(reporter, pAnalyser, "tie", "Tie") {}
     virtual ~MxlTiesBuilder() {}
 
-    void add_relation_to_notes_rests(ImoTieDto* pEndDto);
+    void add_relation_to_staffobjs(ImoTieDto* pEndDto);
 
 protected:
     bool notes_can_be_tied(ImoNote* pStartNote, ImoNote* pEndNote);
     void tie_notes(ImoTieDto* pStartDto, ImoTieDto* pEndDto);
     void error_notes_can_not_be_tied(ImoTieDto* pEndInfo);
-    void error_duplicated_tie(ImoTieDto* pExistingInfo, ImoTieDto* pNewInfo);
 };
 
 
@@ -81,7 +80,7 @@ public:
         : RelationBuilder<ImoBeamDto, MxlAnalyser>(reporter, pAnalyser, "beam", "Beam") {}
     virtual ~MxlBeamsBuilder() {}
 
-    void add_relation_to_notes_rests(ImoBeamDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoBeamDto* pEndInfo);
 };
 
 
@@ -94,51 +93,46 @@ public:
         : RelationBuilder<ImoSlurDto, MxlAnalyser>(reporter, pAnalyser, "slur", "Slur") {}
     virtual ~MxlSlursBuilder() {}
 
-    void add_relation_to_notes_rests(ImoSlurDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoSlurDto* pEndInfo);
 };
 
 
+//---------------------------------------------------------------------------------------
+// helper class to save tuplet info items, match them and build the tuplets
+class MxlTupletsBuilder : public RelationBuilder<ImoTupletDto, MxlAnalyser>
+{
+public:
+    MxlTupletsBuilder(ostream& reporter, MxlAnalyser* pAnalyser)
+        : RelationBuilder<ImoTupletDto, MxlAnalyser>(reporter, pAnalyser, "tuplet", "Tuplet") {}
+    virtual ~MxlTupletsBuilder() {}
 
-////---------------------------------------------------------------------------------------
-//// helper class to save beam info items, match them and build the beams
-//// For old g+/g- syntax
-//class OldMxlBeamsBuilder
-//{
-//protected:
-//    ostream& m_reporter;
-//    MxlAnalyser* m_pAnalyser;
-//    std::list<ImoBeamDto*> m_pendingOldBeams;
-//
-//public:
-//    OldMxlBeamsBuilder(ostream& reporter, MxlAnalyser* pAnalyser);
-//    ~OldMxlBeamsBuilder();
-//
-//    void add_old_beam(ImoBeamDto* pInfo);
-//    bool is_old_beam_open();
-//    void close_old_beam(ImoBeamDto* pInfo);
-//    void clear_pending_old_beams();
-//
-//protected:
-//    void do_create_old_beam();
-//
-//    //errors
-//    void error_no_end_old_beam(ImoBeamDto* pInfo);
-//
-//};
-//
-//
-////---------------------------------------------------------------------------------------
-//// helper class to save tuplet info items, match them and build the tuplets
-//class MxlTupletsBuilder : public RelationBuilder<ImoTupletDto, MxlAnalyser>
-//{
-//public:
-//    MxlTupletsBuilder(ostream& reporter, MxlAnalyser* pAnalyser)
-//        : RelationBuilder<ImoTupletDto, MxlAnalyser>(reporter, pAnalyser, "tuplet", "Tuplet") {}
-//    virtual ~MxlTupletsBuilder() {}
-//
-//    void add_relation_to_notes_rests(ImoTupletDto* pEndInfo);
-//    inline bool is_tuplet_open() { return m_pendingItems.size() > 0; }
-//};
+    void add_relation_to_staffobjs(ImoTupletDto* pEndInfo);
+    inline bool is_tuplet_open() { return m_pendingItems.size() > 0; }
+    void add_to_open_tuplets(ImoNoteRest* pNR);
+    void get_factors_from_nested_tuplets(int* pTop, int* pBottom);
+
+};
+
+
+//---------------------------------------------------------------------------------------
+// helper class to save volta bracket dto items, match them and build the volta brackets
+class MxlVoltasBuilder : public RelationBuilder<ImoVoltaBracketDto, MxlAnalyser>
+{
+protected:
+    ImoVoltaBracket* m_pFirstVB;        //ptr to 1st volta of current repetition set
+
+public:
+    MxlVoltasBuilder(ostream& reporter, MxlAnalyser* pAnalyser)
+        : RelationBuilder<ImoVoltaBracketDto, MxlAnalyser>(
+                reporter, pAnalyser, "volta bracket", "Volta bracket")
+        , m_pFirstVB(nullptr)
+    {
+    }
+    virtual ~MxlVoltasBuilder() {}
+
+    void add_relation_to_staffobjs(ImoVoltaBracketDto* pEndInfo);
+};
+
 
 //---------------------------------------------------------------------------------------
 // helper class to save part-list info
@@ -214,17 +208,21 @@ class MxlAnalyser : public Analyser
 {
 protected:
     //helpers and collaborators
-    ostream&        m_reporter;
-    LibraryScope&   m_libraryScope;
-    Document*       m_pDoc;
-    XmlParser*      m_pParser;
-    LdpFactory*     m_pLdpFactory;
-    MxlTiesBuilder*    m_pTiesBuilder;
-    MxlBeamsBuilder*   m_pBeamsBuilder;
-//    MxlTupletsBuilder* m_pTupletsBuilder;
-    MxlSlursBuilder*   m_pSlursBuilder;
-    map<string, int> m_lyricIndex;
-    vector<ImoLyric*>  m_lyrics;
+    ostream&            m_reporter;
+    LibraryScope&       m_libraryScope;
+    Document*           m_pDoc;
+    XmlParser*          m_pParser;
+    LdpFactory*         m_pLdpFactory;
+    MxlTiesBuilder*     m_pTiesBuilder;
+    MxlBeamsBuilder*    m_pBeamsBuilder;
+    MxlTupletsBuilder*  m_pTupletsBuilder;
+    MxlSlursBuilder*    m_pSlursBuilder;
+    MxlVoltasBuilder*   m_pVoltasBuilder;
+    map<string, int>    m_lyricIndex;
+    vector<ImoLyric*>   m_lyrics;
+    map<string, int>    m_soundIdToIdx;     //conversion sound-instrument id to index
+	vector<ImoMidiInfo*> m_latestMidiInfo;  //latest MidiInfo for each soundIdx
+
 
     int             m_musicxmlVersion;
     ImoObj*         m_pNodeImo;
@@ -232,6 +230,7 @@ protected:
     int             m_tieNum;
     map<int, ImoId> m_slurIds;
     int             m_slurNum;
+    int             m_voltaNum;
 
     //analysis input
     XmlNode* m_pTree;
@@ -239,6 +238,7 @@ protected:
 
     // information maintained in MxlAnalyser
     ImoScore*       m_pCurScore;        //the score under construction
+    ImoInstrument*  m_pCurInstrument;   //the instrument being analysed
     ImoNote*        m_pLastNote;        //last note added to the score
     ImoBarline*     m_pLastBarline;     //last barline added to current instrument
     ImoDocument*    m_pImoDoc;          //the document containing the score
@@ -249,6 +249,7 @@ protected:
     float           m_divisions;        //fractions of quarter note to use as units for 'duration' values
     string          m_curPartId;        //Part Id being analysed
     string          m_curMeasureNum;    //Num of measure being analysed
+    int             m_measuresCounter;  //counter for measures in current instrument
 
     //inherited values
 //    int m_curStaff;
@@ -265,11 +266,11 @@ public:
     virtual ~MxlAnalyser();
 
     //access to results
-    InternalModel* analyse_tree(XmlNode* tree, const string& locator);
+    ImoObj* analyse_tree(XmlNode* tree, const string& locator);
     ImoObj* analyse_tree_and_get_object(XmlNode* tree);
 
     //analysis
-    ImoObj* analyse_node(XmlNode* pNode, ImoObj* pAnchor=NULL);
+    ImoObj* analyse_node(XmlNode* pNode, ImoObj* pAnchor=nullptr);
     void prepare_for_new_instrument_content();
 
     //part-list
@@ -332,9 +333,38 @@ public:
     inline void save_last_barline(ImoBarline* pBarline) { m_pLastBarline = pBarline; }
     inline ImoBarline* get_last_barline() { return m_pLastBarline; }
 
+    //access to score being analysed
+    inline void score_analysis_begin(ImoScore* pScore) { m_pCurScore = pScore; }
+    inline ImoScore* get_score_being_analysed() { return m_pCurScore; }
+
+    //access to instrument being analysed
+    inline void save_current_instrument(ImoInstrument* pInstr) { m_pCurInstrument = pInstr; }
+    inline ImoInstrument* get_current_instrument() { return m_pCurInstrument; }
+
+    //access to document being analysed
+    inline Document* get_document_being_analysed() { return m_pDoc; }
+    inline const string& get_document_locator() { return m_fileLocator; }
+
+    //access to root ImoDocument
+    inline void save_root_imo_document(ImoDocument* pDoc) { m_pImoDoc = pDoc; }
+    inline ImoDocument* get_root_imo_document() { return m_pImoDoc; }
+
+    //sound-instruments and midi info management
+    int get_index_for_sound(const string& id);
+    int create_index_for_sound(const string& id);
+    ImoMidiInfo* get_latest_midi_info_for(const string& id);
+    void set_latest_midi_info_for(const string& id, ImoMidiInfo* pMidi);
+
+    //for creating measures info
+    inline int increment_measures_counter() { return ++m_measuresCounter; }
+    inline void save_current_measure_num(const string& num) { m_curMeasureNum = num; }
+
     //interface for building relations
     void add_relation_info(ImoObj* pDto);
     void clear_pending_relations();
+
+    //interface for building beams
+    inline bool fix_beams() { return m_libraryScope.get_musicxml_options()->fix_beams(); }
 
     //interface for building lyric lines
     void add_lyrics_data(ImoNote* pNote, ImoLyric* pData);
@@ -349,34 +379,24 @@ public:
     int get_slur_id(int numSlur);
     int get_slur_id_and_close(int numSlur);
 
-//    //interface for MxlTupletsBuilder
-//    inline bool is_tuplet_open() { return m_pTupletsBuilder->is_tuplet_open(); }
+    //interface for building volta brackets
+    int new_volta_id();
+    int get_volta_id();
 
-//    //interface for ChordBuilder
-//    void add_chord(ImoChord* pChord);
+    //interface for MxlTupletsBuilder
+    inline bool is_tuplet_open() { return m_pTupletsBuilder->is_tuplet_open(); }
+    inline void add_to_open_tuplets(ImoNoteRest* pNR) {
+        m_pTupletsBuilder->add_to_open_tuplets(pNR);
+    }
+    inline void get_factors_from_nested_tuplets(int* pTop, int* pBottom)
+    {
+        m_pTupletsBuilder->get_factors_from_nested_tuplets(pTop, pBottom);
+    }
 
     //information for reporting errors
     string get_element_info();
     inline void save_current_part_id(const string& id) { m_curPartId = id; }
-    inline void save_current_measure_num(const string& num) { m_curMeasureNum = num; }
     int get_line_number(XmlNode* node);
-
-    //access to score being analysed
-    inline void score_analysis_begin(ImoScore* pScore) { m_pCurScore = pScore; }
-    inline ImoScore* get_score_being_analysed() { return m_pCurScore; }
-
-    //access to document being analysed
-    inline Document* get_document_being_analysed() { return m_pDoc; }
-    inline const string& get_document_locator() { return m_fileLocator; }
-
-    //access to root ImoDocument
-    inline void save_root_imo_document(ImoDocument* pDoc) { m_pImoDoc = pDoc; }
-    inline ImoDocument* get_root_imo_document() { return m_pImoDoc; }
-
-//    //static methods for general use
-    static int xml_data_to_clef_type(const string& sign, int line, int octaveChange);
-//    static bool ldp_pitch_to_components(const string& pitch, int *step, int* octave,
-//                                        EAccidentals* accidentals);
 
 
     int name_to_enum(const string& name) const;
@@ -384,57 +404,17 @@ public:
 
 
 protected:
-    MxlElementAnalyser* new_analyser(const string& name, ImoObj* pAnchor=NULL);
+    MxlElementAnalyser* new_analyser(const string& name, ImoObj* pAnchor=nullptr);
     void delete_relation_builders();
-
-//    //auxiliary. for ldp notes analysis
-//    static int to_step(const char& letter);
-//    static int to_octave(const char& letter);
-//    static EAccidentals to_accidentals(const std::string& accidentals);
+    void add_marging_space_for_lyrics(ImoNote* pNote, ImoLyric* pLyric);
 };
 
-
-////---------------------------------------------------------------------------------------
-////Helper, to determine beam types automatically
-//class MxlAutoBeamer
-//{
-//protected:
-//    ImoBeam* m_pBeam;
-//
-//public:
-//    MxlAutoBeamer(ImoBeam* pBeam) : m_pBeam(pBeam) {}
-//    ~MxlAutoBeamer() {}
-//
-//    void do_autobeam();
-//
-//protected:
-//
-//
-//    int get_beaming_level(ImoNote* pNote);
-//    void extract_notes();
-//    void determine_maximum_beam_level_for_current_triad();
-//    void process_notes();
-//    void compute_beam_types_for_current_note();
-//    void get_triad(int iNote);
-//    void compute_beam_type_for_current_note_at_level(int level);
-//
-//    //notes in the beam, after removing rests
-//    std::vector<ImoNote*> m_notes;
-//
-//    //notes will be processed in triads. The triad is the current
-//    //note being processed and the previous and next ones
-//    enum ENotePos { k_first_note=0, k_middle_note, k_last_note, };
-//    ENotePos m_curNotePos;
-//    ImoNote* m_pPrevNote;
-//    ImoNote* m_pCurNote;
-//    ImoNote* m_pNextNote;
-//
-//    //maximum beam level for each triad note
-//    int m_nLevelPrev;
-//    int m_nLevelCur;
-//    int m_nLevelNext;
-//
-//};
+//defined in WordsMxlAnalyser to simplify unit testing of the regex
+extern int mxl_type_of_repetion_mark(const string& value);
+//defined in EndingMxlAnalyser to simplify unit testing of the regex
+extern bool mxl_is_valid_ending_number(const string& num);
+//defined in EndingMxlAnalyser to simplify unit testing of the regex
+extern void mxl_extract_numbers_from_ending(const string& num, vector<int>* repetitions);
 
 
 }   //namespace lomse

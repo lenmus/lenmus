@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -39,9 +39,6 @@
 #include "lomse_blocks_container_layouter.h"
 #include "lomse_logger.h"
 
-//other
-#include <boost/format.hpp>
-
 namespace lomse
 {
 
@@ -55,9 +52,12 @@ InlinesContainerLayouter::InlinesContainerLayouter(ImoContentObj* pItem, Layoute
     , m_libraryScope(libraryScope)
     , m_pPara( dynamic_cast<ImoInlinesContainer*>(pItem) )
     , m_fFirstLine(true)
-    , m_pEngrCreator(NULL)
+    , m_xLineStart(0.0f)
+    , m_pEngrCreator(nullptr)
     , m_firstLineIndent(0.0f)
     , m_firstLinePrefix(L"")
+    , m_availableSpace(0.0f)
+    , m_lineWidth(0.0f)
 {
 }
 
@@ -97,7 +97,7 @@ void InlinesContainerLayouter::get_indent_and_bullet_info()
 //---------------------------------------------------------------------------------------
 void InlinesContainerLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     //AWARE: This method is invoked to layout a page. If there are more pages to
     //layout, it will be invoked more times. Therefore, this method must not initialize
@@ -134,7 +134,7 @@ void InlinesContainerLayouter::layout_in_box()
 //---------------------------------------------------------------------------------------
 void InlinesContainerLayouter::prepare_line()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     set_line_pos_and_width();
     initialize_line_references();
@@ -144,12 +144,11 @@ void InlinesContainerLayouter::prepare_line()
 
     bool fBreak = false;
 
-    LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format("available space=%.02f")
-                                          % m_availableSpace ));
+    LOMSE_LOG_TRACE(Logger::k_layout, "available space=%.02f", m_availableSpace);
 
     bool fSomethingAdded = false;
     bool fFirstEngrouterOfLine = true;
-    Engrouter* pEngr = NULL;
+    Engrouter* pEngr = nullptr;
     while (space_in_line() && !fBreak)
     {
         bool fRemoveLeftSpace = fFirstEngrouterOfLine;
@@ -193,7 +192,7 @@ Engrouter* InlinesContainerLayouter::create_next_engrouter(bool fRemoveLeftSpace
         }
         else
         {
-            LOMSE_LOG_DEBUG(Logger::k_layout, "Engrouter is NULL");
+            LOMSE_LOG_DEBUG(Logger::k_layout, "Engrouter is nullptr");
         }
         return pEngr;
     }
@@ -249,7 +248,7 @@ void InlinesContainerLayouter::set_line_pos_and_width()
 //---------------------------------------------------------------------------------------
 void InlinesContainerLayouter::add_line()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     m_pageCursor.x = m_xLineStart;
     LUnits left = m_pageCursor.x;       //save left margin
@@ -289,7 +288,7 @@ void InlinesContainerLayouter::add_line()
 //---------------------------------------------------------------------------------------
 void InlinesContainerLayouter::advance_current_line_space(LUnits left)
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     m_pageCursor.x = left;
     m_pageCursor.y += m_lineRefs.lineHeight;
@@ -301,7 +300,7 @@ void InlinesContainerLayouter::advance_current_line_space(LUnits left)
 //---------------------------------------------------------------------------------------
 void InlinesContainerLayouter::add_engrouter_to_line(Engrouter* pEngrouter)
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     //add engrouter to the list of engrouters for current line.
     m_engrouters.push_back( pEngrouter );
@@ -311,7 +310,7 @@ void InlinesContainerLayouter::add_engrouter_to_line(Engrouter* pEngrouter)
 
     //if it is a WordEngrouter, vertival alignment could imply changes in the
     //reference lines for the line.
-    bool fUpdateText = dynamic_cast<WordEngrouter*>(pEngrouter) != NULL;
+    bool fUpdateText = dynamic_cast<WordEngrouter*>(pEngrouter) != nullptr;
     if (fUpdateText)
     {
         int valign = pEngrouter->get_style()->vertical_align();
@@ -421,13 +420,13 @@ void InlinesContainerLayouter::add_engrouter_shape(Engrouter* pEngrouter,
     {
         if (pGmo->is_shape())
         {
-            GmoShape* pShape = dynamic_cast<GmoShape*>(pGmo);
+            GmoShape* pShape = static_cast<GmoShape*>(pGmo);
             m_pItemMainBox->add_shape(pShape, GmoShape::k_layer_staff);
             m_pageCursor.x += pShape->get_width();
         }
         else if (pGmo->is_box())
         {
-            GmoBox* pBox = dynamic_cast<GmoBox*>(pGmo);
+            GmoBox* pBox = static_cast<GmoBox*>(pGmo);
             m_pItemMainBox->add_child_box(pBox);
             m_pageCursor.x += pBox->get_width();
         }

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -37,9 +37,6 @@
 #include "lomse_shape_text.h"
 #include "lomse_logger.h"
 
-//other
-#include <boost/format.hpp>
-
 using namespace std;
 
 namespace lomse
@@ -52,6 +49,9 @@ MetronomeMarkEngraver::MetronomeMarkEngraver(LibraryScope& libraryScope,
                                              ScoreMeter* pScoreMeter, int iInstr,
                                              int iStaff)
     : Engraver(libraryScope, pScoreMeter, iInstr, iStaff)
+    , m_pMainShape(nullptr)
+    , m_fontSize(0.0)
+    , m_pCreatorImo(nullptr)
 {
 }
 
@@ -59,7 +59,7 @@ MetronomeMarkEngraver::MetronomeMarkEngraver(LibraryScope& libraryScope,
 GmoShape* MetronomeMarkEngraver::create_shape(ImoMetronomeMark* pImo, UPoint uPos,
                                               Color color)
 {
-    ImoStyle* pStyle = m_pMeter->get_metronome_style_info();
+    ImoStyle* pStyle = m_pMeter->get_style_info("Metronome marks");
     m_fontSize = pStyle->font_size() * 1.5f;
     m_pCreatorImo = pImo;
     m_uPos = uPos;
@@ -78,11 +78,11 @@ GmoShape* MetronomeMarkEngraver::create_shape(ImoMetronomeMark* pImo, UPoint uPo
             return create_shape_mm_value();
         default:
         {
-            string msg = str( boost::format(
-                            "[MetronomeMarkEngraver::create_shape] invalid mark type %d")
-                            % markType );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream msg;
+            msg << "[MetronomeMarkEngraver::create_shape] invalid mark type " <<
+                   markType ;
+            LOMSE_LOG_ERROR(msg.str());
+            return create_shape_note_value();
         }
     }
 }
@@ -94,9 +94,9 @@ GmoShape* MetronomeMarkEngraver::create_shape_mm_value()
     int ticksPerMinute = m_pCreatorImo->get_ticks_per_minute();
     bool fParenthesis = m_pCreatorImo->has_parenthesis();
 
-    string msg = str( fParenthesis ? boost::format("(M.M. = %d)") % ticksPerMinute
-                                   : boost::format("M.M. = %d") % ticksPerMinute );
-    create_text_shape(msg);
+    stringstream msg;
+    msg << (fParenthesis ? "(" : "") << "M.M. = " << ticksPerMinute << (fParenthesis ? ")" : "");
+    create_text_shape(msg.str());
     return m_pMainShape;
 }
 
@@ -132,9 +132,9 @@ GmoShape* MetronomeMarkEngraver::create_shape_note_value()
     if (fParenthesis)
         create_text_shape("(");
     create_symbol_shape(leftNoteType, leftDots);
-    string msg = str( fParenthesis ? boost::format(" = %d)") % ticksPerMinute
-                                   : boost::format(" = %d") % ticksPerMinute );
-    create_text_shape(msg);
+    stringstream msg;
+    msg << " = " << ticksPerMinute << (fParenthesis ? ")" : "");
+    create_text_shape(msg.str());
     return m_pMainShape;
 }
 
@@ -150,7 +150,7 @@ void MetronomeMarkEngraver::create_main_container_shape()
 void MetronomeMarkEngraver::create_text_shape(const string& text)
 {
     LUnits y = m_uPos.y + m_pMeter->tenths_to_logical(2.0f, m_iInstr, m_iStaff);
-    ImoStyle* pStyle = m_pMeter->get_metronome_style_info();
+    ImoStyle* pStyle = m_pMeter->get_style_info("Metronome marks");
     TextEngraver engr(m_libraryScope, m_pMeter, text, "", pStyle);
     GmoShape* pShape = engr.create_shape(m_pCreatorImo, m_uPos.x, y);
 	m_pMainShape->add(pShape);
@@ -191,6 +191,8 @@ int MetronomeMarkEngraver::select_glyph(int noteType)
 {
     switch (noteType)
 	{
+        case k_longa:
+            return k_glyph_small_longa_note;
         case k_whole:
             return k_glyph_small_whole_note;
         case k_half:
@@ -211,11 +213,9 @@ int MetronomeMarkEngraver::select_glyph(int noteType)
             return k_glyph_small_256th_note;
         default:
         {
-            string msg = str( boost::format(
-                            "[MetronomeMarkEngraver::select_glyph] invalid note type %d")
-                            % noteType );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            LOMSE_LOG_ERROR(
+                "[MetronomeMarkEngraver::select_glyph] invalid note type %d", noteType);
+            return k_glyph_error;
         }
     }
 }

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -51,9 +51,13 @@ Layouter::Layouter(ImoContentObj* pItem, Layouter* pParent, GraphicModel* pGMode
     , m_pParentLayouter(pParent)
     , m_libraryScope(libraryScope)
     , m_pStyles(pStyles)
-    , m_pItemMainBox(NULL)
+    , m_pItemMainBox(nullptr)
+    , m_pCurLayouter(nullptr)
     , m_pItem(pItem)
     , m_fAddShapesToModel(fAddShapesToModel)
+    , m_constrains(0)
+    , m_availableWidth(0.0f)
+    , m_availableHeight(0.0f)
 {
 }
 
@@ -61,19 +65,24 @@ Layouter::Layouter(ImoContentObj* pItem, Layouter* pParent, GraphicModel* pGMode
 // constructor for DocumentLayouter
 Layouter::Layouter(LibraryScope& libraryScope)
     : m_fIsLayouted(false)
-    , m_pGModel(NULL)
-    , m_pParentLayouter(NULL)
+    , m_pGModel(nullptr)
+    , m_pParentLayouter(nullptr)
     , m_libraryScope(libraryScope)
-    , m_pStyles(NULL)
-    , m_pItemMainBox(NULL)
-    , m_pItem(NULL)
+    , m_pStyles(nullptr)
+    , m_pItemMainBox(nullptr)
+    , m_pCurLayouter(nullptr)
+    , m_pItem(nullptr)
+    , m_fAddShapesToModel(false)
+    , m_constrains(0)
+    , m_availableWidth(0.0f)
+    , m_availableHeight(0.0f)
 {
 }
 
 //---------------------------------------------------------------------------------------
 GmoBox* Layouter::start_new_page()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     GmoBox* pParentBox = m_pParentLayouter->start_new_page();
 
@@ -87,12 +96,13 @@ GmoBox* Layouter::start_new_page()
 }
 
 //---------------------------------------------------------------------------------------
-void Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox)
+void Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox, int constrains)
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, str(boost::format(
-        "Laying out id %d %s") % pItem->get_id() % pItem->get_name() ));
+    LOMSE_LOG_DEBUG(Logger::k_layout,
+        "Laying out id %d %s", pItem->get_id(), pItem->get_name().c_str());
 
     m_pCurLayouter = create_layouter(pItem);
+    m_pCurLayouter->set_constrains(constrains);
 
     m_pCurLayouter->prepare_to_start_layout();
     while (!m_pCurLayouter->is_item_layouted())
@@ -130,9 +140,9 @@ void Layouter::set_cursor_and_available_space()
     m_availableWidth = m_pItemMainBox->get_content_width();
     m_availableHeight = m_pItemMainBox->get_content_height();
 
-    LOMSE_LOG_DEBUG(Logger::k_layout, str(boost::format(
-        "cursor at(%.2f, %.2f), available space(%.2f, %.2f)")
-        % m_pageCursor.x % m_pageCursor.y % m_availableWidth % m_availableHeight ));
+    LOMSE_LOG_DEBUG(Logger::k_layout,
+        "cursor at(%.2f, %.2f), available space(%.2f, %.2f)",
+        m_pageCursor.x, m_pageCursor.y, m_availableWidth, m_availableHeight);
 }
 
 //---------------------------------------------------------------------------------------
@@ -162,11 +172,14 @@ void Layouter::add_end_margins()
 }
 
 //---------------------------------------------------------------------------------------
-Layouter* Layouter::create_layouter(ImoContentObj* pItem)
+Layouter* Layouter::create_layouter(ImoContentObj* pItem, int constrains)
 {
     Layouter* pLayouter = LayouterFactory::create_layouter(pItem, this);
     if (pItem->is_score())
+    {
         save_score_layouter(pLayouter);
+        pLayouter->set_constrains(constrains);
+    }
     return pLayouter;
 }
 

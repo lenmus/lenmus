@@ -29,6 +29,8 @@
 
 #include "lomse_logger.h"
 
+#include <algorithm> // min
+#include <stdarg.h> // va_start, va_end
 using namespace std;
 
 
@@ -56,6 +58,13 @@ Logger::~Logger()
 
 //---------------------------------------------------------------------------------------
 void Logger::log_message(const string& file, int line, const string& prettyFunction,
+                         const string& prefix, const char* fmtstr, va_list args)
+{
+    log_message(file, line, prettyFunction, prefix, format(fmtstr, args));
+}
+
+//---------------------------------------------------------------------------------------
+void Logger::log_message(const string& file, int line, const string& prettyFunction,
                          const string& prefix, const string& msg)
 {
     size_t end = prettyFunction.rfind("(");
@@ -72,9 +81,29 @@ void Logger::log_message(const string& file, int line, const string& prettyFunct
 
 //---------------------------------------------------------------------------------------
 void Logger::log_error(const string& file, int line, const string& prettyFunction,
+                       const char* fmtstr, ...)
+{
+    va_list args;
+    va_start(args, fmtstr);
+    log_message(file, line, prettyFunction, "ERROR: ", fmtstr, args);
+    va_end(args);
+}
+
+//---------------------------------------------------------------------------------------
+void Logger::log_error(const string& file, int line, const string& prettyFunction,
                        const string& msg)
 {
     log_message(file, line, prettyFunction, "ERROR: ", msg);
+}
+
+//---------------------------------------------------------------------------------------
+void Logger::log_warn(const string& file, int line, const string& prettyFunction,
+                      const char* fmtstr, ...)
+{
+    va_list args;
+    va_start(args, fmtstr);
+    log_message(file, line, prettyFunction, "WARNING: ", fmtstr, args);
+    va_end(args);
 }
 
 //---------------------------------------------------------------------------------------
@@ -86,6 +115,16 @@ void Logger::log_warn(const string& file, int line, const string& prettyFunction
 
 //---------------------------------------------------------------------------------------
 void Logger::log_info(const string& file, int line, const string& prettyFunction,
+                      const char* fmtstr, ...)
+{
+    va_list args;
+    va_start(args, fmtstr);
+    log_message(file, line, prettyFunction, "INFO: ", fmtstr, args);
+    va_end(args);
+}
+
+//---------------------------------------------------------------------------------------
+void Logger::log_info(const string& file, int line, const string& prettyFunction,
                       const string& msg)
 {
     log_message(file, line, prettyFunction, "INFO: ", msg);
@@ -93,10 +132,38 @@ void Logger::log_info(const string& file, int line, const string& prettyFunction
 
 //---------------------------------------------------------------------------------------
 void Logger::log_debug(const string& file, int line, const string& prettyFunction,
+                       uint_least32_t area, const char* fmtstr, ...)
+{
+    if ((m_mode == k_debug_mode || m_mode == k_trace_mode) && ((m_areas & area) != 0))
+    {
+        va_list args;
+        va_start(args, fmtstr);
+        log_message(file, line, prettyFunction, "DEBUG: ", fmtstr, args);
+        va_end(args);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void Logger::log_debug(const string& file, int line, const string& prettyFunction,
                        uint_least32_t area, const string& msg)
 {
     if ((m_mode == k_debug_mode || m_mode == k_trace_mode) && ((m_areas & area) != 0))
+    {
         log_message(file, line, prettyFunction, "DEBUG: ", msg);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void Logger::log_trace(const string& file, int line, const string& prettyFunction,
+                       uint_least32_t area, const char* fmtstr, ...)
+{
+    if (m_mode == k_trace_mode && ((m_areas & area) != 0))
+    {
+        va_list args;
+        va_start(args, fmtstr);
+        log_message(file, line, prettyFunction, "TRACE: ", fmtstr, args);
+        va_end(args);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -104,8 +171,32 @@ void Logger::log_trace(const string& file, int line, const string& prettyFunctio
                        uint_least32_t area, const string& msg)
 {
     if (m_mode == k_trace_mode && ((m_areas & area) != 0))
+    {
         log_message(file, line, prettyFunction, "TRACE: ", msg);
+    }
 }
 
+//---------------------------------------------------------------------------------------
+string Logger::format(const char* fmtstr, va_list args)
+{
+    va_list args2;
+    va_copy(args2, args);
+
+    int len = vsnprintf(nullptr, 0, fmtstr, args);
+    if (len < 0)
+    {
+        dbgLogger << endl << "*** ERROR. Logger::format() error: Invalid argument to "
+            "format function" << endl;
+        return string(fmtstr);
+        //throw std::invalid_argument("Invalid argument to format-function");
+    }
+
+    vector<char> data(len + 1);
+    vsnprintf(data.data(), len + 1, fmtstr, args2);
+
+    va_end(args2);
+
+    return string(data.data());
+}
 
 }   //namespace lomse

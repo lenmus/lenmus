@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -70,7 +70,13 @@ class GraphicModel;
 
 
 //---------------------------------------------------------------------------------------
-// Helper class: contains information related to graphical model for one score
+/** %ScoreStub is a helper class containing information related to graphical model for
+    one score.
+    As the graphic model is a general model, it has no specific information about the
+    details for each score graphic model. Therefore, to store and manage tables and
+    other information related to each score graphic model, this helper class
+    is used.
+*/
 class ScoreStub
 {
 protected:
@@ -82,6 +88,16 @@ public:
 
     inline void add_page(GmoBoxScorePage* pPage) { m_pages.push_back(pPage); }
     inline vector<GmoBoxScorePage*>& get_pages() { return m_pages; }
+
+    /** Returns the GmoBoxScorePage containing timepos @c time. If @c time is not in
+        the score, returns @nullptr. This method gives preference to find pages for
+        events instead of non-timed staff objects. For example, the last
+        barline in one page has the same timepos than the first event in next page.
+        Therefore, as there exist two pages containing the same timepos, this method
+        will return the second page.
+        @param time The time position (absolute time units) for the requested page.
+    */
+    GmoBoxScorePage* get_page_for(TimeUnits time);
 
 };
 
@@ -135,7 +151,8 @@ public:
     enum { k_box = 0,
                 k_box_document=0, k_box_doc_page, k_box_doc_page_content,
                 k_box_inline, k_box_link, k_box_paragraph,
-                k_box_score_page, k_box_slice, k_box_slice_instr, k_box_system,
+                k_box_score_page, k_box_slice, k_box_slice_instr,
+                k_box_slice_staff, k_box_system,
                 k_box_control, k_box_table, k_box_table_rows,
            k_shape,
                 k_shape_accidentals, k_shape_accidental_sign,
@@ -143,7 +160,9 @@ public:
                 k_shape_barline,
                 k_shape_beam, k_shape_brace,
                 k_shape_bracket, k_shape_button,
-                k_shape_clef, k_shape_dot, k_shape_dynamics_mark,
+                k_shape_clef,
+                k_shape_coda_segno,
+                k_shape_dot, k_shape_dynamics_mark,
                 k_shape_fermata, k_shape_flag, k_shape_image,
                 k_shape_invisible, k_shape_key_signature, k_shape_lyrics,
                 k_shape_metronome_glyph, k_shape_metronome_mark,
@@ -153,8 +172,12 @@ public:
                 k_shape_slur, k_shape_squared_bracket,
                 k_shape_stem, k_shape_staff,
                 k_shape_technical,
-                k_shape_text, k_shape_time_signature, k_shape_tie,
-                k_shape_time_signature_glyph, k_shape_tuplet, k_shape_word,
+                k_shape_text,
+                k_shape_text_box,
+                k_shape_time_signature,
+                k_shape_tie,
+                k_shape_time_signature_glyph, k_shape_tuplet,
+                k_shape_volta_bracket, k_shape_word,
             k_max
          };
 
@@ -181,6 +204,7 @@ public:
     inline bool is_box_link() { return m_objtype == k_box_link; }
     inline bool is_box_slice() { return m_objtype == k_box_slice; }
     inline bool is_box_slice_instr() { return m_objtype == k_box_slice_instr; }
+    inline bool is_box_slice_staff() { return m_objtype == k_box_slice_staff; }
     inline bool is_box_system() { return m_objtype == k_box_system; }
     inline bool is_box_table_rows() { return m_objtype == k_box_table_rows; }
 
@@ -193,6 +217,7 @@ public:
     inline bool is_shape_bracket() { return m_objtype == k_shape_bracket; }
     inline bool is_shape_button() { return m_objtype == k_shape_button; }
     inline bool is_shape_clef() { return m_objtype == k_shape_clef; }
+    inline bool is_shape_coda_segno() { return m_objtype == k_shape_coda_segno; }
     inline bool is_shape_dot() { return m_objtype == k_shape_dot; }
     inline bool is_shape_dynamics_mark() { return m_objtype == k_shape_dynamics_mark; }
     inline bool is_shape_fermata() { return m_objtype == k_shape_fermata; }
@@ -216,10 +241,12 @@ public:
     inline bool is_shape_staff() { return m_objtype == k_shape_staff; }
     inline bool is_shape_technical() { return m_objtype == k_shape_technical; }
     inline bool is_shape_text() { return m_objtype == k_shape_text; }
+    inline bool is_shape_text_box() { return m_objtype == k_shape_text_box; }
     inline bool is_shape_tie() { return m_objtype == k_shape_tie; }
     inline bool is_shape_time_signature() { return m_objtype == k_shape_time_signature; }
     inline bool is_shape_time_signature_glyph() { return m_objtype == k_shape_time_signature_glyph; }
     inline bool is_shape_tuplet() { return m_objtype == k_shape_tuplet; }
+    inline bool is_shape_volta_bracket() { return m_objtype == k_shape_volta_bracket; }
     inline bool is_shape_word() { return m_objtype == k_shape_word; }
 
     //size
@@ -374,6 +401,7 @@ public:
 
     //parent
     GmoBox* get_parent_box() { return m_pParentBox; }
+    GmoBoxDocPage* get_parent_doc_page();
 
     //contained shapes
     inline int get_num_shapes() { return static_cast<int>( m_shapes.size() ); }
@@ -402,7 +430,7 @@ public:
 
     //content size
     //old semantic, based on score margins
-    inline LUnits get_content_width_old() { return get_width() - m_uLeftMargin - m_uRightMargin; }
+    inline LUnits get_usable_width() { return get_width() - m_uLeftMargin - m_uRightMargin; }
     //new semantic, based on style
     LUnits get_content_top();
     LUnits get_content_left();
@@ -432,7 +460,6 @@ protected:
     GmoBox(int objtype, ImoObj* pCreatorImo);
     void delete_boxes();
     void delete_shapes();
-    GmoBoxDocPage* get_parent_box_page();
     void draw_border(Drawer* pDrawer, RenderOptions& opt);
     bool must_draw_bounds(RenderOptions& opt);
     Color get_box_color();
@@ -473,7 +500,7 @@ public:
 class GmoBoxDocPage : public GmoBox
 {
 protected:
-    int m_numPage;
+    int m_numPage;      //1..n
     std::list<GmoShape*> m_allShapes;		//contained shapes, ordered by layer and creation order
 
 public:
@@ -520,20 +547,29 @@ public:
 class GmoBoxScorePage : public GmoBox
 {
 protected:
-    int             m_nFirstSystem;     //0..n-1
-    int             m_nLastSystem;      //0..n-1
+    int m_iFirstSystem;     //0..n-1
+    int m_iLastSystem;      //0..n-1
+    int m_iPage;            //0..n-1        number of this score page
 
 public:
     GmoBoxScorePage(ImoScore* pScore);
     virtual ~GmoBoxScorePage();
 
+    inline void set_page_number(int iPage) { m_iPage = iPage; }
+
 	//systems
     void add_system(GmoBoxSystem* pSystem, int iSystem);
-    inline int get_num_last_system() const { return m_nLastSystem; }
+    inline int get_num_first_system() const { return m_iFirstSystem; }
+    inline int get_num_last_system() const { return m_iLastSystem; }
     inline int get_num_systems() {
-        return (m_nFirstSystem == -1 ? 0 : m_nLastSystem - m_nFirstSystem + 1);
+        return (m_iFirstSystem == -1 ? 0 : m_iLastSystem - m_iFirstSystem + 1);
     }
 	GmoBoxSystem* get_system(int iSystem);		//nSystem = 0..n-1
+	inline int get_page_number() { return m_iPage; }
+
+	//timepos information
+	TimeUnits end_time();
+	TimeUnits start_time();
 
     //hit tests related
     int nearest_system_to_point(LUnits y);
@@ -584,7 +620,7 @@ protected:
 
 public:
     GmoBoxControl(Control* ctrl, const UPoint& origin, LUnits width, LUnits height,
-                  ImoStyle* style=NULL);
+                  ImoStyle* style=nullptr);
 
     virtual ~GmoBoxControl() {}
 

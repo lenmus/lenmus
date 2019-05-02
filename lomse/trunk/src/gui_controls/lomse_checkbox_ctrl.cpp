@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -71,13 +71,16 @@ CheckboxCtrl::CheckboxCtrl(LibraryScope& libScope, Control* pParent,
                            LUnits width, LUnits height, ImoStyle* pStyle)
     : Control(libScope, pDoc, pParent)
     , m_label(label)
-    , m_pMainBox(NULL)
+    , m_pMainBox(nullptr)
     , m_width(width)
     , m_height(height)
+    , m_xCenter(0.0f)
+    , m_yCenter(0.0f)
     , m_hoverColor( Color(255, 0, 0) )      //red
     , m_status(false)
+    , m_nCurVertex(0)
 {
-    m_style = (pStyle == NULL ? create_default_style() : pStyle);
+    m_style = (pStyle == nullptr ? create_default_style() : pStyle);
 
     m_normalColor = m_style->color();
     m_prevColor = m_normalColor;

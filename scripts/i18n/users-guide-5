@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Users' Guide translation. Step 1
+# Users' Guide translation. Step 5
 # Generate all mo files for Users' Guide
 #
 # This script MUST BE RUN from scripts/i18n/ folder, in source tree.

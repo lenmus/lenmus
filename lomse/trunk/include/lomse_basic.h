@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -34,6 +34,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include <algorithm>   //min
 using namespace std;
 
 
@@ -49,30 +51,6 @@ using namespace std;
     #define UNUSED(x) /* x */
 #endif
 
-
-//---------------------------------------------------------------------------------------
-//if it is a C++11 compliant compiler use std shared_ptr, else use boost shared_ptr
-#if __cplusplus > 199711L
-    #include <memory>
-    namespace lomse
-    {
-        #define LOMSE_IS_USING_STD_SHARED_PTRS  1
-        #define SharedPtr std::shared_ptr
-        #define WeakPtr std::weak_ptr
-        #define EnableSharedFromThis  std::enable_shared_from_this
-    }
-#else
-    #include <boost/shared_ptr.hpp>
-    #include <boost/weak_ptr.hpp>
-    #include <boost/enable_shared_from_this.hpp>
-    namespace lomse
-    {
-        #define LOMSE_IS_USING_STD_SHARED_PTRS  0
-        #define SharedPtr boost::shared_ptr
-        #define WeakPtr boost::weak_ptr
-        #define EnableSharedFromThis  boost::enable_shared_from_this
-    }
-#endif
 
 namespace lomse
 {
@@ -330,9 +308,31 @@ const GmoRef k_no_gmo_ref = make_pair(-1, -1);
 
 typedef double TimeUnits;           //time units (TU). Relative, depends on metronome speed
 
+
 //---------------------------------------------------------------------------------------
-// Units comparison (LUnits, Tenths)
-inline bool is_equal(float c1, float c2) {
+// For describing the measure location of a musical event or other.
+struct MeasureLocator
+{
+    int iInstr;             //instrument number (0..n)
+    int iMeasure;           //measure number (0..m), for the instrument
+    TimeUnits location;     //TimeUnits from start of measure
+
+    MeasureLocator() : iInstr(0), iMeasure(0), location(0.0) {}
+    MeasureLocator(int i, int m, TimeUnits l) : iInstr(i), iMeasure(m), location(l) {}
+
+};
+
+
+//---------------------------------------------------------------------------------------
+// Logical Units comparison (LUnits, Tenths)
+inline bool is_equal_pos(float c1, float c2) {
+    return fabs(c1-c2) < 0.001f;
+}
+
+
+//---------------------------------------------------------------------------------------
+// float comparison
+inline bool is_equal_float(float c1, float c2) {
     return fabs(c1-c2) < 0.001f;
 }
 

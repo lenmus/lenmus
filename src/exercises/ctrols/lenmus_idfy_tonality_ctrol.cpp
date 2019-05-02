@@ -255,7 +255,7 @@ void IdfyTonalityCtrol::ComputeRightAnswerButtons()
     m_nRespAltIndex = -1;
     if (m_pConstrains->UseMajorMinorButtons())
     {
-        m_nRespIndex = (is_major_key(m_nKey) ? 0 : 1);
+        m_nRespIndex = (KeyUtilities::is_major_key(m_nKey) ? 0 : 1);
         return;
     }
     else
@@ -317,7 +317,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClef nClef, EKeySignature nKey,
     //                        1 1 1 1 1 2 2 2 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5 6 6 6 6 6
     //              0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8
     string notes = "c2d2e2f2g2a2b2c3d3e3f3g3a3b3c4d4e4f4g4a4b4c5d5e5f5g5a5b5c6d6e6f6g6a6b6";
-    int nRoot = get_step_for_root_note(nKey)* 2 + 14;  //note in octave 3
+    int nRoot = KeyUtilities::get_step_for_root_note(nKey)* 2 + 14;  //note in octave 3
     string note[16];  //4 notes per chord
 
     if (RandomGenerator::flip_coin())
@@ -424,7 +424,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClef nClef, EKeySignature nKey,
     pInstr->add_spacer(20);
     pInstr->add_barline(k_barline_end);
 
-    (*pProblemScore)->close();      //for generating StaffObjs collection
+    (*pProblemScore)->end_of_changes();      //for generating StaffObjs collection
 
     //return key signature name
     return get_key_signature_name(nKey);

@@ -33,8 +33,22 @@ endif()
 
 
 #libraries to build
-option(LOMSE_BUILD_STATIC_LIB "Build the static library" OFF)
-option(LOMSE_BUILD_SHARED_LIB "Build the shared library" ON)
+if (WIN32)
+    set(LOMSE_BUILD_STATIC_LIB ON)
+    set(LOMSE_BUILD_SHARED_LIB OFF)
+else()
+    set(LOMSE_BUILD_STATIC_LIB OFF)
+    set(LOMSE_BUILD_SHARED_LIB ON)
+endif()
+
+option(LOMSE_BUILD_STATIC_LIB "Build the static library" ${LOMSE_BUILD_STATIC_LIB})
+option(LOMSE_BUILD_SHARED_LIB "Build the shared library" ${LOMSE_BUILD_SHARED_LIB})
+
+if (WIN32)
+    if (LOMSE_BUILD_SHARED_LIB AND MSVC)
+        message(FATAL_ERROR "Shared C++ libraries (C++ DLL) are not supported by MSVC")
+    endif()
+endif()
 
 #Build the test units runner program 'testlib'
 option(LOMSE_BUILD_TESTS "Build testlib program" ON)
@@ -48,14 +62,26 @@ endif()
 #Build the example-1 program that uses the library
 option(LOMSE_BUILD_EXAMPLE "Build the example-1 program" OFF)
 
+#optional dependencies
+option(LOMSE_ENABLE_COMPRESSION "Enable compressed formats (requires zlib)" ON)
+option(LOMSE_ENABLE_PNG "Enable png format (requires pnglib and zlib)" ON)
+if (LOMSE_ENABLE_PNG)
+	if (NOT LOMSE_ENABLE_COMPRESSION)
+        message(STATUS "**WARNING**: Enabling PNG requires enabling compression. LOMSE_ENABLE_COMPRESSION set to ON" )
+    	set(LOMSE_ENABLE_COMPRESSION ON)
+	endif()
+endif()      
 
-message("Build the static library = ${LOMSE_BUILD_STATIC_LIB}")
-message("Build the shared library = ${LOMSE_BUILD_SHARED_LIB}")
-message("Build testlib program = ${LOMSE_BUILD_TESTS}")
-message("Run tests after building = ${LOMSE_RUN_TESTS}")
-message("Create Debug build = ${LOMSE_DEBUG}")
-message("Enable debug logs = ${LOMSE_ENABLE_DEBUG_LOGS}")
-message("Compatibility for LDP v1.5 = ${LOMSE_COMPATIBILITY_LDP_1_5}")
+
+message(STATUS "Build the static library = ${LOMSE_BUILD_STATIC_LIB}")
+message(STATUS "Build the shared library = ${LOMSE_BUILD_SHARED_LIB}")
+message(STATUS "Build testlib program = ${LOMSE_BUILD_TESTS}")
+message(STATUS "Run tests after building = ${LOMSE_RUN_TESTS}")
+message(STATUS "Create Debug build = ${LOMSE_DEBUG}")
+message(STATUS "Enable debug logs = ${LOMSE_ENABLE_DEBUG_LOGS}")
+message(STATUS "Compatibility for LDP v1.5 = ${LOMSE_COMPATIBILITY_LDP_1_5}")
+message(STATUS "Enable compressed formats = ${LOMSE_ENABLE_COMPRESSION}")
+message(STATUS "Enable png format = ${LOMSE_ENABLE_PNG}")
 
 
 
@@ -96,10 +122,8 @@ endif()
 # compiler
 if(MSVC)
     set( LOMSE_COMPILER_MSVC  "1")
-    set( LOMSE_COMPILER_GCC   "0")
-elseif(CMAKE_COMPILER_IS_GNUCC)
+else()
     set( LOMSE_COMPILER_MSVC  "0")
-    set( LOMSE_COMPILER_GCC   "1")
 endif()
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -33,13 +33,12 @@
 #include "lomse_ldp_factory.h"
 #include "lomse_build_options.h"
 #include "lomse_events.h"
-#include "lomse_events_dispatcher.h"    // LOMSE_USE_BOOST_ASIO
+#include "lomse_events_dispatcher.h"
+#include "lomse_import_options.h"
 
 
 #include <iostream>
 using namespace std;
-
-//#include <boost/asio.hpp>
 
 namespace lomse
 {
@@ -53,16 +52,18 @@ class LmdAnalyser;
 class LmdCompiler;
 class MxlAnalyser;
 class MxlCompiler;
+class MnxAnalyser;
+class MnxCompiler;
 class ModelBuilder;
 class Document;
 class LdpFactory;
 class FontStorage;
 class MusicGlyphs;
-//class UserCommandExecuter;
 class View;
 class SimpleView;
 class VerticalBookView;
 class HorizontalBookView;
+class SingleSystemView;
 class Interactor;
 class Presenter;
 class LomseDoorway;
@@ -78,6 +79,16 @@ class DocCursor;
 class DocCommandExecuter;
 class CaretPositioner;
 class MusicGlyphs;
+
+//---------------------------------------------------------------------------------------
+// Trace levels for lines breaker algorithm
+enum ETraceLevelLinesBreaker
+{
+    k_trace_breaks_off          = 0x0001,
+    k_trace_breaks_table        = 0x0002,   //dump of final breaks table
+    k_trace_breaks_computation  = 0x0004,   //trace computation of breaks
+    k_trace_breaks_penalties    = 0x0008,   //trace penalties computation
+};
 
 //---------------------------------------------------------------------------------------
 class LOMSE_EXPORT LibraryScope
@@ -97,16 +108,28 @@ protected:
     MusicGlyphs* m_pMusicGlyphs;
 
     //options
-    bool m_fJustifySystems;
-    bool m_fDumpColumnTables;
-    bool m_fDrawAnchors;
     bool m_fReplaceLocalMetronome;
-    bool m_fShowShapeBounds;
-    bool m_fUnitTests;
+    MusicXmlOptions m_importOptions;
 
+    //debug options
+    bool m_fJustifySystems;         //if false, prevents systems justification
+    bool m_fDumpColumnTables;       //dump columns and slices data
+    bool m_fDrawAnchorObjects;      //draw anchor objects (i.e. invisible shapes)
+    bool m_fDrawAnchorLines;        //draw a line at anchor positions (spacing algorithm)
+    bool m_fShowShapeBounds;        //draw a box around each shape
+    bool m_fUnitTests;              //library is running for Unit Tests
+    int m_traceLinesBreaker;        //trace level for lines breaker algorithm
+
+    //spacing algorithm
+    bool m_fUseDbgValues;           //use values defined here for spacing params.
+    float m_spacingOptForce;
+    float m_spacingAlpha;
+    float m_spacingDmin;
+    Tenths m_spacingSmin;
+    int m_renderSpacingOpts;        //options for spacing and lines breaker algorithm
 
 public:
-    LibraryScope(ostream& reporter=cout, LomseDoorway* pDoorway=NULL);
+    LibraryScope(ostream& reporter=cout, LomseDoorway* pDoorway=nullptr);
     ~LibraryScope();
 
     inline ostream& default_reporter() { return m_reporter; }
@@ -115,9 +138,6 @@ public:
     FontStorage* font_storage();
     inline string& fonts_path() { return m_sFontsPath; }
     EventsDispatcher* get_events_dispatcher();
-#if (LOMSE_USE_BOOST_ASIO == 1)
-    boost::asio::io_service& get_io_service();
-#endif
 
     //callbacks
     void post_event(SpEventInfo pEvent);
@@ -154,18 +174,54 @@ public:
     }
     inline Metronome* get_global_metronome() { return m_pGlobalMetronome; }
     inline bool global_metronome_replaces_local() { return m_fReplaceLocalMetronome; }
+    inline MusicXmlOptions* get_musicxml_options() { return &m_importOptions; }
 
-    //global options, mainly for debug
+    //spacing and lines breaker algorithm parameters
+    inline bool use_debug_values() { return m_fUseDbgValues; }
+    inline float get_optimum_force() { return m_spacingOptForce; }
+    inline void set_optimum_force(float force) {
+        m_spacingOptForce = force;
+        m_fUseDbgValues = true;
+    }
+    inline float get_spacing_alpha() {return m_spacingAlpha; }
+    inline void set_spacing_alpha(float alpha) {
+        m_spacingAlpha = alpha;
+        m_fUseDbgValues = true;
+    }
+    inline float get_spacing_dmin() { return m_spacingDmin; }
+    inline void set_spacing_dmin(float dmin) {
+        m_spacingDmin = dmin;
+        m_fUseDbgValues = true;
+    }
+    inline Tenths get_spacing_smin() { return m_spacingSmin; }
+    inline void set_spacing_smin(Tenths smin) {
+        m_spacingSmin = smin;
+        m_fUseDbgValues = true;
+    }
+    inline int get_render_spacing_opts() { return m_renderSpacingOpts; }
+    inline void set_render_spacing_opts(int opts) {
+        m_renderSpacingOpts = opts;
+        m_fUseDbgValues = true;
+    }
+
+    //global options, for debug and tests
     inline void set_justify_systems(bool value) { m_fJustifySystems = value; }
     inline bool justify_systems() { return m_fJustifySystems; }
     inline void set_dump_column_tables(bool value) { m_fDumpColumnTables = value; }
     inline bool dump_column_tables() { return m_fDumpColumnTables; }
-    inline void set_draw_anchors(bool value) { m_fDrawAnchors = value; }
-    inline bool draw_anchors() { return m_fDrawAnchors; }
+    inline void set_draw_anchor_objecs(bool value) { m_fDrawAnchorObjects = value; }
+    inline bool draw_anchor_objects() { return m_fDrawAnchorObjects; }
+    inline void set_draw_anchor_lines(bool value) { m_fDrawAnchorLines = value; }
+    inline bool draw_anchor_lines() { return m_fDrawAnchorLines; }
     inline void set_draw_shape_bounds(bool value) { m_fShowShapeBounds = value; }
     inline bool draw_shape_bounds() { return m_fShowShapeBounds; }
     inline void set_unit_test(bool value) { m_fUnitTests = value; }
     inline bool is_unit_test() { return m_fUnitTests; }
+    inline void set_trace_level_for_lines_breaker(int level) {
+        m_traceLinesBreaker = level;
+    }
+    inline int get_trace_level_for_lines_breaker() { return m_traceLinesBreaker; }
+
 };
 
 //---------------------------------------------------------------------------------------
@@ -207,18 +263,24 @@ public:
                                            XmlParser* pParser);
     static MxlCompiler* inject_MxlCompiler(LibraryScope& libraryScope, Document* pDoc);
 
+    //MNX format
+    static MnxAnalyser* inject_MnxAnalyser(LibraryScope& libraryScope, Document* pDoc,
+                                           XmlParser* pParser);
+    static MnxCompiler* inject_MnxCompiler(LibraryScope& libraryScope, Document* pDoc);
+
 
     static ModelBuilder* inject_ModelBuilder(DocumentScope& documentScope);
     static Document* inject_Document(LibraryScope& libraryScope,
                                      ostream& reporter = cout);
     static ScreenDrawer* inject_ScreenDrawer(LibraryScope& libraryScope);
-//    static UserCommandExecuter* inject_UserCommandExecuter(Document* pDoc);
-    static View* inject_View(LibraryScope& libraryScope, int viewType, Document* pDoc);  //UserCommandExecuter* pExec)
-    static SimpleView* inject_SimpleView(LibraryScope& libraryScope, Document* pDoc);  //UserCommandExecuter* pExec)
+    static View* inject_View(LibraryScope& libraryScope, int viewType, Document* pDoc);
+    static SimpleView* inject_SimpleView(LibraryScope& libraryScope, Document* pDoc);
     static VerticalBookView* inject_VerticalBookView(LibraryScope& libraryScope,
-                                                     Document* pDoc);  //UserCommandExecuter* pExec)
+                                                     Document* pDoc);
     static HorizontalBookView* inject_HorizontalBookView(LibraryScope& libraryScope,
-                                                         Document* pDoc);  //UserCommandExecuter* pExec)
+                                                         Document* pDoc);
+    static SingleSystemView* inject_SingleSystemView(LibraryScope& libraryScope,
+                                                     Document* pDoc);
     static Interactor* inject_Interactor(LibraryScope& libraryScope,
                                          WpDocument wpDoc, View* pView,
                                          DocCommandExecuter* pExec);

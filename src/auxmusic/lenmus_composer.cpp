@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -226,7 +226,10 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     // prepare and initialize the score
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = pScore->add_instrument();
-    pInstr->set_midi_instrument(m_midiVoice);
+    pScore->set_version(200);
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef(m_nClef);
@@ -242,7 +245,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     pInstr->add_staff_objects("(n * s g+)(n * s)(n * s)(n * s g-)(n * e g+)(n * e l g-)(barline simple)");
     pInstr->add_staff_objects("(n * q)(r e)(n * e)(barline simple)");
     pInstr->add_staff_objects("(n * b)(barline end)");
-    pScore->close();
+    pScore->end_of_changes();
     return pScore;
 #else
     int beats = get_top_number_for(m_nTimeSign);
@@ -421,7 +424,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 
     }
 
-    pScore->close();    //generate ColStaffObjs, to traverse it in following code lines
+    pScore->end_of_changes();    //generate ColStaffObjs, to traverse it in following code lines
 
     // In Music Reading, level 1, introduction lessons use only quarter notes. In those
     // exercises we should not use half notes in the last measure. So lets check if
@@ -453,7 +456,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes, rPickupDuration);
     pInstr->add_staff_objects( to_std_string(sMeasure) );
 
-    pScore->close();
+    pScore->end_of_changes();
 
     #if (TRACE_COMPOSER == 1)
     wxLogMessage("[Composer::generate_score] Adding final measure = '%s')", sMeasure.wx_str());
@@ -716,6 +719,10 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
 {
     // Returns true if error
 
+    #if (TRACE_PITCH == 1)
+        LOMSE_LOG_INFO("Starting. nNumMeasures=%d", nNumMeasures);
+    #endif
+
     // Choose a chord progression, based on key signature: nChords[]
     std::vector<long> nChords(nNumMeasures);
     GetRandomHarmony(nNumMeasures, nChords);
@@ -734,15 +741,17 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     int nNumPoints = 0;
     ImoTimeSignature* pTS = NULL;
     StaffObjsCursor cursor(pScore);
+    int numNotes = 0;   //DBG
     while(!cursor.is_end())
     {
         ImoStaffObj* pSO = cursor.get_staffobj();
         if (pSO->is_note())
         {
+            ++numNotes;     //DBG
 //            ImoNote* pNote = static_cast<ImoNote*>(pSO);
             int pos = k_off_beat;
             if (pTS)
-                pos = get_beat_position(cursor.time(), pTS);
+                pos = get_beat_position(cursor.time(), pTS, cursor.anacrusis_missing_time());
 
             if(pos != k_off_beat)
                 nNumPoints++;   // on beat note
@@ -756,6 +765,9 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
 
         cursor.move_next();
     }
+    #if (TRACE_PITCH == 1)
+        LOMSE_LOG_INFO("Num. notes=%d, num.on-beat notes=%d", numNotes, nNumPoints);
+    #endif
 
 
     // If number of points is small (i.e < 8) forget about this. Instantiate notes
@@ -779,9 +791,9 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     DiatonicPitch dnMinPitch = m_fpMinPitch.to_diatonic_pitch();
     DiatonicPitch dnMaxPitch = m_fpMaxPitch.to_diatonic_pitch();
     #if (TRACE_PITCH == 1)
-        LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] min pitch %d (%s), max pitch %d (%s)")
-            % int(dnMinPitch) % dnMinPitch.get_ldp_name().c_str()
-            % int(dnMaxPitch) % dnMaxPitch.get_ldp_name().c_str() ));
+        LOMSE_LOG_INFO("min pitch %d (%s), max pitch %d (%s)",
+            int(dnMinPitch), dnMinPitch.get_ldp_name().c_str(),
+            int(dnMaxPitch), dnMaxPitch.get_ldp_name().c_str() );
     #endif
     std::vector<FPitch> aOnChordPitch;
     aOnChordPitch.reserve((int(dnMaxPitch) - int(dnMinPitch))/2);    // Reserve space. Upper limit estimation
@@ -797,7 +809,8 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     ImoNote* pNoteCur;
     int iPt = 0;
     FPitch fpNew;
-    wxString sDbg = "";
+    string sDbg = "";   //DBG
+    numNotes=0;   //DBG
     StaffObjsCursor cursor2(pScore);
     while(!cursor2.is_end())
     {
@@ -807,39 +820,45 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
             // 1. It is a note or a rest
             if (pImo->is_note())
             {
+                ++numNotes;    //DBG
                 // It is a note. Get its chord position
                 pNoteCur = static_cast<ImoNote*>(pImo);
                 int pos = k_off_beat;
                 ImoTimeSignature* pTS = cursor2.get_applicable_time_signature();
                 if (pTS)
-                    pos = get_beat_position(cursor2.time(), pTS);
+                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacrusis_missing_time());
+                #if (TRACE_PITCH == 1)
+                    LOMSE_LOG_INFO("note %d, pos=%d, time=%f, anacrux.time=%f",
+                        numNotes, pos, cursor2.time(), cursor2.anacrusis_missing_time());
+                #endif
                 if (pos != k_off_beat)
                 {
                     // on beat note. Pitch must be on chord.
                     // Assign a pitch from nChords[iC].
-    #if (TRACE_PITCH == 1)
-                    for(int k=0; k < (int)aOnChordPitch.size(); k++)
-                        LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] OnChord %d = %s")
-                                       % k % aOnChordPitch[k].to_abs_ldp_name().c_str() ));
-    #endif
+                    #if (TRACE_PITCH == 1)
+                        for(int k=0; k < (int)aOnChordPitch.size(); k++)
+                            LOMSE_LOG_INFO("OnChord %d = %s",
+                                           k, aOnChordPitch[k].to_abs_ldp_name().c_str() );
+                    #endif
                     fpNew = NearestNoteOnChord(aContour[iPt++], pNotePrev, pNoteCur,
                                                     aOnChordPitch);
-    #if (TRACE_PITCH == 1)
-                    for(int k=0; k < (int)aOnChordPitch.size(); k++)
-                        LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] OnChord %d = %s")
-                                       % k % aOnChordPitch[k].to_abs_ldp_name().c_str() ));
-                    string sNoteName = fpNew.to_abs_ldp_name();
-                    LOMSE_LOG_INFO(
-                        str(boost::format("[Composer::InstantiateNotes] on-chord note %d. Assigned pitch = %d (%s), chord=%d")
-                        % iPt % int(fpNew.to_diatonic_pitch()) % sNoteName.c_str()
-                        % int(nChords[iC] & lmGRADE_MASK) ));
-    #endif
+                    #if (TRACE_PITCH == 1)
+                        for(int k=0; k < (int)aOnChordPitch.size(); k++)
+                            LOMSE_LOG_INFO("OnChord %d = %s",
+                                           k, aOnChordPitch[k].to_abs_ldp_name().c_str() );
+                        string sNoteName = fpNew.to_abs_ldp_name();
+                        LOMSE_LOG_INFO(
+                            "note %d, on-chord note %d. Assigned pitch = %d (%s), chord=%d",
+                            numNotes, iPt, int(fpNew.to_diatonic_pitch()), sNoteName.c_str(),
+                            int(nChords[iC] & lmGRADE_MASK) );
+                            pNoteCur->set_color(Color(255,0,0));
+                    #endif
 
                     set_pitch(pNoteCur, fpNew);
 
                     // assign pitch to non-chord notes between previous on-chord one
                     // and this one
-                    sDbg += ",c";
+                    sDbg += ",c";   //DBG
                     if (nCount != 0)
                     {
                         pOnChord2 = pNoteCur;
@@ -858,10 +877,10 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                     if (pNoteCur->get_fpitch() == k_undefined_fpitch)
                     {
                         pNonChord[nCount++] = pNoteCur;
-                        sDbg += ",nc";
+                        sDbg += ",nc";   //DBG
                     }
                     else
-                        sDbg += ",(nc)";
+                        sDbg += ",(nc)";   //DBG
                 }
                 pNotePrev = pNoteCur;
             }
@@ -878,7 +897,8 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     }
 
     #if (TRACE_PITCH == 1)
-    LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] %s") % sDbg.wx_str() ));
+    LOMSE_LOG_INFO("Notes processed = %d", numNotes);
+    LOMSE_LOG_INFO("%s", sDbg.c_str() );
     #endif
 
     return false;       // no error
@@ -897,6 +917,12 @@ void Composer::InstantiateNotesRandom(ImoScore* pScore)
             FPitch fp = RandomPitch();
             ImoNote* pNote = static_cast<ImoNote*>(pImo);
             set_pitch(pNote, fp);
+            #if (TRACE_PITCH == 1)
+                string sNoteName = fp.to_abs_ldp_name();
+                LOMSE_LOG_INFO(
+                    "random note. Assigned pitch = %d (%s)",
+                    int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+            #endif
         }
         ++it;
     }
@@ -952,8 +978,8 @@ void Composer::FunctionToChordNotes(EKeySignature nKey, long nFunction,
 
     //generate natural scale for key signature
     int nAcc[7];
-    get_accidentals_for_key(nKey, nAcc);
-    int step = get_step_for_root_note(nKey);
+    KeyUtilities::get_accidentals_for_key(nKey, nAcc);
+    int step = KeyUtilities::get_step_for_root_note(nKey);
     FPitch scale[15];
     int octave = k_octave_4;
     for (int iN=0; iN < 15; iN++)
@@ -997,7 +1023,21 @@ FPitch Composer::MoveByStep(bool fUpStep, FPitch nPitch, FPitch scale[7])
     for (i=0; i < 7; i++) {
         if (scale[i].step() == nStep) break;
     }
-    wxASSERT(i < 7);
+
+    //coverity scan sanity check
+    if (i >= 7)
+    {
+        stringstream msg;
+        msg << "Logic error. i should be lower than 7, but it is "
+            << i << ", scale={";
+        for (int j=0; j < i; j++)
+            msg << scale[j] << ",";
+
+        msg << "}";
+        LOMSE_LOG_ERROR(msg.str());
+
+        i = 0;
+    }
 
     if (fUpStep) {
         // increment note
@@ -1036,8 +1076,8 @@ FPitch Composer::MoveByChromaticStep(bool fUpStep, FPitch pitch)
 void Composer::GenerateScale(EKeySignature nKey, FPitch notes[7])
 {
     int acc[7];
-    get_accidentals_for_key(nKey, acc);
-    int step = get_step_for_root_note(nKey);
+    KeyUtilities::get_accidentals_for_key(nKey, acc);
+    int step = KeyUtilities::get_step_for_root_note(nKey);
     for (int i=0; i < 7; ++i)
     {
         notes[i] = FPitch(step, k_octave_4, acc[step]);
@@ -1108,7 +1148,7 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
     // be forced
 
     // First, we will determine the root note
-    int nRootStep = get_step_for_root_note(m_nKey);
+    int nRootStep = KeyUtilities::get_step_for_root_note(m_nKey);
 
     // Now lets do some computations to determine a suitable octave
     DiatonicPitch dnMinPitch = m_fpMinPitch.to_diatonic_pitch();
@@ -1205,8 +1245,8 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
     }
 
     #if (TRACE_PITCH == 1)
-    LOMSE_LOG_INFO(str(boost::format("[Composer::GenerateContour] type=%d, nNumPoints=%d, up=%s")
-                   % nCurve % nNumPoints % (fUp ? "Yes" : "No") ));
+    LOMSE_LOG_INFO("type=%d, nNumPoints=%d, up=%s",
+                   nCurve, nNumPoints, (fUp ? "Yes" : "No") );
     #endif
 
     // prepare curve parameters and compute the curve points
@@ -1515,8 +1555,6 @@ FPitch Composer::NearestNoteOnChord(DiatonicPitch nPoint, ImoNote* pNotePrev,
     //requested note is out of range. Return maximum allowed one
     //return aOnChordPitch[aOnChordPitch.size()-1];
     return aOnChordPitch[aOnChordPitch.size()-1];
-
-    return FPitch("c4");
 }
 
 //---------------------------------------------------------------------------------------
@@ -1555,7 +1593,7 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
     if (nNumNotes == 0)
     {
     #if (TRACE_PITCH == 1)
-        LOMSE_LOG_INFO("[Composer::AssignNonChordNotes] No non-chord notes. Nothing to do.");
+        LOMSE_LOG_INFO("No non-chord notes. Nothing to do.");
     #endif
         return;
     }
@@ -1564,7 +1602,7 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
     if (!pOnChord1)
     {
     #if (TRACE_PITCH == 1)
-        LOMSE_LOG_INFO("[Composer::AssignNonChordNotes] Anacruxis measure");
+        LOMSE_LOG_INFO("Anacruxis measure");
     #endif
 
         //we are going to assign an ascending sequence, by step, to finish in the root
@@ -1572,6 +1610,13 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
         if (nNumNotes == 1)
         {
             //assign root pitch
+            #if (TRACE_PITCH == 1)
+                FPitch fp = pOnChord2->get_fpitch();
+                string sNoteName = fp.to_abs_ldp_name();
+                LOMSE_LOG_INFO(
+                    "Anacrusis, single non-chord note. Assigned pitch = %d (%s)",
+                    int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+            #endif
             set_pitch(pNonChord[0], pOnChord2->get_fpitch());
         }
         else
@@ -1583,6 +1628,13 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
                 if (!pNonChord[i]->is_pitch_defined())
                 {
                     nPitch = MoveByStep(k_down, nPitch, scale);
+                    #if (TRACE_PITCH == 1)
+                        FPitch fp = nPitch;
+                        string sNoteName = fp.to_abs_ldp_name();
+                        LOMSE_LOG_INFO(
+                            "Anacrusis, non-chord note %d. Assigned pitch = %d (%s)",
+                            i, int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+                    #endif
                     set_pitch(pNonChord[i], nPitch);
                 }
             }
@@ -1680,8 +1732,9 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
 
     else
     {
-        LOMSE_LOG_ERROR(str(boost::format("[Composer::AssignNonChordNotes] Program error: "
-            "case not defined: Intval %d, num.notes %d") % nAbsIntval % nNumNotes ));
+        LOMSE_LOG_ERROR("[Composer::AssignNonChordNotes] Program error: "
+                        "case not defined: Intval %d, num.notes %d",
+                        nAbsIntval, nNumNotes );
         NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, scale);
         return;
     }
@@ -1696,9 +1749,8 @@ void Composer::NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOn
 
     if(nNumNotes < 1 || nNumNotes > 3)
     {
-        LOMSE_LOG_ERROR(str(boost::format(
-            "[Composer::NeightboringNotes] nNumNotes (%d) not between 1 and 3")
-            % nNumNotes) );
+        LOMSE_LOG_ERROR("[Composer::NeightboringNotes] nNumNotes (%d) not between 1 and 3",
+                        nNumNotes);
     }
 
     bool fUpStep = RandomGenerator::flip_coin();
@@ -1707,7 +1759,16 @@ void Composer::NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOn
     pitch[0] = MoveByStep(fUpStep, ap, scale);
     pitch[1] = MoveByStep(!fUpStep, ap, scale);
     for (int i=0; nNumNotes > 0; --nNumNotes, ++i)
+    {
+        #if (TRACE_PITCH == 1)
+            FPitch fp = pitch[nNumNotes % 2];
+            string sNoteName = fp.to_abs_ldp_name();
+            LOMSE_LOG_INFO(
+                "Neightboring notes, note %d. Assigned pitch = %d (%s)",
+                i, int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+        #endif
         set_pitch(pNonChord[i], pitch[nNumNotes % 2]);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -1721,6 +1782,13 @@ void Composer::PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote
 
     // passing note
     FPitch apNewPitch = pOnChord1->get_fpitch();
+    #if (TRACE_PITCH == 1)
+        FPitch fp = apNewPitch;
+        string sNoteName = fp.to_abs_ldp_name();
+        LOMSE_LOG_INFO(
+            "Passing notes, note 0. Assigned pitch = %d (%s)",
+            int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+    #endif
     set_pitch(pNonChord[0], MoveByStep(fUp, apNewPitch, scale));
 
     // two passing notes
@@ -1728,6 +1796,13 @@ void Composer::PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote
     {
         apNewPitch = MoveByStep(fUp, apNewPitch, scale);
         set_pitch(pNonChord[i], apNewPitch);
+        #if (TRACE_PITCH == 1)
+            FPitch fp = apNewPitch;
+            string sNoteName = fp.to_abs_ldp_name();
+            LOMSE_LOG_INFO(
+                "Passing notes, note 0. Assigned pitch = %d (%s)",
+                i, int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+        #endif
     }
 }
 
@@ -1745,18 +1820,33 @@ void Composer::ThirdFifthNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1,
     FPitch pitch = MoveByStep(fUp, pOnChord1->get_fpitch(), scale);  //second
     pitch = MoveByStep(fUp, pitch, scale);     //third
     set_pitch(pNonChord[0], pitch);
+    #if (TRACE_PITCH == 1)
+        FPitch fp = pitch;
+        string sNoteName = fp.to_abs_ldp_name();
+        LOMSE_LOG_INFO(
+            "Third note. Assigned pitch = %d (%s)",
+            int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+    #endif
     if (nNumNotes == 1) return;
+
     // fifth
     pitch = MoveByStep(fUp, pitch, scale);     //fourth
     pitch = MoveByStep(fUp, pitch, scale);     //fifth
     set_pitch(pNonChord[1], pitch);
+    #if (TRACE_PITCH == 1)
+        fp = pitch;
+        sNoteName = fp.to_abs_ldp_name();
+        LOMSE_LOG_INFO(
+            "Fifth note. Assigned pitch = %d (%s)",
+            int(fp.to_diatonic_pitch()), sNoteName.c_str() );
+    #endif
 }
 
 //---------------------------------------------------------------------------------------
 void Composer::set_pitch(ImoNote* pNote, FPitch fp)
 {
     int nAccidentals[7];
-    lomse::get_accidentals_for_key(m_nKey, nAccidentals);
+    KeyUtilities::get_accidentals_for_key(m_nKey, nAccidentals);
     EAccidentals acc = EAccidentals( nAccidentals[fp.step()] );
     if (!pNote->is_pitch_defined())
     {

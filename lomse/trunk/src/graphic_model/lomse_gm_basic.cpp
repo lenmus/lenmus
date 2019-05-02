@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -63,7 +63,7 @@ GmoObj::GmoObj(int objtype, ImoObj* pCreatorImo)
     , m_size(0.0f, 0.0f)
     , m_flags(k_dirty)
     , m_pCreatorImo(pCreatorImo)
-    , m_pParentBox(NULL)
+    , m_pParentBox(nullptr)
 {
 }
 
@@ -142,6 +142,8 @@ void GmoObj::shift_origin(LUnits x, LUnits y)
 //---------------------------------------------------------------------------------------
 void GmoObj::dump(ostream& outStream, int level)
 {
+    std::ios_base::fmtflags f( outStream.flags() );  //save formating options
+
     outStream << setw(level*3) << level << " [" << setw(3) << m_objtype << "] "
               << get_name(m_objtype)
               << fixed << setprecision(2) << setfill(' ')
@@ -149,6 +151,8 @@ void GmoObj::dump(ostream& outStream, int level)
               << setw(10) << round_half_up(m_origin.y) << ", "
               << setw(10) << round_half_up(m_size.width) << ", "
               << setw(10) << round_half_up(m_size.height) << endl;
+
+    outStream.flags( f );  //restore formating options
 }
 
 //---------------------------------------------------------------------------------------
@@ -167,6 +171,7 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_box_score_page]          = "box-score-page ";
         m_typeToName[k_box_slice]               = "box-slice      ";
         m_typeToName[k_box_slice_instr]         = "box-slice-intr ";
+        m_typeToName[k_box_slice_staff]         = "box-slice-staff";
         m_typeToName[k_box_system]              = "box-system     ";
         m_typeToName[k_box_table]               = "box-table      ";
         m_typeToName[k_box_table_rows]          = "box-table-rows ";
@@ -182,6 +187,7 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_bracket]           = "bracket        ";
         m_typeToName[k_shape_button]            = "button         ";
         m_typeToName[k_shape_clef]              = "clef           ";
+        m_typeToName[k_shape_coda_segno]        = "coda-segno     ";
         m_typeToName[k_shape_dot]               = "dot            ";
         m_typeToName[k_shape_dynamics_mark]     = "dynamics-mark  ";
         m_typeToName[k_shape_fermata]           = "fermata        ";
@@ -205,11 +211,13 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_staff]             = "staff          ";
         m_typeToName[k_shape_technical]         = "technical      ";
         m_typeToName[k_shape_text]              = "text           ";
+        m_typeToName[k_shape_text_box]          = "text-box       ";
         m_typeToName[k_shape_time_signature]    = "time           ";
         m_typeToName[k_shape_tie]               = "tie            ";
         m_typeToName[k_shape_time_signature_glyph]
                                                 = "time-glyph     ";
         m_typeToName[k_shape_tuplet]            = "tuplet         ";
+        m_typeToName[k_shape_volta_bracket]     = "volta-bracket  ";
         m_typeToName[k_shape_word]              = "word           ";
 
         m_fNamesLoaded = true;
@@ -346,7 +354,7 @@ GmoBox* GmoBox::get_child_box(int i)  //i = 0..n-1
     if (i < get_num_boxes())
         return m_childBoxes[i];
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -372,25 +380,25 @@ void GmoBox::add_shapes_to_tables_in(GmoBoxDocPage* pPage)
 //---------------------------------------------------------------------------------------
 void GmoBox::add_shapes_to_tables()
 {
-    GmoBoxDocPage* pPage = get_parent_box_page();
+    GmoBoxDocPage* pPage = get_parent_doc_page();
     GmoBox* pBox = this;        //gcc complains if next method is invoked directly
     pBox->add_shapes_to_tables_in(pPage);
 }
 
 //---------------------------------------------------------------------------------------
-GmoBoxDocPage* GmoBox::get_parent_box_page()
+GmoBoxDocPage* GmoBox::get_parent_doc_page()
 {
     if (this->is_box_doc_page())
         return dynamic_cast<GmoBoxDocPage*>(this);
     else
-        return get_parent_box()->get_parent_box_page();
+        return get_parent_box()->get_parent_doc_page();
 }
 
 //---------------------------------------------------------------------------------------
 GraphicModel* GmoBox::get_graphic_model()
 {
     GmoBox* pParent = get_parent_box();
-    return (pParent == NULL ? NULL : pParent->get_graphic_model());
+    return (pParent == nullptr ? nullptr : pParent->get_graphic_model());
 }
 
 //---------------------------------------------------------------------------------------
@@ -401,7 +409,7 @@ GmoShape* GmoBox::get_shape(int i)  //i = 0..n-1
     if (it != m_shapes.end())
         return *it;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -573,7 +581,7 @@ GmoBox* GmoBox::find_inner_box_at(LUnits x, LUnits y)
         }
         return this;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -679,7 +687,7 @@ ImoStyle* GmoBox::get_style()
         if (pImo)
             return pImo->get_style();
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -802,7 +810,7 @@ public:
 //            (!fSelectable && fFound) )
 //            return *it;
 //    }
-//    return NULL;
+//    return nullptr;
 //}
 
 
@@ -813,6 +821,7 @@ public:
 //=======================================================================================
 GmoBoxDocPage::GmoBoxDocPage(ImoObj* pCreatorImo)
     : GmoBox(GmoObj::k_box_doc_page, pCreatorImo)
+    , m_numPage(1)
 {
 }
 
@@ -877,7 +886,7 @@ GmoShape* GmoBoxDocPage::get_first_shape_for_layer(int layer)
         if ((*it)->get_layer() == layer)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -889,7 +898,7 @@ GmoShape* GmoBoxDocPage::find_shape_at(LUnits x, LUnits y)
         if ((*it)->hit_test(x, y))
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -901,7 +910,7 @@ GmoShape* GmoBoxDocPage::find_shape_for_object(ImoStaffObj* pSO)
         if ((*it)->was_created_by(pSO))
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -915,7 +924,7 @@ GmoObj* GmoBoxDocPage::hit_test(LUnits x, LUnits y)
     if (pBox)
 	    return pBox;
 
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -952,7 +961,7 @@ void GmoBoxDocPage::select_objects_in_rectangle(SelectionSet* selection,
 //=======================================================================================
 GmoBoxDocument::GmoBoxDocument(GraphicModel* pGModel, ImoObj* pCreatorImo)
     : GmoBox(GmoObj::k_box_document, pCreatorImo)
-    , m_pLastPage(NULL)
+    , m_pLastPage(nullptr)
     , m_pGModel(pGModel)
 {
 }
@@ -960,7 +969,7 @@ GmoBoxDocument::GmoBoxDocument(GraphicModel* pGModel, ImoObj* pCreatorImo)
 //---------------------------------------------------------------------------------------
 GmoBoxDocPage* GmoBoxDocument::add_new_page()
 {
-    m_pLastPage = LOMSE_NEW GmoBoxDocPage(NULL);      //TODO creator imo?
+    m_pLastPage = LOMSE_NEW GmoBoxDocPage(nullptr);      //TODO creator imo?
     add_child_box(m_pLastPage);
     m_pLastPage->set_number(get_num_pages());
     return m_pLastPage;
@@ -1046,6 +1055,8 @@ void GmoBoxLink::notify_event(SpEventInfo pEvent)
     else if (pEvent->is_on_click_event())
     {
         LOMSE_LOG_ERROR("is_on_click_event: TODO");
+        //AWARE: should not reach this point as click events on links
+        //will be dispatched to the global handler.
         //TODO: GmoBoxLink::notify_event, on_click_event
 //        m_visited = true;
 //        m_prevColor = m_visitedColor;
@@ -1054,6 +1065,51 @@ void GmoBoxLink::notify_event(SpEventInfo pEvent)
     {
         LOMSE_LOG_DEBUG(Logger::k_events, "event ignored");
     }
+}
+
+
+//=======================================================================================
+// ScoreStub implementation
+//=======================================================================================
+GmoBoxScorePage* ScoreStub::get_page_for(TimeUnits timepos)
+{
+    //find page with end time greater or equal than requested time
+
+    int maxPage = int(m_pages.size());
+    int i=0;
+    for (; i < maxPage; ++i)
+    {
+//        LOMSE_LOG_DEBUG(Logger::k_events, "page %d. End time = %f",
+//                        i, m_pages[i]->end_time());
+
+        //BUG-BYPASS: first page could be empty when the score is embedded in a text and
+        // space in current page is small. In these cases, an score page is allocated
+        // at the end of current document page, but as there is not enough space for
+        // the score, a new document page is created and a new score page is allocated.
+        // This causes the previously allocated score page to remain without content.
+        // This is a bug bypass. The real solution would be not to allocate the unused
+        // page or to remove it from ScoreStub.
+        if (m_pages[i]->get_num_systems() == 0)
+            continue;
+
+        if (is_lower_time(timepos, m_pages[i]->end_time()))
+            break;
+        else if(is_equal_time(timepos, m_pages[i]->end_time()))
+        {
+            //look in next page
+            int iNext = i + 1;
+            if (iNext < maxPage)
+            {
+                if (is_equal_time(timepos, m_pages[iNext]->start_time()))
+                    ++i;
+            }
+            break;
+        }
+    }
+    if (i == maxPage)
+        return nullptr;
+    else
+        return m_pages[i];
 }
 
 

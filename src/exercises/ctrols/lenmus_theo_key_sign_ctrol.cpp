@@ -202,9 +202,9 @@ wxString TheoKeySignCtrol::set_new_problem()
 
     // choose key signature and prepare answer
     bool fFlats = oGenerator.flip_coin();
-    int nAnswer;
+    int nAnswer = -1;
     int nAccidentals = oGenerator.random_number(0, m_pConstrains->GetMaxAccidentals());
-    EKeySignature nKey;
+    EKeySignature nKey = k_key_undefined;
     if (m_fMajorMode)
     {
         if (fFlats)
@@ -400,6 +400,21 @@ wxString TheoKeySignCtrol::set_new_problem()
         }
     }
 
+    //coverity scan sanity check
+    if (nAnswer < 0 || nAnswer > 14 || nKey == k_key_undefined)
+    {
+        stringstream msg;
+        if (nAnswer < 0 || nAnswer > 14)
+            msg << "Logic error. nAnswer must be 0..14 but it is " << nAnswer;
+        else
+            msg << "Logic error. nKey not initialized";
+
+        LOMSE_LOG_ERROR(msg.str());
+
+        nAnswer = 0;
+        nKey = k_key_C;
+    }
+
     // choose type of problem
     if (m_pConstrains->GetProblemType() == eBothKeySignProblems)
         m_fIdentifyKey = oGenerator.flip_coin();
@@ -417,7 +432,7 @@ wxString TheoKeySignCtrol::set_new_problem()
     // store index to right answer button (for guess-number-of-accidentals problems)
     if (!m_fIdentifyKey)
     {
-        m_nRespIndex = key_signature_to_num_fifths(nKey);
+        m_nRespIndex = KeyUtilities::key_signature_to_num_fifths(nKey);
         if (m_nRespIndex < 0) m_nRespIndex = 7 - m_nRespIndex;
     }
 
@@ -493,7 +508,7 @@ wxString TheoKeySignCtrol::set_new_problem()
     pInstr->add_key_signature(nKey);
     pInstr->add_barline(k_barline_end, k_no_visible);
 
-    m_pProblemScore->close();
+    m_pProblemScore->end_of_changes();
 
     //wxLogMessage(wxString::Format(
     //    "[TheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d",

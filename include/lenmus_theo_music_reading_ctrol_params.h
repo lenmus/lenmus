@@ -428,12 +428,14 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
             wxString::Format("Invalid fragment. Old G syntax: '%s'\n",
                              sFragment.wx_str())
         );
+        delete pTimeSigns;
         return true;
     }
 
     // build the entry
     m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);
 
+    delete pTimeSigns;
     return false;   //no error
 
 }

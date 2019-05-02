@@ -360,7 +360,7 @@ bool ToolBox::process_key(wxKeyEvent& event)
         return false;   //not processed
 
 	//page selection commands
-	switch (cmd)
+    switch (cmd)
 	{
 		case k_cmd_select_toolpage_clefs:
 			SelectToolPage(k_page_clefs);
@@ -406,7 +406,7 @@ int ToolBox::translate_key(int key, int keyFlags)
 //---------------------------------------------------------------------------------------
 void ToolBox::on_update_UI(lmUpdateUIEvent& event)
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events, string(""));
 
     SpEventUpdateUI pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,9 +22,7 @@
 #include "lenmus_command_window.h"
 #include "lenmus_standard_header.h"
 
-//#include "lenmus_paths.h"
 #include "lenmus_main_frame.h"
-//#include "lenmus_string.h"
 
 //wxWidgets
 #ifndef WX_PRECOMP
@@ -35,19 +33,12 @@
 #endif
 #include <wx/msgdlg.h>
 
-//other
-//#include <boost/program_options.hpp>
-//#include <boost/program_options/positional_options.hpp>
-//namespace po = boost::program_options;
-
 #include <iterator>
 #include <iostream>
-#include <boost/tokenizer.hpp>
 #include <string>
 #include <vector>
 #include <sstream>
 using namespace std;
-
 
 namespace lenmus
 {
@@ -361,13 +352,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
 //---------------------------------------------------------------------------------------
 string CommandParser::parse_command(const string& cmd)
 {
-    boost::char_separator<char> seps(" ,");
-    m_tok = boost::make_token_iterator<std::string> (cmd.begin(), cmd.end(), seps);
-    string name = *m_tok;
-    if (m_tok.at_end())
-        ++m_tok;
-
-    return name;
+    return m_tok.initialize(cmd, " ,");
 }
 
 //---------------------------------------------------------------------------------------

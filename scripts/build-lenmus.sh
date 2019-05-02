@@ -24,7 +24,7 @@ function DisplayHelp()
 
 E_SUCCESS=0         # success
 E_NOARGS=65         # no arguments
-E_BADPATH=66        # not running from lenmus/trunk/scripts
+E_BADPATH=66        # not running from lenmus/scripts
 E_BADARGS=67        # bad arguments
 E_BUIL_ERROR=68
 
@@ -62,7 +62,7 @@ do
 done
 
 #path for building
-build_path="${root_path}/build-area"
+build_path="${root_path}/zz_build-area"
 sources="${root_path}"
 
 #create or clear build folder

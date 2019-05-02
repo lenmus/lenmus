@@ -60,7 +60,7 @@ void Colors::load_user_preferences()
     sColor = pPrefs->Read("/Colors/Scores/Normal", "000,000,000" );    //black
     unpack_color(sColor, m_oScoreNormal);
     sColor = pPrefs->Read("/Colors/Scores/Highlight", "255,000,000" );    //red
-    unpack_color(sColor, m_oScoreHighlight);
+    unpack_color(sColor, m_oVisualTracking);
     sColor = pPrefs->Read("/Colors/Scores/Selected", "000,000,255" );    //blue
     unpack_color(sColor, m_oScoreSelected);
     sColor = pPrefs->Read("/Colors/Scores/Cursor", "000,000,255" );    //blue
@@ -71,6 +71,12 @@ void Colors::load_user_preferences()
     //HTML controls
     sColor = pPrefs->Read("/Colors/HTML/Links", "000,000,255" );    //blue
     unpack_color(sColor, m_oHtmlLinks);
+
+    //Visual tracking colors
+    sColor = pPrefs->Read("/Colors/Playback/Highlight", "255,000,000");   //solid red
+    m_oHighlightColor = to_lomse_color(sColor);
+    sColor = pPrefs->Read("/Colors/Playback/TempoLine", "000,000,255,128"); //transparent blue
+    m_oTempoLineColor = to_lomse_color(sColor);
 }
 
 //---------------------------------------------------------------------------------------
@@ -86,13 +92,17 @@ void Colors::save_user_preferences()
 
     //colors for scores
     pPrefs->Write("/Colors/Scores/Normal", pack_color(m_oScoreNormal) );
-    pPrefs->Write("/Colors/Scores/Highlight", pack_color(m_oScoreHighlight) );
+    pPrefs->Write("/Colors/Scores/Highlight", pack_color(m_oVisualTracking) );
     pPrefs->Write("/Colors/Scores/Selected", pack_color(m_oScoreSelected) );
     pPrefs->Write("/Colors/Scores/Cursor", pack_color(m_oCursorColor) );
     pPrefs->Write("/Colors/Scores/GhostObject", pack_color(m_oGhostObject) );
 
     //HTML controls
     pPrefs->Write("/Colors/HTML/Links", pack_color(m_oHtmlLinks) );
+
+    //Visual tracking colors
+    pPrefs->Write("/Colors/Playback/Highlight", pack_color(m_oHighlightColor));
+    pPrefs->Write("/Colors/Playback/TempoLine", pack_color(m_oTempoLineColor));
 }
 
 //---------------------------------------------------------------------------------------
@@ -101,33 +111,57 @@ wxString Colors::pack_color(wxColor& color)
     int R = (int) color.Red();
     int G = (int) color.Green();
     int B = (int) color.Blue();
-    return wxString::Format("%03d,%03d,%03d", R, G, B);
+    int A = (int) color.Alpha();
+    return wxString::Format("%03d,%03d,%03d,%03d", R, G, B, A);
 }
 
 //---------------------------------------------------------------------------------------
 wxString Colors::pack_color(Color& color)
 {
-    return wxString::Format("%03d,%03d,%03d", color.r, color.g, color.b);
+    return wxString::Format("%03d,%03d,%03d,%03d",
+                            color.r, color.g, color.b, color.a);
 }
 
 //---------------------------------------------------------------------------------------
 void Colors::unpack_color(wxString& sColor, wxColour& color)
 {
-    long R, G, B;
+    long R, G, B, A;
     (sColor.Left(3)).ToLong(&R);
     (sColor.Mid(4, 3)).ToLong(&G);
     (sColor.Mid(8, 3)).ToLong(&B);
+    if (sColor.length() == 15)
+    {
+        (sColor.Mid(12, 3)).ToLong(&A);
+        color.Set(R, G, B, A);
+    }
     color.Set(R, G, B);
 }
 
 //---------------------------------------------------------------------------------------
 Color Colors::to_lomse_color(wxString& sColor)
 {
-    long R, G, B;
+    long R, G, B, A;
     (sColor.Left(3)).ToLong(&R);
     (sColor.Mid(4, 3)).ToLong(&G);
     (sColor.Mid(8, 3)).ToLong(&B);
+    if (sColor.length() == 15)
+    {
+        (sColor.Mid(12, 3)).ToLong(&A);
+        return Color(R,G,B,A);
+    }
     return Color(R,G,B);
+}
+
+//---------------------------------------------------------------------------------------
+wxColour Colors::to_wx_color(Color& color)
+{
+    return wxColour(color.r, color.g, color.b, color.a);
+}
+
+//---------------------------------------------------------------------------------------
+Color Colors::to_lomse_color(wxColour& color)
+{
+    return Color(color.Red(), color.Green(), color.Blue(), color.Alpha());
 }
 
 

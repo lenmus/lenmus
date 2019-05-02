@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,20 +39,8 @@ namespace lenmus
 {
 
 
-//extern bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals);
-//extern bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch);
-//extern int LetterToStep(wxString sStep);
-//extern int LetterToStep(wxChar cStep);
 extern void load_combobox_with_note_names(wxComboBox* pCboBox, DiatonicPitch nSelNote);
 extern void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName);
-//extern void lmLoadChoiceWithNoteNames(wxChoice* pChoice, wxString sNoteName);
-//
-//
-//// LDP related
-//extern bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
-//                           wxString* sStep, wxString* sOctave);
-//extern FPitch lmLDPDataToFPitch(wxString& sPitch);
-
 extern int split_ldp_pattern(const wxString& sSource);
 extern bool ldp_pattern_is_rest(const wxString& sElement);
 
@@ -65,7 +53,11 @@ extern bool ldp_pattern_is_rest(const wxString& sElement);
 class BarlinesDBEntry
 {
 public:
-    BarlinesDBEntry() {}
+    BarlinesDBEntry()
+        : sBarlineName(wxEmptyString)
+        , nBarlineType(k_barline_unknown)
+    {
+    }
     BarlinesDBEntry(wxString name, EBarline type)
         : sBarlineName(name)
         , nBarlineType(type)

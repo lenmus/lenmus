@@ -287,7 +287,7 @@ namespace lenmus
 //                    nExercise2NotesFPitch[nNoteCount] =
 //                        nExerciseBassNotesFPitch[nNoteCount]
 //                        + nBassSopranoInterval[1][nBassNoteStep]
-//                        + lm_p8; //
+//                        + k_interval_p8; //
 //                }
 //
 //                //   Display note

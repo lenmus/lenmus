@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -41,7 +41,6 @@ namespace lomse
 {
 
 //forward declarations
-class InternalModel;
 class ImoContentObj;
 class ImoDocument;
 class ImoStyles;
@@ -57,15 +56,18 @@ class DocLayouter : public Layouter
 {
 protected:
     ImoDocument* m_pDoc;
+    LUnits m_pageWidth;
+    LUnits m_pageHeight;
 
     //for unit tests: need to access ScoreLayouter.
     Layouter* m_pScoreLayouter;
 
 public:
-    DocLayouter(InternalModel* pIModel, LibraryScope& libraryScope);
+    DocLayouter(Document* pDoc, LibraryScope& libraryScope, int constrains=0);
     virtual ~DocLayouter();
 
     void layout_document();
+    void layout_empty_document();
 
     //implementation of virtual methods in Layouter base class
     void layout_in_box() {}
@@ -79,6 +81,7 @@ public:
 
 protected:
     void layout_content();
+    void fix_document_size();
 
     GmoBoxDocPage* create_document_page();
     void assign_paper_size_to(GmoBox* pBox);

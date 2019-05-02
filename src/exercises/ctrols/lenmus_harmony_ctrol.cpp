@@ -402,7 +402,7 @@ namespace lenmus
 //                    //   we set a limit in d3
 //                    if (nHE_NotesFPitch[nChordCount][nBassVoiceIndex] > FPitchK(k_step_D, 3, m_nKey) )
 //                    {
-//                        nHE_NotesFPitch[nChordCount][nBassVoiceIndex] -= lm_p8;
+//                        nHE_NotesFPitch[nChordCount][nBassVoiceIndex] -= k_interval_p8;
 //                        wxLogMessage(" Bass reduced one octave to : %d "
 //                            , nHE_NotesFPitch[nChordCount][nBassVoiceIndex]
 //                            );
@@ -472,7 +472,7 @@ namespace lenmus
 //                        // Limitation: a voice can not be lower than the previous...
 //                        while ( nHE_NotesFPitch[nChordCount][nVoiceIndex+1] >= nHE_NotesFPitch[nChordCount][nVoiceIndex])
 //                        {
-//                            nHE_NotesFPitch[nChordCount][nVoiceIndex] += lm_p8;
+//                            nHE_NotesFPitch[nChordCount][nVoiceIndex] += k_interval_p8;
 //                            wxLogMessage(" Added octave to voice V%d: %d "
 //                                , nVoice
 //                                , nHE_NotesFPitch[nChordCount][nVoiceIndex]);
@@ -484,7 +484,7 @@ namespace lenmus
 //                        if ( nVoiceIndex == nTenorVoiceIndex && nOctave < 3
 //                            && (nHE_NotesFPitch[nChordCount][nTenorVoiceIndex] - nHE_NotesFPitch[nChordCount][nBassVoiceIndex]) <= lm_M3 )
 //                        {
-//                            nHE_NotesFPitch[nChordCount][nTenorVoiceIndex] += lm_p8;
+//                            nHE_NotesFPitch[nChordCount][nTenorVoiceIndex] += k_interval_p8;
 //                            wxLogMessage(" Raise Tenor: added octave to voice V%d: %d "
 //                                , nVoice
 //                                , nHE_NotesFPitch[nChordCount][nTenorVoiceIndex]
@@ -492,11 +492,11 @@ namespace lenmus
 //                        }
 //
 //                        // additional limitation: baritone voice should be in upper staff (aprox. octave should be > 3)
-//                        const int fUpperStaffLimit = (lm_p8*4)-lm_M3;
+//                        const int fUpperStaffLimit = (k_interval_p8*4)-lm_M3;
 //                        // aware: do not raise more than one octave; otherwise a rule is broken (octave distance)
 //                        if ( nVoiceIndex == nBaritoneVoiceIndex && nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] < fUpperStaffLimit )
 //                        {
-//                            nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] += lm_p8;
+//                            nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex] += k_interval_p8;
 //                            wxLogMessage(" Raise to 2nd staff: added octave to voice V%d: %d (min:%d) "
 //                                , nVoice
 //                                , nHE_NotesFPitch[nChordCount][nBaritoneVoiceIndex]

@@ -51,37 +51,53 @@ class ImoStyle;
 class ScoreMeter
 {
 protected:
-    //layout options
-    float m_rSpacingFactor;             //for proportional spacing of notes
+    //options for spacing and lines breaker algorithm
+    int m_renderSpacingOpts;
+
+    //spacing algorithm params.
+    float m_spacingOptForce;            //Fopt
+    float m_spacingAlpha;               //alpha
+    float m_spacingDmin;                //Dmin
+    LUnits m_spacingSmin;               //Smin
+
     ESpacingMethod m_nSpacingMethod;    //fixed, proportional, etc.
     Tenths m_rSpacingValue;             //space for 'fixed' method
+
+    //layout options
     Tenths m_rUpperLegerLinesDisplacement;
     bool m_fDrawLeftBarline;            //draw left barline joining all system staves
+    bool m_fFillPageWithEmptyStaves;
+    bool m_fHideStaffLines;
+    long m_nJustifyLastSystem;
+    long m_nTruncateStaffLines;
 
 	std::vector<LUnits> m_lineSpace;    //spacing for each staff
     std::vector<int> m_staffIndex;
+    LUnits m_maxLineSpace;              //spacing for greatest staff
 
     //info about the score
     int m_numInstruments;
     int m_numStaves;
     bool m_fScoreIsEmpty;
+    ImoScore* m_pScore;
 
-    //info about text styles
-    ImoStyle* m_tupletsStyle;
-    ImoStyle* m_metronomeStyle;
-    ImoStyle* m_lyricsStyle;
 
 public:
     ScoreMeter(ImoScore* pScore);
     //constructor for unit testing
-    ScoreMeter (int numInstruments, int numStaves, LUnits lineSpacing,
+    ScoreMeter (ImoScore* pScore, int numInstruments, int numStaves, LUnits lineSpacing,
                 float rSpacingFactor=0.547f,
                 ESpacingMethod nSpacingMethod=k_spacing_proportional,
                 Tenths rSpacingValue=35.0f,
                 bool fDrawLeftBarline=true);
 
     //options
-    inline float get_spacing_factor() { return m_rSpacingFactor; }
+    inline float get_spacing_Fopt() { return m_spacingOptForce; }
+    inline float get_spacing_alpha() { return m_spacingAlpha; }
+    inline float get_spacing_dmin() { return m_spacingDmin; }
+    inline float get_spacing_factor() { return m_spacingAlpha; }
+	inline LUnits get_spacing_smin() { return m_spacingSmin; }
+    inline int get_render_spacing_opts() { return m_renderSpacingOpts; }
     inline ESpacingMethod get_spacing_method() { return m_nSpacingMethod; }
     inline Tenths get_spacing_value() { return m_rSpacingValue; }
     inline bool is_proportional_spacing() {
@@ -89,11 +105,19 @@ public:
     }
     inline bool must_draw_left_barline() { return m_fDrawLeftBarline; }
     inline Tenths get_upper_ledger_lines_displacement() { return m_rUpperLegerLinesDisplacement; }
+    inline bool must_fill_page_with_empty_systems() { return m_fFillPageWithEmptyStaves; }
+    inline bool must_hide_stafflines() { return m_fHideStaffLines; }
+    inline long justify_last_system_opt() { return m_nJustifyLastSystem; }
+    inline long truncate_staff_lines_opt() { return m_nTruncateStaffLines; }
 
     //spacing
     LUnits tenths_to_logical(Tenths value, int iInstr, int iStaff);
     Tenths logical_to_tenths(LUnits value, int iInstr, int iStaff);
     LUnits line_spacing_for_instr_staff(int iInstr, int iStaff);
+    inline LUnits tenths_to_logical_max(Tenths value)     //using biggest staff
+    {
+        return (value * m_maxLineSpace) / 10.0f;
+    }
 
     //info about the score
     inline int num_instruments() { return m_numInstruments; }
@@ -104,15 +128,12 @@ public:
     inline bool is_empty_score() { return m_fScoreIsEmpty; }
 
     //info about text styles
-    inline ImoStyle* get_tuplets_style_info() { return m_tupletsStyle; }
-    inline ImoStyle* get_metronome_style_info() { return m_metronomeStyle; }
-    inline ImoStyle* get_lyrics_style_info() { return m_lyricsStyle; }
+    ImoStyle* get_style_info(const string& name);
 
 
 protected:
     void get_options(ImoScore* pScore);
     void get_staff_spacing(ImoScore* pScore);
-    void get_styles(ImoScore* pScore);
 
 };
 

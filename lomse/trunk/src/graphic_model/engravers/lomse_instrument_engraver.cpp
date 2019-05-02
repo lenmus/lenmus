@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -58,7 +58,8 @@ PartsEngraver::PartsEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter
     , m_pScoreLyt(pScoreLyt)
     , m_uFirstSystemIndent(0.0f)
     , m_uOtherSystemIndent(0.0f)
-    , m_pRightAlignerFirst(NULL)
+    , m_pRightAlignerFirst(nullptr)
+    , m_pRightAlignerOther(nullptr)
 {
     create_group_engravers();
     create_instrument_engravers();
@@ -87,10 +88,10 @@ void PartsEngraver::create_group_engravers()
                 LOMSE_NEW GroupEngraver(m_libraryScope, m_pMeter, pGroup, m_pScore, this) );
         }
 
-        m_iGrpName.reserve(numGrps);
-        m_iGrpBracketFirst.reserve(numGrps);
-        m_iGrpAbbrev.reserve(numGrps);
-        m_iGrpBracketOther.reserve(numGrps);
+        m_iGrpName.resize(numGrps);
+        m_iGrpBracketFirst.resize(numGrps);
+        m_iGrpAbbrev.resize(numGrps);
+        m_iGrpBracketOther.resize(numGrps);
     }
 }
 
@@ -108,7 +109,7 @@ void PartsEngraver::create_instrument_engravers()
 {
     int numInstr = m_pScore->get_num_instruments();
 
-    InstrumentEngraver* pPrevEngrv = NULL;
+    InstrumentEngraver* pPrevEngrv = nullptr;
     for (int iInstr = 0; iInstr < numInstr; iInstr++)
     {
         ImoInstrument* pInstr = m_pScore->get_instrument(iInstr);
@@ -121,10 +122,10 @@ void PartsEngraver::create_instrument_engravers()
         pPrevEngrv = pEngrv;
     }
 
-    m_iInstrName.reserve(numInstr);
-    m_iInstrBracketFirst.reserve(numInstr);
-    m_iInstrAbbrev.reserve(numInstr);
-    m_iInstrBracketOther.reserve(numInstr);
+    m_iInstrName.resize(numInstr);
+    m_iInstrBracketFirst.resize(numInstr);
+    m_iInstrAbbrev.resize(numInstr);
+    m_iInstrBracketOther.resize(numInstr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -307,14 +308,16 @@ void PartsEngraver::engrave_names_and_brackets(bool fDrawStafflines, GmoBoxSyste
 }
 
 //---------------------------------------------------------------------------------------
-void PartsEngraver::reposition_staves(LUnits indent, UPoint org, GmoBoxSystem* pBox)
+void PartsEngraver::set_position_and_width_for_staves(LUnits indent, UPoint org,
+                                                      GmoBoxSystem* pBoxSystem)
 {
-    //For engraving staffobjs, staves are placed, initially, at arbitrary position (0,0).
-    //Once the system box is engraved, the right position is transferred to group and
-    //instrument engravers, before shapes are engraved.
+    //For engraving staffobjs it is necessary to know the staves position.
+    //Now, once the system box is created, instrument engravers will compute
+    //staves position, width and vertical distance between staves. The
+    //vertical distance is standard, based only on staves margins.
 
-    LUnits width = pBox->get_content_width_old();
-    LUnits left = pBox->get_left();
+    LUnits width = pBoxSystem->get_usable_width();
+    LUnits left = pBoxSystem->get_left();
 
     std::vector<GroupEngraver*>::iterator itG;
     for (itG = m_groupEngravers.begin(); itG != m_groupEngravers.end(); ++itG)
@@ -331,6 +334,17 @@ void PartsEngraver::reposition_staves(LUnits indent, UPoint org, GmoBoxSystem* p
 }
 
 //---------------------------------------------------------------------------------------
+void PartsEngraver::set_staves_width(LUnits width)
+{
+    std::vector<InstrumentEngraver*>::iterator it;
+    for (it = m_instrEngravers.begin(); it != m_instrEngravers.end(); ++it)
+    {
+        (*it)->set_staves_width(width);
+    }
+}
+
+
+//---------------------------------------------------------------------------------------
 // GroupEngraver implementation
 //---------------------------------------------------------------------------------------
 
@@ -342,6 +356,9 @@ GroupEngraver::GroupEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter
     , m_pScore(pScore)
     , m_pParts(pParts)
     , m_pFontStorage( libraryScope.font_storage() )
+    , m_stavesTop(0.0f)
+    , m_stavesBottom(0.0f)
+    , m_uBracketGap(0.0f)
 {
 }
 
@@ -535,12 +552,17 @@ InstrumentEngraver::InstrumentEngraver(LibraryScope& libraryScope,
     , m_pInstr(pInstr)
     , m_pScore(pScore)
     , m_pFontStorage( libraryScope.font_storage() )
-    , m_pNextInstrEngr(NULL)
+    , m_uBracketGap(0.0f)
+    , m_stavesTop(0.0f)
+    , m_stavesBottom(0.0f)
+    , m_stavesLeft(0.0f)
+    , m_stavesWidth(0.0f)
+    , m_pNextInstrEngr(nullptr)
 {
     int numStaves = m_pInstr->get_num_staves();
-    m_staffTop.reserve(numStaves);
-    m_staffTopLine.reserve(numStaves);
-    m_lineThickness.reserve(numStaves);
+    m_staffTop.resize(numStaves);
+    m_staffTopLine.resize(numStaves);
+    m_lineThickness.resize(numStaves);
 }
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -46,12 +46,14 @@ namespace lomse
 BarlineEngraver::BarlineEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                                  int iInstr)
     : Engraver(libraryScope, pScoreMeter, iInstr)
+    , m_pBarlineShape(nullptr)
 {
 }
 
 //---------------------------------------------------------------------------------------
 BarlineEngraver::BarlineEngraver(LibraryScope& libraryScope)
-    : Engraver(libraryScope, NULL)
+    : Engraver(libraryScope, nullptr)
+    , m_pBarlineShape(nullptr)
 {
     //constructor for dragged images
 }
@@ -101,7 +103,7 @@ GmoShape* BarlineEngraver::create_tool_dragged_shape(int barType)
     Color color(255,0,0);       //TODO: options/configuration
     ShapeId idx = 0;
 
-    m_pBarlineShape = LOMSE_NEW GmoShapeBarline(NULL, idx, barType, 0.0, 0.0, yBottom,
+    m_pBarlineShape = LOMSE_NEW GmoShapeBarline(nullptr, idx, barType, 0.0, 0.0, yBottom,
                                                 thinLineWidth, thickLineWidth, spacing,
                                                 radius, color, uMinWidth);
     return m_pBarlineShape;
@@ -112,7 +114,7 @@ UPoint BarlineEngraver::get_drag_offset()
 {
     //return left side, vertical center
     URect bounds = m_pBarlineShape->get_bounds();
-    return UPoint(0.0, bounds.get_height() / 2.0);
+    return UPoint(0.0f, bounds.get_height() / 2.0f);
 }
 
 

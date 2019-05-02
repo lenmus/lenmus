@@ -72,15 +72,15 @@ SUITE(AppTest)
     //        CHECK( pPaths->GetSrcRootPath() == _T("c:\\lenmus\\") );
     //        CHECK( pPaths->GetBinPath() == _T("c:\\lenmus\\bin\\") );
     //        CHECK( pPaths->GetXrcPath() == _T("c:\\lenmus\\xrc\\") );
-    //        CHECK( pPaths->GetTemporaryPath() == _T("c:\\lenmus\\temp\\") );
+    //        CHECK( pPaths->GetTemporaryPath() == _T("c:\\lenmus\    emp\\") );
     //        CHECK( pPaths->GetImagePath() == _T("c:\\lenmus\\res\\icons\\") );
     //        CHECK( pPaths->GetCursorsPath() == _T("c:\\lenmus\\res\\cursors\\") );
     //        CHECK( pPaths->GetSoundsPath() == _T("c:\\lenmus\\res\\sounds\\") );
     //        CHECK( pPaths->GetLocaleRootPath() == _T("c:\\lenmus\\locale\\") );
     //        CHECK( pPaths->GetScoresPath() == _T("c:\\lenmus\\scores\\") );
-    //        CHECK( pPaths->GetTestScoresPath() == _T("c:\\lenmus\\test-scores\\") );
+    //        CHECK( pPaths->GetTestScoresPath() == _T("c:\\lenmus\    est-scores\\") );
     //        CHECK( pPaths->GetSamplesPath() == _T("c:\\lenmus\\scores\\samples\\") );
-    //        CHECK( pPaths->GetTemplatesPath() == _T("c:\\lenmus\\templates\\") );
+    //        CHECK( pPaths->GetTemplatesPath() == _T("c:\\lenmus\    emplates\\") );
     //        #if (LENMUS_DEBUG_BUILD == 1)
     //            CHECK( pPaths->GetConfigPath() == _T("c:\\lenmus\\z_bin\\") );
     //        #else

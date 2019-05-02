@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2010-2015 LenMus project
+//    Copyright (c) 2010-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -29,12 +29,12 @@
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 #include <wx/dialog.h>
+#include <wx/bmpcbox.h>
 
 //other
 #include <ctime>   //clock
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 using namespace std;
-using namespace boost::posix_time;
 
 namespace lenmus
 {
@@ -48,37 +48,74 @@ protected:
     ApplicationScope& m_appScope;
     GlobalMetronome* m_pMtr;
     int m_tempo;
-    ptime m_prevTime;
+    int m_prevTempo;
+    chrono::time_point<chrono::high_resolution_clock> m_prevTime;
+    double m_totalTime;
+    int m_count;
+    double m_min;
+    double m_max;
 
-	wxChoice* m_pItalianTempo;
-	wxSlider* m_pTempoSlider;
-    wxStaticText* m_staticText8;
-    wxTextCtrl* m_pTempoDisplay;
-    wxButton* m_pIncrementButton;
-    wxButton* m_pDecrementButton;
-    wxButton* m_pTapButton;
-    wxButton* m_pStartButton;
 	wxArrayString m_italianTempoChoices;
+	wxArrayString m_beatNoteChoices;
+
+		wxStaticText* m_lblTempo;
+		wxTextCtrl* m_pTempoDisplay;
+
+		wxChoice* m_pItalianTempo;
+
+
+		wxSlider* m_pTempoSlider;
+
+
+		wxButton* m_pIncrementButton;
+		wxButton* m_pDecrementButton;
+
+		wxButton* m_pTapButton;
+
+		wxStaticText* m_lblCount;
+		wxStaticText* m_pTxtCount;
+
+		wxButton* m_pResetButton;
+
+		wxStaticText* m_lblMax;
+		wxStaticText* m_pTxtMax;
+		wxStaticText* m_lblMin;
+		wxStaticText* m_pTxtMin;
+
+		wxRadioButton* m_beatSelected;
+		wxRadioButton* m_beatImplied;
+		wxBitmapComboBox* m_beatNoteChoice;
+
+		wxButton* m_pStartButton;
+
+
 
 public:
 
     DlgMetronome(ApplicationScope& appScope, wxWindow* parent, GlobalMetronome* pMtr);
     ~DlgMetronome() {}
 
+    void load_current_values();
+
 protected:
     void create_dialog();
     void load_italian_tempi();
+    void load_beat_notes();
 
     void on_button(wxCommandEvent& event);
     void on_key_down(wxKeyEvent& event);
     void on_tempo_choice(wxCommandEvent& event);
     void on_update_number(wxCommandEvent& WXUNUSED(event));
     void on_tempo_slider(wxCommandEvent& WXUNUSED(event));
+    void on_beat_type(wxCommandEvent& WXUNUSED(event));
     void compute_tapped_tempo();
+    void reset_tapped_tempo();
     void increment_tempo();
     void decrement_tempo();
     void display_tempo();
     void set_tempo(int nMM);
+    void update_count_max_min();
+    void set_beat_options();
 
     wxDECLARE_EVENT_TABLE();
 };

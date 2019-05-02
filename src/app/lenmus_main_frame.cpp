@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,7 +46,7 @@
 #include "lenmus_dlg_metronome.h"
 #include "lenmus_help_system.h"
 #include "lenmus_actions.h"
-#if (LENMUS_DEBUG_BUILD == 1)
+#if (LENMUS_ENABLE_UNIT_TESTS == 1)
     #include "lenmus_test_runner.h"
     #include <UnitTest++.h>
 #endif
@@ -83,11 +83,6 @@ using namespace lomse;
 #ifdef __WXMAC__
 #include <wx/mac/printdlg.h>
 #endif
-
-//#if wxUSE_LIBGNOMEPRINT
-//#include <wx/html/forcelnk.h>
-//FORCE_LINK(gnome_print)
-//#endif
 
 
 namespace lenmus
@@ -211,29 +206,29 @@ enum
     k_menu_debug_draw_box_table_rows,
     k_menu_debug_remove_boxes,
     k_menu_debug_justify_systems,
+	k_menu_debug_spacing_parameters,
+    k_menu_debug_trace_lines_break,
     k_menu_debug_dump_column_tables,
-    k_menu_debug_ForceReleaseBehaviour,
-    k_menu_debug_ShowDebugLinks,
-    k_menu_debug_ShowBorderOnScores,
+    k_menu_debug_force_release_behaviour,
+    k_menu_debug_show_debug_links,
     k_menu_debug_draw_shape_bounds,
-    k_menu_debug_CheckHarmony,
-    k_menu_debug_draw_anchors,
-    k_menu_debug_DumpBitmaps,
+    k_menu_debug_draw_anchor_objects,
+    k_menu_debug_draw_anchor_lines,
 	k_menu_debug_dump_gmodel,
 	k_menu_debug_dump_imodel,
     k_menu_see_ldp_source,
     k_menu_see_checkpoint_data,
     k_menu_see_lmd_source,
+    k_menu_see_mnx_source,
     k_menu_debug_see_musicxml,
+    k_menu_see_spacing_data,
+    k_menu_debug_see_document_ids,
     k_menu_debug_see_midi_events,
     k_menu_debug_see_paths,
     k_menu_debug_see_staffobjs,
     k_menu_debug_see_cursor_state,
-    k_menu_debug_SetTraceLevel,
-    k_menu_debug_PatternEditor,
-    k_menu_debug_ShowDirtyObjects,
-    k_menu_debug_TestProcessor,
     k_menu_debug_print_preview,
+    k_menu_debug_test_api,
 
     // Menu Zoom
     k_menu_zoom_in,
@@ -273,6 +268,7 @@ enum
   // controls IDs
     k_id_combo_zoom,
     k_id_spin_metronome,
+    k_id_metronome_beat,
 
   // other IDs
     k_id_timer_metronome,
@@ -418,6 +414,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
 
         //debug events always enabled
+    EVT_MENU(k_menu_debug_test_api, MainFrame::on_debug_test_api)
     EVT_MENU(k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
     EVT_MENU(k_menu_debug_do_tests, MainFrame::on_do_tests)
     EVT_MENU(k_menu_debug_see_paths, MainFrame::on_see_paths)
@@ -436,37 +433,36 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(k_menu_debug_draw_box_table_rows, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_remove_boxes, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_justify_systems, MainFrame::on_debug_justify_systems)
-    EVT_MENU (k_menu_debug_ForceReleaseBehaviour, MainFrame::on_debug_force_release_behaviour)
-    EVT_MENU (k_menu_debug_ShowDebugLinks, MainFrame::on_debug_show_debug_links)
-//    EVT_MENU (k_menu_debug_ShowBorderOnScores, MainFrame::OnDebugShowBorderOnScores)
-//    EVT_MENU (k_menu_debug_SetTraceLevel, MainFrame::OnDebugSetTraceLevel)
-//    EVT_MENU (k_menu_debug_PatternEditor, MainFrame::OnDebugPatternEditor)
+    EVT_UPDATE_UI (k_menu_debug_justify_systems, MainFrame::on_update_UI_debug)
+    EVT_MENU(k_menu_debug_spacing_parameters, MainFrame::on_debug_spacing_parameters)
+    EVT_MENU(k_menu_debug_trace_lines_break, MainFrame::on_debug_trace_lines_break)
+    EVT_MENU (k_menu_debug_force_release_behaviour, MainFrame::on_debug_force_release_behaviour)
+    EVT_MENU (k_menu_debug_show_debug_links, MainFrame::on_debug_show_debug_links)
     EVT_MENU (k_menu_debug_draw_shape_bounds, MainFrame::on_debug_draw_shape_bounds)
-    EVT_MENU (k_menu_debug_draw_anchors, MainFrame::on_debug_draw_anchors)
-//    EVT_MENU (k_menu_debug_do_tests, MainFrame::OnDebugUnitTests)
-//    EVT_MENU (k_menu_debug_ShowDirtyObjects, MainFrame::OnDebugShowDirtyObjects)
+    EVT_MENU (k_menu_debug_draw_anchor_objects, MainFrame::on_debug_draw_anchor_objects)
+    EVT_MENU (k_menu_debug_draw_anchor_lines, MainFrame::on_debug_draw_anchor_lines)
 
         //debug events requiring a score to be enabled
     EVT_MENU      (k_menu_see_ldp_source, MainFrame::on_debug_see_ldp_source)
     EVT_UPDATE_UI (k_menu_see_ldp_source, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_see_lmd_source, MainFrame::on_debug_see_lmd_source)
     EVT_UPDATE_UI (k_menu_see_lmd_source, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_see_mnx_source, MainFrame::on_debug_see_mnx_source)
+    EVT_UPDATE_UI (k_menu_see_mnx_source, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_see_checkpoint_data, MainFrame::on_debug_see_checkpoint_data)
     EVT_UPDATE_UI (k_menu_see_checkpoint_data, MainFrame::on_update_UI_document)
 //    EVT_MENU      (k_menu_debug_see_musicxml, MainFrame::on_debug_see_musicxml)
     EVT_UPDATE_UI (k_menu_debug_see_musicxml, MainFrame::disable_tool)   //on_update_UI_document)
+    EVT_MENU      (k_menu_see_spacing_data, MainFrame::on_debug_see_spacing_data)
+    EVT_UPDATE_UI (k_menu_see_spacing_data, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_debug_see_document_ids, MainFrame::on_debug_see_document_ids)
+    EVT_UPDATE_UI (k_menu_debug_see_document_ids, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_debug_see_midi_events, MainFrame::on_debug_see_midi_events)
     EVT_UPDATE_UI (k_menu_debug_see_midi_events, MainFrame::on_update_UI_score)
     EVT_MENU      (k_menu_debug_see_staffobjs, MainFrame::on_debug_see_staffobjs)
     EVT_UPDATE_UI (k_menu_debug_see_staffobjs, MainFrame::on_update_UI_score)
     EVT_MENU      (k_menu_debug_see_cursor_state, MainFrame::on_debug_see_cursor_state)
     EVT_UPDATE_UI (k_menu_debug_see_cursor_state, MainFrame::on_update_UI_document)
-//    EVT_MENU      (k_menu_debug_DumpBitmaps, MainFrame::OnDebugDumpBitmaps)
-    EVT_UPDATE_UI (k_menu_debug_DumpBitmaps, MainFrame::disable_tool)   //on_update_UI_score)
-//    EVT_MENU      (k_menu_debug_CheckHarmony, MainFrame::OnDebugCheckHarmony)
-    EVT_UPDATE_UI (k_menu_debug_CheckHarmony, MainFrame::disable_tool)   //on_update_UI_score)
-//    EVT_MENU      (k_menu_debug_TestProcessor, MainFrame::OnDebugTestProcessor)
-    EVT_UPDATE_UI (k_menu_debug_TestProcessor, MainFrame::disable_tool)   //on_update_UI_score)
 
         //debug events requiring a document
     EVT_MENU      (k_menu_debug_dump_gmodel, MainFrame::on_debug_dump_gmodel)
@@ -481,6 +477,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SPINCTRL    (k_id_spin_metronome, MainFrame::on_metronome_update)
     EVT_TEXT        (k_id_spin_metronome, MainFrame::on_metronome_update_text)
     EVT_TIMER       (k_id_timer_metronome, MainFrame::on_metronome_timer)
+    EVT_COMBOBOX    (k_id_metronome_beat, MainFrame::on_metronome_beat)
 
     //other events
     EVT_TIMER   (k_id_caret_timer, MainFrame::on_caret_timer_event)
@@ -510,6 +507,8 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pWelcomeWnd(NULL)
     , m_pConsole(NULL)
     , m_pVirtualKeyboard(NULL)
+    , m_pSpacingParamsDlg(NULL)
+    , m_pMetronomeDlg(nullptr)
     , m_pToolbar(NULL)
     , m_pTbFile(NULL)
     , m_pTbEdit(NULL)
@@ -528,6 +527,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     create_menu();
     show_status_bar_if_user_preferences();
     set_lomse_callbacks();
+    load_global_options();
 
 #if 0   //chage to '1' to automatically, run tests on start
     wxCommandEvent event;
@@ -576,6 +576,14 @@ MainFrame::~MainFrame()
     ScorePlayer* pPlayer = m_appScope.get_score_player();
     if (pPlayer->is_playing())
         pPlayer->quit();
+
+    //ensure the spacing dialog is destroyed
+    if (m_pSpacingParamsDlg)
+        m_pSpacingParamsDlg->Destroy();
+
+    //ensure the metronome dialog is destroyed
+    if (m_pMetronomeDlg)
+        m_pMetronomeDlg->Destroy();
 
     // deinitialize the layout manager
     m_layoutManager.UnInit();
@@ -636,8 +644,8 @@ void MainFrame::save_preferences()
 //        pDocManager->SaveRecentFiles();
 
         Paths* pPaths = m_appScope.get_paths();
-        LOMSE_LOG_INFO(to_std_string(wxString::Format("Saving preferences at '%s'",
-                                     pPaths->GetConfigPath().wx_str() )));
+        LOMSE_LOG_INFO("Saving preferences at '%s'",
+                       pPaths->GetConfigPath().ToStdString().c_str() );
 
         // save the frame size and position
         wxSize wndSize = GetSize();
@@ -663,6 +671,26 @@ void MainFrame::save_preferences()
         //problems in Linux and this solved it.
         pPrefs->Flush();
    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::load_global_options()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    double width;
+    pPrefs->Read("/Playback/TempoLineWidth", &width, 1.5);
+    m_appScope.set_tempo_line_width( LUnits(width * 100.0) );
+
+    int mode = 0;
+    bool fValue;
+    pPrefs->Read("/Playback/HighlightMode", &fValue, true);
+    if (fValue)
+        mode |= k_tracking_highlight_notes;
+    pPrefs->Read("/Playback/TempoLineMode", &fValue, false);
+    if (fValue)
+        mode |= k_tracking_tempo_line;
+    m_appScope.set_visual_tracking_mode(mode);
 }
 
 //---------------------------------------------------------------------------------------
@@ -833,37 +861,37 @@ void MainFrame::create_menu()
     // in English
     m_dbgMenu = NULL;
 
-    LOMSE_LOG_INFO(str(boost::format("LENMUS_DEBUG_BUILD = %d") % LENMUS_DEBUG_BUILD));
-    LOMSE_LOG_INFO(str(boost::format("LENMUS_RELEASE_INSTALL = %d") % LENMUS_RELEASE_INSTALL));
+    LOMSE_LOG_INFO("LENMUS_DEBUG_BUILD = %d", LENMUS_DEBUG_BUILD);
+    LOMSE_LOG_INFO("LENMUS_RELEASE_INSTALL = %d", LENMUS_RELEASE_INSTALL);
 
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     m_dbgMenu = LENMUS_NEW wxMenu;
 
     create_menu_item(m_dbgMenu, k_menu_debug_do_tests, "Run unit tests");
     create_menu_item(m_dbgMenu, k_menu_debug_see_paths, "See paths" );
-    m_dbgMenu->AppendSeparator();
+    create_menu_item(m_dbgMenu, k_menu_debug_test_api, "Run low level API test");
 
+    m_dbgMenu->AppendSeparator();   //Spacing and justification -------------------------
     create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, "Justify systems",
                     "", wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_spacing_parameters, "Spacing parameters",
+                    "", wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_see_spacing_data, "See spacing data" );
     create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, "Trace column tables",
                     "", wxITEM_CHECK);
-    create_menu_item(m_dbgMenu, k_menu_debug_ForceReleaseBehaviour, "Release Behaviour",
+    create_menu_item(m_dbgMenu, k_menu_debug_trace_lines_break, "Trace lines breaker" );
+
+    m_dbgMenu->AppendSeparator();   //Miscellaneous -------------------------------------
+    create_menu_item(m_dbgMenu, k_menu_debug_force_release_behaviour, "Release Behaviour",
         "Force release behaviour for certain functions", wxITEM_CHECK);
-    create_menu_item(m_dbgMenu, k_menu_debug_DumpBitmaps, "Save offscreen bitmaps" );
-    create_menu_item(m_dbgMenu, k_menu_debug_CheckHarmony, "Check harmony" );
-    create_menu_item(m_dbgMenu, k_menu_debug_TestProcessor, "Run test processor" );
     create_menu_item(m_dbgMenu, k_menu_debug_print_preview, "Print Preview",
                     "", wxITEM_NORMAL);
 
-    m_dbgMenu->AppendSeparator();   //draw marks
-    create_menu_item(m_dbgMenu, k_menu_debug_ShowDebugLinks, "Include debug links",
+    m_dbgMenu->AppendSeparator();   //Draw marks ----------------------------------------
+    create_menu_item(m_dbgMenu, k_menu_debug_show_debug_links, "Include debug links",
         "Include debug controls in exercises", wxITEM_CHECK);
-    //create_menu_item(m_dbgMenu, k_menu_debug_ShowBorderOnScores, "Border on ScoreAuxCtrol",
-    //    "Show border on ScoreAuxCtrol", wxITEM_CHECK);
     create_menu_item(m_dbgMenu, k_menu_debug_draw_shape_bounds, "Draw shape bounds",
         "Force to draw bound rectangles around selected shapes", wxITEM_CHECK);
-    //create_menu_item(m_dbgMenu, k_menu_debug_SetTraceLevel, "Set trace level ..." );
-    //create_menu_item(m_dbgMenu, k_menu_debug_PatternEditor, "Test Pattern Editor" );
 
     //-- Draw bounds submenu --
     wxMenu* pSubmenuDrawBox = LENMUS_NEW wxMenu;
@@ -887,24 +915,23 @@ void MainFrame::create_menu()
                     "Force to draw box rectangles", wxITEM_NORMAL, pSubmenuDrawBox);
     m_dbgMenu->Append(pItem);
 
-    //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, "Draw bounds",
-    //    "Force to draw bound rectangles around staff objects", wxITEM_CHECK);
-    create_menu_item(m_dbgMenu, k_menu_debug_draw_anchors, "Draw anchors",
+    create_menu_item(m_dbgMenu, k_menu_debug_draw_anchor_objects, "Draw anchor objects",
         "Draw a red line to show anchor objects", wxITEM_CHECK);
-    //create_menu_item(m_dbgMenu, k_menu_debug_ShowDirtyObjects, "Show dirty objects",
-    //    "Render 'dirty' objects in red colour", wxITEM_CHECK);
-
-    m_dbgMenu->AppendSeparator();   //dump tables
+    create_menu_item(m_dbgMenu, k_menu_debug_draw_anchor_lines, "Draw anchor lines",
+        "Draw a red line to show anchor line position", wxITEM_CHECK);
+    m_dbgMenu->AppendSeparator();   //dump tables ---------------------------------------
     create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, "See staffobjs table" );
+    create_menu_item(m_dbgMenu, k_menu_debug_see_document_ids, "See document ids" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, "See MIDI events" );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, "See graphical model" );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_imodel, "See internal model" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_cursor_state, "See cursor state");
 
-    m_dbgMenu->AppendSeparator();   //exporters
+    m_dbgMenu->AppendSeparator();   //exporters -----------------------------------------
     create_menu_item(m_dbgMenu, k_menu_see_ldp_source, "See LDP source" );
     create_menu_item(m_dbgMenu, k_menu_see_checkpoint_data, "See checkpoint data" );
     create_menu_item(m_dbgMenu, k_menu_see_lmd_source, "See LMD source" );
+    create_menu_item(m_dbgMenu, k_menu_see_mnx_source, "See MNX source" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_musicxml, "See XML" );
 #endif
 
@@ -1035,9 +1062,9 @@ void MainFrame::create_menu()
 
     //debug toolbar
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-    pMenuBar->Check(k_menu_debug_ForceReleaseBehaviour,
+    pMenuBar->Check(k_menu_debug_force_release_behaviour,
                     m_appScope.is_release_behaviour());
-    pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
+    pMenuBar->Check(k_menu_debug_show_debug_links, m_appScope.show_debug_links());
 #endif
 
     // do count off
@@ -1166,7 +1193,8 @@ void MainFrame::on_file_new(wxCommandEvent& WXUNUSED(event))
 {
     LomseDoorway& lib = m_appScope.get_lomse();
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    loader.create_canvas_and_new_document(ViewFactory::k_view_vertical_book);
+    loader.create_canvas_and_new_document(k_view_vertical_book);
+    //loader.create_canvas_and_new_document(k_view_single_system);
 
     //enable edition
     m_editMenu->Check(k_menu_edit_enable_edition, true);
@@ -1195,11 +1223,13 @@ void MainFrame::open_file()
     wxString sFilter = "All supported files";
     if (m_appScope.are_experimental_features_enabled())
     {
-        sFilter += "|*.lms;*.lmb;*.lmd;*.xml; *.mxl|";
+        sFilter += "|*.lms;*.lmb;*.lmd;*.xml;*.mxl;*.musicxml;*.mnx|";
         sFilter += _("LenMus files");
         sFilter += "|*.lms;*.lmb;*.lmd|";
         sFilter += _("MusicXML files");
-        sFilter += "|*.xml; *.mxl";
+        sFilter += "|*.xml;*.mxl;*.musicxml|";
+        sFilter += _("MNX files");
+        sFilter += "|*.mnx";
     }
     else
     {
@@ -1238,18 +1268,12 @@ void MainFrame::on_open_book(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_file_reload(wxCommandEvent& WXUNUSED(event))
 {
-    //AWARE: File > Reload is only enabled for simple documents, not for eBooks
-
-#if 0       //0 = old code. Opens a new tab and document but old tab is not deleted
-            //              Valid for any kind of document (simple or book)
-    load_file(m_lastOpenFile);
-#else
     //TODO: viewType is harcoded here and in other places. Refactor
-    int viewType = ViewFactory::k_view_vertical_book;
+    //int viewType = k_view_single_system;
+    int viewType = k_view_vertical_book;
     DocumentWindow* pWnd = dynamic_cast<DocumentWindow*>( get_active_canvas() );
     if (pWnd)
-        pWnd->display_document(m_lastOpenFile, viewType);
-#endif
+        pWnd->display_document(to_std_string(pWnd->get_full_filename()), viewType); //m_lastOpenFile, viewType);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1262,7 +1286,8 @@ void MainFrame::load_file(const string& filename)
 
     //create canvas and show document
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    int viewType = ViewFactory::k_view_vertical_book;
+    //int viewType = k_view_single_system;
+    int viewType = k_view_vertical_book;
     loader.create_canvas(filename, viewType);
     m_lastOpenFile = filename;
 
@@ -1349,13 +1374,27 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
 
     switch (pEvent->get_event_type())
     {
-        case k_highlight_event:
+        case k_tracking_event:
         {
             if (pCanvas)
             {
-                SpEventScoreHighlight pEv(
-                    static_pointer_cast<EventScoreHighlight>(pEvent) );
-                lmScoreHighlightEvent event(pEv);
+                LOMSE_LOG_DEBUG(Logger::k_score_player, "Visual tracking event");
+                SpEventVisualTracking pEv(
+                    static_pointer_cast<EventVisualTracking>(pEvent) );
+                lmVisualTrackingEvent event(pEv);
+                ::wxPostEvent(pCanvas, event);
+            }
+            break;
+        }
+
+        case k_update_viewport_event:
+        {
+            if (pCanvas)
+            {
+                LOMSE_LOG_DEBUG(Logger::k_score_player, "Update viewport event");
+                SpEventUpdateViewport pEv(
+                    static_pointer_cast<EventUpdateViewport>(pEvent) );
+                lmUpdateViewportEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
             break;
@@ -1365,19 +1404,19 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventPlayScore pEv( static_pointer_cast<EventPlayScore>(pEvent) );
+                SpEventEndOfPlayback pEv( static_pointer_cast<EventEndOfPlayback>(pEvent) );
                 lmEndOfPlaybackEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
             break;
         }
 
-        case k_on_click_event:
+        case k_link_clicked_event:
         {
-            //AWARE: Only clicks on ImoLink objects arrive here. They are directly
-            //sent here by Interactor::find_parent_link_box_and_notify_event()
-            //For receiving clicks on other objects you must subscribe to the
-            // on_click_event for Document. See DocumentCanvas.
+            //AWARE: Only clicks on ImoLink objects arrive here (ImoLink objects
+            //are only generated by <link> tags in LMD files). Hyperlink controls
+            //for exercises are associated to ImoControl objects and their events
+            //must be handled by registering at the Document.
             DocumentFrame* pFrame = get_active_document_frame();
             if (pFrame)
                 pFrame->on_hyperlink_event(pEvent);
@@ -1435,7 +1474,7 @@ void MainFrame::on_lomse_request(Request* pRequest)
             break;
 
         default:
-            LOMSE_LOG_ERROR(str(boost::format("Unknown request %d") % type));
+            LOMSE_LOG_ERROR("Unknown request %d", type);
     }
 }
 
@@ -1634,6 +1673,8 @@ void MainFrame::update_toolbars_layout()
     {
 		delete_toolbars();
 		create_toolbars();
+		wxSizeEvent event;  //initialization does not matter. It is not used
+		on_size(event);
 	}
 }
 
@@ -1797,46 +1838,36 @@ void MainFrame::create_toolbars()
     //Metronome toolbar
     m_pTbMtr = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbMtr->SetToolBitmapSize(nSize);
+        //metronome on/off button
     m_pTbMtr->AddTool(k_menu_metronome, "Metronome",
         wxArtProvider::GetBitmap("tool_metronome",
         wxART_TOOLBAR, nSize), _("Turn metronome on/off"),
         wxITEM_CHECK);
+        //metronome tempo
     m_pSpinMetronome = LENMUS_NEW wxSpinCtrl(m_pTbMtr, k_id_spin_metronome, "", wxDefaultPosition,
-        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
+        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 1, 400);
     m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
     m_pTbMtr->AddControl(m_pSpinMetronome);
+        //metronome beat
+	m_pBeatNoteChoice = LENMUS_NEW
+        wxBitmapComboBox(m_pTbMtr, k_id_metronome_beat, wxEmptyString,
+                         wxDefaultPosition, wxSize(60, -1),
+                         0, nullptr, wxCB_READONLY);
+	load_metronome_beat_notes(nSize);
+    m_pTbMtr->AddControl(m_pBeatNoteChoice);
     m_pTbMtr->Realize();
 
-    //compute best size for metronome toolbar
-    wxSize sizeSpin = m_pSpinMetronome->GetSize();
-    wxSize sizeButton = m_pTbMtr->GetToolSize();
-    wxSize sizeBest(sizeButton.GetWidth() + sizeSpin.GetWidth() +
-                        m_pTbMtr->GetToolSeparation() + 50,
-                    wxMax(sizeSpin.GetHeight(), sizeButton.GetHeight()));
-
-    //compute best size for zoom toolbar
-    wxSize sizeCombo = m_pComboZoom->GetSize();
-    sizeButton = m_pTbZoom->GetToolSize();
-    wxSize sizeZoomTb(5 * (sizeButton.GetWidth() + m_pTbZoom->GetToolSeparation()) +
-                      sizeCombo.GetWidth() +
-                      m_pTbZoom->GetToolSeparation() + 10,
-                      wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
     // add the toolbars to the manager
-    const int ROW_1 = 0;
-    //const int ROW_2 = 1;
 #if (LENMUS_PLATFORM_UNIX == 1)
     //In gtk reverse creation order
-        // row 1
-//    CreateTextBooksToolBar(style, nSize, ROW_1);
-
     m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name("Metronome").Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name("play").Caption(_("play tools")).
-                ToolbarPane().Top().Row(ROW_1).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                 Name("toolbar").Caption(_("Main tools")).
@@ -1844,7 +1875,7 @@ void MainFrame::create_toolbars()
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbZoom, wxAuiPaneInfo().
                 Name("Zooming tools").Caption(_("Zooming tools")).
-                ToolbarPane().Top().BestSize( sizeZoomTb ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbEdit, wxAuiPaneInfo().
                 Name("Edit tools").Caption(_("Edit tools")).
@@ -1867,7 +1898,7 @@ void MainFrame::create_toolbars()
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbZoom, wxAuiPaneInfo().
                 Name("Zooming tools").Caption(_("Zooming tools")).
-                ToolbarPane().Top().BestSize( sizeZoomTb ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                 Name("toolbar").Caption(_("Main tools")).
@@ -1875,20 +1906,53 @@ void MainFrame::create_toolbars()
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name("play").Caption(_("play tools")).
-                ToolbarPane().Top().Row(ROW_1).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name("Metronome").Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
-
-//    CreateTextBooksToolBar(style, nSize, ROW_1);
 
 #endif
 
     // tell the manager to "commit" all the changes just made
     m_layoutManager.Update();
 }
+//---------------------------------------------------------------------------------------
+void MainFrame::load_metronome_beat_notes(wxSize nSize)
+{
+    m_pBeatNoteChoice->Clear();
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_ts",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_whole",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_half_dotted",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_half",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_quarter_dotted",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_quarter",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_eighth_dotted",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_eighth",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_sexteenth",
+                                 wxART_TOOLBAR, nSize) );
+
+    m_pBeatNoteChoice->SetSelection(0);
+}
+
 
 //---------------------------------------------------------------------------------------
 void MainFrame::delete_toolbars()
@@ -2233,8 +2297,16 @@ void MainFrame::show_welcome_window()
 //---------------------------------------------------------------------------------------
 void MainFrame::on_open_recent_file(wxCommandEvent &event)
 {
-    wxString sFile = m_fileHistory.GetHistoryFile(event.GetId() - wxID_FILE1);
-    load_file( to_std_string(sFile) );
+    int iFile = event.GetId() - wxID_FILE1;
+    wxString sFile = m_fileHistory.GetHistoryFile(iFile);
+    if (wxFile::Exists(sFile))
+        load_file( to_std_string(sFile) );
+    else
+    {
+        wxMessageBox(wxString::Format(_("File '%s' not found."), sFile.wx_str()),
+                     _("Error message"), wxOK || wxICON_HAND );
+        m_fileHistory.RemoveFileFromHistory(iFile);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -2367,8 +2439,11 @@ void MainFrame::on_open_books(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
 {
-    DlgMetronome dlg(m_appScope, this, m_pMtr);
-    dlg.ShowModal();
+    if (!m_pMetronomeDlg)
+        m_pMetronomeDlg = new DlgMetronome(m_appScope, this, m_pMtr);
+
+    m_pMetronomeDlg->load_current_values();
+    m_pMetronomeDlg->Show();
 }
 
 
@@ -2381,8 +2456,12 @@ void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_do_tests(wxCommandEvent& WXUNUSED(event))
 {
-    MyTestRunner oTR(this);
-    oTR.RunTests();
+    #if (LENMUS_ENABLE_UNIT_TESTS == 1)
+        MyTestRunner oTR(this);
+        oTR.RunTests();
+    #else
+        wxMessageBox("Unit tests are no included in the build!");
+    #endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -2458,6 +2537,45 @@ void MainFrame::on_debug_justify_systems(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_debug_spacing_parameters(wxCommandEvent& event)
+{
+    bool fShow = GetMenuBar()->IsChecked(event.GetId());
+
+    if (fShow)
+    {
+        if (!m_pSpacingParamsDlg)
+        {
+            LomseDoorway& lib = m_appScope.get_lomse();
+            LibraryScope* pScope = lib.get_library_scope();
+            float force = pScope->get_optimum_force();
+            float alpha = pScope->get_spacing_alpha();
+            float dmin =  pScope->get_spacing_dmin();
+
+            m_pSpacingParamsDlg = LENMUS_NEW DlgSpacingParams(this, force, alpha, dmin);
+        }
+
+        m_pSpacingParamsDlg->Show(true);
+    }
+    else // hide
+    {
+        if (m_pSpacingParamsDlg)
+            m_pSpacingParamsDlg->Hide();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_trace_lines_break(wxCommandEvent& UNUSED(event))
+{
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    int level = k_trace_breaks_table            //dump of final breaks table
+                | k_trace_breaks_computation    //trace computation of breaks
+                | k_trace_breaks_penalties;     //trace penalties computation
+
+    pScope->set_trace_level_for_lines_breaker(level);
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
 {
     bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_dump_column_tables);
@@ -2471,6 +2589,22 @@ void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
         pCanvas->on_document_updated();
 
     wxMessageBox("Tables are saved in file lomse-log.txt, in the same folder than this project");
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_spacing_data(wxCommandEvent& WXUNUSED(event))
+{
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_dump_column_tables(true);
+
+    //force to redraw current document
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
+
+    wxMessageBox("Tables are saved in file lomse-log.txt, in the same folder than this project");
+    pScope->set_dump_column_tables(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2512,34 +2646,28 @@ void MainFrame::on_debug_draw_shape_bounds(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_draw_anchors(wxCommandEvent& event)
+void MainFrame::on_debug_draw_anchor_objects(wxCommandEvent& event)
 {
-    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_anchors);
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_anchor_objects);
     LomseDoorway& lib = m_appScope.get_lomse();
     LibraryScope* pScope = lib.get_library_scope();
-    pScope->set_draw_anchors(fChecked);
+    pScope->set_draw_anchor_objecs(fChecked);
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
         pCanvas->on_document_updated();
 }
 
-//void MainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmDlgPatternEditor dlg(this);
-//    dlg.ShowModal();
-//
-//}
-//
-//void MainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
-//{
-//    // get the view
-//    lmTDIChildFrame* pChild = GetActiveChild();
-//	wxASSERT(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-//    lmScoreView* pView = ((lmEditFrame*)pChild)->GetView();
-//
-//    pView->DumpBitmaps();
-//}
-
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_draw_anchor_lines(wxCommandEvent& event)
+{
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_anchor_lines);
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_draw_anchor_lines(fChecked);
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
+}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event))
@@ -2570,22 +2698,6 @@ void MainFrame::on_debug_dump_imodel(wxCommandEvent& WXUNUSED(event))
         pCanvas->debug_dump_internal_model();
 }
 
-//void MainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
-//    lmHarmonyProcessor* pProc =
-//        (lmHarmonyProcessor*)pMngr->CreateScoreProcessor( CLASSINFO(lmHarmonyProcessor) );
-//    pProc->DoProcess();
-//}
-//
-//void MainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
-//    lmTestProcessor* pProc =
-//        (lmTestProcessor*)pMngr->CreateScoreProcessor( CLASSINFO(lmTestProcessor) );
-//    pProc->DoProcess();
-//}
-
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event))
 {
@@ -2603,6 +2715,14 @@ void MainFrame::on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_mnx_source(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_display_mnx_source();
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
@@ -2617,27 +2737,6 @@ void MainFrame::on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event))
     if (pCanvas)
         pCanvas->debug_display_cursor_state();
 }
-
-//void MainFrame::on_debug_see_musicxml(wxCommandEvent& event)
-//{
-//    ImoScore* pScore = get_active_score();
-//    wxASSERT(pScore);
-//
-//    DlgDebug dlg(this, "Generated MusicXML code", pScore->SourceXML());
-//    dlg.ShowModal();
-//
-//}
-//
-//void MainFrame::OnDebugUnitTests(wxCommandEvent& event)
-//{
-//    RunUnitTests();
-//}
-//
-//void MainFrame::RunUnitTests()
-//{
-//    lmTestRunner oTR(this);
-//    oTR.RunTests();
-//}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event))
@@ -2668,11 +2767,27 @@ void MainFrame::on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_document_ids(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_display_document_ids();
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_see_paths(wxCommandEvent& WXUNUSED(event))
 {
     Paths* pPaths = m_appScope.get_paths();
     DlgDebug dlg(this, "Paths", to_wx_string(pPaths->dump_paths()) );
     dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_test_api(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_do_api_test();
 }
 
 //---------------------------------------------------------------------------------------
@@ -2703,15 +2818,39 @@ void MainFrame::on_debug_print_preview(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-////----------------------------------------------------------------------------------
-//void MainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmDlgDebugTrace dlg(this);
-//    dlg.ShowModal();
-//}
+//---------------------------------------------------------------------------------------
+void MainFrame::on_update_UI_debug(wxUpdateUIEvent &event)
+{
+    switch (event.GetId())
+    {
+		case k_menu_debug_justify_systems:
+        {
+            LomseDoorway& lib = m_appScope.get_lomse();
+            LibraryScope* pScope = lib.get_library_scope();
+            event.Check(pScope->justify_systems());
+			break;
+        }
+        default:
+            ;
+    }
+    event.Enable(true);
+}
 
 #endif   // END OF METHODS INCLUDED ONLY IN DEBUG BUILD ---------------------------------
 
+
+//---------------------------------------------------------------------------------------
+void MainFrame::update_spacing_params(float force, float alpha, float dmin)
+{
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_optimum_force(force);
+    pScope->set_spacing_alpha(alpha);
+    pScope->set_spacing_dmin(dmin);
+
+    wxCommandEvent event;   //not used
+    on_file_reload(event);
+}
 
 //----------------------------------------------------------------------------------
 void MainFrame::on_view_console(wxCommandEvent& WXUNUSED(event))
@@ -3350,7 +3489,7 @@ void MainFrame::set_toolbox_for_active_page()
     if (fToolBoxVisible && (fChangeState || pCanvas != pPrevCanvas))
     {
         //Need to do this here. When trying to do it in on_active_page_changed() the
-        //toolbox forces a relayout ant it forces to select back the old page.
+        //toolbox forces a relayout and it forces to select back the old page.
         pPrevCanvas = pCanvas;
         restore_toolbox_for(pCanvas);
     }
@@ -3584,10 +3723,18 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
     switch (event.GetId())
     {
 		case k_menu_metronome:
+        {
 			event.Enable(true);
 			event.Check(m_pMtr->is_running());
             m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
+            int beatType = m_pMtr->get_beat_type();
+            if (beatType == k_beat_implied)
+                m_pBeatNoteChoice->SetSelection(0);     //TS
+            else
+                update_metronome_beat();
+            m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
 			break;
+        }
 
         case k_menu_play_start:
         {
@@ -3610,6 +3757,32 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
             // Other items: only enabled if a score is displayed
             event.Enable( pScore != NULL );
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::update_metronome_beat()
+{
+    TimeUnits duration = m_pMtr->get_beat_duration();
+    int sel;
+    if (is_equal_time(duration, TimeUnits(k_duration_whole)))
+        sel = 1;
+    else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
+        sel = 2;
+    else if(is_equal_time(duration, TimeUnits(k_duration_half)))
+        sel = 3;
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
+        sel = 4;
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
+        sel = 5;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
+        sel = 6;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+        sel = 7;
+    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+        sel = 8;
+    else
+        sel = 5;    //quarter;
+    m_pBeatNoteChoice->SetSelection(sel);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3742,14 +3915,40 @@ void MainFrame::on_metronome_timer(wxTimerEvent& event)
 void MainFrame::on_metronome_update(wxSpinEvent& WXUNUSED(event))
 {
     int nMM = m_pSpinMetronome->GetValue();
-    if (m_pMtr) m_pMtr->set_mm(nMM);
+    if (m_pMtr)
+        m_pMtr->set_mm(nMM);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_metronome_beat(wxCommandEvent& WXUNUSED(event))
+{
+    TimeUnits duration = k_duration_quarter;
+    int beat = m_pBeatNoteChoice->GetSelection();
+    switch(beat)
+    {
+        case 0: duration = k_duration_quarter;          break;  //TS
+        case 1: duration = k_duration_whole;            break;
+        case 2: duration = k_duration_half_dotted;      break;
+        case 3: duration = k_duration_half;             break;
+        case 4: duration = k_duration_quarter_dotted;   break;
+        case 5: duration = k_duration_quarter;          break;
+        case 6: duration = k_duration_eighth_dotted;    break;
+        case 7: duration = k_duration_eighth;           break;
+        case 8: duration = k_duration_16th;             break;
+        default:
+            duration = k_duration_quarter;
+    }
+
+    int beatType = (beat == 0 ? k_beat_implied : k_beat_specified);
+    m_pMtr->set_beat_type(beatType, duration);
 }
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_metronome_update_text(wxCommandEvent& WXUNUSED(event))
 {
     int nMM = m_pSpinMetronome->GetValue();
-    if (m_pMtr) m_pMtr->set_mm(nMM);
+    if (m_pMtr)
+        m_pMtr->set_mm(nMM);
 }
 
 //void MainFrame::OnViewPageMargins(wxCommandEvent& event)
@@ -3793,7 +3992,7 @@ void MainFrame::on_update_UI_view_toc(wxUpdateUIEvent& event)
     }
     else
     {
-        event.Enable(pFrame != NULL);
+        event.Enable(false);
         event.Check(false);
     }
 }

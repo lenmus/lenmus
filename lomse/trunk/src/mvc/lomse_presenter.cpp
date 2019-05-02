@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -58,13 +58,19 @@ public:
         if (length < 5)
             return Document::k_format_unknown;
 
-        string ext = fullpath.substr(length - 4);
-        if (ext == ".lms")
+        size_t i = fullpath.rfind('.', length);
+        if (i == string::npos)
+            return Document::k_format_unknown;
+
+        string ext = fullpath.substr(i+1, length - i);
+        if (ext == "lms")
             return Document::k_format_ldp;
-        else if (ext == ".lmd")
+        else if (ext == "lmd")
             return Document::k_format_lmd;
-        else if (ext == ".xml")
+        else if (ext == "xml" || ext == "musicxml")
             return Document::k_format_mxl;
+        else if (ext == "mnx")
+            return Document::k_format_mnx;
         else
             return Document::k_format_unknown;
     }
@@ -125,9 +131,9 @@ Presenter* PresenterBuilder::open_document(int viewType, LdpReader& reader,
 //=======================================================================================
 Presenter::Presenter(SpDocument spDoc, Interactor* pIntor, DocCommandExecuter* pExec)
     : m_spDoc(spDoc)
-    , m_userData(NULL)
+    , m_userData(nullptr)
     , m_pExec(pExec)
-    , m_callback(NULL)
+    , m_callback(nullptr)
 {
     m_interactors.push_back( SpInteractor(pIntor) );
     m_spDoc->add_event_handler(k_doc_modified_event, pIntor);
@@ -147,7 +153,7 @@ SpInteractor Presenter::get_interactor_shared_ptr(int iIntor)
     std::list<SpInteractor>::iterator it;
     int i = 0;
     for (it=m_interactors.begin(); it != m_interactors.end() && i != iIntor; ++it, ++i);
-    if (i == iIntor)
+    if (i == iIntor && it != m_interactors.end())
         return *it;
     else
     {

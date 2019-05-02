@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -49,8 +49,9 @@ class ImoFontStyleDto;
 class ImoInlineLevelObj;
 class ImoInstrGroup;
 class ImoInstrument;
+class ImoSoundInfo;
 class ImoListItem;
-class ImoMidiInfo;
+class ImoSoundInfo;
 class ImoObj;
 class ImoOptionInfo;
 class ImoPageInfo;
@@ -59,6 +60,7 @@ class ImoRelObj;
 class ImoScore;
 class ImoScoreText;
 class ImoScoreTitle;
+class ImoSoundChange;
 class ImoStaffInfo;
 class ImoStaffObj;
 class ImoStyle;
@@ -78,7 +80,12 @@ protected:
     int m_ldpChildType;
 
 public:
-    Linker(Document* pDoc) : m_pDoc(pDoc) {}
+    Linker(Document* pDoc)
+        : m_pDoc(pDoc)
+        , m_pParent(nullptr)
+        , m_ldpChildType(0)
+    {
+    }
     ~Linker() {}
 
     ImoObj* add_child_to_model(ImoObj* pParent, ImoObj* pChild, int ldpChildType);
@@ -92,7 +99,8 @@ protected:
     ImoObj* add_bezier(ImoBezierInfo* pBezier);
     ImoObj* add_cursor(ImoCursorInfo* pCursor);
     ImoObj* add_listitem(ImoListItem* pItem);
-    ImoObj* add_midi_info(ImoMidiInfo* pInfo);
+    ImoObj* add_sound_change(ImoSoundChange* pInfo);
+    ImoObj* add_sound_info(ImoSoundInfo* pInfo);
     ImoObj* add_param_info(ImoParamInfo* pParam);
     ImoObj* add_staff_info(ImoStaffInfo* pInfo);
     ImoObj* add_instrument(ImoInstrument* pInstrument);

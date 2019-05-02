@@ -72,7 +72,7 @@ protected:
         , m_pParent(pParent)
         , m_ownerImoId(k_no_imoid)
         , m_language()
-        , m_style(NULL)
+        , m_style(nullptr)
         , m_fEnabled(true)
         , m_fVisible(true)
         , m_id(k_no_imoid)
@@ -80,7 +80,7 @@ protected:
         pDoc->assign_id(this);
 
         //default language
-        ImoDocument* pImoDoc = m_pDoc->get_imodoc();
+        ImoDocument* pImoDoc = m_pDoc->get_im_root();
         m_language = pImoDoc->get_language();
     }
 
@@ -159,7 +159,7 @@ public:
         else if (m_pParent)
             return m_pParent->get_owner_imo();
         else
-            return NULL;
+            return nullptr;
     }
 
     //setters
@@ -184,7 +184,7 @@ protected:
 //        string fontName = m_style->font_name();
 //
 //        //get document language
-//        ImoDocument* pImoDoc = m_pDoc->get_imodoc();
+//        ImoDocument* pImoDoc = m_pDoc->get_im_root();
 //        if (pImoDoc)    //AWARE: in untit tests there could be no ImoDoc
 //            language = pImoDoc->get_language();
 //

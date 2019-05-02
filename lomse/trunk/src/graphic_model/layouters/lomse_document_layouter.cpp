@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -31,15 +31,11 @@
 
 #include "lomse_graphical_model.h"
 #include "lomse_gm_basic.h"
-#include "lomse_internal_model.h"
+#include "lomse_document.h"
 #include "lomse_layouter.h"
 #include "lomse_score_layouter.h"
 #include "lomse_calligrapher.h"
 
-////remove warning for using 'this' in constructor
-//#if (LOMSE_COMPILER_MSVC == 1)
-//#pragma warning(disable:4355)
-//#endif
 
 namespace lomse
 {
@@ -52,13 +48,16 @@ namespace lomse
 //  delegates in specialized layouters.
 //---------------------------------------------------------------------------------------
 
-DocLayouter::DocLayouter(InternalModel* pIModel, LibraryScope& libraryScope)
+DocLayouter::DocLayouter(Document* pDoc, LibraryScope& libraryScope, int constrains)
     : Layouter(libraryScope)
-    , m_pScoreLayouter(NULL)
+    , m_pScoreLayouter(nullptr)
 {
-    m_pDoc = dynamic_cast<ImoDocument*>( pIModel->get_root() );
+    m_pDoc = pDoc->get_im_root();
     m_pStyles = m_pDoc->get_styles();
     m_pGModel = LOMSE_NEW GraphicModel();
+    m_pageWidth = pDoc->get_paper_width();
+    m_pageHeight = pDoc->get_paper_height();
+    m_constrains = constrains;
 }
 
 //---------------------------------------------------------------------------------------
@@ -68,10 +67,18 @@ DocLayouter::~DocLayouter()
 }
 
 //---------------------------------------------------------------------------------------
+void DocLayouter::layout_empty_document()
+{
+    GmoBoxDocPage* pPage = create_document_page();
+    m_pItemMainBox = pPage;
+}
+
+//---------------------------------------------------------------------------------------
 void DocLayouter::layout_document()
 {
     start_new_page();
     layout_content();
+    fix_document_size();
 }
 
 //---------------------------------------------------------------------------------------
@@ -98,8 +105,11 @@ GmoBoxDocPage* DocLayouter::create_document_page()
 //---------------------------------------------------------------------------------------
 void DocLayouter::assign_paper_size_to(GmoBox* pBox)
 {
-    m_availableWidth = m_pDoc->get_paper_width();
-    m_availableHeight = m_pDoc->get_paper_height();
+    m_availableWidth = (m_constrains & k_infinite_width) ?
+                            LOMSE_INFINITE_LENGTH : m_pDoc->get_paper_width();
+
+    m_availableHeight = (m_constrains & k_infinite_height) ?
+                            LOMSE_INFINITE_LENGTH : m_pDoc->get_paper_height();
 
     pBox->set_width(m_availableWidth);
     pBox->set_height(m_availableHeight);
@@ -137,9 +147,53 @@ void DocLayouter::add_footers_to_page(GmoBoxDocPage* UNUSED(pPage))
 }
 
 //---------------------------------------------------------------------------------------
+void DocLayouter::fix_document_size()
+{
+    if (m_constrains & k_infinite_width)
+    {
+        GmoBoxDocPage* pPage = static_cast<GmoBoxDocPage*>(m_pItemMainBox);
+        GmoBox* pBDPC = pPage->get_child_box(0);    //DocPageContent
+        GmoBox* pBSP = pBDPC->get_child_box(0);     //ScorePage
+        GmoBox* pBSys = pBSP->get_child_box(0);     //System
+
+        //View height is determined by BoxDocPageContent.
+        //It is only necessary to fix BoxDocPage
+        LUnits height = pBDPC->get_size().height + 2.0f * pBDPC->get_origin().y;
+        pPage->set_height(height);
+
+        //View width is determined by BoxSystem.
+        //It is necessary to fix width in BoxDocPage, BoxDocPageContent and BoxScorePage
+        //BoxSystem do not exist when error: not enough space in page
+        if (pBSys)
+        {
+            LUnits width = pBSys->get_size().width+ pBSys->get_origin().x;
+            pBSys->set_width(width);
+            pBSP->set_width(width);
+            pBDPC->set_width(width);
+            width += pBSP->get_origin().x;
+            pPage->set_width(width);
+        }
+        else
+        {
+            //an arbitrary with
+            LUnits width = 21000.0f;
+            pBSP->set_width(width);
+            pBDPC->set_width(width);
+            width += pBSP->get_origin().x;
+            pPage->set_width(width);
+        }
+    }
+
+    if (m_constrains & k_infinite_height)
+    {
+        //TODO: free flow view
+    }
+}
+
+//---------------------------------------------------------------------------------------
 void DocLayouter::layout_content()
 {
-    layout_item( m_pDoc->get_content(), m_pItemMainBox );
+    layout_item(m_pDoc->get_content(), m_pItemMainBox, m_constrains);
 }
 
 //---------------------------------------------------------------------------------------

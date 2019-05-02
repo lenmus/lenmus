@@ -390,7 +390,7 @@ void CommandEventHandler::process_on_click_event(SpEventMouse event)
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::process_command_event(SpEventCommand event)
+void CommandEventHandler::process_action_event(SpEventAction event)
 {
     m_fEventProcessed = false;
     if (m_pController->is_edition_enabled())
@@ -1428,7 +1428,7 @@ void CommandGenerator::move_caret_to_click_point(SpEventMouse event)
 void CommandGenerator::move_object_point(int iPoint, UPoint shift)
 {
 	string name = to_std_string(_("Move control point"));
-    m_pController->exec_lomse_command( LENMUS_NEW CmdMoveObjectPoint(iPoint, shift),
+    m_pController->exec_lomse_command( LENMUS_NEW CmdMoveObjectPoint(iPoint, shift, name),
                                        k_show_busy );
 }
 
@@ -3002,7 +3002,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    pScore->Pause();
 //}
 //
-//void CommandEventHandler::OnVisualHighlight(lmScoreHighlightEvent& event)
+//void CommandEventHandler::OnVisualHighlight(lmVisualTrackingEvent& event)
 //{
 //    m_pView->OnVisualHighlight(event);
 //}

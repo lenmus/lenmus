@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -35,8 +35,6 @@
 
 namespace lomse
 {
-
-const double k_double_click_time = 250.0;    //millisecs
 
 
 //=======================================================================================
@@ -171,6 +169,8 @@ TaskOnlyClicks::TaskOnlyClicks(Interactor* pIntor)
     : Task(TaskFactory::k_task_only_clicks, pIntor)
     , m_state(k_start)
     , m_pGView(pIntor)
+    , m_xStart(0)
+    , m_yStart(0)
 {
 }
 
@@ -249,6 +249,8 @@ TaskSelection::TaskSelection(Interactor* pIntor)
     : Task(TaskFactory::k_task_selection, pIntor)
     , m_state(k_start)
     , m_pGView(pIntor)
+    , m_xStart(0)
+    , m_yStart(0)
 {
 }
 
@@ -317,12 +319,6 @@ void TaskSelection::record_first_point(Event& event)
     m_yStart = event.y();
 }
 
-////---------------------------------------------------------------------------------------
-//void TaskSelection::click_at_point(Event& event)
-//{
-//    m_pIntor->task_action_click_at_screen_point(m_xStart, m_yStart, event.flags());
-//}
-
 //---------------------------------------------------------------------------------------
 void TaskSelection::decide_on_switching_task(Event& event)
 {
@@ -344,225 +340,6 @@ void TaskSelection::mouse_in_out(Event& event)
 
 
 
-////=======================================================================================
-//// TaskSelection implementation
-////=======================================================================================
-//TaskSelection::TaskSelection(Interactor* pIntor)
-//    : Task(TaskFactory::k_task_selection, pIntor)
-//    , m_state(k_start)
-//    , m_pGView(pIntor)
-//{
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::process_event(Event event)
-//{
-//    switch (m_state)
-//    {
-//        //--------------------------------------------------------------------------
-//        case k_waiting_for_first_point:
-//        {
-//            switch (event.type())
-//            {
-//                case Event::k_mouse_left_down:
-//                case Event::k_mouse_right_down:
-//                    m_state = k_waiting_for_button_up;
-//                    record_time_point_and_button(event);
-//                    break;
-//                case Event::k_mouse_move:
-//                    mouse_in_out(event);
-//                    break;
-//            }
-//            break;
-//        }
-//
-//        //--------------------------------------------------------------------------
-//        case k_waiting_for_button_up:
-//        {
-//            switch (event.type())
-//            {
-//                case Event::k_mouse_left_up:
-//                case Event::k_mouse_right_up:
-//                {
-//                    double elapsed = get_elapsed_time();
-//                    if (elapsed < k_double_click_time)
-//                        m_state = k_waiting_for_dclick;
-//                    else
-//                    {
-//                        m_state = k_waiting_for_first_point;
-//                        single_click();
-//                    }
-//                    break;
-//                }
-//                case Event::k_mouse_move:
-//                    mouse_in_out(event);
-//                    break;
-//            }
-//            break;
-//        }
-//
-//        //--------------------------------------------------------------------------
-//        case k_waiting_for_dclick:
-//        {
-//            double elapsed = get_elapsed_time();
-//            switch (event.type())
-//            {
-//                case Event::k_mouse_left_down:
-//                case Event::k_mouse_right_down:
-//                {
-//                    if (elapsed < k_double_click_time)
-//                        m_state = k_waiting_for_double_up;
-//                    else
-//                    {
-//                        m_state = k_waiting_for_first_point;
-//                        single_click();
-//                    }
-//                    break;
-//                }
-//                case Event::k_mouse_move:
-//                {
-//                    if (elapsed < k_double_click_time)
-//                        m_state = k_waiting_for_dclick;
-//                    else
-//                    {
-//                        m_state = k_waiting_for_end_point;
-//                        single_click();
-//                        start_move_drag();
-//                    }
-//                    break;
-//                }
-//            }
-//            break;
-//        }
-//
-//        //--------------------------------------------------------------------------
-//        case k_waiting_for_double_up:
-//        {
-//            double elapsed = get_elapsed_time();
-//            switch (event.type())
-//            {
-//                case Event::k_mouse_left_up:
-//                case Event::k_mouse_right_up:
-//                {
-//                    if (elapsed < k_double_click_time)
-//                    {
-//                        m_state = k_waiting_for_first_point;
-//                        double_click();
-//                    }
-//                    else
-//                    {
-//                        m_state = k_waiting_for_first_point;
-//                        single_click();
-//                    }
-//                    break;
-//                }
-//                case Event::k_mouse_move:
-//                {
-//                    if (elapsed < k_double_click_time)
-//                        m_state = k_waiting_for_double_up;
-//                    else
-//                    {
-//                        m_state = k_waiting_for_end_point;
-//                        single_click();
-//                        start_move_drag();
-//                    }
-//                    break;
-//                }
-//            }
-//            break;
-//        }
-//
-//        //--------------------------------------------------------------------------
-//        case k_waiting_for_end_point:
-//        {
-//            switch (event.type())
-//            {
-//                case Event::k_mouse_left_up:
-//                case Event::k_mouse_right_up:
-//                    m_state = k_waiting_for_first_point;
-//                    end_move_drag(event);
-//                    break;
-//                case Event::k_mouse_move:
-//                    m_state = k_waiting_for_end_point;
-//                    continue_move_drag(event);
-//                    break;
-//            }
-//            break;
-//        }
-//
-//        default:
-//            ;
-//    }
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::init_task()
-//{
-//    m_state = k_waiting_for_first_point;
-//    m_xStart = 0;
-//    m_yStart = 0;
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::record_time_point_and_button(Event& event)
-//{
-//    m_xStart = event.x();
-//    m_yStart = event.y();
-//    m_fLeftButton = event.type() == Event::k_mouse_left_down;
-//    m_downTime = microsec_clock::universal_time();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::single_click()
-//{
-//    m_pIntor->task_action_single_click_at(m_xStart, m_yStart, m_fLeftButton);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::double_click()
-//{
-//    m_pIntor->task_action_double_click_at(m_xStart, m_yStart, m_fLeftButton);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::mouse_in_out(Event& event)
-//{
-//    m_pIntor->task_action_mouse_in_out(event.x(), event.y());
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::start_move_drag()
-//{
-//    m_pIntor->task_action_start_move_drag(m_xStart, m_yStart, m_fLeftButton);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::continue_move_drag(Event& event)
-//{
-//    m_pIntor->task_action_continue_move_drag(event.x(), event.y(), m_fLeftButton);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TaskSelection::end_move_drag(Event& event)
-//{
-//    Pixels xTotalShift = event.x() - m_xStart;
-//    Pixels yTotalShift = event.y() - m_yStart;
-//    m_pIntor->task_action_end_move_drag(event.x(), event.y(), m_fLeftButton,
-//                                        xTotalShift, yTotalShift);
-//}
-//
-////---------------------------------------------------------------------------------------
-//double TaskSelection::get_elapsed_time()
-//{
-//    //millisecods
-//
-//    ptime now = microsec_clock::universal_time();
-//    time_duration diff = now - m_downTime;
-//    return double( diff.total_milliseconds() );
-//}
-
-
-
 //=======================================================================================
 // TaskSelectionRectangle implementation
 //=======================================================================================
@@ -570,6 +347,8 @@ TaskSelectionRectangle::TaskSelectionRectangle(Interactor* pIntor)
     : Task(TaskFactory::k_task_selection_rectangle, pIntor)
     , m_state(k_start)
     , m_pGView(pIntor)
+    , m_xStart(0)
+    , m_yStart(0)
 {
 }
 
@@ -656,6 +435,8 @@ TaskMoveObject::TaskMoveObject(Interactor* pIntor)
     : Task(TaskFactory::k_task_move_object, pIntor)
     , m_state(k_start)
     , m_pGView(pIntor)
+    , m_xStart(0)
+    , m_yStart(0)
 {
 }
 
@@ -738,6 +519,8 @@ TaskDataEntry::TaskDataEntry(Interactor* pIntor)
     : Task(TaskFactory::k_task_selection, pIntor)
     , m_state(k_start)
     , m_pGView(pIntor)
+    , m_xStart(0)
+    , m_yStart(0)
 {
 }
 
@@ -839,6 +622,8 @@ TaskMoveHandler::TaskMoveHandler(Interactor* pIntor)
     : Task(TaskFactory::k_task_move_object, pIntor)
     , m_state(k_start)
     , m_pGView(pIntor)
+    , m_xStart(0)
+    , m_yStart(0)
 {
 }
 

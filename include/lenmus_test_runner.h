@@ -57,14 +57,15 @@ namespace lenmus
 //---------------------------------------------------------------------------------------
 class MyTestRunner
 {
-public:
-    MyTestRunner(wxWindow* parent);
-
-    void RunTests();
 
 private:
     wxWindow*   m_pParent;
+    bool        m_fUseCout;
 
+public:
+    MyTestRunner(wxWindow* parent, bool fUseCout=false);
+
+    void RunTests(bool fVerbose=false);
 };
 
 

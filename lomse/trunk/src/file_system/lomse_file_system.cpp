@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -28,9 +28,11 @@
 //---------------------------------------------------------------------------------------
 
 #include "lomse_file_system.h"
-
-#include "lomse_zip_stream.h"
 #include "lomse_logger.h"
+
+#if (LOMSE_ENABLE_COMPRESSION == 1)
+	#include "lomse_zip_stream.h"
+#endif
 
 #include <iostream>
 #include <sstream>
@@ -207,8 +209,10 @@ InputStream* FileSystem::open_input_stream(const string& filelocator)
             {
                 case DocLocator::k_none:
                     return LOMSE_NEW LocalInputStream(filelocator);
+#if (LOMSE_ENABLE_COMPRESSION == 1)
                 case DocLocator::k_zip:
                     return LOMSE_NEW ZipInputStream(filelocator);
+#endif
                 default:
                 {
                     LOMSE_LOG_ERROR("Invalid file locator protocol");
@@ -223,7 +227,7 @@ InputStream* FileSystem::open_input_stream(const string& filelocator)
             throw runtime_error("[FileSystem::open_input_stream] Invalid file locator protocol");
         }
     }
-    return NULL;    //compiler happy
+    return nullptr;    //compiler happy
 }
 
 
@@ -278,7 +282,7 @@ long LocalInputStream::read (unsigned char* pDestBuffer, long nBytesToRead)
     //requested number of bites if the end of stream is reached.
 
     m_file.read((char*)pDestBuffer, nBytesToRead);
-    return m_file.gcount();
+    return long(m_file.gcount());
 }
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -37,6 +37,7 @@
 #include "lomse_xml_parser.h"
 #include "lomse_lmd_compiler.h"
 #include "lomse_mxl_compiler.h"
+#include "lomse_mnx_compiler.h"
 #include "lomse_injectors.h"
 #include "lomse_id_assigner.h"
 #include "lomse_internal_model.h"
@@ -48,6 +49,8 @@
 #include "lomse_ldp_elements.h"
 #include "lomse_control.h"
 #include "lomse_logger.h"
+#include "lomse_staffobjs_table.h"
+#include "lomse_autoclef.h"
 
 #include <sstream>
 using namespace std;
@@ -144,17 +147,18 @@ Document::Document(LibraryScope& libraryScope, ostream& reporter)
     , m_reporter(reporter)
     , m_docScope(reporter)
     , m_pIdAssigner( m_docScope.id_assigner() )
-    , m_pIModel(NULL)
-    , m_pImoDoc(NULL)
+    , m_pImoDoc(nullptr)
     , m_flags(k_dirty)
     , m_modified(0)
+    , m_beatType(k_beat_implied)
+    , m_beatDuration( TimeUnits(k_duration_quarter) )
 {
 }
 
 //---------------------------------------------------------------------------------------
 Document::~Document()
 {
-    delete m_pIModel;
+    delete m_pImoDoc;
     delete_observers();
 }
 
@@ -169,7 +173,7 @@ void Document::initialize()
     }
 
     m_flags = k_dirty;
-    m_pImoDoc = NULL;
+    m_pImoDoc = nullptr;
     m_modified = 0;
 }
 
@@ -188,7 +192,7 @@ int Document::from_file(const string& filename, int format)
     Compiler* pCompiler = get_compiler_for_format(format);
     if (pCompiler)
     {
-        m_pIModel = pCompiler->compile_file(filename);
+        m_pImoDoc = pCompiler->compile_file(filename);
         numErrors = pCompiler->get_num_errors();
         delete pCompiler;
     }
@@ -198,14 +202,11 @@ int Document::from_file(const string& filename, int format)
         numErrors = 1;
     }
 
-    if (m_pIModel)
-    {
-        m_pImoDoc = dynamic_cast<ImoDocument*>(m_pIModel->get_root());
-        if (m_pImoDoc == NULL)
-            create_empty();
-    }
-    else
+    if (m_pImoDoc == nullptr)
         create_empty();
+
+    if (m_pImoDoc && format == Document::k_format_mxl)
+        fix_malformed_musicxml();
 
     return numErrors;
 }
@@ -218,7 +219,7 @@ int Document::from_string(const string& source, int format)
     Compiler* pCompiler = get_compiler_for_format(format);
     if (pCompiler)
     {
-        m_pIModel = pCompiler->compile_string(source);
+        m_pImoDoc = pCompiler->compile_string(source);
         numErrors = pCompiler->get_num_errors();
         delete pCompiler;
     }
@@ -228,10 +229,11 @@ int Document::from_string(const string& source, int format)
         numErrors = 1;
     }
 
-    if (m_pIModel)
-        m_pImoDoc = dynamic_cast<ImoDocument*>(m_pIModel->get_root());
-    else
+    if (m_pImoDoc == nullptr)
         create_empty();
+
+    if (m_pImoDoc && format == Document::k_format_mxl)
+        fix_malformed_musicxml();
 
     return numErrors;
 }
@@ -240,9 +242,7 @@ int Document::from_string(const string& source, int format)
 int Document::from_checkpoint(const string& data)
 {
     //delete old internal model
-    delete m_pIModel;
-    m_pIModel = NULL;
-    m_pImoDoc = NULL;
+    m_pImoDoc = nullptr;
     m_flags = k_dirty;
 
     //reset IdAssigner
@@ -291,8 +291,7 @@ int Document::from_input(LdpReader& reader)
     try
     {
         LdpCompiler* pCompiler  = Injector::inject_LdpCompiler(m_libraryScope, this);
-        m_pIModel = pCompiler->compile_input(reader);
-        m_pImoDoc = dynamic_cast<ImoDocument*>(m_pIModel->get_root());
+        m_pImoDoc = pCompiler->compile_input(reader);
         int numErrors = pCompiler->get_num_errors();
         delete pCompiler;
         return numErrors;
@@ -301,7 +300,7 @@ int Document::from_input(LdpReader& reader)
     {
         //this avoids programs crashes when a document is malformed but
         //will produce memory lekeages
-        m_pIModel = NULL;
+        m_pImoDoc = nullptr;
         create_empty();
         return 0;
     }
@@ -312,8 +311,7 @@ void Document::create_empty()
 {
     initialize();
     LdpCompiler* pCompiler  = Injector::inject_LdpCompiler(m_libraryScope, this);
-    m_pIModel = pCompiler->create_empty();
-    m_pImoDoc = dynamic_cast<ImoDocument*>(m_pIModel->get_root());
+    m_pImoDoc = pCompiler->create_empty();
     delete pCompiler;
 }
 
@@ -322,8 +320,7 @@ void Document::create_with_empty_score()
 {
     initialize();
     LdpCompiler* pCompiler  = Injector::inject_LdpCompiler(m_libraryScope, this);
-    m_pIModel = pCompiler->create_with_empty_score();
-    m_pImoDoc = dynamic_cast<ImoDocument*>(m_pIModel->get_root());
+    m_pImoDoc = pCompiler->create_with_empty_score();
     delete pCompiler;
 }
 
@@ -331,7 +328,21 @@ void Document::create_with_empty_score()
 void Document::end_of_changes()
 {
     ModelBuilder builder;
-    builder.build_model(m_pIModel);
+    builder.build_model(m_pImoDoc);
+}
+
+//---------------------------------------------------------------------------------------
+void Document::fix_malformed_musicxml()
+{
+    if (m_libraryScope.get_musicxml_options()->use_default_clefs())
+    {
+        ImoScore* pScore = dynamic_cast<ImoScore*>( m_pImoDoc->get_content_item(0) );
+        if (pScore)
+        {
+            AutoClef ac(pScore);
+            ac.do_autoclef();
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -382,10 +393,13 @@ Compiler* Document::get_compiler_for_format(int format)
         case k_format_mxl:
             return Injector::inject_MxlCompiler(m_libraryScope, this);
 
+        case k_format_mnx:
+            return Injector::inject_MnxCompiler(m_libraryScope, this);
+
         default:
-            return NULL;
+            return nullptr;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -394,6 +408,31 @@ bool Document::is_editable()
     //TODO: How to mark a document as 'not editable'?
     //For now, all documents are editable
     return true;
+}
+
+//---------------------------------------------------------------------------------------
+void Document::define_beat(int beatType, TimeUnits duration)
+{
+    switch (beatType)
+    {
+        case k_beat_implied:
+        case k_beat_bottom_ts:
+            m_beatType = beatType;
+            if (is_greater_time(duration, 0.0))
+                m_beatDuration = duration;
+            break;
+
+        case k_beat_specified:
+            if (is_greater_time(duration, 0.0))
+            {
+                m_beatType = beatType;
+                m_beatDuration = duration;
+            }
+            break;
+
+        default:
+            LOMSE_LOG_ERROR("Invalid beat type %d. Ignored.", beatType);;
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -426,10 +465,10 @@ ImoObj* Document::create_object_from_ldp(const string& source, ostream& reporter
         }
         catch (...)
         {
-            return NULL;
+            return nullptr;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -456,15 +495,35 @@ ImoTuplet* Document::add_tuplet(ImoNoteRest* pStartNR, ImoNoteRest* pEndNR,
                 a.add_relation_info(pTupletStart);
                 pStartNR->set_dirty(true);
 
+                //add the tuplet to intermediate notes
+                int numTuplet = pTupletStart->get_item_number();
+                ColStaffObjs* pCol = pStartNR->get_score()->get_staffobjs_table();
+                ColStaffObjsIterator it = pCol->find(pStartNR);
+                int line = (*it)->line();
+                ++it;   //skip start note
+                while ((*it)->imo_object() != pEndNR)
+                {
+                    if ((*it)->imo_object()->is_note_rest() && (*it)->line() == line)
+                    {
+                        ImoNoteRest* pNR = static_cast<ImoNoteRest*>((*it)->imo_object());
+                        ImoTupletDto* pInfo = LOMSE_NEW ImoTupletDto();
+                        pInfo->set_tuplet_type(ImoTupletDto::k_continue);
+                        pInfo->set_note_rest(pNR);
+                        pInfo->set_tuplet_number(numTuplet);
+                        a.add_relation_info(pInfo);
+                    }
+                    ++it;
+                }
+
                 //create end of tuplet and attach it to end note/rest
                 ImoTupletDto* pTupletEnd = LOMSE_NEW ImoTupletDto();
                 pTupletEnd->set_tuplet_type(ImoTupletDto::k_stop);
                 pTupletEnd->set_note_rest(pEndNR);
+                pTupletEnd->set_tuplet_number(numTuplet);
                 a.add_relation_info(pTupletEnd);
 
                 //get the tuplet
-                ImoTuplet* pTuplet = pStartNR->get_tuplet();
-                return pTuplet;
+                return a.get_last_created_tuplet();
             }
         }
     }
@@ -476,7 +535,7 @@ ImoTuplet* Document::add_tuplet(ImoNoteRest* pStartNR, ImoNoteRest* pEndNR,
     {
         reporter << "exception caught";
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -500,8 +559,8 @@ void Document::delete_relation(ImoRelObj* pRO)
     if (pRO->is_tie())
     {
         ImoTie* pTie = static_cast<ImoTie*>(pRO);
-        pTie->get_start_note()->set_tie_next(NULL);
-        pTie->get_end_note()->set_tie_prev(NULL);
+        pTie->get_start_note()->set_tie_next(nullptr);
+        pTie->get_end_note()->set_tie_prev(nullptr);
     }
 
     //procedure for all
@@ -535,14 +594,6 @@ ImoObj* Document::create_object_from_lmd(const string& source)
     ModelBuilder builder;
     builder.structurize(pImo);
     return pImo;
-
-
-//    Compiler* pCompiler = get_compiler_for_format(format);
-//    m_pIModel = pCompiler->compile_string(source);
-//    m_pImoDoc = dynamic_cast<ImoDocument*>(m_pIModel->get_root());
-//    int numErrors = pCompiler->get_num_errors();
-//    delete pCompiler;
-//    return numErrors;
 }
 
 //---------------------------------------------------------------------------------------
@@ -553,8 +604,8 @@ void Document::add_staff_objects(const string& source, ImoMusicData* pMD)
     parser.parse_text(data);
     LdpTree* tree = parser.get_ldp_tree();
     LdpAnalyser a(m_reporter, m_libraryScope, this);
-    InternalModel* pIModel = a.analyse_tree(tree, "string:");
-    ImoMusicData* pMusic = dynamic_cast<ImoMusicData*>( pIModel->get_root() );
+    ImoObj* pRoot = a.analyse_tree(tree, "string:");
+    ImoMusicData* pMusic = dynamic_cast<ImoMusicData*>(pRoot);
     ImoObj::children_iterator it = pMusic->begin();
     while (it != pMusic->end())
     {
@@ -564,7 +615,7 @@ void Document::add_staff_objects(const string& source, ImoMusicData* pMD)
         it = pMusic->begin();
     }
     delete tree->get_root();
-    delete pIModel;
+    delete pRoot;
 }
 
 //---------------------------------------------------------------------------------------
@@ -636,7 +687,7 @@ void Document::assign_id(Control* pControl)
 }
 
 //---------------------------------------------------------------------------------------
-void Document::removed_from_model(ImoObj* pImo)
+void Document::on_removed_from_model(ImoObj* pImo)
 {
     m_pIdAssigner->remove(pImo);
 }
@@ -671,7 +722,7 @@ string Document::dump_tree() const
     stringstream data;
 
     DumpVisitor v(m_libraryScope, data);
-    ImoDocument* pRoot = get_imodoc();
+    ImoDocument* pRoot = get_im_root();
     pRoot->accept_visitor(v);
 
     return data.str();

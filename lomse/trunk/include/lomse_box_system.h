@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -50,6 +50,7 @@ protected:
 	vector<GmoShapeStaff*> m_staffShapes;
 	vector<int> m_firstStaff;       //index to first staff for each instrument
     TimeGridTable* m_pGridTable;
+    int m_iPage;        //number of score page (0..n-1) in which this system is contained
 
 public:
     GmoBoxSystem(ImoObj* pCreatorImo);
@@ -62,16 +63,22 @@ public:
     //grid table: xPositions/timepos
     inline void set_time_grid_table(TimeGridTable* pGridTable) { m_pGridTable = pGridTable; }
     inline TimeGridTable* get_time_grid_table() { return m_pGridTable; }
+    TimeUnits start_time();
+    TimeUnits end_time();
+    LUnits get_x_for_time(TimeUnits timepos);
 
 	//miscellaneous info
     GmoShapeStaff* get_staff_shape(int absStaff);
     GmoShapeStaff* get_staff_shape(int iInstr, int iStaff);
     int instr_number_for_staff(int absStaff);
     int staff_number_for(int absStaff, int iInstr);
+    inline void set_page_number(int iPage) { m_iPage = iPage; }
+	inline int get_page_number() { return m_iPage; }
 
     //Staff shapes
     GmoShapeStaff* add_staff_shape(GmoShapeStaff* pShape);
     void add_num_staves_for_instrument(int staves);
+    inline vector<GmoShapeStaff*>& get_staff_shapes() { return m_staffShapes; }
 
     //hit tests related
     int nearest_staff_to_point(LUnits y);

@@ -283,9 +283,9 @@
 //        wxASSERT(pInpChordNotes[nCount] != NULL);
 //        fpIntv = (FIntval) (pInpChordNotes[nCount]->GetFPitch() - pInpChordNotes[0]->GetFPitch());
 //
-//        if (fpIntv >= lm_p8)
+//        if (fpIntv >= k_interval_p8)
 //        {
-//              fpIntv = fpIntv % lm_p8;
+//              fpIntv = fpIntv % k_interval_p8;
 //        }
 //#if (LENMUS_DEBUG_BUILD == 1)
 //        wxLogMessage("[GetIntervalsFromNotes note %d: %d  note 0: %d] INTERVAL: %d"
@@ -519,7 +519,7 @@
 //        assert( IsValidChordNote(fNotes[i]) );
 //        if (i == 0)
 //        {
-//            assert( (fNotes[0] % lm_p8) == GetNormalizedBass() );
+//            assert( (fNotes[0] % k_interval_p8) == GetNormalizedBass() );
 //        }
 //        m_fpChordNotes[i] = fNotes[i];
 //    }
@@ -541,7 +541,7 @@
 //        assert( IsValidChordNote(pNotes[i]->GetFPitch()) );
 //        if (i == 0)
 //        {
-//            assert( (pNotes[0]->GetFPitch() % lm_p8) == GetNormalizedBass() );
+//            assert( (pNotes[0]->GetFPitch() % k_interval_p8) == GetNormalizedBass() );
 //            // actual bass note must be consistent with chord bass note
 //        }
 //        m_fpChordNotes[i] = pNotes[i]->GetFPitch();
@@ -598,10 +598,10 @@
 //    // remember: the lowest note is the BASS note, not the root note
 //    //           (bass == root only if NO INVERSIONS)
 //
-//    // Normalize wit "% lm_p8" to remove octave information
+//    // Normalize wit "% k_interval_p8" to remove octave information
 //    for (int i=1; i<m_nNumChordNotes; i++)
 //    {
-//        if ( (m_fpChordNotes[i] % lm_p8) == this->GetNormalizedBass() )
+//        if ( (m_fpChordNotes[i] % k_interval_p8) == this->GetNormalizedBass() )
 //            return true;
 //    }
 //    return false;
@@ -652,7 +652,7 @@
 //        if (i == 0)
 //        {
 //            // ENSURE THE FPitch of the note is the same as pNote-> GetFPitch()
-//            assert( (pNotes[0]->GetFPitch() % lm_p8) == GetNormalizedBass() );
+//            assert( (pNotes[0]->GetFPitch() % k_interval_p8) == GetNormalizedBass() );
 //            // actual bass note must be consistent with chord bass note
 //        }
 //        m_pChordNotes[i] = pNotes[i];
@@ -961,7 +961,7 @@
 //        {
 //            // get the interval between voices
 //            nVoiceInterval[nN] =  ( m_pChordDescriptor[nC]->GetNoteFpitch(nN)
-//                - m_pChordDescriptor[nC-1]->GetNoteFpitch(nN) ) % lm_p8 ;
+//                - m_pChordDescriptor[nC-1]->GetNoteFpitch(nN) ) % k_interval_p8 ;
 //
 //            // check if it is parallel with previous chord
 //            for (int i=0; i<nN; i++)
@@ -1307,9 +1307,9 @@
 //        {
 //            FIntval nLimit;
 //            if (nN == 1)
-//                nLimit = lm_p8*2; // up to 2 octaves allowed for bass-tenor
+//                nLimit = k_interval_p8*2; // up to 2 octaves allowed for bass-tenor
 //            else
-//                nLimit = lm_p8; // only ine octave allowed for the rest
+//                nLimit = k_interval_p8; // only ine octave allowed for the rest
 //
 //            nInterval = m_pChordDescriptor[nC]->GetNoteFpitch(nN)
 //                            - m_pChordDescriptor[nC]->GetNoteFpitch(nN-1);

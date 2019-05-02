@@ -60,6 +60,7 @@ void GmoShapeGlyph::on_draw(Drawer* pDrawer, RenderOptions& opt)
                          m_libraryScope.get_music_font_name(),
                          m_fontHeight);
     pDrawer->set_text_color( determine_color_to_use(opt) );
+    pDrawer->move_to(m_origin.x, m_origin.y);       //this line fixes issue #73 !!!
     LUnits x = m_shiftToDraw.width + m_origin.x;
     LUnits y = m_shiftToDraw.height + m_origin.y;
     pDrawer->draw_glyph(x, y, m_glyph);
@@ -227,7 +228,7 @@ GmoShapeInvisible::GmoShapeInvisible(ImoObj* pCreatorImo, ShapeId idx, UPoint uP
 //---------------------------------------------------------------------------------------
 void GmoShapeInvisible::on_draw(Drawer* pDrawer, RenderOptions& opt)
 {
-    if (opt.draw_anchors)
+    if (opt.draw_anchor_objects)
     {
         pDrawer->begin_path();
         pDrawer->fill(Color(255, 0, 0, 32));    //light red, transparent
@@ -273,6 +274,37 @@ void GmoShapeRectangle::on_draw(Drawer* pDrawer, RenderOptions& opt)
     pDrawer->end_path();
 
     GmoSimpleShape::on_draw(pDrawer, opt);
+
+//From ButtonCtrl::on_draw(), in lomse_button_ctrl.cpp
+//
+//    Color strokeColor = Color(128, 128, 128);
+//    Color bgColor = m_normalColor;
+//
+//    //draw background and border
+//    pDrawer->begin_path();
+//    pDrawer->fill( m_normalColor );
+//    pDrawer->stroke( strokeColor );
+//    pDrawer->stroke_width(15.0);
+//    Color white(255, 255, 255);
+//    Color dark(bgColor);
+//    dark.a = 45;
+//    Color light(dark);
+//    light = light.gradient(white, 0.2);
+//    pDrawer->gradient_color(white, 0.0, 0.1);
+//    pDrawer->gradient_color(white, dark, 0.1, 0.7);
+//    pDrawer->gradient_color(dark, light, 0.7, 1.0);
+//    pDrawer->fill_linear_gradient(m_pos.x, m_pos.y,
+//                                  m_pos.x, m_pos.y + m_height);
+//    pDrawer->rect(m_pos, USize(m_width, m_height), 100.0f);
+//    pDrawer->end_path();
+//
+//    //draw text
+//    select_font();
+//    center_text();
+//    pDrawer->set_text_color( textColor );
+//    LUnits x = m_pos.x + m_xLabel;
+//    LUnits y = m_pos.y + m_yLabel;
+//    pDrawer->draw_text(x, y, m_label);
 }
 
 
@@ -377,7 +409,7 @@ void GmoShapeStem::set_stem_down(LUnits xLeft, LUnits yNote)
 //    : GmoShapeRectangle(pOwner, uxLeft, uyTop, uxRight, uyBottom, uBorderWidth,
 //                       nBorderColor, nBgColor, nShapeIdx, sName,
 //                       fDraggable, fSelectable, fVisible)
-//    , m_pControl((wxWindow*)NULL)
+//    , m_pControl((wxWindow*)nullptr)
 //{
 //}
 //

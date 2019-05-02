@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -20,9 +20,11 @@
 
 #include "lenmus_chord.h"
 #include "lenmus_standard_header.h"
+#include "lenmus_string.h"
 
 //lomse
 #include <lomse_logger.h>
+#include <lomse_interval.h>
 using namespace lomse;
 
 namespace lenmus
@@ -49,41 +51,41 @@ struct ChordData
 static ChordData tChordData[ect_Max] =
 {
     //Triads:
-    { 3, { lm_M3, lm_p5 }},             //MT        - MajorTriad
-    { 3, { lm_m3, lm_p5 }},             //mT        - MinorTriad
-    { 3, { lm_M3, lm_a5 }},             //aT        - AugTriad
-    { 3, { lm_m3, lm_d5 }},             //dT        - DimTriad
+    { 3, { k_interval_M3, k_interval_p5 }},             //MT        - MajorTriad
+    { 3, { k_interval_m3, k_interval_p5 }},             //mT        - MinorTriad
+    { 3, { k_interval_M3, k_interval_a5 }},             //aT        - AugTriad
+    { 3, { k_interval_m3, k_interval_d5 }},             //dT        - DimTriad
     //Suspended:
-    { 3, { lm_p4, lm_p5 }},             //I,IV,V    - Suspended_4th
-    { 3, { lm_M2, lm_p5 }},             //I,II,V    - Suspended_2nd
+    { 3, { k_interval_p4, k_interval_p5 }},             //I,IV,V    - Suspended_4th
+    { 3, { k_interval_M2, k_interval_p5 }},             //I,II,V    - Suspended_2nd
     //Sevenths:
-    { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
-    { 4, { lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
-    { 4, { lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
-    { 4, { lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
-    { 4, { lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
-    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
-    { 4, { lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
-    { 4, { lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
+    { 4, { k_interval_M3, k_interval_p5, k_interval_M7 }},      //MT + M7   - MajorSeventh
+    { 4, { k_interval_M3, k_interval_p5, k_interval_m7 }},      //MT + m7   - DominantSeventh
+    { 4, { k_interval_m3, k_interval_p5, k_interval_m7 }},      //mT + m7   - MinorSeventh
+    { 4, { k_interval_m3, k_interval_d5, k_interval_d7 }},      //dT + d7   - DimSeventh
+    { 4, { k_interval_m3, k_interval_d5, k_interval_m7 }},      //dT + m7   - HalfDimSeventh
+    { 4, { k_interval_M3, k_interval_a5, k_interval_M7 }},      //aT + M7   - AugMajorSeventh
+    { 4, { k_interval_M3, k_interval_a5, k_interval_m7 }},      //aT + m7   - AugSeventh
+    { 4, { k_interval_m3, k_interval_p5, k_interval_M7 }},      //mT + M7   - MinorMajorSeventh
     //Sixths:
-    { 4, { lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
-    { 4, { lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
-    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
+    { 4, { k_interval_M3, k_interval_p5, k_interval_M6 }},      //MT + M6   - MajorSixth
+    { 4, { k_interval_m3, k_interval_p5, k_interval_M6 }},      //mT + M6   - MinorSixth
+    { 4, { k_interval_M3, k_interval_a4, k_interval_a6 }},      //          - AugSixth
     //Ninths:
-    { 5, { lm_M3, lm_p5, lm_m7, lm_M9 }},   // - DominantNinth  = dominant-seventh + major ninth
-    { 5, { lm_M3, lm_p5, lm_M7, lm_M9 }},   // - MajorNinth     = major-seventh + major ninth
-    { 5, { lm_m3, lm_p5, lm_m7, lm_M9 }},   // - MinorNinth     = minor-seventh + major ninth
+    { 5, { k_interval_M3, k_interval_p5, k_interval_m7, k_interval_M9 }},   // - DominantNinth  = dominant-seventh + major ninth
+    { 5, { k_interval_M3, k_interval_p5, k_interval_M7, k_interval_M9 }},   // - MajorNinth     = major-seventh + major ninth
+    { 5, { k_interval_m3, k_interval_p5, k_interval_m7, k_interval_M9 }},   // - MinorNinth     = minor-seventh + major ninth
     //11ths:
-    { 6, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11 }},   // - Dominant_11th    = dominantNinth + perfect 11th
-    { 6, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11 }},   // - Major_11th       = majorNinth + perfect 11th
-    { 6, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11 }},   // - Minor_11th       = minorNinth + perfect 11th
+    { 6, { k_interval_M3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11 }},   // - Dominant_11th    = dominantNinth + perfect 11th
+    { 6, { k_interval_M3, k_interval_p5, k_interval_M7, k_interval_M9, k_interval_p11 }},   // - Major_11th       = majorNinth + perfect 11th
+    { 6, { k_interval_m3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11 }},   // - Minor_11th       = minorNinth + perfect 11th
     //13ths:
-    { 7, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
-    { 7, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11, lm_M13 }}, // - Major_13th       = major_11th + major 13th
-    { 7, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Minor_13th       = minor_11th + major 13th
+    { 7, { k_interval_M3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11, k_interval_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
+    { 7, { k_interval_M3, k_interval_p5, k_interval_M7, k_interval_M9, k_interval_p11, k_interval_M13 }}, // - Major_13th       = major_11th + major 13th
+    { 7, { k_interval_m3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11, k_interval_M13 }}, // - Minor_13th       = minor_11th + major 13th
     //Other:
-    //{ 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
-    { 4, { lm_a2, lm_a4, lm_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
+    //{ 2, { k_interval_p5 }},                    // - PowerChord     = perfect fifth, (octave)
+    { 4, { k_interval_a2, k_interval_a4, k_interval_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
 };
 
 //Special chords table.
@@ -314,9 +316,6 @@ Chord::Chord(FPitch fpRootNote, EChordType nChordType, int nInversion,
     , m_nInversion(nInversion)
     , m_fpRootNote(fpRootNote)
 {
-    //creates a chord from its type, the root note, the desired inversion, and the key signature.
-    //Parameter 'nInversion' values: 0 (root position), 1 (1st inversion), 2 (2nd inversion),
-    //and so on
 }
 
 //---------------------------------------------------------------------------------------
@@ -449,23 +448,23 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
 //    //determine chord type and inversion type
 //    ComputeTypeAndInversion();
 //}
-//
-////---------------------------------------------------------------------------------------
-//Chord::Chord(int nNumNotes, wxString* pNotes, EKeySignature nKey)
-//    : ChordIntervals(nNumNotes, pNotes)
-//    , m_nKey(nKey)
-//    , m_nInversion(0)
-//    , m_nType(ect_undefined)
-//{
-//    //Creates a chord from a list of notes in LDP source code
-//
-//    //get root note
-//    m_fpRootNote = ::lmLDPDataToFPitch( *pNotes );
-//
-//    //determine chord type and inversion type
-//    ComputeTypeAndInversion();
-//}
-//
+
+//---------------------------------------------------------------------------------------
+Chord::Chord(int numNotes, string notes[], EKeySignature nKey)
+    : ChordIntervals(numNotes, notes)
+    , m_nType(ect_undefined)
+    , m_nKey(nKey)
+    , m_nInversion(0)
+{
+    //Creates a chord from a list of notes in LDP source code
+
+    //get root note
+    m_fpRootNote = FPitch(notes[0]);
+
+    //determine chord type and inversion type
+    ComputeTypeAndInversion();
+}
+
 ////---------------------------------------------------------------------------------------
 //// Contructor to create a chord from the essential chord information
 //// Arguments:
@@ -559,7 +558,7 @@ FIntval Chord::GetInterval(int i)
 //       Then, for interval 0, just return "unison"
     wxASSERT(i >= 0 && i < m_nNumIntv+1);
     if (i == 0)
-        return lm_p1; // unison
+        return k_interval_p1; // unison
     else
         return m_nIntervals[i-1];
 }
@@ -574,7 +573,10 @@ FPitch Chord::get_note(int i)
         return 0;  //TODO: error protection added by Carlos. Improve it?
     }
 
-    return m_fpRootNote + (i==0 ? 0 : int(GetInterval(i)) );
+    if (i == 0)
+        return m_fpRootNote;
+    else
+        return m_fpRootNote + GetInterval(i);
 }
 
 //---------------------------------------------------------------------------------------
@@ -590,6 +592,21 @@ string Chord::GetPattern(int i)
     // Returns Relative LDP pattern for note i (0 .. m_nNumNotes-1)
     wxASSERT( i < get_num_notes());
     return get_note(i).to_rel_ldp_name(m_nKey);
+}
+
+//---------------------------------------------------------------------------------------
+string Chord::note_steps_to_string()
+{
+    static string steps("cdefgab");
+
+    stringstream ss;
+    for (int i=0; i < get_num_notes(); ++i)
+    {
+        if (i > 0)
+            ss << ",";
+        ss << steps.at(get_note(i).step());
+    }
+    return ss.str();
 }
 
 //---------------------------------------------------------------------------------------
@@ -633,7 +650,7 @@ int Chord::IsValidChordNote(FPitch fNote)
 
     for (int nI=0; nI <= m_nNumIntv; nI++) // note that valid intervals are: 0 .. m_nNumIntv
     {
-        FPitch fpNormalizedNoteDistance = (  fNote - GetInterval(nI)) % lm_p8;
+        FPitch fpNormalizedNoteDistance = (  fNote - GetInterval(nI)) % k_interval_p8;
         if ( fpNormalizedRoot == fpNormalizedNoteDistance)
         {
             return true;
@@ -653,7 +670,7 @@ FPitch Chord::GetNormalizedRoot()
     int nIntervalToApplyToTheBass = (nNumNotes - nNumInversions) % nNumNotes;
     FIntval fpIntv = GetInterval(nIntervalToApplyToTheBass);
     FPitch fpBass = GetNormalizedBass();
-    FPitch fpRootNote = (fpBass + fpIntv) %  lm_p8;
+    FPitch fpRootNote = (fpBass + fpIntv) %  k_interval_p8;
     return fpRootNote;
 }
 
@@ -846,79 +863,6 @@ EChordType Chord::short_name_to_type(wxString sName)
     return (EChordType)-1;  //error
 }
 
-
-
-#if 0
-//---------------------------------------------------------------------------------------
-void UnitTests()
-{
-    //lmConverter::NoteToBits and lmConverter::NoteBitsToName
-    wxLogMessage("[Chord::UnitTests] Test of lmConverter::NoteToBits() method:");
-
-    wxString sNote[8] = { "a4", "+a5", "--b2", "-a4",
-        "+e4", "++f6", "b1", "xc4" };
-    NoteBits tNote;
-    for(int i=0; i < 8; i++) {
-        if (lmConverter::NoteToBits(sNote[i], &tNote))
-            wxLogMessage("Unexpected error in lmConverter::NoteToBits()");
-        else {
-            wxLogMessage("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'",
-                sNote[i].wx_str(), tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
-                lmConverter::NoteBitsToName(tNote, m_nKey).wx_str() );
-        }
-    }
-
-    //ComputeInterval(): interval computation
-    wxString sIntv[8] = { "M3", "m3", "p8", "p5",
-        "a5", "d7", "M6", "M2" };
-    for(int i=0; i < 8; i++) {
-        for (int j=0; j < 8; j++) {
-            wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
-            wxLogMessage("Note='%s' + Intv='%s' --> '%s'",
-                         sNote[i].wx_str(), sIntv[j].wx_str(), sNewNote.wx_str() );
-            wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
-            wxLogMessage("Note='%s' - Intv='%s' --> '%s'",
-                         sNewNote.wx_str(), sIntv[j].wx_str(), sStartNote.wx_str() );
-        }
-    }
-
-    //IntervalCodeToBits and IntervalBitsToCode
-    wxLogMessage("[Chord::UnitTests] Test of IntervalCodeToBits() method:");
-    lmIntvBits tIntv;
-    for(int i=0; i < 8; i++) {
-        if (IntervalCodeToBits(sIntv[i], &tIntv))
-            wxLogMessage("Unexpected error in IntervalCodeToBits()");
-        else {
-            wxLogMessage("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'",
-                sIntv[i].wx_str(), tIntv.nNum,tIntv.nSemitones,
-                IntervalBitsToCode(tIntv).wx_str() );
-        }
-    }
-
-    ////SubstractIntervals
-    //wxLogMessage("[Chord::UnitTests] Test of SubstractIntervals() method:");
-    //wxString sIntv1[8] = { "p5", "p5", "M7", "M6", "m6", "M7", "M6", "p4" };
-    //wxString sIntv2[8] = { "M3", "m3", "p5", "p5", "a5", "M3", "m3", "M2" };
-    //for(i=0; i < 8; i++) {
-    //    wxLogMessage("Intv1='%s', intv2='%s' --> dif='%s'",
-    //        sIntv1[i], sIntv2[i], SubstractIntervals(sIntv1[i], sIntv2[i]) );
-    //}
-
-    ////AddIntervals
-    //wxLogMessage("[Chord::UnitTests] Test of AddIntervals() method:");
-    //wxString sIntv1[8] = { "p5", "p5", "M6", "M3", "M3", "M6", "d4", "p8" };
-    //wxString sIntv2[8] = { "M3", "m3", "m2", "m3", "M3", "M3", "m7", "p8" };
-    //for(i=0; i < 8; i++) {
-    //    wxLogMessage("Intv1='%s', intv2='%s' --> sum='%s'",
-    //        sIntv1[i].wx_str(), sIntv2[i].wx_str(), AddIntervals(sIntv1[i], sIntv2[i]).wx_str() );
-    //}
-
-}
-
-#endif
-
-
-
 //=======================================================================================
 // ChordIntervals implementation: A list of intervals
 //=======================================================================================
@@ -960,7 +904,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
         else
         {
             // convert interval name to value
-            m_nIntervals[m_nNumIntv++] = FIntval(sIntval);
+            m_nIntervals[m_nNumIntv++] = FIntval(to_std_string(sIntval));
         }
 
         // advance pointers
@@ -973,7 +917,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
     if (m_nNumIntv < k_intervals_in_chord)
     {
         wxString sIntval = sIntervals.substr(iStart);
-        m_nIntervals[m_nNumIntv++] = FIntval(sIntval);
+        m_nIntervals[m_nNumIntv++] = FIntval( to_std_string(sIntval) );
     }
 }
 
@@ -1008,7 +952,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //            return;
 //        }
 //
-//        m_nIntervals[i] = (pNotes[i+1]->GetFPitch() - pNotes[0]->GetFPitch()) % lm_p8;
+//        m_nIntervals[i] = (pNotes[i+1]->GetFPitch() - pNotes[0]->GetFPitch()) % k_interval_p8;
 //    }
 //
 //    this->Normalize(); // normalize to 1 octave range, remove duplicated and sort.
@@ -1034,27 +978,27 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //
 //    this->Normalize(); // normalize to 1 octave range, remove duplicated and sort.
 //}
-//
-////---------------------------------------------------------------------------------------
-//ChordIntervals::ChordIntervals(int nNumNotes, wxString* pNotes)
-//{
-//    //Creates the intervals from a list of notes in LDP source code
-//    if (nNumNotes > 0)
-//        m_nNumIntv = nNumNotes - 1;
-//    else
-//    {
-//        m_nNumIntv = 0;
-//        return;
-//    }
-//    FPitch fpRootNote = ::lmLDPDataToFPitch( *pNotes );
-//
-//    //get intervals
-//    for (int i=0; i < m_nNumIntv; i++)
-//    {
-//        m_nIntervals[i] = ::lmLDPDataToFPitch( *(pNotes+i+1) ) - fpRootNote;
-//    }
-//}
-//
+
+//---------------------------------------------------------------------------------------
+ChordIntervals::ChordIntervals(int numNotes, string notes[])
+{
+    //Creates the intervals from a list of notes in LDP source code
+    if (numNotes > 0)
+        m_nNumIntv = numNotes - 1;
+    else
+    {
+        m_nNumIntv = 0;
+        return;
+    }
+    FPitch fpRootNote(notes[0]);
+
+    //get intervals
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        m_nIntervals[i] = FPitch(notes[i+1]) - fpRootNote;
+    }
+}
+
 ////---------------------------------------------------------------------------------------
 //ChordIntervals::ChordIntervals(int nRootStep, EKeySignature nKey, int nNumIntervals, int nInversion)
 //{
@@ -1099,10 +1043,10 @@ void ChordIntervals::DoInversion()
     {
         newIntvals[i] = m_nIntervals[i+1] - m_nIntervals[0];
         if ((int)newIntvals[i] < 0)
-            newIntvals[i] += lm_p8;
+            newIntvals[i] += k_interval_p8;
     }
 
-    newIntvals[m_nNumIntv-1] = lm_p8 - m_nIntervals[0];
+    newIntvals[m_nNumIntv-1] = k_interval_p8 - m_nIntervals[0];
 
     //transfer results
     for (int i=0; i < m_nNumIntv; i++)
@@ -1144,8 +1088,8 @@ void ChordIntervals::Normalize()
     //reduce any interval greater than the octave
     for (int i=0; i < m_nNumIntv; i++)
     {
-        while (m_nIntervals[i] >= lm_p8)
-            m_nIntervals[i] -= lm_p8;
+        while (m_nIntervals[i] >= k_interval_p8)
+            m_nIntervals[i] -= k_interval_p8;
     }
 
     SortIntervals();
@@ -1157,7 +1101,7 @@ void ChordIntervals::Normalize()
     {
         if (m_nIntervals[iLast] != m_nIntervals[iCur])
         {
-            if (m_nIntervals[iLast] != lm_p1)
+            if (m_nIntervals[iLast] != k_interval_p1)
                 ++iLast;
             m_nIntervals[iLast] = m_nIntervals[iCur];
         }
@@ -1184,13 +1128,28 @@ wxString ChordIntervals::DumpIntervals()
 }
 
 //---------------------------------------------------------------------------------------
+string ChordIntervals::intervals_to_string()
+{
+    stringstream ss;
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        if (i > 0)
+            ss << ",";
+        ss << to_std_string( m_nIntervals[i].get_code() );
+    }
+    return ss.str();
+}
+
+//---------------------------------------------------------------------------------------
 wxString ChordIntervals::ToString()
 {
     wxString sIntvals = " Intervals:";
     for (int i=0; i < m_nNumIntv; i++)
     {
         sIntvals += wxString::Format("%s(%d) "
-            , m_nIntervals[i].get_code().wx_str(), int(m_nIntervals[i]) );
+                        , to_wx_string(m_nIntervals[i].get_code()).wx_str()
+                        , int(m_nIntervals[i])
+                    );
     }
     return sIntvals;
 }

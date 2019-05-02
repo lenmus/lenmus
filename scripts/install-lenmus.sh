@@ -27,7 +27,7 @@ if [[ ! -e "${root_path}/src" ]]; then
 fi
 
 #path for building
-build_path="${root_path}/build-area"
+build_path="${root_path}/zz_build-area"
 
 echo -e "${enhanced}Local installation of LenMus program${reset}"
 

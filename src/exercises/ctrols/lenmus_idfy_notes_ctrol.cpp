@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -215,7 +215,7 @@ void IdfyNotesCtrol::on_settings_changed()
     if (m_pConstrains->SelectNotesFromKeySignature())
     {
         int nAcc[7];
-        get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
+        KeyUtilities::get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
 
         ButtonCtrl* pNaturalButton[7];
         pNaturalButton[0] = m_pAnswerButton[0];
@@ -315,10 +315,10 @@ wxString IdfyNotesCtrol::set_new_problem()
 
     //select octave
     int nSecondOctave = m_pConstrains->GetOctaves() == 2 ? oGenerator.flip_coin() : 0;
-    int nOctave;
+    int nOctave = 4;
     switch (nClef)
     {
-        case k_clef_G2:     nOctave = 4 + nSecondOctave;    break;  //4,5
+        case k_clef_G2:   nOctave = 4 + nSecondOctave;    break;  //4,5
         case k_clef_F4:   nOctave = 3 - nSecondOctave;    break;  //3,2
         case k_clef_F3:   nOctave = 3 - nSecondOctave;    break;  //3,2
         case k_clef_C1:   nOctave = 4 - nSecondOctave;    break;  //4,3
@@ -326,7 +326,11 @@ wxString IdfyNotesCtrol::set_new_problem()
         case k_clef_C3:   nOctave = 4 - nSecondOctave;    break;  //4,3
         case k_clef_C4:   nOctave = 3 + nSecondOctave;    break;  //3,4
         default:
-            break;
+        {
+            LOMSE_LOG_ERROR("Invalid clef %d", nClef);
+            nClef = k_clef_G2;
+            nOctave = 4 + nSecondOctave;
+        }
     }
 
     // generate a random note and set m_nKey, nStep, nAcc and nNoteIndex
@@ -411,6 +415,7 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
 
     //create the score with the note
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    (*pProblemScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
@@ -418,7 +423,7 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(m_nKey);
     pInstr->add_object("(n " + sNotePitch + " w)");
-    (*pProblemScore)->close();      //for generating StaffObjs collection
+    (*pProblemScore)->end_of_changes();      //for generating StaffObjs collection
 }
 
 //---------------------------------------------------------------------------------------
@@ -452,7 +457,7 @@ void IdfyNotesCtrol::play_a4()
     pInstr->add_key_signature( k_key_C );
     pInstr->add_time_signature(2 ,4);
     pInstr->add_object("(n a4 w)");
-    m_pAuxScore->close();      //for generating StaffObjs collection
+    m_pAuxScore->end_of_changes();      //for generating StaffObjs collection
 
     m_pPlayer->load_score(m_pAuxScore, this);
 
@@ -523,6 +528,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     //create the score
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
@@ -540,7 +546,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
             {
                 int nStep;
                 int nAcc[7];
-                get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
+                KeyUtilities::get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
 
                 switch(i)
                 {
@@ -661,7 +667,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
             pInstr->add_barline(k_barline_simple, k_no_visible);
         }
     }
-    pScore->close();      //for generating StaffObjs collection
+    pScore->end_of_changes();      //for generating StaffObjs collection
 
     delete m_pProblemScore;
     m_pProblemScore = pScore;

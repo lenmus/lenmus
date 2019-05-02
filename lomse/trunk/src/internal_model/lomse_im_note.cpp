@@ -56,7 +56,7 @@ int ImoNoteRest::get_beam_type(int level)
     ImoBeam* pBeam = static_cast<ImoBeam*>( find_relation(k_imo_beam) );
     if (pBeam)
     {
-        ImoBeamData* pData = dynamic_cast<ImoBeamData*>( pBeam->get_data_for(this) );
+        ImoBeamData* pData = static_cast<ImoBeamData*>( pBeam->get_data_for(this) );
         return pData->get_beam_type(level);
     }
     else
@@ -83,7 +83,7 @@ bool ImoNoteRest::is_end_of_beam()
     ImoBeam* pBeam = static_cast<ImoBeam*>( find_relation(k_imo_beam) );
     if (pBeam)
     {
-        ImoBeamData* pData = dynamic_cast<ImoBeamData*>( pBeam->get_data_for(this) );
+        ImoBeamData* pData = static_cast<ImoBeamData*>( pBeam->get_data_for(this) );
         return pData->is_end_of_beam();
     }
     else
@@ -93,11 +93,11 @@ bool ImoNoteRest::is_end_of_beam()
 //---------------------------------------------------------------------------------------
 bool ImoNoteRest::is_in_tuplet()
 {
-    return find_relation(k_imo_tuplet) != NULL;
+    return find_relation(k_imo_tuplet) != nullptr;
 }
 
 //---------------------------------------------------------------------------------------
-ImoTuplet* ImoNoteRest::get_tuplet()
+ImoTuplet* ImoNoteRest::get_first_tuplet()
 {
     return static_cast<ImoTuplet*>( find_relation(k_imo_tuplet) );
 }
@@ -201,11 +201,12 @@ ImoNote::ImoNote()
     : ImoNoteRest(k_imo_note)
     , m_step(k_no_pitch)
     , m_octave(4)
-    , m_notated_acc(k_no_accidentals)
     , m_actual_acc(k_acc_not_computed)
+    , m_notated_acc(k_invalid_accidentals)
+    , m_options(0)
     , m_stemDirection(k_stem_default)
-    , m_pTieNext(NULL)
-    , m_pTiePrev(NULL)
+    , m_pTieNext(nullptr)
+    , m_pTiePrev(nullptr)
 {
 }
 
@@ -215,11 +216,12 @@ ImoNote::ImoNote(int step, int octave, int noteType, EAccidentals accidentals, i
     : ImoNoteRest(k_imo_note)
     , m_step(step)
     , m_octave(octave)
-    , m_notated_acc(accidentals)
     , m_actual_acc(k_acc_not_computed)
+    , m_notated_acc(accidentals)
+    , m_options(0)
     , m_stemDirection(stem)
-    , m_pTieNext(NULL)
-    , m_pTiePrev(NULL)
+    , m_pTieNext(nullptr)
+    , m_pTiePrev(nullptr)
 {
     m_nVoice = voice;
     m_staff = staff;
@@ -231,16 +233,16 @@ ImoNote::~ImoNote()
 {
     //if tied, inform the other note
     if (m_pTieNext)
-        m_pTieNext->get_end_note()->set_tie_prev(NULL);
+        m_pTieNext->get_end_note()->set_tie_prev(nullptr);
 
     if (m_pTiePrev)
-        m_pTiePrev->get_start_note()->set_tie_next(NULL);
+        m_pTiePrev->get_start_note()->set_tie_next(nullptr);
 }
 
 //---------------------------------------------------------------------------------------
 bool ImoNote::is_in_chord()
 {
-    return get_chord() != NULL;
+    return get_chord() != nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -291,8 +293,8 @@ MidiPitch ImoNote::get_midi_pitch()
         return k_undefined_midi_pitch;
     else
         return MidiPitch(m_step, m_octave, int(m_actual_acc));
+        //TODO: deal with fractional values used for microtones.
 }
-
 
 //---------------------------------------------------------------------------------------
 int ImoNote::get_midi_bend()

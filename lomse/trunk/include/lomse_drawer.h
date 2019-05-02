@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -47,38 +47,49 @@ using namespace std;
 
 using namespace agg;
 
+///@cond INTERNALS
 namespace lomse
 {
+///@endcond
 
 //forward declarations
 class FontStorage;
 
 //---------------------------------------------------------------------------------------
 //rendering options
+/** @ingroup enumerations
+
+	This enum describes valid values for method GraphicView::set_rendering_option(),
+	mainly used for debug purposes.
+
+	@#include <lomse_drawer.h>
+*/
 enum ERenderOptions
 {
     //for debugging
-    k_option_draw_box_doc_page_content=0,
-    k_option_draw_box_container,
-    k_option_draw_box_system,
-    k_option_draw_box_slice,
-    k_option_draw_box_slice_instr,
-    k_option_draw_box_inline_flag,
+    k_option_draw_box_doc_page_content=0,   ///< Draw borders around all DocPage boxes
+    k_option_draw_box_container,            ///< Draw borders around all DocPageContent boxes
+    k_option_draw_box_system,               ///< Draw borders around all System boxes
+    k_option_draw_box_slice,                ///< Draw borders around all SystemSlice boxes
+    k_option_draw_box_slice_instr,          ///< Draw borders around all InstrSlice boxes
+    k_option_draw_box_inline_flag,          ///< Draw borders around all Inline boxes
 
-    //for user or application needs
-    k_option_display_voices_in_colours,
+    //for user application needs
+    k_option_display_voices_in_colours,     ///< Display each music voice in a different color
 };
 
+///@cond INTERNALS
 
 //---------------------------------------------------------------------------------------
-// RenderOptions: struct to contain renderization options for a document
+// RenderOptions: struct holding the rendering options for a document
 //---------------------------------------------------------------------------------------
 struct RenderOptions
 {
     //for debug: draw a box around boxes of selected types
     bitset<GmoObj::k_max> boxes;
 
-    bool draw_anchors;          //draw anchors, to see them in the score
+    bool draw_anchor_objects;   //draw anchor objs. (i.e. invisible shapes)
+    bool draw_anchor_lines;     //draw anchor lines. (spacing algorithm)
     bool draw_shape_bounds;     //draw bounds around selected shapes
     //bool g_fShowMargins;    //draw margins in scores, so user can change them
     //bool g_fFreeMove;		//the shapes can be dragged without restrictions
@@ -115,7 +126,8 @@ struct RenderOptions
 
 
     RenderOptions()
-        : draw_anchors(false)
+        : draw_anchor_objects(false)
+        , draw_anchor_lines(false)
         , draw_shape_bounds(false)
         , scale(1.0)
         , background_color(127, 127, 127)       //grey
@@ -354,6 +366,7 @@ public:
 
 
 };
+///@endcond
 
 
 }   //namespace lomse

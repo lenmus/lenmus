@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -24,18 +24,15 @@
 //lenmus
 #include "lenmus_standard_header.h"
 #include "lenmus_interval.h"
-#include "lenmus_conversion.h"
-
-////wxWidgets
-//#include <wx/wxprec.h>
-//#include <wx/wx.h>
 
 //lomse
 #include <lomse_pitch.h>
 using namespace lomse;
 
-////other
-//#include "vector"
+//other
+#include "vector"
+#include "list"
+using namespace std;
 
 
 namespace lenmus
@@ -43,16 +40,6 @@ namespace lenmus
 
 //forward declarations
 class Chord;
-
-//---------------------------------------------------------------------------------------
-// Auxiliary, to store notes data
-struct NoteBits
-{
-    int nStep;              // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
-    int nOctave;            // 0..9
-    int nAccidentals;       // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2
-    int nStepSemitones;     // 'c'=0, 'd'=2, 'e'=4, 'f'=5, 'g'=7, 'a'=9, 'b'=11
-};
 
 //---------------------------------------------------------------------------------------
 // enum to assign code to each cadence
@@ -95,7 +82,7 @@ struct NoteBits
 //      * VdeV con 5ª dim y en 2ª inversión -> V (sexta aumentada)
 //
 
-//AWARE: any change in this enumeration requieres the appropriate change in
+//AWARE: any change in this enumeration requires the appropriate change in
 //      method IdfyCadencesCtrolParams::CadenceNameToType()
 
 enum ECadenceType
@@ -159,52 +146,78 @@ enum ECadenceType
 };
 
 //---------------------------------------------------------------------------------------
-// auxiliary object to comfortably manage chords
+// To know all errors and defects that a chord has it is necessary that errors can be
+// stored in a compact way, as a bit mark
+typedef long ChordError;
 
-// For selecting the less bad chrd it is necessary to know all errors and defects that a chord
-// has. To this end , each defect will be stored as a bit mark
-typedef long lmChordError;
-
-// Values for defects must be assigned by severity: higher numbers for higher severity
+//values must be ordered by severity: higher numbers for higher severity
 enum EBadChordReason
 {
-    lm_eChordValid = 0,
-    lm_eNotDoubledThird     = 0x0001,   //Cuando el bajo enlaza el V grado con el VI (cadencia rota), en el acorde de VI grado se duplica la tercera.
-    lm_eNotContraryMotion   = 0x0002,   //bass moves by step and not all other voices moves in opposite direction to bass
-    lm_eGreaterThanSixth    = 0x0004,   //No es conveniente exceder el intervalo de sexta, exceptuando la octava justa
-    lm_eChromaticAlter      = 0x0008,   //Chromatic alteration not resolved the same direction than the alteration
-    lm_eVoiceOverlap        = 0x0010,   //voice overlap
-    lm_eVoiceCrossing       = 0x0020,   //notes not in ascending sequence or duplicated
-    lm_eGreaterThanOctave   = 0x0040,   //notes interval greater than one octave (other than bass-tenor)
-    lm_eSeventhResolution   = 0x0080,   //the seventh of a chord should always resolve down by second.
-    lm_eLeadingResolution   = 0x0100,   //Scale degree seven (the leading tone) doesn't resolve to tonic
-    lm_eLeadingToneDoubled  = 0x0200,   //the leading tone is doubled
-    lm_eFifthDoubled        = 0x0400,   //the fifth is doubled
-    lm_eResultantFifthOctves = 0x0800,  //3. No hacer 5ªs ni 8ªs resultantes, excepto:
-                                            //> a) la soprano se ha movido por segundas
-                                            //> b) (para 5ªs) uno de los sonidos ya estaba
-    lm_eFifthOctaveMotion   = 0x1000,   //parallel motion of perfect octaves or perfect fifths
-    lm_eFifthMissing        = 0x2000,   // Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)
-    lm_eNotAllNotes         = 0x4000,   //not all chord steps in the chord
-    lm_eChordDiscarded      = 0x8000,   //Chord discarded: not possible to generate a valid next chord
+    k_chord_error_0_none = 0,
+    k_chord_error_15_doubled_third          = 0x0001,
+    k_chord_error_14_not_contrary_motion    = 0x0002,
+    k_chord_error_13_greater_than_sixth     = 0x0004,
+    k_chord_error_12_chromatic_acc          = 0x0008,
+    k_chord_error_11_voice_overlap          = 0x0010,
+    k_chord_error_10_notes_not_ascending    = 0x0020,
+    k_chord_error_9_greater_than_octave     = 0x0040,
+    k_chord_error_8_seventh_resolution      = 0x0080,
+    k_chord_error_7_leading_resolution      = 0x0100,
+    k_chord_error_6_leading_doubled         = 0x0200,
+    k_chord_error_5_fifth_doubled           = 0x0400,
+    k_chord_error_4_resultant_fifth_octave  = 0x0800,
+    k_chord_error_3_fifth_octave_motion     = 0x1000,
+    k_chord_error_2_fifth_missing           = 0x2000,
+    k_chord_error_1_not_all_notes           = 0x4000,
 
-    lm_eMaxSeverity         = 0x8888,
+    k_chord_error_max = 0xFFFF
 };
 
-class lmHChord
+//---------------------------------------------------------------------------------------
+//All the data for a chord in a cadence
+class CadenceChord
 {
 public:
+    DiatonicPitch   nNote[4];   //diatonic pitch
+    int             nAcc[4];    //accidentals: -2 ... +2
+    EBadChordReason nReason;    //used when filtering out invalid chords
+    ChordError      nSeverity;  //broken rules
+    int             nImpact;    //0-internal voices, 1-external voices
+    int             nNumNotes;  //how many notes in this chord, normally 4
 
-    lmHChord()
+public:
+    CadenceChord()
     {
         nNote[0] = nNote[1] = nNote[2] = nNote[3] = NO_DPITCH;
         nAcc[0] = nAcc[1] = nAcc[2] = nAcc[3] = 0;
-        nReason=lm_eChordValid;
-        nNumNotes=0;
+        nReason = k_chord_error_0_none;
+        nNumNotes = 0;
     };
 
-    wxString GetPrintName(int iNote) {
-        wxString sAnswer;
+    //constructor for unit tests
+    CadenceChord(const string& note1, const string& note2, const string& note3,
+                 const string& note4)
+    {
+        FPitch fp1(note1);
+        nNote[0] = fp1.to_diatonic_pitch();
+        nAcc[0] = fp1.accidentals();
+        FPitch fp2(note2);
+        nNote[1] = fp2.to_diatonic_pitch();
+        nAcc[1] = fp2.accidentals();
+        FPitch fp3(note3);
+        nNote[2] = fp3.to_diatonic_pitch();
+        nAcc[2] = fp3.accidentals();
+        FPitch fp4(note4);
+        nNote[3] = fp4.to_diatonic_pitch();
+        nAcc[3] = fp4.accidentals();
+
+        nReason = k_chord_error_0_none;
+        nNumNotes = 4;
+    };
+
+    string get_print_name(int iNote)
+    {
+        string sAnswer;
         switch(nAcc[iNote])
         {
             case -2: sAnswer ="--"; break;
@@ -215,29 +228,27 @@ public:
             default:
                 sAnswer = "";
         }
-        sAnswer += to_wx_string( nNote[iNote].get_english_note_name() );
+        sAnswer += nNote[iNote].get_english_note_name();
         return sAnswer;
     }
 
+    void add_error(EBadChordReason errorId, int impact)
+    {
+        nReason = errorId;
+        nSeverity |= errorId;
+        nImpact = impact;
+    }
 
-    DiatonicPitch   nNote[4];   //diatonic pitch so 1:1 mapping to staff lines/spaces
-    int             nAcc[4];    //accidentals: -2 ... +2
-    EBadChordReason nReason;    //used when filtering out invalid chords
-    lmChordError    nSeverity;  //broken rules
-    int             nImpact;    //0-internal voices, 1-external voices
-    int             nNumNotes;  //normally 4
 };
 
-//---------------------------------------------------------------------------------------
-typedef struct lmChordAuxDataStruct {
-	int nSteps[4];	// the steps of the chord
-    int nStep5;     // the fifth of the chord
-	int nNumSteps;	// how many steps this chord has (3 or 4)
-} lmChordAuxData;
+#define k_max_notes_in_chord 12      // max notes in a set for a voice: 3 octaves * 4 notes
+struct NoteSet
+{
+    FPitch pitch[k_max_notes_in_chord];
+    int numNotes;
+};
 
-//declare global functions defined in this module
-extern wxString CadenceTypeToName(ECadenceType nType);
-extern wxString GetChordErrorDescription(lmChordError nError);
+typedef  vector<CadenceChord>      ChordSet;
 
 //---------------------------------------------------------------------------------------
 //A cadence is a sequence of up to 2 chords
@@ -246,58 +257,103 @@ const int k_chords_in_cadence = 2;
 
 class Cadence
 {
+protected:
+    ECadenceType    m_nType;                            //cadence type
+    EKeySignature   m_nKey;                             //key signature
+    wxString        m_sFunction[k_chords_in_cadence];   //harmonic funcion
+    CadenceChord    m_Chords[k_chords_in_cadence];      //cadence full chords
+    int             m_nNumChords;                       //num of chords in this cadence
+
+    //auxiliary data used while building the cadence chords
+    Chord*  m_pTonicChord;
+	int     m_nImperfectCad;    //when imperfect authentic cadence, its type (0..3)
+    int     m_nInversions[k_chords_in_cadence];     //inversion required to build each cadence chord
+
 public:
     Cadence();
-    ~Cadence();
+    virtual ~Cadence();
 
-    bool Create(ECadenceType nCadenceType, EKeySignature nKey, bool fUseGrandStaff);
-    bool IsCreated() { return m_fCreated; }
+    bool create(ECadenceType nCadenceType, EKeySignature nKey);
 
-    inline ECadenceType GetCadenceType() { return m_nType; }
-    int GetNumChords() { return m_nNumChords; }
-    Chord* GetChord(int iC);
-	wxString GetName();
+    inline ECadenceType get_cadence_type() { return m_nType; }
+    inline int get_num_chords() { return m_nNumChords; }
+	wxString get_name();
     string get_rel_ldp_name(int iChord, int iNote);
-    Chord* GetTonicChord();
+    Chord* get_tonic_chord();
+    inline wxString& get_function(int iChord) { return m_sFunction[iChord]; }
 
     //global functions
-    static ECadenceType CadenceNameToType(wxString sCadence);
+    static ECadenceType name_to_type(wxString sCadence);
+    static wxString type_to_name(ECadenceType nType);
+    static FPitch get_root_note(const wxString& sFunct, EKeySignature nKey);
+    static Chord* get_basic_chord_for(const wxString& sFunct, EKeySignature nKey);
+    static string get_all_errors_reason(ChordError nError);
+    static string get_error_description(ChordError nError);
+    static int find_leading_tone_in_previous_chord(CadenceChord* pPrevChord,
+                                                   int nStepLeading);
+    static void get_chromatic_alterations(CadenceChord* pChord, EKeySignature nKey,
+                                          int* pAlter);
+    static bool check_chord(CadenceChord* pChord, Chord* pBasicChord,
+                            CadenceChord* pPrevChord, EKeySignature nKey,
+                            int nPrevAlter[4], int nStepLeading, int iLeading,
+                            bool fExhaustive);
 
-private:
-    wxString SelectChord(wxString sFunction, EKeySignature nKey, int* pInversion);
-    FPitch GetRootNote(wxString sFunct, EKeySignature nKey, EClef nClef,
-                       bool fUseGrandStaff);
+protected:
 
-    int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-						   Chord* pChord, int nInversion);
-    int GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-						  Chord* pChord, int nInversion, int iPrevHChord);
-    int FilterChords(std::vector<lmHChord>& aChords, int nNumChords, lmChordAuxData& tChordData,
-                     lmHChord* pPrevChord, bool fExhaustive=false);
-    void SelectLessBad(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
-					   int iHChord);
-    int GenerateSopranoNote(NoteBits oChordNotes[4], int iBass, int nNumNotes);
+    void get_cadence_data(ECadenceType nCadenceType);
+    bool generate_two_chords(int iC, const wxString& sFunct1, const wxString& sFunc2,
+                             EKeySignature nKey, CadenceChord* pPrevChord);
+    int generate_soprano_set(int iC, Chord* pBasicChord, NoteSet* pNoteSet);
+    int generate_all_chords_for(int iChord, FPitch BNote, FPitch SNote,
+                                NoteSet* pAltoSet, NoteSet* pTenorSet,
+                                Chord* pBasicChord, CadenceChord* pPrevChord,
+                                ChordSet* pValidChords);
+	int generate_alto_set(int iC, FPitch fpSoprano, Chord* pBasicChord,
+                          NoteSet* pNoteSet);
+    int generate_tenor_set(int iC, Chord* pBasicChord, NoteSet* pNoteSet);
+    int combine_notes_and_filter_chords(Chord* basicChord, FPitch B1, FPitch S1,
+                                      NoteSet& AltoSet, NoteSet& TenorSet,
+                                      CadenceChord* pPrevChord, ChordSet* pValidChords);
+
+    void shuffle_set(NoteSet* pNoteSet, int numNotes);
+    int filter_chords(ChordSet& allChords, ChordSet* pValidChords, Chord* pBasicChord,
+                      int numChords, CadenceChord* pPrevChord, bool fExhaustive=false);
+    static wxString get_chord_intervals(wxString sFunction, EKeySignature nKey,
+                                        int* pInversion);
+
+    //validation rules
+    static void rule_1_all_steps_in_chord(CadenceChord* pChord, Chord* pBasicChord);
+    static void rule_3_no_parallel_motion_fifths_octaves(CadenceChord* pChord,
+                                           list< pair<int,int> >& couples,
+                                           FIntval motionIntv[4]);
+    static void rule_4_resultant_fifth_octave(CadenceChord* pChord,
+                                              CadenceChord* pPrevChord,
+                                              int motionSteps[4]);
+    static void rule_5_6_fifth_leading_not_doubled(CadenceChord* pChord,
+                                                   Chord* pBasicChord,
+                                                   int nStepLeading);
+    static void rule_7_leading_resolution(CadenceChord* pChord, int leadingMotion,
+                                          int iLeading);
+    static void rule_8_seventh_resolution(CadenceChord* pChord, int leadingMotion,
+                                          int iLeading);
+    static void rule_9_intervals_not_greater_than_octave(CadenceChord* pChord);
+    static void rule_10_no_voice_crossing(CadenceChord* pChord);
+    static void rule_11_no_voice_overlap(CadenceChord* pChord, CadenceChord* pPrevChord);
+    static void rule_12_chromatic_accidentals(CadenceChord* pChord, int nPrevAlter[4],
+                                              CadenceChord* pPrevChord);
+    static void rule_14_not_contrary_motion(CadenceChord* pChord, int motionSteps[4]);
 
 
-	// Debug methods
-	void Debug_DumpAllChords(std::vector<lmHChord>& aChords);
-	void Debug_DumpChord(lmHChord& oChord, int iChord=0);
-
-
-
-    //member variables
-
-    bool            m_fCreated;
-    ECadenceType    m_nType;
-	int				m_nImperfectCad;
-    EKeySignature   m_nKey;
-    Chord*          m_pTonicChord;
-    Chord*          m_pChords[k_chords_in_cadence];
-    int             m_nInversions[k_chords_in_cadence];
-    int             m_nNumChords;       //num of chords in this cadence
-    lmHChord        m_Chord[k_chords_in_cadence];
+    //debug
+    void dump_chord(CadenceChord& oChord, int iChord, bool fAllErrors=false);
 
 };
+
+//global methods for unit tests, for accessing and validating internal tables
+extern wxString dbg_get_function_for_cadence(int iF, ECadenceType nCadenceType);
+extern wxString dbg_get_function_for_imperfect(int iF, int iInv);
+extern wxString dbg_get_function_in_conversion_table(int i);
+extern bool dbg_function_is_defined(wxString& sFunct);
 
 
 }   //namespace lenmus

@@ -84,7 +84,8 @@ public:
     };
 
     //XmlNode helper methods
-    inline bool is_null() { return ! bool(m_node); }
+    inline bool is_null() { return m_node.type() == pugi::xml_node_type::node_null; }
+    //inline bool is_null() { return ! m_node; }      //TODO: is this valid? It seems to work!
 	///get child with the specified name
     inline XmlNode child(const string& name) {
         return XmlNode( m_node.child(name.c_str()));
@@ -93,7 +94,7 @@ public:
     inline XmlNode next_sibling() { return XmlNode( m_node.next_sibling() ); }
     inline bool has_attribute(const string& name)
     {
-        return m_node.attribute(name.c_str()) != NULL;
+        return m_node.attribute(name.c_str()) != nullptr;
     }
 	///get value of attribute with the specified name
     inline string attribute_value(const string& name)

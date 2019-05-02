@@ -33,6 +33,7 @@
 class wxButton;
 class wxTextCtrl;
 class wxWindow;
+class wxStaticText;
 
 namespace lenmus
 {
@@ -77,6 +78,40 @@ private:
 	wxHtmlWindow*   m_pHtmlWnd;
 	wxButton*       m_pBtnAccept;
 	wxButton*       m_pBtnSave;
+
+    wxDECLARE_EVENT_TABLE();
+};
+
+//---------------------------------------------------------------------------------------
+class DlgSpacingParams : public wxDialog
+{
+   wxDECLARE_DYNAMIC_CLASS(DlgSpacingParams);
+
+protected:
+    float m_force;
+    float m_alpha;
+    float m_dmin;
+
+    wxStaticText* m_lblForce;
+    wxTextCtrl* m_txtForce;
+    wxStaticText* m_lblAlpha;
+    wxTextCtrl* m_txtAlpha;
+    wxStaticText* m_lblDmin;
+    wxTextCtrl* m_txtDmin;
+
+    wxButton* m_cmdUpdate;
+    wxButton* m_cmdClose;
+
+public:
+    DlgSpacingParams(wxWindow* parent, float force, float alpha, float dmin);
+    virtual ~DlgSpacingParams();
+
+    void on_close(wxCommandEvent& WXUNUSED(event));
+    void on_update(wxCommandEvent& WXUNUSED(event));
+
+protected:
+    void update_params();
+
 
     wxDECLARE_EVENT_TABLE();
 };

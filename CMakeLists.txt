@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2016 LenMus project
+#  Copyright (c) 2002-2018 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -51,9 +51,13 @@
 # choose is "Unix Makefiles". If you would like to generate
 #   cmake -DMAN_INSTALL_DIR=/new/install/location/for/manpages ...
 #
+# By default unit tests are also build. You can reduce executable size by
+# disabling this option:
+#   cmake -DLENMUS_ENABLE_UNIT_TESTS:BOOL=OFF ...
+#
 #-------------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.10)
 
 # project name
 project(lenmus)
@@ -78,6 +82,29 @@ if(CMAKE_NO_STD_NAMESPACE)
   message(FATAL_ERROR "The compiler doesn't support namespace std.")
 endif()
 
+# force to use c++11
+if (CMAKE_VERSION VERSION_LESS "3.1")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else ()
+    set(CMAKE_CXX_STANDARD 11)				#require c+11 or greater
+    set(CMAKE_CXX_STANDARD_REQUIRED ON) 	#prevent fallback to any previous standard
+endif ()
+
+#check that the compiler supports c++11 and std::regex
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # require at least gcc 4.9
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+        message(FATAL_ERROR "GCC version must be at least 4.9!")
+    endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # require at least clang 3.4
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.4)
+        message(FATAL_ERROR "Clang version must be at least 3.4!")
+    endif()
+else()
+    message(WARNING "** Warning **: You are using an untested compiler! Lomse has only been tested with GCC and Clang.")
+endif()
+
 
 # directories to search for CMake modules
 set( CMAKE_MODULE_PATH    "${LENMUS_ROOT_DIR}/cmake-modules" )
@@ -89,6 +116,9 @@ OPTION(LENMUS_USE_VERSION_FOLDER
 OPTION(LENMUS_USE_LOMSE_SOURCES
     "Build LenMus using Lomse sources instead of using the library"
     ON)
+OPTION(LENMUS_ENABLE_UNIT_TESTS
+	"Include also unit tests in LenMus executable"
+	ON)
 set(MAN_INSTALL_DIR "/usr/share/man" 
     CACHE STRING "Directory for installing man pages")
 
@@ -133,12 +163,6 @@ add_custom_target (lenmus-version ALL
   COMMAND ${CMAKE_COMMAND} -D LENMUS_ROOT_DIR=${CMAKE_SOURCE_DIR} -P ${CMAKE_SOURCE_DIR}/version-info.cmake
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   COMMENT "Setting LenMus version information ...")
-
-#define a header file to pass CMake settings to source code
-configure_file(
-    "${LENMUS_ROOT_DIR}/lenmus_config.h.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
-)
 
 
 # set up configuration variables for lenmus_config.h
@@ -213,14 +237,6 @@ message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
 # set up other variables
 #--------------------------------------------------------
 
-
-# check that compiler supports namespace sdt
-include(TestForSTDNamespace)
-if(CMAKE_NO_STD_NAMESPACE)
-  message(FATAL_ERROR "The compiler doesn't support namespace std.")
-endif()
-
- 
 # add headers directories from source tree
 include_directories(
     ${LENMUS_ROOT_DIR}/include
@@ -236,50 +252,62 @@ set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 
 
+##########################################################################
+#
+# Dependencies
 # Check for needed libraries and set all related includes, flags, etc. 
-#-------------------------------------------------------------------------
+#
+###############################################################################
 
 
-# Check for UnitTest++. Required for Debug version
+
+# Check for UnitTest++. Required when unit tests are enabled (default)
 if(0)
-if(WIN32)
-    set( UNITTEST_LIBDIR  ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
-    set( UNITTEST_INCLUDE_DIRS  ${LENMUS_ROOT_DIR}/packages/UnitTest++/src )
-    set( UNITTEST_LIBRARIES  "UnitTest++.vsnet2003.lib" )
-elseif(UNIX)
-    include(FindPkgConfig)
-    pkg_check_modules(UNITTEST REQUIRED unittest++)
-    set( UNITTEST_LIBRARIES  "libunittest++.a" )
-endif()
-link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
+	if(WIN32)
+		set( UNITTEST_LIBDIR  ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
+		set( UNITTEST_INCLUDE_DIRS  ${LENMUS_ROOT_DIR}/packages/UnitTest++/src )
+		set( UNITTEST_LIBRARIES  "UnitTest++.vsnet2003.lib" )
+	elseif(UNIX)
+		include(FindPkgConfig)
+		pkg_check_modules(UNITTEST REQUIRED unittest++)
+		set( UNITTEST_LIBRARIES  "libunittest++.a" )
+	endif()
+	link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
 endif(0)
 
-if (${LENMUS_DEBUG_BUILD})
-    find_package(UnitTest REQUIRED)
-    if(UNITTEST_FOUND)
-        include_directories( ${UNITTEST_INCLUDE_DIRS} )
-        link_libraries( ${UNITTEST_LIBRARIES} )
+if (LENMUS_ENABLE_UNIT_TESTS)
+    find_package(UnitTest++)
+    if(UNITTEST++_FOUND)
+        get_filename_component(UNITTEST++_LINK_DIR ${UNITTEST++_LIBRARY} DIRECTORY)
+        include_directories(${UNITTEST++_INCLUDE_DIR})
+        link_libraries( ${UNITTEST++_LIBRARY} )
+        link_directories( ${UNITTEST++_LINK_DIR} )        
+        message(STATUS "UnitTest++ found: libraries= ${UNITTEST++_LIBRARY}" )
+        message(STATUS "UnitTest++ found: include= ${UNITTEST++_INCLUDE_DIR}" )
+        message(STATUS "UnitTest++ found: libdir= ${UNITTEST++_LINK_DIR}" )
         if( WIN32 )
             link_directories( ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
         endif(WIN32)
-    else()
-        message(SEND_ERROR "UnitTest++ not found")
+    else(UNITTEST++_FOUND)
+        message(STATUS "UnitTest++ not found. Unit tests disabled.")
+		set(LENMUS_ENABLE_UNIT_TESTS OFF)
     endif()
-endif()
+endif(LENMUS_ENABLE_UNIT_TESTS)
+
+
+#change value to "1" or "0", as required in lenmus_config.h
+if (LENMUS_ENABLE_UNIT_TESTS)
+	set(LENMUS_ENABLE_UNIT_TESTS "1")
+else()
+	set(LENMUS_ENABLE_UNIT_TESTS "0")
+endif()	
+message("LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 
 
 # Check for wxWidgets
-#set (wxWidgets_CONFIG_OPTIONS --version=3.0)
-#find_package(wxWidgets 3.0 REQUIRED) 
 find_package(wxWidgets 3.0 COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
-    #IF(UNIX)
-    #    set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
-    #    execute_process(COMMAND wx-config --version=3.0 --libs base,core,adv,aui,xml,xrc,net,qa,html,gl,propgrid,stc 
-    #                    OUTPUT_VARIABLE wxWidgets_LIBRARIES 
-    #                    OUTPUT_STRIP_TRAILING_WHITESPACE )
-    #ENDIF(UNIX)
     message(STATUS "wxWidgets include dirs: " ${wxWidgets_INCLUDE_DIRS})
     message(STATUS "wxWidgets libraries: " ${wxWidgets_LIBRARIES})
 ELSE(wxWidgets_FOUND)
@@ -291,8 +319,8 @@ find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
     include_directories( ${SQLite3_INCLUDE_DIRS} )
     link_libraries( ${SQLite3_LIBRARIES} )
-    #message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
-    #message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
+    message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
+    message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
 ELSE(SQLite3_FOUND)
     message(SEND_ERROR "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
@@ -303,8 +331,8 @@ find_package(PortMidi REQUIRED)
 IF(PortMidi_FOUND)
     include_directories( ${PortMidi_INCLUDE_DIRS} )
     link_libraries( ${PortMidi_LIBRARIES} )
-    #message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
-    #message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
+    message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
+    message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
 ELSE(PortMidi_FOUND)
     message(SEND_ERROR "PortMidi not found")
 ENDIF(PortMidi_FOUND)
@@ -321,7 +349,7 @@ if (LENMUS_USE_LOMSE_SOURCES)
     )
     message("LOMSE: Not using Lomse library, but building with its sources")
 else()
-    find_package(Lomse 0.14)                    
+    find_package(Lomse 0.25)                    
     if( LOMSE_FOUND )
         include_directories( ${LOMSE_INCLUDE_DIRS} )
         link_libraries( ${LOMSE_LIBRARIES} )
@@ -333,39 +361,6 @@ else()
     endif()
 endif()
 
-# Check for Boost >= 1.42.0
-set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
-    "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0"
-    "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" "1.53" "1.53.0" "1.54" "1.54.0"
-    "1.55" "1.55.0" "1.56" "1.56.0" "1.57" "1.57.0" "1.58" "1.58.0" "1.59" "1.59.0"
-    "1.60" "1.60.0" )
-#set(Boost_USE_STATIC_LIBS       OFF)
-#set(Boost_USE_MULTITHREADED     OFF)
-#set(Boost_USE_STATIC_RUNTIME    OFF)
-#set(Boost_DEBUG                 TRUE)
-
-find_package(Boost 1.42.0 COMPONENTS date_time thread system REQUIRED)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    link_libraries( ${Boost_LIBRARIES} )
-    link_directories( ${Boost_LIBRARY_DIRS} )
-    set(BOOST_VERSION_STR   "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" )
-    if (NOT ".${Boost_SUBMINOR_VERSION}" STREQUAL "." )
-	    set(BOOST_VERSION_STR   "${BOOST_VERSION_STR}.${Boost_SUBMINOR_VERSION}" )
-	endif()
-    message("Boost found: lib version= ${Boost_LIB_VERSION}, BOOST_VERSION_STR=${BOOST_VERSION_STR}" )
-    set(BOOST_DEPENDENCIES 
-        "libboost-thread${BOOST_VERSION_STR}, libboost-date-time${BOOST_VERSION_STR},
-         libboost-system${BOOST_VERSION_STR}")
-    #set(BOOST_DEPENDENCIES 
-    #    "libboost-system (>= 1.42), libboost-thread (>= 1.42), libboost-date-time (>= 1.42)" )
-    message("Boost found: libraries: ${Boost_LIBRARIES}" )
-    message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
-    message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )
-    message("Boost dependencies: ${BOOST_DEPENDENCIES}" )
-else()
-    message(SEND_ERROR "Boost package not found. Reason: ${Boost_ERROR_REASON}" )
-endif()
 
 # Check for FreeType: header files required by some lomse headers
 find_package(Freetype REQUIRED)              
@@ -443,6 +438,12 @@ if (UNIX)
 endif()
 
 
+#define a header file to pass CMake settings to source code
+configure_file(
+    "${LENMUS_ROOT_DIR}/lenmus_config.h.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
+)
+
 
 #////////////////////////////////////////////////////////////////////////
 # Target: LenMus program
@@ -491,7 +492,6 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_cadence.cpp
     ${SRC_DIR}/auxmusic/lenmus_chord.cpp
     ${SRC_DIR}/auxmusic/lenmus_composer.cpp
-    ${SRC_DIR}/auxmusic/lenmus_conversion.cpp
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
     ${SRC_DIR}/auxmusic/lenmus_images_creator.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
@@ -571,6 +571,8 @@ set(OPTIONS_FILES
     ${SRC_DIR}/options/lenmus_languages.cpp
     ${SRC_DIR}/options/lenmus_options_dlg.cpp
     ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_playback_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_shortcuts_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
 )
@@ -607,12 +609,14 @@ set(XML_PARSER_FILES
     ${SRC_DIR}/xml_parser/lenmus_xml_parser.cpp
 )
 
-if (${LENMUS_DEBUG_BUILD})
+if (${LENMUS_ENABLE_UNIT_TESTS})
     set(TEST_FILES
         ${SRC_DIR}/tests/lenmus_test_app.cpp
+        ${SRC_DIR}/tests/lenmus_test_cadence.cpp
         ${SRC_DIR}/tests/lenmus_test_composer.cpp
         ${SRC_DIR}/tests/lenmus_test_mainframe.cpp
         ${SRC_DIR}/tests/lenmus_test_score_corrector.cpp
+        ${SRC_DIR}/tests/lenmus_test_tokenizer.cpp
         ${SRC_DIR}/tests/lenmus_test_runner.cpp
     )
 endif()
@@ -655,7 +659,7 @@ source_group( "packages"        FILES ${LENMUS_PACKAGES_FILES} )
 source_group( "toolbox"         FILES ${TOOLBOX_FILES} )
 source_group( "updater"         FILES ${UPDATER_FILES} )
 source_group( "widgets"         FILES ${WIDGETS_FILES} )
-if (${LENMUS_DEBUG_BUILD})
+if (${LENMUS_ENABLE_UNIT_TESTS})
     source_group( "tests"           FILES ${TEST_FILES} )
 endif()
 
@@ -702,8 +706,9 @@ add_dependencies(${LENMUS} lenmus-version)
 target_link_libraries ( ${LENMUS} 
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
             ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
+			${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
+			${ZLIB_LIBRARIES}
 )
-
 
 
 #///////////////////////////////////////////////////////////////////////////////
@@ -728,7 +733,7 @@ install( TARGETS ${LENMUS} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" )
 
     # files in root folder
 install(FILES  AUTHORS CHANGELOG.md INSTALL LICENSE
-               NEWS README THANKS 
+               NEWS README.md THANKS 
         DESTINATION ${ROOT_INSTALL_HOME} )
 
     # locale
@@ -852,37 +857,38 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES
 #///////////////////////////////////////////////////////////////////////////////
 # CPack section: installers generation
 #///////////////////////////////////////////////////////////////////////////////
-SET(CPACK_GENERATOR "DEB")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
-set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
-set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION} )
-set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
-set(CPACK_DEBIAN_PACKAGE_SECTION "education")
 
-
-IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
-  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-ELSE()
-  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
-ENDIF() 
- 
 set(CPACK_PACKAGE_VENDOR "LenMus")
-set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
+set(CPACK_PACKAGE_DESCRIPTION "A program for aural training and learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 set(CPACK_PACKAGE_CONTACT "s.cecilio@gmail.com")
 
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-if (LENMUS_USE_LOMSE_SOURCES)
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-                libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
-                ${BOOST_DEPENDENCIES} ")
-else()
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.14), libsqlite3-0, libportmidi0,
-            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
-            ${BOOST_DEPENDENCIES} ")
-endif()
-message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
-message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
+if(UNIX)
+	#variables for Debian package
+	SET(CPACK_GENERATOR "DEB")
+	SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
+	set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
+	set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION} )
+	set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
+	set(CPACK_DEBIAN_PACKAGE_SECTION "education")
 
-include(CPack)
+	IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
+	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+	ELSE()
+	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+	ENDIF() 
+	 
+	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+	if (LENMUS_USE_LOMSE_SOURCES)
+		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
+		            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
+	else()
+		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
+		        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
+	endif()
+	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
+	message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
+
+	include(CPack)
+endif(UNIX)
 

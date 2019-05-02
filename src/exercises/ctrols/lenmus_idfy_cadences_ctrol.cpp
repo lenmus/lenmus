@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -29,6 +29,7 @@
 #include "lenmus_chord.h"
 #include "lenmus_injectors.h"
 #include "lenmus_colors.h"
+#include "lenmus_utilities.h"
 
 //lomse
 #include <lomse_doorway.h>
@@ -254,7 +255,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
 
 	// If it was not possible to create the cadence for this key signature, try
 	// again with another cadence
-	int nTimes = 0;
+    int nTimes = 0;
 	while (m_sAnswer == "")
     {
 		nCadenceType = m_pConstrains->GetRandomCadence();
@@ -356,7 +357,8 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
 {
     //create the chords
     Cadence oCad;
-    if (!oCad.Create(nType, m_nKey, true)) return "";
+    if (!oCad.create(nType, m_nKey))
+        return "";
 
     //delete the previous score
     if (*pProblemScore)
@@ -383,7 +385,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     pInstr->add_clef( k_clef_G2, 1 );
     pInstr->add_clef( k_clef_F4, 2 );
     pInstr->add_key_signature( m_nKey );
-    pInstr->add_time_signature(2 ,4);
+    pInstr->add_time_signature(4, 4);
 
     //If ear training add A4/Tonic chord
     if (!m_pConstrains->is_theory_mode())
@@ -398,7 +400,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         else
         {
             // Use tonic chord
-            Chord* pChord = oCad.GetTonicChord();
+            Chord* pChord = oCad.get_tonic_chord();
             int nNumNotes = pChord->get_num_notes();
             sPattern = "(chord (n " + pChord->GetPattern(0) + " w)";
             for (int i=1; i < nNumNotes; i++)
@@ -417,7 +419,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     }
 
     // Loop to add chords
-    for (int iC=0; iC < oCad.GetNumChords(); iC++)
+    for (int iC=0; iC < oCad.get_num_chords(); iC++)
     {
         pInstr->add_spacer(15);
         if (iC != 0)
@@ -430,13 +432,12 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         sPattern += "(n " + oCad.get_rel_ldp_name(iC, 2) + " w p1)";
         sPattern += "(n " + oCad.get_rel_ldp_name(iC, 3) + " w p1) )";
         pInstr->add_staff_objects( sPattern );
-//        LOMSE_LOG_DEBUG(str(boost::format("problem='%s'"),
-//                     to_wx_string(sPattern).wx_str());
+//        LOMSE_LOG_DEBUG("problem='%s'", sPattern.c_str());
     }
     pInstr->add_spacer(20);
     pInstr->add_barline(k_barline_end);
 
-    (*pProblemScore)->close();
+    (*pProblemScore)->end_of_changes();
 
     //Prepare Solution Score
     if (pSolutionScore)
@@ -451,10 +452,10 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         pInstr->add_clef( k_clef_G2, 1 );
         pInstr->add_clef( k_clef_F4, 2 );
         pInstr->add_key_signature( m_nKey );
-        pInstr->add_time_signature(2 ,4);
+        pInstr->add_time_signature(4 ,4);
 
         // Loop to add chords
-        for (int iC=0; iC < oCad.GetNumChords(); iC++)
+        for (int iC=0; iC < oCad.get_num_chords(); iC++)
         {
             pInstr->add_spacer(15);
             if (iC != 0)
@@ -471,11 +472,11 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         pInstr->add_spacer(20);
         pInstr->add_barline(k_barline_end);
 
-        (*pSolutionScore)->close();
+        (*pSolutionScore)->end_of_changes();
     }
 
     //return cadence name
-    return  oCad.GetName();
+    return  get_key_signature_name(m_nKey) + ". " + oCad.get_name();
 }
 
 

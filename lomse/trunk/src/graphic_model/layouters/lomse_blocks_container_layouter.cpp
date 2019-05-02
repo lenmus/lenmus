@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -57,14 +57,14 @@ ContentLayouter::ContentLayouter(ImoContentObj* pItem, Layouter* pParent,
 //---------------------------------------------------------------------------------------
 void ContentLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     set_cursor_and_available_space();
 
     TreeNode<ImoObj>::children_iterator it;
     for (it = m_pContent->begin(); it != m_pContent->end(); ++it)
     {
-        layout_item( dynamic_cast<ImoContentObj*>( *it ), m_pItemMainBox );
+        layout_item(static_cast<ImoContentObj*>( *it ), m_pItemMainBox, m_constrains);
     }
     set_layout_is_finished(true);
 }
@@ -105,7 +105,7 @@ MultiColumnLayouter::~MultiColumnLayouter()
 //---------------------------------------------------------------------------------------
 void MultiColumnLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     set_cursor_and_available_space();
 
@@ -120,7 +120,7 @@ void MultiColumnLayouter::layout_in_box()
     for (iCol=0, it = pWrapper->begin(); it != pWrapper->end(); ++it, ++iCol)
     {
         //create column layouter and prepare it to layout the column
-        ImoContent* pContent = dynamic_cast<ImoContent*>( *it );
+        ImoContent* pContent = static_cast<ImoContent*>( *it );
         m_colLayouters.push_back( create_layouter(pContent) );
         Layouter* pCurLayouter = m_colLayouters.back();
         pCurLayouter->prepare_to_start_layout();
@@ -240,7 +240,7 @@ BlocksContainerLayouter::BlocksContainerLayouter(ImoContentObj* pImo, Layouter* 
 //---------------------------------------------------------------------------------------
 void BlocksContainerLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     set_cursor_and_available_space();
 
@@ -250,7 +250,12 @@ void BlocksContainerLayouter::layout_in_box()
     TreeNode<ImoObj>::children_iterator it;
     for (it = pContent->begin(); it != pContent->end(); ++it)
     {
-        layout_item( dynamic_cast<ImoContentObj*>( *it ), m_pItemMainBox );
+        ImoContentObj* pObj = dynamic_cast<ImoContentObj*>( *it );
+        if (pObj)
+            layout_item(pObj, m_pItemMainBox, m_constrains);
+        else
+            LOMSE_LOG_ERROR("Invalid IMO tree. Child of ImoBlocksContainer "
+                            "is not ImoContentObj");
     }
     set_layout_is_finished(true);
 }

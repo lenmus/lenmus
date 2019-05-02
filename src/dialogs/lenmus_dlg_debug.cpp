@@ -19,6 +19,7 @@
 //---------------------------------------------------------------------------------------
 
 #include "lenmus_dlg_debug.h"
+#include "lenmus_main_frame.h"
 
 #include <wx/wxprec.h>
 #include <wx/wx.h>
@@ -32,6 +33,8 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 
 namespace lenmus
@@ -46,6 +49,11 @@ enum
 };
 
 
+//=======================================================================================
+// DlgDebug implementation
+//=======================================================================================
+
+
 wxBEGIN_EVENT_TABLE(DlgDebug, wxDialog)
    EVT_BUTTON(wxID_OK, DlgDebug::OnOK)
    EVT_BUTTON(lmID_SAVE, DlgDebug::OnSave)
@@ -53,6 +61,7 @@ wxEND_EVENT_TABLE()
 
 IMPLEMENT_CLASS(DlgDebug, wxDialog)
 
+//---------------------------------------------------------------------------------------
 DlgDebug::DlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSave)
     : wxDialog(parent, -1, sTitle, wxDefaultPosition, wxSize(800, 430),
                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
@@ -100,20 +109,24 @@ DlgDebug::DlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSav
     SetSizer(pMainSizer);
 }
 
+//---------------------------------------------------------------------------------------
 DlgDebug::~DlgDebug()
 {
 }
 
+//---------------------------------------------------------------------------------------
 void DlgDebug::OnOK(wxCommandEvent& WXUNUSED(event))
 {
    EndModal(wxID_OK);
 }
 
+//---------------------------------------------------------------------------------------
 void DlgDebug::AppendText(wxString sText)
 {
     m_pTxtData->AppendText(sText);
 }
 
+//---------------------------------------------------------------------------------------
 void DlgDebug::OnSave(wxCommandEvent& WXUNUSED(event))
 {
     wxString sFilename = wxFileSelector("File to save", "", "debug", "txt",
@@ -140,7 +153,7 @@ wxBEGIN_EVENT_TABLE(lmHtmlDlg, wxDialog)
 wxEND_EVENT_TABLE()
 
 
-
+//---------------------------------------------------------------------------------------
 lmHtmlDlg::lmHtmlDlg(wxWindow* pParent, const wxString& sTitle, bool fSaveButton)
     : wxDialog(pParent, wxID_ANY, sTitle, wxDefaultPosition, wxSize(600,400),
                wxDEFAULT_DIALOG_STYLE)
@@ -150,6 +163,7 @@ lmHtmlDlg::lmHtmlDlg(wxWindow* pParent, const wxString& sTitle, bool fSaveButton
     CentreOnScreen();
 }
 
+//---------------------------------------------------------------------------------------
 void lmHtmlDlg::CreateControls(bool fSaveButton)
 {
     //AWARE: Code created with wxFormBuilder and copied here.
@@ -185,15 +199,18 @@ void lmHtmlDlg::CreateControls(bool fSaveButton)
 	this->Layout();
 }
 
+//---------------------------------------------------------------------------------------
 lmHtmlDlg::~lmHtmlDlg()
 {
 }
 
+//---------------------------------------------------------------------------------------
 void lmHtmlDlg::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 {
    EndModal(wxID_OK);
 }
 
+//---------------------------------------------------------------------------------------
 void lmHtmlDlg::OnSaveClicked(wxCommandEvent& WXUNUSED(event))
 {
 	wxString sFilename = wxFileSelector(_("File to save"));
@@ -206,9 +223,147 @@ void lmHtmlDlg::OnSaveClicked(wxCommandEvent& WXUNUSED(event))
 
 }
 
+//---------------------------------------------------------------------------------------
 void lmHtmlDlg::SetContent(const wxString& sContent)
 {
     m_pHtmlWnd->SetPage(sContent);
+}
+
+
+//=======================================================================================
+// DlgSpacingParams implementation
+//=======================================================================================
+
+wxBEGIN_EVENT_TABLE(DlgSpacingParams, wxDialog)
+   EVT_BUTTON(wxID_OK, DlgSpacingParams::on_close)
+   EVT_BUTTON(lmID_SAVE, DlgSpacingParams::on_update)
+wxEND_EVENT_TABLE()
+
+IMPLEMENT_CLASS(DlgSpacingParams, wxDialog)
+
+//---------------------------------------------------------------------------------------
+DlgSpacingParams::DlgSpacingParams(wxWindow * parent, float force, float alpha,
+                                   float dmin)
+    : wxDialog(parent, -1, "Spacing parameters", wxDefaultPosition, wxSize(400, 230))
+    , m_force(force)
+    , m_alpha(alpha)
+    , m_dmin(dmin)
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+
+	wxFlexGridSizer* pGridSizer;
+	pGridSizer = new wxFlexGridSizer( 3, 2, 0, 0 );
+	pGridSizer->SetFlexibleDirection( wxBOTH );
+	pGridSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_lblForce = new wxStaticText( this, wxID_ANY, _("Optimum force:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblForce->Wrap( -1 );
+	pGridSizer->Add( m_lblForce, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
+	m_txtForce = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pGridSizer->Add( m_txtForce, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
+	m_lblAlpha = new wxStaticText( this, wxID_ANY, _("Alpha:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAlpha->Wrap( -1 );
+	pGridSizer->Add( m_lblAlpha, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
+	m_txtAlpha = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pGridSizer->Add( m_txtAlpha, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
+	m_lblDmin = new wxStaticText( this, wxID_ANY, _("D min:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblDmin->Wrap( -1 );
+	pGridSizer->Add( m_lblDmin, 0, wxALL, 5 );
+
+	m_txtDmin = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	pGridSizer->Add( m_txtDmin, 0, wxALL, 5 );
+
+	pMainSizer->Add( pGridSizer, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* pButtonsSizer;
+	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
+
+
+	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_cmdUpdate = new wxButton( this, wxID_ANY, _("Update"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cmdUpdate->SetDefault();
+	pButtonsSizer->Add( m_cmdUpdate, 0, wxALL|wxALIGN_BOTTOM, 5 );
+
+	m_cmdClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_cmdClose, 0, wxALL|wxALIGN_BOTTOM, 5 );
+
+
+	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	pMainSizer->Add( pButtonsSizer, 0, wxEXPAND, 5 );
+
+	this->SetSizer( pMainSizer );
+	this->Layout();
+
+	// Connect Events
+	m_cmdUpdate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_update ), NULL, this );
+	m_cmdClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_close ), NULL, this );
+
+    //load current values for spacing params
+    *m_txtForce << m_force;
+    *m_txtAlpha << m_alpha;
+    *m_txtDmin << m_dmin;
+}
+
+//---------------------------------------------------------------------------------------
+DlgSpacingParams::~DlgSpacingParams()
+{
+	// Disconnect Events
+	m_cmdUpdate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_update ), NULL, this );
+	m_cmdClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_close ), NULL, this );
+}
+
+//---------------------------------------------------------------------------------------
+void DlgSpacingParams::on_close(wxCommandEvent& WXUNUSED(event))
+{
+    update_params();
+    Hide();
+}
+
+//---------------------------------------------------------------------------------------
+void DlgSpacingParams::on_update(wxCommandEvent& WXUNUSED(event))
+{
+    update_params();
+}
+
+//---------------------------------------------------------------------------------------
+void DlgSpacingParams::update_params()
+{
+    wxString tmp = m_txtForce->GetValue();
+    if ( wxSscanf(tmp, _T("%f\n"), &m_force) != 1 )
+    {
+        wxMessageBox("Invalid number for force!");
+        return;
+    }
+    tmp = m_txtAlpha->GetValue();
+    if ( wxSscanf(tmp, _T("%f"), &m_alpha) != 1 )
+    {
+        wxMessageBox("Invalid number for alpha!");
+        return;
+    }
+    tmp = m_txtDmin->GetValue();
+    if ( wxSscanf(tmp, _T("%f"), &m_dmin) != 1 )
+    {
+        wxMessageBox("Invalid number for Dmin!");
+        return;
+    }
+
+//    stringstream out;
+//    out << "New values: force= " << m_force
+//        << ", alpha= " << m_alpha;
+//        << ", Dmin= " << m_dmin;
+//    wxMessageBox(out.str());
+
+    MainFrame* pMainFrame = static_cast<MainFrame*>( GetParent() );
+    pMainFrame->update_spacing_params(m_force, m_alpha, m_dmin);
 }
 
 

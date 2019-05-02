@@ -44,6 +44,13 @@ namespace lomse
 TimeEngraver::TimeEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                            int iInstr, int iStaff)
     : Engraver(libraryScope, pScoreMeter, iInstr, iStaff)
+    , m_pTimeShape(nullptr)
+    , m_uTopWidth(0.0f)
+    , m_uBottomWidth(0.0f)
+    , m_pShapesTop{nullptr, nullptr}
+    , m_pShapesBottom{nullptr, nullptr}
+    , m_fontSize(0.0)
+    , m_pCreatorImo(nullptr)
 {
 }
 
@@ -76,11 +83,11 @@ GmoShape* TimeEngraver::create_shape(ImoTimeSignature* pCreatorImo, UPoint uPos,
     }
     else
     {
-        string msg = str( boost::format(
-                        "[TimeEngraver::create_shape] unsupported time signature type %d")
-                        % pCreatorImo->get_type() );
-        LOMSE_LOG_ERROR(msg);
-        throw runtime_error(msg);
+        stringstream msg;
+        msg << "[TimeEngraver::create_shape] unsupported time signature type " <<
+               pCreatorImo->get_type() ;
+        LOMSE_LOG_ERROR(msg.str());
+        throw runtime_error(msg.str());
     }
 }
 
@@ -127,13 +134,14 @@ void TimeEngraver::create_digits(int digits, GmoShape* pShape[])
 {
     if (digits > 9)
     {
-        pShape[0] = create_digit(1);
-        pShape[1] = create_digit(digits - 10);
+        int top = digits/10;
+        pShape[0] = create_digit(top);
+        pShape[1] = create_digit(digits - 10*top);
     }
     else
     {
         pShape[0] = create_digit(digits);
-        pShape[1] = NULL;
+        pShape[1] = nullptr;
     }
 }
 

@@ -49,6 +49,7 @@ public:
     //random numbers
     static int random_number(int nMin, int nMax);
     static bool flip_coin();
+    static void shuffle(int num, int* pIdx);
 
     // clefs
     static EClef generate_clef(ClefConstrains* pValidClefs);

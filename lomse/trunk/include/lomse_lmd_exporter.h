@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -56,13 +56,16 @@ protected:
     string m_lomseVersion;
     string m_exportTime;
 
+    //controlling open tags
+    stack<string> m_openTags;
+
 public:
     LmdExporter(LibraryScope& libScope);
     virtual ~LmdExporter();
 
     //formats for scores
     enum {
-        k_format_ldp = 0, k_format_lmd, k_format_musicxml,
+        k_format_ldp = 0, k_format_lmd, k_format_musicxml, k_format_mnx,
     };
 
     //settings
@@ -84,12 +87,19 @@ public:
 
     //auxiliary
     string get_version_and_time_string();
+    inline LibraryScope& get_library_scope() { return m_libraryScope; }
 
     //static methods for types ldp names to conversion
     static string clef_type_to_ldp(int clefType);
     static string barline_type_to_ldp(int barType);
     static string color_to_ldp(Color color);
     static string float_to_string(float num);
+
+    //helper for controlling open tags
+    inline bool are_there_open_tags() { return m_openTags.size() > 0; }
+    inline string current_open_tag() { return m_openTags.top(); }
+    inline void push_tag(const string& tag) { m_openTags.push(tag); }
+    inline void pop_tag() { m_openTags.pop(); }
 
 protected:
     LmdGenerator* new_generator(ImoObj* pImo);

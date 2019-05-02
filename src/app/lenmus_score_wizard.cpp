@@ -83,7 +83,7 @@ public:
 
 #define lmNUM_TEMPLATES 18
 static TemplateData m_Templates[lmNUM_TEMPLATES];
-static bool m_fStringsInitialized = false;
+static wxString m_language = "??";
 
 
 //template to use
@@ -175,7 +175,7 @@ ScoreWizard::ScoreWizard(wxWindow* parent, ApplicationScope& appScope)
 
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    if (!m_fStringsInitialized)
+    if (m_language != ApplicationScope::get_language())
     {
         //AWARE: When addign more templates, update lmNUM_TEMPLATES;
         //                                  Displayed name                  Template file
@@ -198,7 +198,7 @@ ScoreWizard::ScoreWizard(wxWindow* parent, ApplicationScope& appScope)
         m_Templates[16] = TemplateData( _("Woodwind trio"),               "woodwind_trio.lms" );
         m_Templates[17] = TemplateData( _("Woodwind quintet"),            "woodwind_quintet.lms" );
         //AWARE: When addign more templates, update lmNUM_TEMPLATES;
-        m_fStringsInitialized = true;
+        m_language = ApplicationScope::get_language();
     }
 
 

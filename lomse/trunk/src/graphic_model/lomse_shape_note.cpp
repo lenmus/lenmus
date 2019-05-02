@@ -48,10 +48,10 @@ GmoShapeNote::GmoShapeNote(ImoObj* pCreatorImo,
     , VoiceRelatedShape()
     , m_pFontStorage( libraryScope.font_storage() )
     , m_libraryScope(libraryScope)
-    , m_pNoteheadShape(NULL)
-	, m_pStemShape(NULL)
-    , m_pAccidentalsShape(NULL)
-    , m_pFlagShape(NULL)
+    , m_pNoteheadShape(nullptr)
+	, m_pStemShape(nullptr)
+    , m_pAccidentalsShape(nullptr)
+    , m_pFlagShape(nullptr)
     , m_uAnchorOffset(0.0f)
     , m_fUpOriented(true)
     , m_nPosOnStaff(1)
@@ -70,14 +70,16 @@ GmoShapeNote::~GmoShapeNote()
 //---------------------------------------------------------------------------------------
 void GmoShapeNote::on_draw(Drawer* pDrawer, RenderOptions& opt)
 {
-    ////DBG: Draw anchor line
-    //pDrawer->begin_path();
-    //pDrawer->fill(Color(0, 0, 0, 0));
-    //pDrawer->stroke(Color(255, 0, 255));
-    //pDrawer->stroke_width(15.0);
-    //pDrawer->move_to(m_origin.x - get_anchor_offset(), m_origin.y);
-    //pDrawer->vline_to(m_origin.y + m_size.height);
-    //pDrawer->end_path();
+    if (opt.draw_anchor_lines)
+    {
+        pDrawer->begin_path();
+        pDrawer->fill(Color(0, 0, 0, 0));
+        pDrawer->stroke(Color(255, 0, 255));
+        pDrawer->stroke_width(15.0);
+        pDrawer->move_to(m_origin.x - get_anchor_offset(), m_origin.y);
+        pDrawer->vline_to(m_origin.y + m_size.height);
+        pDrawer->end_path();
+    }
 
     draw_leger_lines(pDrawer);
     GmoCompositeShape::on_draw(pDrawer, opt);
@@ -282,7 +284,7 @@ GmoShapeRest::GmoShapeRest(ImoObj* pCreatorImo, ShapeId idx,
     : GmoCompositeShape(pCreatorImo, GmoObj::k_shape_rest, idx, color)
     , VoiceRelatedShape()
     , m_libraryScope(libraryScope)
-	, m_pBeamShape(NULL)
+	, m_pBeamShape(nullptr)
 {
 }
 

@@ -67,7 +67,7 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
             (key C)
             (time 4 4 noVisible)
             (chord (n g3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
-            (text ''II'' (style "figured-bass-10") dx:-60 dy:200)
+            (text ''I'' (style "figured-bass-10") dx:-60 dy:200)
             (text ''6'' (style "figured-bass-7") dx:-40 dy:185)
             (text ''4'' (style "figured-bass-7") dx:-40 dy:210)
             (barline)

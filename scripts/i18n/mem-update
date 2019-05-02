@@ -83,8 +83,8 @@ then
     echo "Starting process for all languages"
     LANGS="de es eu fr gl_ES it nl tr zh_CN"
     for LANGUAGE in $LANGS; do
-        COMP_PATH=/datos/USR/lm/projects/lenmus/trunk/locale/$LANGUAGE
-        BOOK_PATH=/datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANGUAGE
+        COMP_PATH=/datos/cecilio/lm/projects/lenmus/lenmus/locale/$LANGUAGE
+        BOOK_PATH=/datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/$LANGUAGE
         if [ "$BOOK" == "lenmus" ]
         then
             AddLenmus $LANGUAGE
@@ -94,8 +94,8 @@ then
     done
 else
     #only specified language
-    COMP_PATH=/datos/USR/lm/projects/lenmus/trunk/locale/$LANG
-    BOOK_PATH=/datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANG
+    COMP_PATH=/datos/cecilio/lm/projects/lenmus/lenmus/locale/$LANG
+    BOOK_PATH=/datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/$LANG
 
     if [ "$BOOK" == "lenmus" ]
     then

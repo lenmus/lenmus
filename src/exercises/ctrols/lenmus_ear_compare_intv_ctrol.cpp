@@ -168,7 +168,6 @@ wxString EarCompareIntvCtrol::set_new_problem()
     for (int i=0; i<2; i++)
     {
         m_pScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-        m_pScore[i]->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
         ImoInstrument* pInstr = m_pScore[i]->add_instrument();
             // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
         ImoSystemInfo* pInfo = m_pScore[i]->get_first_system_info();
@@ -181,12 +180,12 @@ wxString EarCompareIntvCtrol::set_new_problem()
         pInstr->add_object( sPattern[i][1] );
         pInstr->add_barline(k_barline_end, k_no_visible);
 
-        m_pScore[i]->close();
+        m_pScore[i]->end_of_changes();
     }
 
     //create the answer score with both intervals
     m_pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    m_pSolutionScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    m_pSolutionScore->set_long_option("Render.SpacingMethod", k_spacing_fixed);
     ImoInstrument* pInstr = m_pSolutionScore->add_instrument();
     //    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = m_pSolutionScore->get_first_system_info();
@@ -195,7 +194,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     pInstr->add_key_signature(nKey);
     pInstr->add_time_signature(4 ,4, k_no_visible );
         //first interval
-    pInstr->add_object("(spacer 40 (text ''" + to_std_string(oIntv0.get_interval_name()) +
+    pInstr->add_object("(spacer 10 (text ''" + to_std_string(oIntv0.get_interval_name()) +
                        "'' dy:-40))");
     pInstr->add_object( sPattern[0][0] );
     pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
@@ -208,7 +207,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     pInstr->add_object("(r h noVisible)");
     pInstr->add_barline(k_barline_simple, k_no_visible);
         //second interval
-    pInstr->add_object("(spacer 40 (text ''" + to_std_string(oIntv1.get_interval_name()) +
+    pInstr->add_object("(spacer 0 (text ''" + to_std_string(oIntv1.get_interval_name()) +
                        "'' dy:-40))");
     pInstr->add_object( sPattern[1][0] );
     pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
@@ -216,7 +215,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     pInstr->add_spacer(80);
     pInstr->add_barline(k_barline_end);
 
-    m_pSolutionScore->close();
+    m_pSolutionScore->end_of_changes();
 
     //compute the right answer
     m_sAnswer = "";

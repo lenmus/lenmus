@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -57,7 +57,7 @@ namespace lomse
 // These static code implements the AUTODIN II polynomial
 // The variable corresponding to the macro argument "crc" should
 // be an unsigned long.
-// Oroginal code  by Spencer Garrett <srg@quick.com>
+// Original code  by Spencer Garrett <srg@quick.com>
 //
 // generated using the AUTODIN II polynomial
 //   x^32 + x^26 + x^23 + x^22 + x^16 +
@@ -224,7 +224,7 @@ bool decompose_ft_outline(const FT_Outline& outline, bool flip_y, const trans_af
                 v_start.x = (v_start.x + v_last.x) / 2;
                 v_start.y = (v_start.y + v_last.y) / 2;
 
-                v_last = v_start;
+                //v_last = v_start;
             }
             point--;
             tags--;
@@ -442,12 +442,12 @@ void decompose_ft_bitmap_mono(const FT_Bitmap& bitmap,
         y += bitmap.rows;
         pitch = -pitch;
     }
-    for(i = 0; i < bitmap.rows; i++)
+    for(i = 0; i < int(bitmap.rows); i++)
     {
         sl.reset_spans();
         bitset_iterator bits(buf, 0);
         int j;
-        for(j = 0; j < bitmap.width; j++)
+        for(j = 0; j < int(bitmap.width); j++)
         {
             if(bits.bit()) sl.add_cell(x + j, cover_full);
             ++bits;
@@ -481,11 +481,11 @@ void decompose_ft_bitmap_gray8(const FT_Bitmap& bitmap,
         y += bitmap.rows;
         pitch = -pitch;
     }
-    for(i = 0; i < bitmap.rows; i++)
+    for(i = 0; i < int(bitmap.rows); i++)
     {
         sl.reset_spans();
         const int8u* p = buf;
-        for(j = 0; j < bitmap.width; j++)
+        for(j = 0; j < int(bitmap.width); j++)
         {
             if(*p) sl.add_cell(x + j, ras.apply_gamma(*p));
             ++p;
@@ -643,10 +643,10 @@ void font_engine_freetype_base::load_font_file(const std::string& font_name,
     {
         delete [] m_face_names[0];
         FT_Done_Face(m_faces[0]);
-        memcpy(m_faces,
+        memmove(m_faces,
                 m_faces + 1,
                 (m_max_faces - 1) * sizeof(FT_Face));
-        memcpy(m_face_names,
+        memmove(m_face_names,
                 m_face_names + 1,
                 (m_max_faces - 1) * sizeof(char*));
         m_num_faces = m_max_faces - 1;

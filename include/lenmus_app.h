@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -57,8 +57,8 @@ const int k_id_restart_app = ::wxNewId();
 class TheApp : public wxApp
 {
 protected:
-    MainFrame* m_frame;
-//    bool            m_fUseGui;
+    MainFrame*  m_frame;
+    bool        m_fUseGui;
     wxSingleInstanceChecker*    m_pInstanceChecker;
     wxLocale*           m_pLocale;          //locale we'll be using (user config)
     SplashFrame*        m_pSplash;
@@ -85,8 +85,8 @@ public:
 	//overrides
 	virtual int FilterEvent(wxEvent& event);
     virtual void OnFatalException();
-//    virtual void OnInitCmdLine(wxCmdLineParser& parser);
-//    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+    virtual void OnInitCmdLine(wxCmdLineParser& parser);
+    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
 
     ////override
     //void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond,
@@ -109,7 +109,6 @@ private:
     void set_up_locale(wxString lang);
     SplashFrame* create_GUI(int milliseconds, bool fFirstTime);
 //    void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
-//    void ParseCommandLine();
     void set_up_current_language();
     void inform_lomse_about_fonts_path();
     void create_main_frame();

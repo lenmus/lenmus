@@ -167,7 +167,7 @@ enum {
 };
 
 static ClefData m_tClefs[lm_eNUM_CLEFS];
-static bool m_fStringsInitialized = false;
+static wxString m_language = "??";
 
 
 //---------------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ GrpClefType::GrpClefType(ToolPage* pParent, wxBoxSizer* pMainSizer,
 {
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    if (!m_fStringsInitialized)
+    if (m_language != ApplicationScope::get_language())
     {
         //AWARE: When addign more clefs, update lm_eNUM_CLEFS;
         m_tClefs[0] = ClefData(k_clef_G2, _("G clef on 2nd line"));
@@ -207,7 +207,7 @@ GrpClefType::GrpClefType(ToolPage* pParent, wxBoxSizer* pMainSizer,
 //        k_clef_G2_15,       //15 below
 //        k_clef_15_F4,       //15 above
 //        k_clef_F4_15,       //15 below
-        m_fStringsInitialized = true;
+        m_language = ApplicationScope::get_language();
     }
 }
 
@@ -421,14 +421,14 @@ GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer,
     {
         m_tMajorKeys[j].nKeyType = (EKeySignature)i;
         m_tMajorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);
-        m_tMajorKeys[j].nFifths = lomse::key_signature_to_num_fifths(i);
+        m_tMajorKeys[j].nFifths = KeyUtilities::key_signature_to_num_fifths(i);
     }
 
     for (int j=0, i = k_min_minor_key; i <= k_max_minor_key; i++, j++)
     {
         m_tMinorKeys[j].nKeyType = (EKeySignature)i;
         m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format("%s (%d%s)",;
-        m_tMinorKeys[j].nFifths = lomse::key_signature_to_num_fifths(i);
+        m_tMinorKeys[j].nFifths = KeyUtilities::key_signature_to_num_fifths(i);
     }
 }
 

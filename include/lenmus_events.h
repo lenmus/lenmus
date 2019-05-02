@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2010-2015 LenMus project
+//    Copyright (c) 2010-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,7 +30,7 @@
 using namespace lomse;
 
 //wxWidgets
-#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
+//#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 #undef system                   //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
@@ -44,45 +44,87 @@ class ProblemManager;
 class DlgCounters;
 
 //---------------------------------------------------------------------------------------
-// lmScoreHighlightEvent
-//      An event to signal different actions related to
-//      highlighting / unhighlighting notes while they are being played.
+// lmUpdateViewportEvent
+//      An event to signal the need to repaint the window and to update scrollbars
+//      due to an auto-scroll while the score is being played back.
 //---------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT, -1 )
+DECLARE_EVENT_TYPE( lmEVT_UPDATE_VIEWPORT, -1 )
 
-class lmScoreHighlightEvent : public wxEvent
+class lmUpdateViewportEvent : public wxEvent
 {
 private:
-    SpEventScoreHighlight m_pEvent;   //lomse event
+    SpEventUpdateViewport m_pEvent;   //lomse event
 
 public:
-    lmScoreHighlightEvent(SpEventScoreHighlight pEvent, int id = 0)
-        : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
+    lmUpdateViewportEvent(SpEventUpdateViewport pEvent, int id = 0)
+        : wxEvent(id, lmEVT_UPDATE_VIEWPORT)
         , m_pEvent(pEvent)
     {
     }
 
     // copy constructor
-    lmScoreHighlightEvent(const lmScoreHighlightEvent& event)
+    lmUpdateViewportEvent(const lmUpdateViewportEvent& event)
         : wxEvent(event)
         , m_pEvent( event.m_pEvent )
     {
     }
 
     // clone constructor. Required for sending with wxPostEvent()
-    virtual wxEvent *Clone() const { return LENMUS_NEW lmScoreHighlightEvent(*this); }
+    virtual wxEvent *Clone() const { return LENMUS_NEW lmUpdateViewportEvent(*this); }
 
     // accessors
-    SpEventScoreHighlight get_lomse_event() { return m_pEvent; }
+    SpEventUpdateViewport get_lomse_event() { return m_pEvent; }
 };
 
-typedef void (wxEvtHandler::*ScoreHighlightEventFunction)(lmScoreHighlightEvent&);
+typedef void (wxEvtHandler::*UpdateViewportEventFunction)(lmUpdateViewportEvent&);
+
+#define LM_EVT_UPDATE_VIEWPORT(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_UPDATE_VIEWPORT, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( UpdateViewportEventFunction, & fn ), (wxObject *) NULL ),
+
+
+//---------------------------------------------------------------------------------------
+// lmVisualTrackingEvent
+//      An event to signal different actions related to
+//      highlighting / unhighlighting notes while they are being played.
+//---------------------------------------------------------------------------------------
+
+DECLARE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT, -1 )
+
+class lmVisualTrackingEvent : public wxEvent
+{
+private:
+    SpEventVisualTracking m_pEvent;   //lomse event
+
+public:
+    lmVisualTrackingEvent(SpEventVisualTracking pEvent, int id = 0)
+        : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
+        , m_pEvent(pEvent)
+    {
+    }
+
+    // copy constructor
+    lmVisualTrackingEvent(const lmVisualTrackingEvent& event)
+        : wxEvent(event)
+        , m_pEvent( event.m_pEvent )
+    {
+    }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return LENMUS_NEW lmVisualTrackingEvent(*this); }
+
+    // accessors
+    SpEventVisualTracking get_lomse_event() { return m_pEvent; }
+};
+
+typedef void (wxEvtHandler::*VisualTrackingEventFunction)(lmVisualTrackingEvent&);
 
 #define LM_EVT_SCORE_HIGHLIGHT(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_SCORE_HIGHLIGHT, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( ScoreHighlightEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( VisualTrackingEventFunction, & fn ), (wxObject *) NULL ),
 
 
 //---------------------------------------------------------------------------------------
@@ -94,10 +136,10 @@ DECLARE_EVENT_TYPE( lmEVT_END_OF_PLAYBACK, -1 )
 class lmEndOfPlaybackEvent : public wxEvent
 {
 private:
-    SpEventPlayScore m_pEvent;   //lomse event
+    SpEventEndOfPlayback m_pEvent;   //lomse event
 
 public:
-    lmEndOfPlaybackEvent(SpEventPlayScore pEvent, int id = 0 )
+    lmEndOfPlaybackEvent(SpEventEndOfPlayback pEvent, int id = 0 )
         : wxEvent(id, lmEVT_END_OF_PLAYBACK)
         , m_pEvent(pEvent)
     {
@@ -114,7 +156,7 @@ public:
     virtual wxEvent *Clone() const { return LENMUS_NEW lmEndOfPlaybackEvent(*this); }
 
     // accessors
-    SpEventPlayScore get_lomse_event() { return m_pEvent; }
+    SpEventEndOfPlayback get_lomse_event() { return m_pEvent; }
 };
 
 typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);
@@ -123,6 +165,7 @@ typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_END_OF_PLAYBACK, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
     wxStaticCastEvent( EndOfPlayEventFunction, & fn ), (wxObject *) NULL ),
+
 
 //---------------------------------------------------------------------------------------
 // lmUpdateUIEvent: An event for updating ToolBox UI

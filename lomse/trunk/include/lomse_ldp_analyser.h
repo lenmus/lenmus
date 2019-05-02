@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -48,9 +48,10 @@ class ElementAnalyser;
 class LdpFactory;
 class LdpElement;
 class LdpAnalyser;
-class InternalModel;
+class ImoObj;
 class ImoNote;
 class ImoRest;
+class TypeMeasureInfo;
 
 
 //---------------------------------------------------------------------------------------
@@ -87,13 +88,12 @@ public:
         : RelationBuilder<ImoTieDto, LdpAnalyser>(reporter, pAnalyser, "tie", "Tie") {}
     virtual ~TiesBuilder() {}
 
-    void add_relation_to_notes_rests(ImoTieDto* pEndDto);
+    void add_relation_to_staffobjs(ImoTieDto* pEndDto);
 
 protected:
     bool notes_can_be_tied(ImoNote* pStartNote, ImoNote* pEndNote);
     void tie_notes(ImoTieDto* pStartDto, ImoTieDto* pEndDto);
     void error_notes_can_not_be_tied(ImoTieDto* pEndInfo);
-    void error_duplicated_tie(ImoTieDto* pExistingInfo, ImoTieDto* pNewInfo);
 };
 
 
@@ -106,7 +106,7 @@ public:
         : RelationBuilder<ImoBeamDto, LdpAnalyser>(reporter, pAnalyser, "beam", "Beam") {}
     virtual ~BeamsBuilder() {}
 
-    void add_relation_to_notes_rests(ImoBeamDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoBeamDto* pEndInfo);
 };
 
 
@@ -119,7 +119,7 @@ public:
         : RelationBuilder<ImoSlurDto, LdpAnalyser>(reporter, pAnalyser, "slur", "Slur") {}
     virtual ~SlursBuilder() {}
 
-    void add_relation_to_notes_rests(ImoSlurDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoSlurDto* pEndInfo);
 };
 
 
@@ -156,13 +156,24 @@ protected:
 // helper class to save tuplet info items, match them and build the tuplets
 class TupletsBuilder : public RelationBuilder<ImoTupletDto, LdpAnalyser>
 {
+private:
+    ImoTuplet* m_pTuplet;
+
 public:
     TupletsBuilder(ostream& reporter, LdpAnalyser* pAnalyser)
-        : RelationBuilder<ImoTupletDto, LdpAnalyser>(reporter, pAnalyser, "tuplet", "Tuplet") {}
+        : RelationBuilder<ImoTupletDto, LdpAnalyser>(reporter, pAnalyser, "tuplet", "Tuplet")
+        , m_pTuplet(nullptr)
+    {
+    }
     virtual ~TupletsBuilder() {}
 
-    void add_relation_to_notes_rests(ImoTupletDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoTupletDto* pEndInfo);
     inline bool is_tuplet_open() { return m_pendingItems.size() > 0; }
+
+    inline ImoTuplet* get_last_created_tuplet() { return m_pTuplet; }
+
+    void add_to_open_tuplets(ImoNoteRest* pNR);
+
 };
 
 
@@ -185,6 +196,7 @@ protected:
     SlursBuilder*   m_pSlursBuilder;
     map<string, int> m_lyricIndex;
     vector<ImoLyric*>  m_lyrics;
+    vector<int>     m_lyricsPlacement;
     ImoScore*       m_pCurScore;
     ImoScore*       m_pLastScore;
     ImoDocument*    m_pImoDoc;
@@ -202,21 +214,28 @@ protected:
 
     //saved values
     ImoNote* m_pLastNote;
+    TypeMeasureInfo* m_pMeasureInfo;
 
     //other
-    bool        m_fInstrIdRequired;     //Id required in instruments
+    bool    m_fInstrIdRequired;     //Id required in instruments
+    int     m_measuresCounter;
+
+    //FIX: for lyrics space
+    ImoInstrument*  m_pCurInstr;    //current instrument being analysed
+    friend class InstrumentAnalyser;
+    LUnits  m_extraMarginSpace;     //extra margin for next instrument
 
 public:
     LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document* pDoc);
     ~LdpAnalyser();
 
     //access to results
-    InternalModel* analyse_tree(LdpTree* tree, const string& locator);
+    ImoObj* analyse_tree(LdpTree* tree, const string& locator);
     ImoObj* analyse_tree_and_get_object(LdpTree* tree);
 
     //analysis
     void analyse_node(LdpTree::iterator itNode);
-    ImoObj* analyse_node(LdpElement* pNode, ImoObj* pAnchor=NULL);
+    ImoObj* analyse_node(LdpElement* pNode, ImoObj* pAnchor=nullptr);
 
     //helper, for score edition
     ImoBeam* create_beam(const list<ImoNoteRest*>& notes);
@@ -239,6 +258,9 @@ public:
 
     inline void save_last_note(ImoNote* pNote) { m_pLastNote = pNote; }
     inline ImoNote* get_last_note() { return m_pLastNote; }
+
+    inline void set_current_instrument(ImoInstrument* pInstr) { m_pCurInstr = pInstr; }
+    inline ImoInstrument* get_current_instrument() { return m_pCurInstr; }
 
     //interface for building relations
     void add_relation_info(ImoObj* pDto);
@@ -263,9 +285,17 @@ public:
 
     //interface for TupletsBuilder
     inline bool is_tuplet_open() { return m_pTupletsBuilder->is_tuplet_open(); }
+    inline ImoTuplet* get_last_created_tuplet() {
+         return m_pTupletsBuilder->get_last_created_tuplet();
+    }
+    inline void add_to_open_tuplets(ImoNoteRest* pNR) {
+        m_pTupletsBuilder->add_to_open_tuplets(pNR);
+    }
 
     //interface for building lyric lines
     void add_lyric(ImoNote* pNote, ImoLyric* pL);
+    void set_lyrics_placement(int line, int placement);
+    int get_lyrics_placement(int line);
 
 //    //interface for ChordBuilder
 //    void add_chord(ImoChord* pChord);
@@ -276,7 +306,7 @@ public:
     inline void score_analysis_begin(ImoScore* pScore) { m_pCurScore = pScore; }
     inline void score_analysis_end() {
         m_pLastScore = m_pCurScore;
-        m_pCurScore = NULL;
+        m_pCurScore = nullptr;
     }
     inline ImoScore* get_score_being_analysed() { return m_pCurScore; }
     inline ImoScore* get_last_analysed_score() { return m_pLastScore; }
@@ -290,8 +320,13 @@ public:
     inline ImoDocument* get_root_imo_document() { return m_pImoDoc; }
 
     //methods related to analysing instruments
-    void require_instr_id() { m_fInstrIdRequired = true; }
-    bool is_instr_id_required() { return m_fInstrIdRequired; }
+    inline void require_instr_id() { m_fInstrIdRequired = true; }
+    inline bool is_instr_id_required() { return m_fInstrIdRequired; }
+
+    //methods for creating measures info
+    inline TypeMeasureInfo* get_measure_info() { return m_pMeasureInfo; }
+    inline void set_measure_info(TypeMeasureInfo* pInfo) { m_pMeasureInfo = pInfo; }
+    inline int increment_measures_counter() { return ++m_measuresCounter; }
 
     //static methods for general use
     static int ldp_name_to_key_type(const string& value);
@@ -299,10 +334,10 @@ public:
     static bool ldp_pitch_to_components(const string& pitch, int *step, int* octave,
                                         EAccidentals* accidentals);
 
-
 protected:
-    ElementAnalyser* new_analyser(ELdpElement type, ImoObj* pAnchor=NULL);
+    ElementAnalyser* new_analyser(ELdpElement type, ImoObj* pAnchor=nullptr);
     void delete_relation_builders();
+    void add_marging_space_for_lyrics(ImoNote* pNote, ImoLyric* pLyric);
 
     //auxiliary
     bool to_integer(const string& text, int* pResult);
@@ -311,49 +346,6 @@ protected:
     static int to_step(const char& letter);
     static int to_octave(const char& letter);
     static EAccidentals to_accidentals(const std::string& accidentals);
-};
-
-
-//---------------------------------------------------------------------------------------
-//Helper, to determine beam types automatically
-class AutoBeamer
-{
-protected:
-    ImoBeam* m_pBeam;
-
-public:
-    AutoBeamer(ImoBeam* pBeam) : m_pBeam(pBeam) {}
-    ~AutoBeamer() {}
-
-    void do_autobeam();
-
-protected:
-
-
-    int get_beaming_level(ImoNote* pNote);
-    void extract_notes();
-    void determine_maximum_beam_level_for_current_triad();
-    void process_notes();
-    void compute_beam_types_for_current_note();
-    void get_triad(int iNote);
-    void compute_beam_type_for_current_note_at_level(int level);
-
-    //notes in the beam, after removing rests
-    std::vector<ImoNote*> m_notes;
-
-    //notes will be processed in triads. The triad is the current
-    //note being processed and the previous and next ones
-    enum ENotePos { k_first_note=0, k_middle_note, k_last_note, };
-    ENotePos m_curNotePos;
-    ImoNote* m_pPrevNote;
-    ImoNote* m_pCurNote;
-    ImoNote* m_pNextNote;
-
-    //maximum beam level for each triad note
-    int m_nLevelPrev;
-    int m_nLevelCur;
-    int m_nLevelNext;
-
 };
 
 

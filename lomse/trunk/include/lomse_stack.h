@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -64,14 +64,17 @@ public:
             return t;
         }
         else
-            return NULL;
+            return nullptr;
     }
 
     const T get_item(int i) {
         typename std::list<T>::iterator it;
         for (it=m_list.begin(); it != m_list.end() && i > 0; ++it)
             --i;
-        return *it;
+        if (it != m_list.end())
+            return *it;
+        else
+            return nullptr;
     }
 
 };
@@ -121,7 +124,7 @@ public:
             return t;
         }
         else
-            return NULL;
+            return nullptr;
     }
 
     T undo_pop() {
@@ -133,14 +136,14 @@ public:
             return t;
         }
         else
-            return NULL;
+            return nullptr;
     }
 
     const T get_item(int i) {
         typename std::list<T>::iterator it;
         for (it=m_list.begin(); it != m_list.end() && i > 0; ++it)
             --i;
-        return *it;
+        return (it != m_list.end() ? *it : nullptr);
     }
 
 protected:

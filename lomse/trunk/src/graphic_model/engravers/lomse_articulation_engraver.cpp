@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -47,6 +47,11 @@ ArticulationEngraver::ArticulationEngraver(LibraryScope& libraryScope,
                                            ScoreMeter* pScoreMeter,
                                            int UNUSED(iInstr), int UNUSED(iStaff))
     : Engraver(libraryScope, pScoreMeter)
+    , m_pArticulation(nullptr)
+    , m_placement(k_placement_default)
+    , m_fAbove(true)
+    , m_pParentShape(nullptr)
+    , m_pArticulationShape(nullptr)
 {
 }
 
@@ -108,7 +113,7 @@ UPoint ArticulationEngraver::compute_location(UPoint pos)
 
     else if (m_pArticulation->is_articulation_line())
     {
-        pos.y = (m_pParentShape->get_top() + m_pParentShape->get_bottom() ) / 2.0;
+        pos.y = (m_pParentShape->get_top() + m_pParentShape->get_bottom() ) / 2.0f;
         if (type == k_articulation_plop || type == k_articulation_scoop)
         {
             pos.x = m_pParentShape->get_left() - tenths_to_logical(16.0f);
@@ -160,7 +165,7 @@ void ArticulationEngraver::center_on_parent()
     if (m_pParentShape->is_shape_note())
     {
 		//it is a note. Center articulation on notehead shape
-        GmoShapeNote* pNote = dynamic_cast<GmoShapeNote*>(m_pParentShape);
+        GmoShapeNote* pNote = static_cast<GmoShapeNote*>(m_pParentShape);
 		uCenterPos = pNote->get_notehead_left() + pNote->get_notehead_width() / 2.0f;
     }
     else
@@ -227,7 +232,7 @@ bool ArticulationEngraver::determine_if_above()
         if (m_pParentShape && m_pParentShape->is_shape_note())
         {
             GmoShapeNote* pNote = dynamic_cast<GmoShapeNote*>(m_pParentShape);
-            return !pNote->is_up();
+            return pNote && !pNote->is_up();
         }
         else
             return true;

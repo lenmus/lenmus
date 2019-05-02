@@ -34,9 +34,7 @@
 #include "lomse_injectors.h"
 
 #include <iostream>
-#include <boost/date_time/posix_time/posix_time.hpp>
 using namespace std;
-using namespace boost::posix_time;
 
 namespace lomse
 {
@@ -129,7 +127,14 @@ protected:
 public:
     TaskDragView(Interactor* pIntor)
         : Task(TaskFactory::k_task_drag_view, pIntor)
-        , m_state(k_start) {}
+        , m_state(k_start)
+        , m_vxOrg(0)
+        , m_vyOrg(0)
+        , m_dx(0)
+        , m_dy(0)
+        , m_drag_flag(false)
+    {
+    }
     ~TaskDragView() {}
 
     void init_task();

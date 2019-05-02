@@ -49,14 +49,16 @@ HyperlinkCtrl::HyperlinkCtrl(LibraryScope& libScope, Control* pParent,
                              LUnits width, LUnits height, ImoStyle* pStyle)
     : Control(libScope, pDoc, pParent)
     , m_label(label)
-    , m_pMainBox(NULL)
+    , m_pMainBox(nullptr)
     , m_width(width)
     , m_height(height)
+    , m_xCenter(0.0f)
+    , m_yCenter(0.0f)
     , m_hoverColor( Color(255, 0, 0) )      //red
     , m_visitedColor( Color(0, 127, 0) )    //dark green
     , m_visited(false)
 {
-    m_style = (pStyle == NULL ? create_default_style() : pStyle);
+    m_style = (pStyle == nullptr ? create_default_style() : pStyle);
 
     m_normalColor = m_style->color();
     m_prevColor = m_normalColor;
@@ -104,7 +106,7 @@ GmoBoxControl* HyperlinkCtrl::layout(LibraryScope& UNUSED(libraryScope), UPoint 
 //---------------------------------------------------------------------------------------
 void HyperlinkCtrl::handle_event(SpEventInfo pEvent)
 {
-    LOMSE_LOG_DEBUG(Logger::k_events, str(boost::format("label: %s") % m_label));
+    LOMSE_LOG_DEBUG(Logger::k_events, "label: %s", m_label.c_str());
 
     if (m_fEnabled)
     {

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,22 +21,19 @@
 #ifndef __LENMUS_CHORD_H__        //to avoid nested includes
 #define __LENMUS_CHORD_H__
 
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
 //lenmus
 #include "lenmus_standard_header.h"
-#include "lenmus_interval.h"
-//#include "../exercises/lenmus_chords_constrains.h"
-//#include "lenmus_conversion.h"
 
 //lomse
 #include <lomse_pitch.h>
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
+#include <lomse_interval.h>
 using namespace lomse;
-
-////wxWidgets
-//#include <wx/wxprec.h>
-//#include <wx/wx.h>
-//
 
 
 namespace lenmus
@@ -126,12 +123,16 @@ const int k_intervals_in_chord = k_notes_in_chord - 1;
 // ChordIntervals: A generic chord (a list of intervals)
 class ChordIntervals
 {
+protected:
+    FIntval     m_nIntervals[k_intervals_in_chord];
+    int         m_nNumIntv;
+
 public:
     ChordIntervals(EChordType nChordType, int nInversion);
     ChordIntervals(int nNumIntv, FIntval* pFI);
     ChordIntervals(wxString sIntervals);
     ////TODO 5.0
-    //ChordIntervals(int nNumNotes, wxString* pNotes);
+    ChordIntervals(int numNotes, string notes[]);
     //ChordIntervals(int nNumNotes, FPitch fNotes[], int nUseless); // int nUseless: just to distinguish from  constructor (int nNumIntv, FIntval*)
     //ChordIntervals(int nNumNotes, ImoNote** pNotes);
     //ChordIntervals(int nStep, EKeySignature nKey, int nNumIntervals, int nInversion);
@@ -152,11 +153,9 @@ public:
    //debug
     wxString DumpIntervals();
     wxString ToString();
+    string intervals_to_string();
 
 
-protected:
-    FIntval       m_nIntervals[k_intervals_in_chord];
-    int             m_nNumIntv;
 };
 
 
@@ -175,11 +174,25 @@ protected:
 //    (remember: root note == bass note only if no inversions)
 class Chord : public ChordIntervals
 {
+private:
+    //  TODO: simplify this class, moving calculated and accesory data to derived classes
+    EChordType      m_nType;        // aware: do not use directly!. Always call get_chord_type()
+    EKeySignature   m_nKey;         // TODO: not essential information; move it to a derived class
+    int             m_nInversion;   //  aware: do not use directly!. Always call GetInversion()
+    int             m_nElision;     // TODO: consider to make an enum in ChordConstrains...
+//    bool                m_fRootIsDuplicated; // TODO: not essential information; move it to a derived class
+    FPitch          m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % k_interval_p8
+
 public:
-        //build a chord from root note and type
+    /** Creates a chord from its type, the root note, the desired inversion, and the
+        key signature.
+        Parameter 'nInversion' values: 0 (root position), 1 (1st inversion),
+            2 (2nd inversion), and so on
+    */
     Chord(FPitch fpRootNote, EChordType nChordType, int nInversion = 0,
           EKeySignature nKey = k_key_C);
-        //build a chord from a list of intervals (as strings)
+
+    ///Build a chord from a list of intervals (as strings)
     Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey);
 
     ////TODO 5.0
@@ -191,9 +204,9 @@ public:
     ////         lmFiguredBass is score-dependent. We could use the abstracted figured bass:
     ////            the figured bass STRING.
     ////        For the same reason, consider to remove the constructors based on ImoNote and FPitch below
-    //
-    //    //build a chord from a list of notes in LDP source code
-    //Chord(int nNumNotes, wxString* pNotes, EKeySignature nKey = k_key_C);
+
+        //build a chord from a list of notes in LDP source code
+    Chord(int numNotes, string notes[], EKeySignature nKey = k_key_C);
     //    //build a chord from a list of score note pointers
     //Chord(int nNumNotes, ImoNote** pNotes, EKeySignature nKey = k_key_C);
     //Chord(int nNumNotes, FPitch fNotes[], EKeySignature nKey);
@@ -228,7 +241,7 @@ public:
     //    note + any interval + N octaves
     int IsValidChordNote(FPitch fNote);
 
-    FPitch GetNormalizedBass() { return m_fpRootNote % (int)lm_p8;} // key-independent bass information
+    FPitch GetNormalizedBass() { return m_fpRootNote % k_interval_p8;} // key-independent bass information
     FPitch GetNormalizedRoot(); // key independent root note, calculated from bass and inversions
     StepType GetChordDegree();
 
@@ -242,20 +255,11 @@ public:
     ////TODO 5.0
     //// for debugging
     //wxString ToString();
+    string note_steps_to_string();
 
 
 private:
     void ComputeTypeAndInversion();
-
-        //member variables
-
-    //  TODO: simplify this class, moving calculated and accesory data to derived classes
-    EChordType      m_nType;        // aware: do not use directly!. Always call get_chord_type()
-    EKeySignature   m_nKey;         // TODO: not essential information; move it to a derived class
-    int             m_nInversion;   //  aware: do not use directly!. Always call GetInversion()
-    int             m_nElision;     // TODO: consider to make an enum in ChordConstrains...
-//    bool                m_fRootIsDuplicated; // TODO: not essential information; move it to a derived class
-    FPitch          m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % lm_p8
 
 };
 

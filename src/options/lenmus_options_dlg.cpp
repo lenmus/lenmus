@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,8 +21,8 @@
 //---------------------------------------------------------------------------------------
 //AWARE
 //
-//    Things to do to add a LENMUS_NEW options panel to the Options Dialog:
-//     1. Create a LENMUS_NEW panel class derived from OptionsPanel
+//    Things to do to add a new options panel to the Options Dialog:
+//     1. Create a new panel class derived from OptionsPanel
 //     2. Add the XRC panel to TheApp.cpp
 //     3. Look for "//TO_ADD:" tags in OptionsDlg.h and follow instructions there
 //     4. Look for "//TO_ADD:" tags in this file and follow instructions there
@@ -35,12 +35,13 @@
 
 // Panels
 #include "lenmus_options_panel.h"
-#include "lenmus_lang_opt_panel.h"
 #include "lenmus_colors_opt_panel.h"
-#include "lenmus_toolbar_opt_panel.h"
 #include "lenmus_internet_opt_panel.h"
+#include "lenmus_lang_opt_panel.h"
 #include "lenmus_other_opt_panel.h"
+#include "lenmus_playback_opt_panel.h"
 #include "lenmus_shortcuts_opt_panel.h"
+#include "lenmus_toolbar_opt_panel.h"
 //TO_ADD: add here the LENMUS_NEW panel include file
 
 
@@ -67,6 +68,7 @@ enum
     eIconToolbars,
     eIconInternet,
     eIconShortcuts,
+    eIconPlayback,
     eIconOther,
     //TO_ADD: add the LENMUS_NEW element
     TreeCtrlIcon_EOF        //AWARE: Must be the last one. Just to know how many items
@@ -80,7 +82,8 @@ static wxString sImageID[] = {
     "opt_colors",
     "opt_tools",
     "opt_internet",
-    "opt_colors",   //"opt_shortcuts",
+    "opt_shortcuts",
+    "opt_playback",
     "opt_other"
     //TO_ADD: Add image identifier here
 };
@@ -177,6 +180,10 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
                     eIconShortcuts, eIconShortcuts,
                     LENMUS_NEW TreeItemData((long)eOptShortcuts) );
 
+    // Playback options
+    wxTreeItemId PlaybackId = m_pTreeCtrl->AppendItem(rootId, _("Playback"),
+                    eIconPlayback, eIconPlayback,
+                    LENMUS_NEW TreeItemData((long)eOptPlayback) );
     // Other options
     wxTreeItemId otherId = m_pTreeCtrl->AppendItem(rootId, _("Other"),
                     eIconOther, eIconOther,
@@ -202,6 +209,9 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
             break;
         case eOptShortcuts:
             itemId = ShortcutsId;
+            break;
+        case eOptPlayback:
+            itemId = PlaybackId;
             break;
         case eOptOther:
             itemId = otherId;
@@ -320,6 +330,8 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
             return LENMUS_NEW InternetOptPanel(m_pSplitWindow, m_appScope);
         case eOptShortcuts:
             return LENMUS_NEW ShortcutsOptPanel(m_pSplitWindow, m_appScope);
+        case eOptPlayback:
+            return LENMUS_NEW PlaybackOptPanel(m_pSplitWindow, m_appScope);
         case eOptOther:
             return LENMUS_NEW OtherOptionsPanel(m_pSplitWindow, m_appScope);
         //TO_ADD: Add a LENMUS_NEW case block for creating the panel

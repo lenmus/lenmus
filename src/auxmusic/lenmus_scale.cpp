@@ -39,35 +39,35 @@ struct ScaleInfo
     FIntval nInterval[k_notes_in_scale];
 };
 
-#define lm_1s  FIntval(-2)      //to signal end of table
+#define k_interval_1s  FIntval(-9898)      //to signal end of table
 
 static const ScaleInfo tData[est_Max] =
 {
         //Major scales
-    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Major natural
-    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Major TypeII
-    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Major TypeIII
-    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Major TypeIV
+    { 8, { k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2} },    //Major natural
+    { 8, { k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_m2,k_interval_a2,k_interval_m2} },    //Major TypeII
+    { 8, { k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2} },    //Major TypeIII
+    { 8, { k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2} },    //Major TypeIV
         // Minor scales
-    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Minor Natural,
-    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Minor Dorian,
-    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Minor Harmonic,
-    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Minor Melodic,
+    { 8, { k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2} },    //Minor Natural,
+    { 8, { k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2} },    //Minor Dorian,
+    { 8, { k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_a2,k_interval_m2} },    //Minor Harmonic,
+    { 8, { k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2} },    //Minor Melodic,
         // Gregorian modes
-    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Gregorian Ionian (major natural),
-    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Dorian,
-    { 8, { lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Phrygian,
-    { 8, { lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2} },    //Gregorian Lydian,
-    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Mixolydian,
-    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Aeolian (minor natural),
-    { 8, { lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2} },    //Gregorian Locrian,
+    { 8, { k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2} },    //Gregorian Ionian (major natural),
+    { 8, { k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2} },    //Gregorian Dorian,
+    { 8, { k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2} },    //Gregorian Phrygian,
+    { 8, { k_interval_M2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2} },    //Gregorian Lydian,
+    { 8, { k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2} },    //Gregorian Mixolydian,
+    { 8, { k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2} },    //Gregorian Aeolian (minor natural),
+    { 8, { k_interval_m2,k_interval_M2,k_interval_M2,k_interval_m2,k_interval_M2,k_interval_M2,k_interval_M2} },    //Gregorian Locrian,
         // Other scales
-    { 6, { lm_m3,lm_M2,lm_M2,lm_m3,lm_M2} },                //Pentatonic Minor,
-    { 6, { lm_M2,lm_M2,lm_m3,lm_M2,lm_m3} },                //Pentatonic Major,
-    { 7, { lm_m3,lm_M2,lm_m2,lm_m2,lm_m3,lm_M2} },          //Blues,
+    { 6, { k_interval_m3,k_interval_M2,k_interval_M2,k_interval_m3,k_interval_M2} },                //Pentatonic Minor,
+    { 6, { k_interval_M2,k_interval_M2,k_interval_m3,k_interval_M2,k_interval_m3} },                //Pentatonic Major,
+    { 7, { k_interval_m3,k_interval_M2,k_interval_m2,k_interval_m2,k_interval_m3,k_interval_M2} },          //Blues,
         // Non-tonal scales
-    { 7, { lm_M2,lm_M2,lm_M2,lm_M2,lm_M2,lm_M2} },          //WholeTones,
-    {13, { lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s} },       //Chromatic,
+    { 7, { k_interval_M2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_M2,k_interval_M2} },          //WholeTones,
+    {13, { k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s,k_interval_1s} },       //Chromatic,
 };
 
 
@@ -107,7 +107,7 @@ Scale::Scale(FPitch fpRootNote, EScaleType nScaleType, EKeySignature nKey)
         for (int i=1; i < nNumNotes; i++)
         {
             FIntval fi = tData[m_nType].nInterval[i-1];
-            m_fpNote[i] = m_fpNote[i-1] + (int)fi;
+            m_fpNote[i] = m_fpNote[i-1] + fi;
         }
     }
 }
@@ -145,11 +145,11 @@ wxString Scale::type_to_name(EScaleType nType)
     wxASSERT(nType < est_Max);
 
     static wxString m_sScaleName[est_Max];
-    static bool m_fStringsInitialized = false;
+    static wxString m_language = "??";
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    if (!m_fStringsInitialized)
+    if (m_language != ApplicationScope::get_language())
     {
         // Major scales
         m_sScaleName[est_MajorNatural] = _("Major natural");
@@ -179,7 +179,7 @@ wxString Scale::type_to_name(EScaleType nType)
         m_sScaleName[est_WholeTones] = _("Whole tones");
         m_sScaleName[est_Chromatic] = _("Chromatic");
 
-        m_fStringsInitialized = true;
+        m_language = ApplicationScope::get_language();
     }
 
     return m_sScaleName[nType];

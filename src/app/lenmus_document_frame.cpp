@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -210,7 +210,7 @@ wxEND_EVENT_TABLE()
 DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
                              LomseDoorway& lomse)
     : wxSplitterWindow(parent, wxNewId(), wxDefaultPosition,
-                       wxDefaultSize, 0, "Canvas")
+                       wxDefaultSize, wxSP_3D, "Canvas")
     , CanvasInterface(parent)
     , m_appScope(appScope)
     , m_lomse(lomse)
@@ -407,20 +407,20 @@ void DocumentFrame::load_page(const string& filename)
     //Code commented out and replaced by following code because it causes a rare problem
     //when returning back from exercise 1 in L1_MusicReading_accidentals.lms
     //
-    //int viewType = ViewFactory::k_view_vertical_book;
+    //int viewType = k_view_vertical_book;
     // m_right->display_document(filename, viewType);
 
     if (!filename.empty())
     {
         if (filename.find(".lmd"))
         {
-            int viewType = ViewFactory::k_view_vertical_book;
+            int viewType = k_view_vertical_book;
             m_right->display_document(filename, viewType);
         }
         else
         {
             LdpZipReader reader(filename);
-            int viewType = ViewFactory::k_view_vertical_book;
+            int viewType = k_view_vertical_book;
             string title = "test";
             m_right->display_document(reader, viewType, title);
         }
@@ -431,11 +431,11 @@ void DocumentFrame::load_page(const string& filename)
 wxString DocumentFrame::get_path_for_toc_item(int iItem)
 {
     return m_pBooksData->get_path_for_toc_item(iItem);
-    const BookIndexArray& contents = m_pBooksData->GetContentsArray();
-    if (!contents[iItem]->page.empty())
-        return contents[iItem]->GetFullPath();
-    else
-        return wxEmptyString;
+//    const BookIndexArray& contents = m_pBooksData->GetContentsArray();
+//    if (!contents[iItem]->page.empty())
+//        return contents[iItem]->GetFullPath();
+//    else
+//        return wxEmptyString;
 }
 
 //---------------------------------------------------------------------------------------

@@ -203,9 +203,9 @@ wxString DictationCtrol::generate_new_problem()
 //---------------------------------------------------------------------------------------
 void DictationCtrol::prepare_context_score()
 {
-    int step = get_step_for_root_note(m_keyType);   //0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si
+    int step = KeyUtilities::get_step_for_root_note(m_keyType);   //0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si
     int accidentals[7];
-    get_accidentals_for_key(m_keyType, accidentals);
+    KeyUtilities::get_accidentals_for_key(m_keyType, accidentals);
     int octave = step > 4 ? 3 : 4;
     FPitch fpRootNote(step, octave, accidentals[step]);
 
@@ -213,7 +213,9 @@ void DictationCtrol::prepare_context_score()
     int numNotes = scale.get_num_notes();
     m_pContextScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = m_pContextScore->add_instrument();
-    pInstr->set_midi_instrument(0);     //Acoustic Grand Piano
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(0);     //Acoustic Grand Piano
     pInstr->add_clef(k_clef_G2);
     pInstr->add_key_signature(m_keyType);
 
@@ -232,7 +234,7 @@ void DictationCtrol::prepare_context_score()
     add_chord((step+4)%7, pInstr, "n");     // V
     add_chord(step, pInstr, "h");           // I
 
-    m_pContextScore->close();
+    m_pContextScore->end_of_changes();
 }
 
 //---------------------------------------------------------------------------------------
@@ -793,7 +795,9 @@ void RhythmicDictationCtrol::prepare_user_score()
 {
     m_pUserScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = m_pUserScore->add_instrument();
-    pInstr->set_midi_instrument(m_midiVoice);
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
     ImoSystemInfo* pInfo = m_pUserScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     ImoObj* pImo = pInstr->add_clef(m_clefType);
@@ -805,7 +809,7 @@ void RhythmicDictationCtrol::prepare_user_score()
     pImo = pInstr->add_time_signature(beats, beatType);
     pImo->set_editable(false);
 
-    m_pUserScore->close();
+    m_pUserScore->end_of_changes();
 }
 
 
@@ -845,7 +849,9 @@ void MelodicDictationCtrol::prepare_user_score()
 {
     m_pUserScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = m_pUserScore->add_instrument();
-    pInstr->set_midi_instrument(m_midiVoice);
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
     ImoSystemInfo* pInfo = m_pUserScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     ImoObj* pImo = pInstr->add_clef(m_clefType);
@@ -857,7 +863,7 @@ void MelodicDictationCtrol::prepare_user_score()
     pImo = pInstr->add_time_signature(beats, beatType);
     pImo->set_editable(false);
 
-    m_pUserScore->close();
+    m_pUserScore->end_of_changes();
 }
 
 
@@ -892,7 +898,9 @@ void HarmonicDictationCtrol::prepare_problem_score()
     ImoInstrument* pInstr = m_pProblemScore->get_instrument(0);
     //TODO: take instrument from exercise config / options
     m_midiVoice = 68;       //Oboe
-    pInstr->set_midi_instrument(m_midiVoice);
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
 }
 
 //---------------------------------------------------------------------------------------
@@ -903,7 +911,9 @@ void HarmonicDictationCtrol::prepare_user_score()
     ImoSystemInfo* pInfo = m_pUserScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_staff();    //second staff
-    pInstr->set_midi_instrument(m_midiVoice);
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
     ImoObj* pClef1 = pInstr->add_clef(k_clef_G2, 1);
     ImoObj* pClef2 = pInstr->add_clef(k_clef_F4, 2);
     pClef1->set_editable(false);
@@ -915,7 +925,7 @@ void HarmonicDictationCtrol::prepare_user_score()
     pImo = pInstr->add_time_signature(beats, beatType);
     pImo->set_editable(false);
 
-    m_pUserScore->close();
+    m_pUserScore->end_of_changes();
 }
 
 

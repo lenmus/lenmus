@@ -441,11 +441,12 @@ void ToolButtonsGroup::SelectButton(int iB)
 	m_nSelButton = iB;
     if (m_nSelButtonSave == -1)
         m_nSelButtonSave = iB;
-	for(int i=0; i < m_nNumButtons; i++)
+
+    for(int i=0; i < m_nNumButtons; i++)
 	{
-		if (i != iB)
-			m_pButton[i]->Release();
-		else
+        if (i != iB)
+            m_pButton[i]->Release();
+        else
         {
 			m_pButton[i]->Press();
         }

@@ -44,13 +44,13 @@ namespace lomse
 OverlaysGenerator::OverlaysGenerator(GraphicView* view, LibraryScope& libraryScope)
     : m_libraryScope(libraryScope)
     , m_pView(view)
-    , m_pCanvasBuffer(NULL)
+    , m_pCanvasBuffer(nullptr)
     , m_fBackgroundDirty(false)
     , m_fFullRectangle(true)
-    , m_pSaveBytes(NULL)
+    , m_pSaveBytes(nullptr)
     , m_damagedRect(0.0, 0.0, 0.0, 0.0)
     , m_prevDamagedRect(0.0, 0.0, 0.0, 0.0)
-    , m_pHandlersOwner(NULL)
+    , m_pHandlersOwner(nullptr)
 {
 }
 
@@ -88,7 +88,6 @@ void OverlaysGenerator::update_all_visual_effects(ScreenDrawer* pDrawer)
         m_pCanvasBuffer->copy_from(m_savedBuffer);
 
     m_damagedRect = URect(0.0, 0.0, 0.0, 0.0);
-    stringstream msg;
     int overlays = 0;
     list<VisualEffect*>::const_iterator it;
     for (it = m_effects.begin(); it != m_effects.end(); ++it)
@@ -145,8 +144,8 @@ void OverlaysGenerator::save_rendering_buffer()
     unsigned w = m_pCanvasBuffer->width();
     unsigned h = m_pCanvasBuffer->height();
     int stride = m_pCanvasBuffer->stride();
-    size_t bytes = h * stride;
-    if (m_pSaveBytes == NULL || bytes != m_savedBuffer.height() * m_savedBuffer.stride())
+    size_t bytes = h * abs(stride);
+    if (m_pSaveBytes == nullptr || bytes != m_savedBuffer.height() * m_savedBuffer.stride())
     {
         delete m_pSaveBytes;
         m_pSaveBytes = static_cast<int8u*>( malloc(bytes) );

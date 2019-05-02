@@ -281,7 +281,7 @@ void IdfyCadencesCtrolParams::parse_cadences(const string& value,
         }
         else
         {
-            nType = Cadence::CadenceNameToType(sCadence);
+            nType = Cadence::name_to_type(sCadence);
             if (nType == (ECadenceType)-1)
             {
                 fError = true;

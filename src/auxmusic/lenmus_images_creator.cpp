@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,10 +46,14 @@ namespace lenmus
 //=======================================================================================
 ImagesCreator::ImagesCreator(LomseDoorway& lomse)
 	: m_lomse(lomse)
-    , m_pPresenter(NULL)
-    , m_pDoc(NULL)
-	, m_buffer(NULL)
+    , m_pPresenter(nullptr)
+    , m_pDoc(nullptr)
+	, m_buffer(nullptr)
+	, m_pdata(nullptr)
+    , m_nBufWidth(0)
+    , m_nBufHeight(0)
 {
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -79,7 +83,7 @@ void ImagesCreator::create_image(const string& src, int format,
                                  wxImage* buffer, double scale)
 {
     delete m_pPresenter;
-    m_pPresenter = m_lomse.new_document(ViewFactory::k_view_simple, src, format);
+    m_pPresenter = m_lomse.new_document(k_view_simple, src, format);
     create_image_for_document(buffer, scale);
 }
 
@@ -101,7 +105,7 @@ void ImagesCreator::create_image_for_document(wxImage* buffer, double scale)
 Document* ImagesCreator::get_empty_document()
 {
     delete m_pPresenter;
-    m_pPresenter = m_lomse.new_document(ViewFactory::k_view_simple);
+    m_pPresenter = m_lomse.new_document(k_view_simple);
     m_pDoc = m_pPresenter->get_document_raw_ptr();
     return m_pDoc;
 }

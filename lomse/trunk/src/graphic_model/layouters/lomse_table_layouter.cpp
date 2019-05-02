@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -46,8 +46,12 @@ TableLayouter::TableLayouter(ImoContentObj* pItem, Layouter* pParent,
     : Layouter(pItem, pParent, pGModel, libraryScope, pStyles, fAddShapesToModel)
     , m_libraryScope(libraryScope)
     , m_pTable( static_cast<ImoTable*>(pItem) )
-    , m_headLayouter(NULL)
-    , m_bodyLayouter(NULL)
+    , m_headLayouter(nullptr)
+    , m_bodyLayouter(nullptr)
+    , m_numHeadRows(0)
+    , m_numBodyRows(0)
+    , m_numCols(0)
+    , m_tableWidth(0.0f)
 {
 }
 
@@ -93,7 +97,7 @@ void TableLayouter::create_sections_layouters()
 //---------------------------------------------------------------------------------------
 void TableLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     //AWARE: This method is invoked to layout a page. If there are more pages to
     //layout, it will be invoked more times. Therefore, this method must not initialize
@@ -204,7 +208,7 @@ void TableLayouter::determine_width_for_columns()
 {
     //TODO: For now width will be assigned based on column style.
 
-    m_columnsWidth.reserve(m_numCols);
+    m_columnsWidth.resize(m_numCols);
     m_tableWidth = 0.0f;
     std::list<ImoStyle*>& cols = m_pTable->get_column_styles();
     std::list<ImoStyle*>::iterator it;
@@ -285,7 +289,8 @@ TableSectionLayouter::TableSectionLayouter(ImoContentObj* pItem, Layouter* pPare
     , m_numSectionRows(numRows)
     , m_numTableColumns(numCols)
     , m_tableWidth(tableWidth)
-    , m_pRowLayouter(NULL)
+    , m_pRowLayouter(nullptr)
+    , m_nextLogicalRow(0)
 {
 }
 
@@ -311,7 +316,7 @@ void TableSectionLayouter::prepare_to_start_layout()
 //---------------------------------------------------------------------------------------
 void TableSectionLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 }
 
 //---------------------------------------------------------------------------------------
@@ -319,7 +324,7 @@ void TableSectionLayouter::create_main_box(GmoBox* UNUSED(pParentBox),
                                            UPoint UNUSED(pos), LUnits UNUSED(width),
                                            LUnits UNUSED(height))
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 }
 
 //---------------------------------------------------------------------------------------
@@ -331,7 +336,7 @@ void TableSectionLayouter::create_cell_layouters()
     // - assigns x position to the cells
 
     int numCells = m_numSectionRows * m_numTableColumns;
-    m_cellLayouters.assign(numCells, (TableCellLayouter*)NULL);
+    m_cellLayouters.assign(numCells, (TableCellLayouter*)nullptr);
 
     vector<bool> freeCell;
     freeCell.assign(numCells, true);
@@ -378,7 +383,7 @@ void TableSectionLayouter::create_cell_layouters()
         //if last processed cell doesn't fill row and next cell is not used, assume last
         //processed cell has implicit colspan
         iRow++;
-        if (freeCell[iCell])
+        if (iCell < numCells && freeCell[iCell])
         {
             int colSpan = 0;
             int iStart = iCell;
@@ -409,7 +414,7 @@ LUnits TableSectionLayouter::add_row(GmoBox* pParentMainBox)
     m_availableHeight -= height;
 
     delete m_pRowLayouter;
-    m_pRowLayouter = NULL;
+    m_pRowLayouter = nullptr;
 
     return height;
 }
@@ -417,7 +422,7 @@ LUnits TableSectionLayouter::add_row(GmoBox* pParentMainBox)
 //---------------------------------------------------------------------------------------
 bool TableSectionLayouter::is_row_ready()
 {
-    return (m_pRowLayouter != NULL);
+    return (m_pRowLayouter != nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -530,7 +535,7 @@ TableRowLayouter::~TableRowLayouter()
 //---------------------------------------------------------------------------------------
 void TableRowLayouter::layout_in_box()
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, "");
+    LOMSE_LOG_DEBUG(Logger::k_layout, string(""));
 
     set_cursor_and_available_space();
     LUnits yPos = m_pageCursor.y;
@@ -546,7 +551,7 @@ void TableRowLayouter::layout_in_box()
         for (int iCol=0; iCol < m_numColumns; ++iCol)
         {
             int iCell = iRow * m_numColumns + iCol;
-            if (m_cellLayouters[iCell] != NULL)
+            if (m_cellLayouters[iCell] != nullptr)
             {
                 LUnits height = layout_cell(m_cellLayouters[iCell], m_pItemMainBox,
                                             UPoint(xPos, m_pageCursor.y));
@@ -639,7 +644,7 @@ void TableCellSizer::create_rowspan_table()
         int iTable = iRow * m_numColumns;
         for (int iCol=0; iCol < m_numColumns; ++iCol, ++iCell, ++iTable)
         {
-            if (m_cellLayouters[iCell] != NULL)
+            if (m_cellLayouters[iCell] != nullptr)
             {
                 int r = m_cellLayouters[iCell]->get_rowspan();
                 int iT = iTable;
@@ -699,7 +704,7 @@ void TableCellSizer::assing_height_to_cells()
         int iCell = (m_iFirstRow + iRow) * m_numColumns;
         for (int iCol=0; iCol < m_numColumns; ++iCol, ++iCell)
         {
-            if (m_cellLayouters[iCell] != NULL)
+            if (m_cellLayouters[iCell] != nullptr)
             {
                 int iH = iCell;
                 LUnits height = m_heights[iH];
@@ -731,7 +736,7 @@ void TableCellSizer::reposition_cells()
         int iCell = (m_iFirstRow + iRow) * m_numColumns;
         for (int iCol=0; iCol < m_numColumns; ++iCol, ++iCell)
         {
-            if (m_cellLayouters[iCell] != NULL)
+            if (m_cellLayouters[iCell] != nullptr)
             {
                 GmoBox* pCellBox = m_cellLayouters[iCell]->get_item_main_box();
                 pCellBox->shift_origin(shift);

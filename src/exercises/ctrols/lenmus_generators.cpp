@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -59,6 +59,29 @@ int RandomGenerator::random_number(int nMin, int nMax)
 bool RandomGenerator::flip_coin()
 {
     return ((rand() & 0x01) == 0x01);     //true in odd number, false if even
+}
+
+//---------------------------------------------------------------------------------------
+void RandomGenerator::shuffle(int nNum, int* pIdx)
+{
+    //fill array pointed by pIdx ( int idx[nNum] ) with unique integers
+    //in the range 0..nNum-1, arranged at random
+
+    int from[nNum];
+    for (int i=0; i < nNum; ++i)
+        from[i] = i;
+    int jmax = nNum-1;
+    int k=0;
+    for (int i=0; i < nNum; ++i)
+    {
+        int j = random_number(0, jmax);
+        *(pIdx+k) = from[j];
+        ++k;
+        for (int i1=j+1; i1 <= jmax; ++i1)
+            from[i1-1] = from[i1];
+        --jmax;
+    }
+    *(pIdx+k) = from[0];
 }
 
 //---------------------------------------------------------------------------------------
@@ -165,13 +188,13 @@ FPitch RandomGenerator::get_best_root_note(EClef nClef, EKeySignature nKey)
     //selected for best fit when using clef nClef. 'Best fit' means the natural
     //scale can be represented with a minimal number of leger lines.
 
-    int step = get_step_for_root_note(nKey);
+    int step = KeyUtilities::get_step_for_root_note(nKey);
 
     // Get the accidentals implied by the key signature.
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];
-    get_accidentals_for_key(nKey, nAccidentals);
+    KeyUtilities::get_accidentals_for_key(nKey, nAccidentals);
     int acc = nAccidentals[step];
 
     //choose octave for best fit
@@ -416,8 +439,8 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
         return false;       //error
     }
 }
@@ -619,8 +642,8 @@ void ProblemSpace::SaveAndClear()
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
 }
 
@@ -720,8 +743,8 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
 }
 
@@ -773,8 +796,8 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
     return 0;   //error. //TODO: Replace by trow ?
 }
@@ -1071,7 +1094,7 @@ void LeitnerManager::update_problem_space_for_practising()
             m_range[i] = rLastRange + (rTotal - double(i)) / rTotal;
             if (m_range[i] == 0.0) m_range[i] = 1.0;
             rLastRange = m_range[i];
-            LOMSE_LOG_ERROR(str(boost::format("m_range[%d] = %.4f") % i % m_range[i] ));
+            LOMSE_LOG_ERROR("m_range[%d] = %.4f", i, m_range[i]);
         }
     }
 
@@ -1156,7 +1179,20 @@ int LeitnerManager::choose_question_for_practising()
     {
         if (rB <= m_range[iB]) break;
     }
-    wxASSERT(iB < k_num_boxes);
+    //coverity scan sanity check
+    if (iB >= k_num_boxes)
+    {
+        stringstream msg;
+        msg << "Logic error. iB should be lower than k_num_boxes, but not. rB="
+            << rB << ", m_range={";
+        for (int i=0; i < iB; i++)
+            msg << m_range[i] << ",";
+
+        msg << "}";
+        LOMSE_LOG_ERROR(msg.str());
+
+        iB = 0;
+    }
 
     //select question from box
     int nBoxSize = (int)m_box[iB].size();

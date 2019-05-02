@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -143,8 +143,8 @@ the best way to use LenMus Phonascus and the books.");
     {
         wxMessageBox( wxString::Format(_("Error when trying to move to folder %s"),
                                        sPath.wx_str() ));
-        LOMSE_LOG_ERROR(str(boost::format("Error when trying to move to folder %s")
-                        % sPath.wx_str() ));
+        LOMSE_LOG_ERROR("Error when trying to move to folder %s",
+                        sPath.ToStdString().c_str() );
         return;
     }
 
@@ -225,8 +225,8 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
             if (!oFile.FileExists())
             {
                 wxMessageBox(_("Sorry: File not found!"));
-                LOMSE_LOG_WARN(str(boost::format("File '%s' not found!")
-                               % oFile.GetFullPath().wx_str() ));
+                LOMSE_LOG_WARN("File '%s' not found!",
+                               oFile.GetFullPath().ToStdString().c_str() );
                 return;
             }
         }
@@ -252,8 +252,8 @@ void BooksDlg::show_html_document(const wxString& sDocName)
         if (!oFile.FileExists())
         {
             wxMessageBox(_("Sorry: File not found!"));
-            LOMSE_LOG_ERROR(str(boost::format("File %s' not found!")
-                            % oFile.GetFullPath().wx_str() ));
+            LOMSE_LOG_ERROR("File %s' not found!",
+                            oFile.GetFullPath().ToStdString().c_str() );
             return;
         }
 	}

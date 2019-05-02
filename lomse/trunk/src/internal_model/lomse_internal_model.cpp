@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -42,8 +42,11 @@
 #include "lomse_button_ctrl.h"
 #include "lomse_logger.h"
 #include "lomse_ldp_exporter.h"
-#include "lomse_ldp_analyser.h"     //class Autobeamer
+#include "lomse_autobeamer.h"
 #include "lomse_im_attributes.h"
+#include "lomse_measures_table.h"
+#include "lomse_score_utilities.h"
+
 
 using namespace std;
 
@@ -61,10 +64,9 @@ LUnits pt_to_LUnits(float pt)
 
 //---------------------------------------------------------------------------------------
 // static variables to convert from ImoObj type to name
-static std::map<int, std::string> m_TypeToName;
+static map<int, string> m_TypeToName;
 static bool m_fNamesRegistered;
 static string m_unknown = "unknown";
-
 
 //---------------------------------------------------------------------------------------
 //values for default style
@@ -112,11 +114,115 @@ static string m_unknown = "unknown";
 
 
 //=======================================================================================
-// InternalModel implementation
+// ImoAttr implementation
 //=======================================================================================
-InternalModel::~InternalModel()
+ImoAttr::ImoAttr(int idx, const string& value)
+    : m_attrbIdx(idx)
+    , m_next(nullptr)
 {
-    delete m_pRoot;
+    set_string_value(value);
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr::ImoAttr(int idx, int value)
+    : m_attrbIdx(idx)
+    , m_next(nullptr)
+{
+    set_int_value(value);
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr::ImoAttr(int idx, double value)
+    : m_attrbIdx(idx)
+    , m_next(nullptr)
+{
+    set_double_value(value);
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr::ImoAttr(int idx, bool value)
+    : m_attrbIdx(idx)
+    , m_next(nullptr)
+{
+    set_bool_value(value);
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr::ImoAttr(int idx, float value)
+    : m_attrbIdx(idx)
+    , m_next(nullptr)
+{
+    set_float_value(value);
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr::ImoAttr(int idx, Color value)
+    : m_attrbIdx(idx)
+    , m_next(nullptr)
+{
+    set_color_value(value);
+}
+
+//---------------------------------------------------------------------------------------
+const string ImoAttr::get_name()
+{
+    return get_name(m_attrbIdx);
+}
+
+//---------------------------------------------------------------------------------------
+const string ImoAttr::get_name(int idx)
+{
+    AttributesData data = AttributesTable::get_data_for(idx);
+    return data.label;
+}
+
+
+//=======================================================================================
+// implementation of standard interface for ImoObj objects containing an ImoSounds child
+//=======================================================================================
+#define LOMSE_IMPLEMENT_IMOSOUNDS_INTERFACE(xxxxx)                                       \
+ImoSounds* xxxxx::get_sounds()                                                           \
+{                                                                                        \
+    return dynamic_cast<ImoSounds*>( get_child_of_type(k_imo_sounds) );                  \
+}                                                                                        \
+                                                                                         \
+void xxxxx::add_sound_info(ImoSoundInfo* pInfo)                                          \
+{                                                                                        \
+    ImoSounds* pColSounds = get_sounds();                                                \
+    if (!pColSounds)                                                                     \
+    {                                                                                    \
+        Document* pDoc = get_the_document();                                             \
+        pColSounds = static_cast<ImoSounds*>( ImFactory::inject(k_imo_sounds, pDoc) );   \
+        append_child_imo(pColSounds);                                                    \
+    }                                                                                    \
+    pColSounds->add_sound_info(pInfo);                                                   \
+}                                                                                        \
+                                                                                         \
+int xxxxx::get_num_sounds()                                                              \
+{                                                                                        \
+    ImoSounds* pColSounds = get_sounds();                                                \
+    if (pColSounds)                                                                      \
+        return pColSounds->get_num_sounds();                                             \
+    else                                                                                 \
+        return 0;                                                                        \
+}                                                                                        \
+                                                                                         \
+ImoSoundInfo* xxxxx::get_sound_info(const string& soundId)                               \
+{                                                                                        \
+    ImoSounds* pColSounds = get_sounds();                                                \
+    if (pColSounds)                                                                      \
+        return pColSounds->get_sound_info(soundId);                                      \
+    else                                                                                 \
+        return nullptr;                                                                  \
+}                                                                                        \
+                                                                                         \
+ImoSoundInfo* xxxxx::get_sound_info(int iSound)                                          \
+{                                                                                        \
+    ImoSounds* pColSounds = get_sounds();                                                \
+    if (pColSounds)                                                                      \
+        return pColSounds->get_sound_info(iSound);                                       \
+    else                                                                                 \
+        return nullptr;                                                                  \
 }
 
 
@@ -141,13 +247,13 @@ ButtonCtrl* InlineLevelCreatorApi::add_button(LibraryScope& libScope, const stri
 {
     Document* pDoc = m_pParent->get_the_document();
     ImoButton* pImo = static_cast<ImoButton*>(ImFactory::inject(k_imo_button, pDoc));
-    ImoDocument* pImoDoc = pDoc->get_imodoc();
+    ImoDocument* pImoDoc = pDoc->get_im_root();
     pImo->set_label(label);
     pImo->set_language( pImoDoc->get_language() );
     pImo->set_size(size);
     pImo->set_style(pStyle);
 
-    ButtonCtrl* pCtrol = LOMSE_NEW ButtonCtrl(libScope, NULL, pDoc, label,
+    ButtonCtrl* pCtrol = LOMSE_NEW ButtonCtrl(libScope, nullptr, pDoc, label,
                                               size.width, size.height, pStyle);
     pImo->attach_control(pCtrol);
 
@@ -251,6 +357,7 @@ ImoScore* BlockLevelCreatorApi::add_score(ImoStyle* pStyle)
     Document* pDoc = m_pParent->get_the_document();
     ImoScore* pImo = static_cast<ImoScore*>(
                                 ImFactory::inject(k_imo_score, pDoc) );
+    pImo->set_version(200);   //version 2.0
     add_to_model(pImo, pStyle);
     return pImo;
 }
@@ -270,10 +377,11 @@ void BlockLevelCreatorApi::add_to_model(ImoBlockLevelObj* pImo, ImoStyle* pStyle
 // ImoObj implementation
 //=======================================================================================
 ImoObj::ImoObj(int objtype, ImoId id)
-    : m_pDoc(NULL)
+    : m_pDoc(nullptr)
     , m_id(id)
     , m_objtype(objtype)
     , m_flags(k_dirty)
+    , m_pAttribs(nullptr)
 {
 }
 
@@ -290,6 +398,13 @@ ImoObj::~ImoObj()
     }
 
     remove_id();
+    delete_attributes();
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::initialize_object(Document* UNUSED(pDoc))
+{
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -299,7 +414,19 @@ void ImoObj::remove_id()
     {
         Document* pDoc = get_the_document();
         if (pDoc)
-            pDoc->removed_from_model(this);
+            pDoc->on_removed_from_model(this);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::delete_attributes()
+{
+    ImoAttr* pAttr = get_first_attribute();
+    while (pAttr)
+    {
+        ImoAttr* pNext = pAttr->get_next_attrib();
+        delete pAttr;
+        pAttr = pNext;
     }
 }
 
@@ -312,15 +439,14 @@ const string& ImoObj::get_name(int type)
         // ImoStaffObj (A)
         m_TypeToName[k_imo_barline] = "barline";
         m_TypeToName[k_imo_clef] = "clef";
+        m_TypeToName[k_imo_direction] = "direction";
+        m_TypeToName[k_imo_figured_bass] = "figured-bass";
+        m_TypeToName[k_imo_go_back_fwd] = "go-back-fwd";
         m_TypeToName[k_imo_key_signature] = "key-signature";
-        m_TypeToName[k_imo_time_signature] = "time-signature";
         m_TypeToName[k_imo_note] = "note";
         m_TypeToName[k_imo_rest] = "rest";
-        m_TypeToName[k_imo_go_back_fwd] = "go-back-fwd";
-        m_TypeToName[k_imo_metronome_mark] = "metronome-mark";
         m_TypeToName[k_imo_system_break] = "system-break";
-        m_TypeToName[k_imo_spacer] = "spacer";
-        m_TypeToName[k_imo_figured_bass] = "figured-bass";
+        m_TypeToName[k_imo_time_signature] = "time-signature";
 
         // ImoBlocksContainer (A)
         m_TypeToName[k_imo_content] = "content";
@@ -340,21 +466,20 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_para] = "paragraph";
 
         // ImoInlineLevelObj
+        m_TypeToName[k_imo_button] = "buttom";
+        m_TypeToName[k_imo_control] = "control";
         m_TypeToName[k_imo_image] = "image";
         m_TypeToName[k_imo_score_player] = "score-player";
-        m_TypeToName[k_imo_control] = "control";
-        m_TypeToName[k_imo_button] = "buttom";
         m_TypeToName[k_imo_text_item] = "text";
 
         // ImoBoxInline (A)
-        m_TypeToName[k_imo_inline_wrapper] = "wrapper";
         m_TypeToName[k_imo_link] = "link";
+        m_TypeToName[k_imo_inline_wrapper] = "wrapper";
 
         // ImoDto, ImoSimpleObj (A)
         m_TypeToName[k_imo_beam_dto] = "beam";
         m_TypeToName[k_imo_bezier_info] = "bezier";
         m_TypeToName[k_imo_border_dto] = "border";
-        m_TypeToName[k_imo_textblock_info] = "textblock";
         m_TypeToName[k_imo_color_dto] = "color";
         m_TypeToName[k_imo_cursor_info] = "cursor";
         m_TypeToName[k_imo_figured_bass_info] = "figured-bass";
@@ -369,20 +494,23 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_point_dto] = "point";
         m_TypeToName[k_imo_size_dto] = "size";
         m_TypeToName[k_imo_slur_dto] = "slur-dto";
+        m_TypeToName[k_imo_sound_change] = "sound-change";
+        m_TypeToName[k_imo_sound_info] = "sound-info";
         m_TypeToName[k_imo_staff_info] = "staff-info";
         m_TypeToName[k_imo_style] = "style";
         m_TypeToName[k_imo_system_info] = "system-info";
+        m_TypeToName[k_imo_textblock_info] = "textblock";
         m_TypeToName[k_imo_text_info] = "text-info";
         m_TypeToName[k_imo_text_style] = "text-style";
         m_TypeToName[k_imo_tie_dto] = "tie-dto";
         m_TypeToName[k_imo_time_modification_dto] = "time-modificator-dto";
         m_TypeToName[k_imo_tuplet_dto] = "tuplet-dto";
+        m_TypeToName[k_imo_volta_bracket_dto] = "volta_bracket_dto";
 
         // ImoRelDataObj (A)
         m_TypeToName[k_imo_beam_data] = "beam-data";
         m_TypeToName[k_imo_slur_data] = "slur-data";
         m_TypeToName[k_imo_tie_data] = "tie-data";
-        m_TypeToName[k_imo_tuplet_data] = "tuplet-data";
 //
         //ImoCollection(A)
         m_TypeToName[k_imo_instruments] = "instruments";
@@ -390,6 +518,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_music_data] = "musicData";
         m_TypeToName[k_imo_options] = "options";
         m_TypeToName[k_imo_styles] = "styles";
+        m_TypeToName[k_imo_sounds] = "sounds";
         m_TypeToName[k_imo_table_head] = "table-head";
         m_TypeToName[k_imo_table_body] = "table-body";
 
@@ -401,17 +530,20 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_instrument] = "instrument";
 
         // ImoAuxObj (A)
-        m_TypeToName[k_imo_fermata] = "fermata";
-        m_TypeToName[k_imo_dynamics_mark] = "dynamics-mark";
-        m_TypeToName[k_imo_ornament] = "ornament";
-        m_TypeToName[k_imo_technical] = "technical";
-        m_TypeToName[k_imo_articulation_symbol] = "articulation-symbol";
         m_TypeToName[k_imo_articulation_line] = "articulation-line";
+        m_TypeToName[k_imo_articulation_symbol] = "articulation-symbol";
+        m_TypeToName[k_imo_dynamics_mark] = "dynamics-mark";
+        m_TypeToName[k_imo_fermata] = "fermata";
         m_TypeToName[k_imo_line] = "line";
+        m_TypeToName[k_imo_metronome_mark] = "metronome-mark";
+        m_TypeToName[k_imo_ornament] = "ornament";
         m_TypeToName[k_imo_score_text] = "score-text";
         m_TypeToName[k_imo_score_line] = "score-line";
         m_TypeToName[k_imo_score_title] = "title";
+        m_TypeToName[k_imo_symbol_repetition_mark] = "symbol-repetition-mark";
+        m_TypeToName[k_imo_technical] = "technical";
         m_TypeToName[k_imo_text_box] = "text-box";
+        m_TypeToName[k_imo_text_repetition_mark] = "text-repetition-mark";
 
         // ImoAuxRelObj (A)
         m_TypeToName[k_imo_lyric] = "lyric";
@@ -422,6 +554,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_slur] = "slur";
         m_TypeToName[k_imo_tie] = "tie";
         m_TypeToName[k_imo_tuplet] = "tuplet";
+        m_TypeToName[k_imo_volta_bracket] = "volta-bracket";
 
         //abstract and non-valid objects
         m_TypeToName[k_imo_obj] = "non-valid";
@@ -498,9 +631,9 @@ Document* ImoObj::get_the_document()
 ImoDocument* ImoObj::get_document()
 {
     if (m_pDoc)
-        return m_pDoc->get_imodoc();
+        return m_pDoc->get_im_root();
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -560,12 +693,12 @@ ImoContentObj* ImoObj::get_contentobj_parent()
                     pImo = pImo->get_parent();
             }
 
-            if (pImo->is_contentobj())
+            if (pImo && pImo->is_contentobj())
                 return static_cast<ImoContentObj*>(pImo);
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -613,7 +746,7 @@ ImoObj* ImoObj::get_child_of_type(int objtype)
         if (pChild->get_obj_type() == objtype)
             return pChild;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -675,6 +808,201 @@ string ImoObj::to_string(bool fWithIds)
     exporter.set_remove_newlines(true);
     exporter.set_add_id(fWithIds);
     return exporter.get_source(this);
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::set_int_attribute(TIntAttribute idx, int value)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        pAttr->set_int_value(value);
+    else
+        set_attribute_node( LOMSE_NEW ImoAttr(idx, value) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::set_color_attribute(TIntAttribute idx, Color value)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        pAttr->set_color_value(value);
+    else
+        set_attribute_node( LOMSE_NEW ImoAttr(idx, value) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::set_bool_attribute(TIntAttribute idx, bool value)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        pAttr->set_bool_value(value);
+    else
+        set_attribute_node( LOMSE_NEW ImoAttr(idx, value) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::set_double_attribute(TIntAttribute idx, double value)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        pAttr->set_double_value(value);
+    else
+        set_attribute_node( LOMSE_NEW ImoAttr(idx, value) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::set_float_attribute(TIntAttribute idx, float value)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        pAttr->set_float_value(value);
+    else
+        set_attribute_node( LOMSE_NEW ImoAttr(idx, value) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::set_string_attribute(TIntAttribute idx, const string& value)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        pAttr->set_string_value(value);
+    else
+        set_attribute_node( LOMSE_NEW ImoAttr(idx, value) );
+}
+
+//---------------------------------------------------------------------------------------
+int ImoObj::get_int_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        return pAttr->get_int_value();
+    else
+        return 0;
+}
+
+//---------------------------------------------------------------------------------------
+Color ImoObj::get_color_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        return pAttr->get_color_value();
+    else
+        return Color(0,0,0);
+}
+
+//---------------------------------------------------------------------------------------
+bool ImoObj::get_bool_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        return pAttr->get_bool_value();
+    else
+        return false;
+}
+
+//---------------------------------------------------------------------------------------
+double ImoObj::get_double_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        return pAttr->get_double_value();
+    else
+        return 0.0;
+}
+
+
+//---------------------------------------------------------------------------------------
+float ImoObj::get_float_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        return pAttr->get_float_value();
+    else
+        return 0.0f;
+}
+
+//---------------------------------------------------------------------------------------
+string ImoObj::get_string_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_attribute_node(idx);
+    if (pAttr)
+        return pAttr->get_string_value();
+    else
+        return string();
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr* ImoObj::get_attribute_node(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_first_attribute();
+    while (pAttr && pAttr->get_attrib_idx() != idx)
+        pAttr = pAttr->get_next_attrib();
+
+    return pAttr;
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr* ImoObj::set_attribute_node(ImoAttr* newAttr)
+{
+    newAttr->set_next_attrib(nullptr);
+    ImoAttr* pLast = get_last_attribute();
+    if (pLast)
+        pLast->set_next_attrib(newAttr);
+    else
+        m_pAttribs = newAttr;
+
+    return newAttr;
+}
+
+//---------------------------------------------------------------------------------------
+void ImoObj::remove_attribute(TIntAttribute idx)
+{
+    ImoAttr* pAttr = get_first_attribute();
+    ImoAttr* pPrev = nullptr;
+    while (pAttr && pAttr->get_attrib_idx() != idx)
+    {
+        pPrev = pAttr;
+        pAttr = pAttr->get_next_attrib();
+    }
+
+    if (pAttr)
+    {
+        if (pPrev)
+        {
+            ImoAttr* pNext = pAttr->get_next_attrib();
+            pPrev->set_next_attrib(pNext);
+        }
+    }
+
+    delete pAttr;
+}
+
+//---------------------------------------------------------------------------------------
+ImoAttr* ImoObj::get_last_attribute()
+{
+    ImoAttr* pAttr = get_first_attribute();
+    ImoAttr* pLast = pAttr;
+    while (pAttr)
+    {
+        pLast = pAttr;
+        pAttr = pAttr->get_next_attrib();
+    }
+
+    return pLast;
+}
+
+//---------------------------------------------------------------------------------------
+int ImoObj::get_num_attributes()
+{
+    ImoAttr* pAttr = get_first_attribute();
+    int i = 0;
+    while (pAttr)
+    {
+        ++i;
+        pAttr = pAttr->get_next_attrib();
+    }
+
+    return i;
 }
 
 
@@ -756,7 +1084,7 @@ ImoRelDataObj* ImoRelObj::get_data_for(ImoStaffObj* pSO)
         if ((*it).first == pSO)
             return (*it).second;
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -898,7 +1226,7 @@ ImoRelObj* ImoStaffObj::find_relation(int type)
 {
     ImoRelations* pRelObjs = get_relations();
     if (!pRelObjs)
-        return NULL;
+        return nullptr;
     else
         return pRelObjs->find_item_of_type(type);
 }
@@ -1005,37 +1333,15 @@ bool ImoBeamData::is_end_of_beam()
 ImoBeamDto::ImoBeamDto()
     : ImoSimpleObj(k_imo_beam_dto)
     , m_beamNum(0)
-    , m_pBeamElm(NULL)
-    , m_pNR(NULL)
+    , m_pBeamElm(nullptr)
+    , m_pNR(nullptr)
+    , m_lineNum(0)
 {
     for (int level=0; level < 6; level++)
     {
         m_beamType[level] = ImoBeam::k_none;
         m_repeat[level] = false;
     }
-}
-
-//---------------------------------------------------------------------------------------
-ImoBeamDto::ImoBeamDto(LdpElement* pBeamElm)
-    : ImoSimpleObj(k_imo_beam_dto)
-    , m_beamNum(0)
-    , m_pBeamElm(pBeamElm)
-    , m_pNR(NULL)
-{
-    for (int level=0; level < 6; level++)
-    {
-        m_beamType[level] = ImoBeam::k_none;
-        m_repeat[level] = false;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-int ImoBeamDto::get_line_number()
-{
-    if (m_pBeamElm)
-        return m_pBeamElm->get_line_number();
-    else
-        return 0;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1117,6 +1423,12 @@ bool ImoBeamDto::get_repeat(int level)
     return m_repeat[level];
 }
 
+//---------------------------------------------------------------------------------------
+ImoStaffObj* ImoBeamDto::get_staffobj()
+{
+    return m_pNR;
+}
+
 
 //=======================================================================================
 // ImoBeam implementation
@@ -1185,7 +1497,7 @@ ImoContentObj* ImoBlocksContainer::get_content_item(int iItem)
     if (iItem < pContent->get_num_children())
         return dynamic_cast<ImoContentObj*>( pContent->get_child(iItem) );
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1201,7 +1513,7 @@ ImoContentObj* ImoBlocksContainer::get_last_content_item()
     if (last >= 0)
         return get_content_item(last);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1232,6 +1544,12 @@ void ImoBlocksContainer::append_content_item(ImoContentObj* pItem)
 //=======================================================================================
 // ImoBarline implementation
 //=======================================================================================
+ImoBarline::~ImoBarline()
+{
+    delete m_pMeasureInfo;
+}
+
+//---------------------------------------------------------------------------------------
 void ImoBarline::set_int_attribute(TIntAttribute attrib, int value)
 {
     //AWARE: override of staff_num (in ImoStaffObj)
@@ -1394,6 +1712,25 @@ Color& ImoColorDto::set_from_rgba_string(const std::string& rgba)
 }
 
 //---------------------------------------------------------------------------------------
+Color& ImoColorDto::set_from_argb_string(const std::string& argb)
+{
+    m_ok = true;
+
+    if (argb[0] == '#')
+    {
+        m_color.a = convert_from_hex( argb.substr(1, 2) );
+        m_color.r = convert_from_hex( argb.substr(3, 2) );
+        m_color.g = convert_from_hex( argb.substr(5, 2) );
+        m_color.b = convert_from_hex( argb.substr(7, 2) );
+    }
+
+    if (!m_ok)
+        m_color = Color(0,0,0,255);
+
+    return m_color;
+}
+
+//---------------------------------------------------------------------------------------
 Color& ImoColorDto::set_from_string(const std::string& hex)
 {
     if (hex.length() == 7)
@@ -1446,7 +1783,7 @@ ImoRelations::~ImoRelations()
 //---------------------------------------------------------------------------------------
 void ImoRelations::accept_visitor(BaseVisitor& v)
 {
-    Visitor<ImoObj>* vObj = NULL;
+    Visitor<ImoObj>* vObj = nullptr;
 
     vObj = dynamic_cast<Visitor<ImoObj>*>(&v);
     if (vObj)
@@ -1469,7 +1806,7 @@ ImoRelObj* ImoRelations::get_item(int iItem)
     if (it != m_relations.end())
         return *it;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1515,8 +1852,10 @@ int ImoRelations::get_priority(int type)
         priority[k_imo_beam] = 1;
         priority[k_imo_chord] = 2;
         priority[k_imo_tuplet] = 3;
-        priority[k_imo_slur] = 4;
-        priority[k_imo_fermata] = 5;
+        priority[k_imo_volta_bracket] = 4;
+        priority[k_imo_slur] = 5;
+        priority[k_imo_fermata] = 6;
+        priority[k_imo_text_repetition_mark] = 7;
 
         fMapInitialized = true;
     };
@@ -1537,7 +1876,7 @@ ImoRelObj* ImoRelations::find_item_of_type(int type)
         if ((*it)->get_obj_type() == type)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1582,9 +1921,11 @@ void ImoRelations::remove_from_all_relations(ImoStaffObj* pSO)
 ImoContentObj::ImoContentObj(int objtype)
     : ImoObj(objtype)
     , Observable()
-    , m_pStyle(NULL)
+    , m_pStyle(nullptr)
     , m_txUserLocation(0.0f)
     , m_tyUserLocation(0.0f)
+    , m_txUserRefPoint(0.0f)
+    , m_tyUserRefPoint(0.0f)
     , m_fVisible(true)
 {
 }
@@ -1593,9 +1934,11 @@ ImoContentObj::ImoContentObj(int objtype)
 ImoContentObj::ImoContentObj(ImoId id, int objtype)
     : ImoObj(id, objtype)
     , Observable()
-    , m_pStyle(NULL)
+    , m_pStyle(nullptr)
     , m_txUserLocation(0.0f)
     , m_tyUserLocation(0.0f)
+    , m_txUserRefPoint(0.0f)
+    , m_tyUserRefPoint(0.0f)
     , m_fVisible(true)
 {
 }
@@ -1622,7 +1965,9 @@ void ImoContentObj::add_attachment(Document* pDoc, ImoAuxObj* pAO)
 ImoAuxObj* ImoContentObj::get_attachment(int i)
 {
     ImoAttachments* pAuxObjs = get_attachments();
-    return static_cast<ImoAuxObj*>( pAuxObjs->get_item(i) );
+    if (pAuxObjs)
+        return static_cast<ImoAuxObj*>( pAuxObjs->get_item(i) );
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1664,7 +2009,7 @@ ImoAuxObj* ImoContentObj::find_attachment(int type)
 {
     ImoAttachments* pAuxObjs = get_attachments();
     if (!pAuxObjs)
-        return NULL;
+        return nullptr;
     else
         return pAuxObjs->find_item_of_type(type);
 }
@@ -1678,7 +2023,7 @@ ImoStyle* ImoContentObj::get_style(bool fInherit)
     if (fInherit)
         return get_inherited_style();
 
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1708,14 +2053,14 @@ ImoStyle* ImoContentObj::get_inherited_style()
             else if (this->is_document())
                 return (static_cast<ImoDocument*>(this))->get_default_style();
             else
-                return NULL;
+                return nullptr;
     }
 
     ImoDocument* pDoc = this->get_document();
     if (pDoc)
         return pDoc->find_style(name);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1807,12 +2152,12 @@ void ImoContentObj::set_double_attribute(TIntAttribute attrib, double value)
     switch(attrib)
     {
         case k_attr_xpos:
-            m_txUserLocation = value;
+            m_txUserLocation = Tenths(value);
             set_dirty(true);
             break;
 
         case k_attr_ypos:
-            m_tyUserLocation = value;
+            m_tyUserLocation = Tenths(value);
             set_dirty(true);
             break;
 
@@ -1876,8 +2221,8 @@ list<TIntAttribute> ImoContentObj::get_supported_attributes()
 //=======================================================================================
 void ImoAnonymousBlock::accept_visitor(BaseVisitor& v)
 {
-    Visitor<ImoAnonymousBlock>* vAb = NULL;
-    Visitor<ImoObj>* vObj = NULL;
+    Visitor<ImoAnonymousBlock>* vAb = nullptr;
+    Visitor<ImoObj>* vObj = nullptr;
 
     vAb = dynamic_cast<Visitor<ImoAnonymousBlock>*>(&v);
     if (vAb)
@@ -1935,7 +2280,7 @@ ImoDocument::~ImoDocument()
 //    if (iItem < pContent->get_num_children())
 //        return dynamic_cast<ImoContentObj*>( pContent->get_child(iItem) );
 //    else
-//        return NULL;
+//        return nullptr;
 //}
 //
 ////---------------------------------------------------------------------------------------
@@ -2053,8 +2398,8 @@ ImoDynamic::~ImoDynamic()
 //=======================================================================================
 void ImoHeading::accept_visitor(BaseVisitor& v)
 {
-    Visitor<ImoHeading>* vHeading = NULL;
-    Visitor<ImoObj>* vObj = NULL;
+    Visitor<ImoHeading>* vHeading = nullptr;
+    Visitor<ImoObj>* vObj = nullptr;
 
     vHeading = dynamic_cast<Visitor<ImoHeading>*>(&v);
     if (vHeading)
@@ -2081,13 +2426,14 @@ void ImoHeading::accept_visitor(BaseVisitor& v)
 //=======================================================================================
 ImoInstrument::ImoInstrument()
     : ImoContainerObj(k_imo_instrument)
-    , m_pScore(NULL)
+    , m_pScore(nullptr)
     , m_name()
     , m_abbrev()
-    , m_midi()
-//    , m_pGroup(NULL)
     , m_partId("")
-    , m_barlineLayout(k_isolated)
+    , m_barlineLayout(EBarlineLayout::k_isolated)
+    , m_measuresNumbering(EMeasuresNumbering::k_none)
+    , m_pMeasures(nullptr)
+    , m_pLastMeasureInfo(nullptr)
 {
     add_staff();
 //	m_midiChannel = g_pMidi->DefaultVoiceChannel();
@@ -2101,6 +2447,9 @@ ImoInstrument::~ImoInstrument()
     for (it = m_staves.begin(); it != m_staves.end(); ++it)
         delete *it;
     m_staves.clear();
+
+    delete m_pMeasures;
+    delete m_pLastMeasureInfo;
 }
 
 //---------------------------------------------------------------------------------------
@@ -2145,32 +2494,25 @@ void ImoInstrument::set_abbrev(ImoScoreText* pText)
 //---------------------------------------------------------------------------------------
 void ImoInstrument::set_name(const string& value)
 {
+    if (!m_name.get_document())
+    {
+        Document* pDoc = get_the_document();
+        m_name.set_owner_document(pDoc);
+    }
+
     m_name.set_text(value);
 }
 
 //---------------------------------------------------------------------------------------
 void ImoInstrument::set_abbrev(const string& value)
 {
+    if (!m_abbrev.get_document())
+    {
+        Document* pDoc = get_the_document();
+        m_abbrev.set_owner_document(pDoc);
+    }
+
     m_abbrev.set_text(value);
-}
-
-//---------------------------------------------------------------------------------------
-void ImoInstrument::set_midi_info(ImoMidiInfo* pInfo)
-{
-    m_midi = *pInfo;
-    delete pInfo;
-}
-
-//---------------------------------------------------------------------------------------
-void ImoInstrument::set_midi_instrument(int instr)
-{
-    m_midi.set_instrument(instr);
-}
-
-//---------------------------------------------------------------------------------------
-void ImoInstrument::set_midi_channel(int channel)
-{
-    m_midi.set_channel(channel);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2184,7 +2526,7 @@ ImoStaffInfo* ImoInstrument::get_staff(int iStaff)
 {
     std::list<ImoStaffInfo*>::iterator it = m_staves.begin();
     for (; it != m_staves.end() && iStaff > 0; ++it, --iStaff);
-    return *it;
+    return (it != m_staves.end() ? *it : nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2198,6 +2540,16 @@ LUnits ImoInstrument::tenths_to_logical(Tenths value, int iStaff)
 {
 	return (value * get_line_spacing_for_staff(iStaff)) / 10.0f;
 }
+
+//---------------------------------------------------------------------------------------
+void ImoInstrument::reserve_space_for_lyrics(int iStaff, LUnits space)
+{
+    ImoStaffInfo* pInfo = get_staff(iStaff);
+    pInfo->add_space_for_lyrics(space);
+}
+
+// ImoSounds interface
+LOMSE_IMPLEMENT_IMOSOUNDS_INTERFACE(ImoInstrument);
 
 //---------------------------------------------------------------------------------------
 // Instrument API
@@ -2238,10 +2590,11 @@ ImoKeySignature* ImoInstrument::add_key_signature(int type, bool fVisible)
 }
 
 //---------------------------------------------------------------------------------------
-ImoSpacer* ImoInstrument::add_spacer(Tenths space)
+ImoDirection* ImoInstrument::add_spacer(Tenths space)
 {
     ImoMusicData* pMD = get_musicdata();
-    ImoSpacer* pImo = static_cast<ImoSpacer*>( ImFactory::inject(k_imo_spacer, m_pDoc) );
+    ImoDirection* pImo =
+            static_cast<ImoDirection*>( ImFactory::inject(k_imo_direction, m_pDoc) );
     pImo->set_width(space);
     pMD->append_child_imo(pImo);
     return pImo;
@@ -2300,7 +2653,7 @@ ImoStaffObj* ImoInstrument::insert_staffobj_at(ImoStaffObj* pAt, const string& l
     if (pImo)
         return insert_staffobj_at(pAt, pImo);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -2413,7 +2766,7 @@ list<ImoStaffObj*> ImoInstrument::insert_staff_objects_at(ImoStaffObj* pAt,
 //=======================================================================================
 ImoInstrGroup::ImoInstrGroup()
     : ImoSimpleObj(k_imo_instr_group)
-    , m_pScore(NULL)
+    , m_pScore(nullptr)
     , m_joinBarlines(k_standard)
     , m_symbol(k_none)
     , m_name()
@@ -2451,10 +2804,10 @@ ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
     std::list<ImoInstrument*>::iterator it;
     int i = 0;
     for (it = m_instruments.begin(); it != m_instruments.end() && i < iInstr; ++it, ++i);
-    if (i == iInstr)
+    if (i == iInstr && it != m_instruments.end())
         return *it;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -2469,6 +2822,52 @@ int ImoInstrGroup::get_num_instruments()
     return static_cast<int>( m_instruments.size() );
 }
 
+//=======================================================================================
+// ImoKeySignature implementation
+//=======================================================================================
+int ImoKeySignature::get_key_type()
+{
+    return int( KeyUtilities::key_components_to_key_type(m_fifths, EKeyMode(m_keyMode)) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoKeySignature::set_key_type(int type)
+{
+    m_keyMode = KeyUtilities::get_key_mode(EKeySignature(type));
+    m_fifths = KeyUtilities::key_signature_to_num_fifths(EKeySignature(type));
+}
+
+//---------------------------------------------------------------------------------------
+void ImoKeySignature::transpose(const int semitones)
+{
+                       //fifths  -7 -6 -5 -4  -3 -2 -1  0  1  2  3   4  5  6  7
+                       //Key:     C- G- D- A-  E- B- F  C  G  D  A   E  B  F+ C+
+    static int fifthsToIndex[] = {1, 8, 3, 10, 5, 0, 7, 2, 9, 4, 11, 6, 1, 8, 3};
+
+    int index = fifthsToIndex[m_fifths+7];
+    int newIndex = index + semitones;
+    //normalize 0..11
+    while (newIndex < 0)
+        newIndex += 11;
+    while (newIndex > 11)
+        newIndex -= 11;
+
+                       //index    0   1   2   3   4   5   6   7   8   9  10  11
+                       //newKey:  b-  b   c   c+  d   e-  e   f   f+  g  a-  a
+                       //             c-      d-                  g-
+    static int indexToFifths[] = {-2, 5,  0,  7,  2, -3,  4, -1,  6,  1, -4, 3};
+
+    m_fifths = indexToFifths[newIndex];
+    if (semitones < 0)
+    {
+        if (newIndex == 1)      //key can be B or C flat
+            m_fifths = -7;          //use C flat
+        else if (newIndex == 3) //key can be C sharp or D flat
+            m_fifths = -5;          //key D flat
+        else if (newIndex == 8) //key can be F sharp or G flat
+            m_fifths = -6;          //key G flat
+    }
+}
 
 //=======================================================================================
 // ImoLink implementation
@@ -2525,8 +2924,8 @@ ImoListItem::ImoListItem(Document* pDoc)
 ////---------------------------------------------------------------------------------------
 //void ImoListItem::accept_visitor(BaseVisitor& v)
 //{
-//    Visitor<ImoListItem>* vLi = NULL;
-//    Visitor<ImoObj>* vObj = NULL;
+//    Visitor<ImoListItem>* vLi = nullptr;
+//    Visitor<ImoObj>* vObj = nullptr;
 //
 //    vLi = dynamic_cast<Visitor<ImoListItem>*>(&v);
 //    if (vLi)
@@ -2558,7 +2957,7 @@ ImoLyric::~ImoLyric()
 ImoLyricsTextInfo* ImoLyric::get_text_item(int iText)
 {
     if (iText >= m_numTextItems)
-        return NULL;
+        return nullptr;
 
     for (int i=0; i < m_numTextItems; ++i)
     {
@@ -2566,7 +2965,7 @@ ImoLyricsTextInfo* ImoLyric::get_text_item(int iText)
         if (pChild->is_lyrics_text_info() && i==iText)
             return static_cast<ImoLyricsTextInfo*>(pChild);
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -2636,8 +3035,8 @@ float ImoMultiColumn::get_column_width(int iCol)
 //=======================================================================================
 void ImoParagraph::accept_visitor(BaseVisitor& v)
 {
-    Visitor<ImoParagraph>* vPara = NULL;
-    Visitor<ImoObj>* vObj = NULL;
+    Visitor<ImoParagraph>* vPara = nullptr;
+    Visitor<ImoObj>* vObj = nullptr;
 
     vPara = dynamic_cast<Visitor<ImoParagraph>*>(&v);
     if (vPara)
@@ -2708,10 +3107,8 @@ LongOption;
 static const BoolOption m_BoolOptions[] =
 {
     {"Score.FillPageWithEmptyStaves", false },
-    {"StaffLines.StopAtFinalBarline", true },
-    {"Score.JustifyFinalBarline", false },
-    {"StaffLines.Hide", false },
     {"Staff.DrawLeftBarline", true },
+    {"StaffLines.Hide", false },
 };
 
 //static StringOption m_StringOptions[] = {};
@@ -2724,27 +3121,31 @@ static const FloatOption m_FloatOptions[] =
         // As the duration of quarter note is 64 (time units), I am
         // going to map it to 35 tenths. This gives a conversion factor
         // of 35/64 = 0.547
+    {"Render.SpacingFopt", 1.4f },
 };
 
 //---------------------------------------------------------------------------------------
 static const LongOption m_LongOptions[] =
 {
-    {"Staff.UpperLegerLines.Displacement", 0L },
     {"Render.SpacingMethod", long(k_spacing_proportional) },
-    {"Render.SpacingValue", 35L },       // 15 tenths (1.5 lines) [add 20 to desired value]
+    {"Render.SpacingOptions", k_render_opt_breaker_simple | k_render_opt_dmin_fixed },
+    {"Render.SpacingValue", 35L },      //15 tenths (1.5 lines) [add 20 to desired value]
+    {"Score.JustifyLastSystem", k_justify_never },
+    {"Staff.UpperLegerLines.Displacement", 0L },
+    {"StaffLines.Truncate", k_truncate_barline_final },
 };
 
 //---------------------------------------------------------------------------------------
 ImoScore::ImoScore(Document* pDoc)
     : ImoBlockLevelObj(k_imo_score)
     , m_version(0)
-    , m_pColStaffObjs(NULL)
-    , m_pMidiTable(NULL)
+    , m_pColStaffObjs(nullptr)
+    , m_pMidiTable(nullptr)
     , m_systemInfoFirst()
     , m_systemInfoOther()
     , m_pageInfo()
 {
-    set_terminal(true);
+    set_edit_terminal(true);
     m_pDoc = pDoc;
     append_child_imo( ImFactory::inject(k_imo_options, pDoc) );
     append_child_imo( ImFactory::inject(k_imo_instruments, pDoc) );
@@ -2872,10 +3273,11 @@ void ImoScore::set_defaults_for_options()
         add_option(pOpt);
     }
 }
+
 //---------------------------------------------------------------------------------------
 void ImoScore::set_staffobjs_table(ColStaffObjs* pColStaffObjs)
 {
-    delete m_pColStaffObjs;;
+    delete m_pColStaffObjs;
     m_pColStaffObjs = pColStaffObjs;
 }
 
@@ -2946,8 +3348,8 @@ void ImoScore::set_long_option(const std::string& name, long value)
 //---------------------------------------------------------------------------------------
 void ImoScore::accept_visitor(BaseVisitor& v)
 {
-    Visitor<ImoScore>* vThis = NULL;
-    Visitor<ImoObj>* vObj = NULL;
+    Visitor<ImoScore>* vThis = nullptr;
+    Visitor<ImoObj>* vObj = nullptr;
 
     vThis = dynamic_cast<Visitor<ImoScore>*>(&v);
     if (vThis)
@@ -2991,7 +3393,7 @@ ImoInstrument* ImoScore::get_instrument(const string& partId)
         if (pInstr->get_instr_id() == partId)
             return pInstr;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3016,7 +3418,7 @@ void ImoScore::add_instrument(ImoInstrument* pInstr, const string& partId)
     if (pInstr->get_instr_id() == "")
         pInstr->set_instr_id(partId);
     ImoInstruments* pColInstr = get_instruments();
-    return pColInstr->append_child_imo(pInstr);
+    pColInstr->append_child_imo(pInstr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3033,11 +3435,11 @@ ImoOptionInfo* ImoScore::get_option(const std::string& name)
     ImoObj::children_iterator it;
     for (it= pColOpts->begin(); it != pColOpts->end(); ++it)
     {
-        ImoOptionInfo* pOpt = dynamic_cast<ImoOptionInfo*>(*it);
+        ImoOptionInfo* pOpt = static_cast<ImoOptionInfo*>(*it);
         if (pOpt->get_name() == name)
             return pOpt;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3060,7 +3462,7 @@ void ImoScore::add_or_replace_option(ImoOptionInfo* pOpt)
     if (pOldOpt)
     {
         ImoOptions* pColOpts = get_options();
-        m_pDoc->removed_from_model(pOldOpt);
+        m_pDoc->on_removed_from_model(pOldOpt);
         pColOpts->remove_child_imo(pOldOpt);
         delete pOldOpt;
     }
@@ -3130,7 +3532,7 @@ ImoStyle* ImoScore::find_style(const std::string& name)
 	if (it != m_nameToStyle.end())
 		return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3171,7 +3573,7 @@ ImoStyle* ImoScore::create_default_style()
     //TODO: How to get default values for comparisons (k_default_language) ?
     {
         //get document language
-        ImoDocument* pImoDoc = m_pDoc->get_imodoc();
+        ImoDocument* pImoDoc = m_pDoc->get_im_root();
         if (pImoDoc)    //AWARE: in unit tests there could be no ImoDoc
         {
             string& language = pImoDoc->get_language();
@@ -3239,19 +3641,19 @@ void ImoScore::add_required_text_styles()
     ImoStyle* pDefStyle = get_default_style();
 
     //For tuplets numbers
-    if (find_style("Tuplet numbers") == NULL)
+    if (find_style("Tuplet numbers") == nullptr)
     {
 	    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
         pStyle->set_name("Tuplet numbers");
         pStyle->set_parent_style(pDefStyle);
-	    pStyle->font_size( 11.0f);
+	    pStyle->font_size( 10.0f);
         pStyle->font_style( ImoStyle::k_font_style_italic);
         pStyle->font_weight( ImoStyle::k_font_weight_normal);
         add_style(pStyle);
     }
 
     //For instrument and group names and abbreviations
-    if (find_style("Instrument names") == NULL)
+    if (find_style("Instrument names") == nullptr)
     {
 	    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
         pStyle->set_name("Instrument names");
@@ -3261,7 +3663,7 @@ void ImoScore::add_required_text_styles()
     }
 
     //For metronome marks
-    if (find_style("Metronome marks") == NULL)
+    if (find_style("Metronome marks") == nullptr)
     {
 	    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
         pStyle->set_name("Metronome marks");
@@ -3271,7 +3673,7 @@ void ImoScore::add_required_text_styles()
     }
 
     //for lyrics
-    if (find_style("Lyrics") == NULL)
+    if (find_style("Lyrics") == nullptr)
     {
 	    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
         pStyle->set_name("Lyrics");
@@ -3280,6 +3682,31 @@ void ImoScore::add_required_text_styles()
         add_style(pStyle);
     }
     //<lyric-font font-family="Times New Roman" font-size="10"/>
+
+    //For volta brackets
+    if (find_style("Volta brackets") == nullptr)
+    {
+	    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+        pStyle->set_name("Volta brackets");
+        pStyle->set_parent_style(pDefStyle);
+	    pStyle->font_size( 10.0f);
+        pStyle->font_style( ImoStyle::k_font_style_normal);
+        pStyle->font_weight( ImoStyle::k_font_weight_bold);
+        add_style(pStyle);
+    }
+    //font-family="Liberation Serif" font-size="10" bold
+
+    //For measure numbers
+    if (find_style("Measure numbers") == nullptr)
+    {
+	    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+        pStyle->set_name("Measure numbers");
+        pStyle->set_parent_style(pDefStyle);
+	    pStyle->font_size( 10.0f);
+        pStyle->font_style( ImoStyle::k_font_style_italic);
+        pStyle->font_weight( ImoStyle::k_font_weight_normal);
+        add_style(pStyle);
+    }
 
 }
 
@@ -3302,19 +3729,24 @@ ImoInstrument* ImoScore::add_instrument()
 {
     ImoInstrument* pInstr = static_cast<ImoInstrument*>(
                                 ImFactory::inject(k_imo_instrument, m_pDoc) );
-    add_instrument(pInstr);
+
+    ImoSoundInfo* pInfo = static_cast<ImoSoundInfo*>(
+                                ImFactory::inject(k_imo_sound_info, m_pDoc) );
+    pInstr->add_sound_info(pInfo);
+
     ImoMusicData* pMD = static_cast<ImoMusicData*>(
                                 ImFactory::inject(k_imo_music_data, m_pDoc));
     pInstr->append_child_imo(pMD);
+
+    add_instrument(pInstr);
     pInstr->set_owner_score(this);
+
     return pInstr;
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::close()
+void ImoScore::end_of_changes()
 {
-    //ColStaffObjsBuilder builder;
-    //builder.build(this);
     ModelBuilder builder;
     builder.structurize(this);
 }
@@ -3350,8 +3782,8 @@ void ImoScore::close()
 //=======================================================================================
 ImoScorePlayer::ImoScorePlayer()
     : ImoControl(k_imo_score_player)
-    , m_pPlayer(NULL)
-    , m_pScore(NULL)
+    , m_pPlayer(nullptr)
+    , m_pScore(nullptr)
     , m_playLabel("Play")
     , m_stopLabel("Stop playing")
 {
@@ -3396,6 +3828,101 @@ int ImoScorePlayer::get_metronome_mm()
 
 
 //=======================================================================================
+// ImoSounds implementation
+//=======================================================================================
+void ImoSounds::add_sound_info(ImoSoundInfo* pInfo)
+{
+    append_child_imo(pInfo);
+}
+
+//---------------------------------------------------------------------------------------
+int ImoSounds::get_num_sounds()
+{
+    return get_num_children();
+}
+
+//---------------------------------------------------------------------------------------
+ImoSoundInfo* ImoSounds::get_sound_info(const string& soundId)
+{
+    ImoObj::children_iterator it;
+    for (it= this->begin(); it != this->end(); ++it)
+    {
+        ImoSoundInfo* pInfo = static_cast<ImoSoundInfo*>(*it);
+        if (pInfo->get_score_instr_id() == soundId)
+            return pInfo;
+    }
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+ImoSoundInfo* ImoSounds::get_sound_info(int iSound)
+{
+    return dynamic_cast<ImoSoundInfo*>( get_child(iSound) );
+}
+
+
+//=======================================================================================
+// ImoSoundInfo implementation
+//=======================================================================================
+ImoSoundInfo::ImoSoundInfo()
+    : ImoSimpleObj(k_imo_sound_info)
+    , m_instrName("")
+    , m_instrAbbrev("")
+    , m_instrSound("")
+    , m_fSolo(false)
+    , m_fEnsemble(false)
+    , m_ensembleSize(0)
+    , m_virtualLibrary("")
+    , m_virtualName("")
+    , m_playTechnique(0)
+{
+
+}
+
+//---------------------------------------------------------------------------------------
+void ImoSoundInfo::initialize_object(Document* pDoc)
+{
+    ImoMidiInfo* pMidi = static_cast<ImoMidiInfo*>(
+                                ImFactory::inject(k_imo_midi_info, pDoc) );
+    append_child_imo(pMidi);
+}
+
+//---------------------------------------------------------------------------------------
+void ImoSoundInfo::set_score_instr_id(const string& value)
+{
+    m_soundId = value;
+    ImoMidiInfo* pMidi = static_cast<ImoMidiInfo*>(get_child_of_type(k_imo_midi_info));
+    pMidi->set_score_instr_id(value);
+}
+
+
+//---------------------------------------------------------------------------------------
+ImoMidiInfo* ImoSoundInfo::get_midi_info()
+{
+    return static_cast<ImoMidiInfo*>(get_child_of_type(k_imo_midi_info));
+}
+
+
+//=======================================================================================
+// ImoSoundChange implementation
+//=======================================================================================
+ImoMidiInfo* ImoSoundChange::get_midi_info(const string& soundId)
+{
+    ImoObj::children_iterator it = this->begin();
+    while (it != this->end())
+    {
+        if ((*it)->is_midi_info())
+        {
+            ImoMidiInfo* pMidi = static_cast<ImoMidiInfo*>(*it);
+            if (pMidi->get_score_instr_id() == soundId)
+                return pMidi;
+        }
+    }
+    return nullptr;
+}
+
+
+//=======================================================================================
 // ImoStyle implementation
 //=======================================================================================
 bool ImoStyle::is_default_style_with_default_values()
@@ -3412,7 +3939,7 @@ bool ImoStyle::is_default_style_with_default_values()
     if (m_name == "Heading-1")
         return font_size() == 21.0f
             && font_weight() == k_font_weight_bold
-            && is_equal( margin_bottom(), 300.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3432,39 +3959,39 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            && is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     if (m_name == "Heading-2")
         return font_size() == 17.0f
             && font_weight() == k_font_weight_bold
-            && is_equal( margin_top(), 400.0f )
-            && is_equal( margin_bottom(), 300.0f )
+            && is_equal_pos( margin_top(), 400.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3484,39 +4011,39 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     if (m_name == "Heading-3")
         return font_size() == 14.0f
             && font_weight() == k_font_weight_bold
-            && is_equal( margin_top(), 400.0f )
-            && is_equal( margin_bottom(), 300.0f )
+            && is_equal_pos( margin_top(), 400.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3536,39 +4063,39 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     if (m_name == "Heading-4")
         return font_size() == 12.0f
             && font_weight() == k_font_weight_bold
-            && is_equal( margin_top(), 400.0f )
-            && is_equal( margin_bottom(), 300.0f )
+            && is_equal_pos( margin_top(), 400.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3588,39 +4115,39 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     if (m_name == "Heading-5")
         return font_style() == k_font_style_italic
             && font_weight() == k_font_weight_bold
-            && is_equal( margin_top(), 400.0f )
-            && is_equal( margin_bottom(), 300.0f )
+            && is_equal_pos( margin_top(), 400.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3640,38 +4167,38 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     if (m_name == "Heading-6")
         return font_style() == k_font_style_italic
-            && is_equal( margin_top(), 400.0f )
-            && is_equal( margin_bottom(), 300.0f )
+            && is_equal_pos( margin_top(), 400.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3691,41 +4218,41 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     //table
     if (m_name == "Table")
-        return is_equal( border_width_top(), 20.0f )
-            && is_equal( border_width_bottom(), 20.0f )
-            && is_equal( border_width_left(), 20.0f )
-            && is_equal( border_width_right(), 20.0f )
-            && is_equal( margin_bottom(), 300.0f )
+        return is_equal_pos( border_width_top(), 20.0f )
+            && is_equal_pos( border_width_bottom(), 20.0f )
+            && is_equal_pos( border_width_left(), 20.0f )
+            && is_equal_pos( border_width_right(), 20.0f )
+            && is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3745,37 +4272,37 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            //&& is_equal( border_width_top(), k_default_border_width_top )
-            //&& is_equal( border_width_bottom(), k_default_border_width_bottom )
-            //&& is_equal( border_width_left(), k_default_border_width_left )
-            //&& is_equal( border_width_right(), k_default_border_width_right )
+            //&& is_equal_pos( border_width_top(), k_default_border_width_top )
+            //&& is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            //&& is_equal_pos( border_width_left(), k_default_border_width_left )
+            //&& is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     //paragraph
     if (m_name == "Paragraph")
-        return is_equal( margin_bottom(), 300.0f )
+        return is_equal_pos( margin_bottom(), 300.0f )
             //inherited defaults:
                //font
             && font_file() == ""
@@ -3795,37 +4322,37 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            //&& is_equal( margin_top(), k_default_margin_top )
-            //&& is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            //&& is_equal_pos( margin_top(), k_default_margin_top )
+            //&& is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     //Tuplets numbers
     if (m_name == "Tuplet numbers")
-        return font_size() == 11.0f
+        return font_size() == 10.0f
             && font_style() == k_font_style_italic
             //inherited defaults:
                //font
@@ -3846,32 +4373,32 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            && is_equal( margin_top(), k_default_margin_top )
-            && is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            && is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
                ;
 
     //Instrument names
@@ -3896,32 +4423,32 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            && is_equal( margin_top(), k_default_margin_top )
-            && is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            && is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     //Metronome marks
@@ -3946,32 +4473,32 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            && is_equal( margin_top(), k_default_margin_top )
-            && is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            && is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
 
     //Lyrics
@@ -3996,33 +4523,135 @@ bool ImoStyle::is_default_style_with_default_values()
             && is_equal(color(), Color(0,0,0))
             && is_equal(background_color(), Color(255,255,255))
                //margin
-            && is_equal( margin_top(), k_default_margin_top )
-            && is_equal( margin_bottom(), k_default_margin_bottom )
-            && is_equal( margin_left(), k_default_margin_left )
-            && is_equal( margin_right(), k_default_margin_right )
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            && is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
                //padding
-            && is_equal( padding_top(), k_default_padding_top )
-            && is_equal( padding_bottom(), k_default_padding_bottom )
-            && is_equal( padding_left(), k_default_padding_left )
-            && is_equal( padding_right(), k_default_padding_right )
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
                ////border
             //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
             //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
             //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
             //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
                //border width
-            && is_equal( border_width_top(), k_default_border_width_top )
-            && is_equal( border_width_bottom(), k_default_border_width_bottom )
-            && is_equal( border_width_left(), k_default_border_width_left )
-            && is_equal( border_width_right(), k_default_border_width_right )
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
                //size
-            && is_equal( min_height(), k_default_min_height )
-            && is_equal( max_height(), k_default_max_height )
-            && is_equal( height(), k_default_height )
-            && is_equal( min_width(), k_default_min_width )
-            && is_equal( max_width(), k_default_max_width )
-            && is_equal( width(), k_default_width )
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
             ;
+
+    //Lyrics
+    if (m_name == "Volta brackets")
+	    return font_size() == 10.0f
+            && font_weight() == k_font_weight_bold
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            && is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
+            ;
+
+    //Measure numbers
+    if (m_name == "Measure numbers")
+        return font_size() == 10.0f
+            && font_style() == k_font_style_italic
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            //&& font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal_pos( margin_top(), k_default_margin_top )
+            && is_equal_pos( margin_bottom(), k_default_margin_bottom )
+            && is_equal_pos( margin_left(), k_default_margin_left )
+            && is_equal_pos( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal_pos( padding_top(), k_default_padding_top )
+            && is_equal_pos( padding_bottom(), k_default_padding_bottom )
+            && is_equal_pos( padding_left(), k_default_padding_left )
+            && is_equal_pos( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal_pos( border_width_top(), k_default_border_width_top )
+            && is_equal_pos( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal_pos( border_width_left(), k_default_border_width_left )
+            && is_equal_pos( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal_pos( min_height(), k_default_min_height )
+            && is_equal_pos( max_height(), k_default_max_height )
+            && is_equal_pos( height(), k_default_height )
+            && is_equal_pos( min_width(), k_default_min_width )
+            && is_equal_pos( max_width(), k_default_max_width )
+            && is_equal_pos( width(), k_default_width )
+               ;
 
     return false;
 }
@@ -4047,7 +4676,7 @@ ImoStyles::~ImoStyles()
 //---------------------------------------------------------------------------------------
 void ImoStyles::accept_visitor(BaseVisitor& v)
 {
-    Visitor<ImoObj>* vObj = NULL;
+    Visitor<ImoObj>* vObj = nullptr;
 
     vObj = dynamic_cast<Visitor<ImoObj>*>(&v);
     if (vObj)
@@ -4079,7 +4708,7 @@ ImoStyle* ImoStyles::find_style(const std::string& name)
 	if (it != m_nameToStyle.end())
 		return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -4363,7 +4992,8 @@ ImoSlurData::ImoSlurData(ImoSlurDto* pDto)
     : ImoRelDataObj(k_imo_slur_data)
     , m_fStart( pDto->is_start() )
     , m_slurNum( pDto->get_slur_number() )
-    , m_pBezier(NULL)
+    , m_orientation(k_orientation_default)
+    , m_pBezier(nullptr)
 {
     if (pDto->get_bezier())
         m_pBezier = LOMSE_NEW ImoBezierInfo( pDto->get_bezier() );
@@ -4379,7 +5009,7 @@ ImoSlurData::~ImoSlurData()
 ImoBezierInfo* ImoSlurData::add_bezier()
 {
     if (!m_pBezier)
-        m_pBezier = LOMSE_NEW ImoBezierInfo(NULL);
+        m_pBezier = LOMSE_NEW ImoBezierInfo(nullptr);
     return m_pBezier;
 }
 
@@ -4392,9 +5022,9 @@ ImoSlurDto::~ImoSlurDto()
 }
 
 //---------------------------------------------------------------------------------------
-int ImoSlurDto::get_line_number()
+ImoStaffObj* ImoSlurDto::get_staffobj()
 {
-    return 0;
+    return m_pNote;
 }
 
 
@@ -4452,8 +5082,8 @@ ImoTableCell::ImoTableCell(Document* pDoc)
 ////---------------------------------------------------------------------------------------
 //void ImoTableCell::accept_visitor(BaseVisitor& v)
 //{
-//    Visitor<ImoTableCell>* vCell = NULL;
-//    Visitor<ImoObj>* vObj = NULL;
+//    Visitor<ImoTableCell>* vCell = nullptr;
+//    Visitor<ImoObj>* vObj = nullptr;
 //
 //    vCell = dynamic_cast<Visitor<ImoTableCell>*>(&v);
 //    if (vCell)
@@ -4484,7 +5114,7 @@ ImoTableRow::ImoTableRow(Document* pDoc)
 }
 
 //---------------------------------------------------------------------------------------
-ImoStyle* ImoTableRow::get_style()
+ImoStyle* ImoTableRow::get_style(bool fInherit)
 {
     if (m_pStyle)
         return m_pStyle;
@@ -4495,7 +5125,7 @@ ImoStyle* ImoTableRow::get_style()
         {
             pParent = pParent->get_parent();
             if (pParent && pParent->is_table())
-                return (static_cast<ImoContentObj*>(pParent))->get_style();
+                return (static_cast<ImoContentObj*>(pParent))->get_style(fInherit);
             else
             {
                 LOMSE_LOG_ERROR("[ImoTableRow::get_style] No parent or table row not in table!");
@@ -4629,7 +5259,8 @@ ImoTieData::ImoTieData(ImoTieDto* pDto)
     : ImoRelDataObj(k_imo_tie_data)
     , m_fStart( pDto->is_start() )
     , m_tieNum( pDto->get_tie_number() )
-    , m_pBezier(NULL)
+    , m_orientation(k_orientation_default)
+    , m_pBezier(nullptr)
 {
     if (pDto->get_bezier())
         m_pBezier = LOMSE_NEW ImoBezierInfo( pDto->get_bezier() );
@@ -4645,7 +5276,7 @@ ImoTieData::~ImoTieData()
 ImoBezierInfo* ImoTieData::add_bezier()
 {
     if (!m_pBezier)
-        m_pBezier = LOMSE_NEW ImoBezierInfo(NULL);
+        m_pBezier = LOMSE_NEW ImoBezierInfo(nullptr);
     return m_pBezier;
 }
 
@@ -4658,29 +5289,50 @@ ImoTieDto::~ImoTieDto()
 }
 
 //---------------------------------------------------------------------------------------
-int ImoTieDto::get_line_number()
+ImoStaffObj* ImoTieDto::get_staffobj()
 {
-    if (m_pTieElm)
-        return m_pTieElm->get_line_number();
-    else
-        return 0;
+    return m_pNote;
 }
 
 
 //=======================================================================================
 // ImoTimeSignature implementation
 //=======================================================================================
+bool ImoTimeSignature::is_compound_meter()
+{
+    //In compound time signatures, the beat is broken down into three equal parts,
+    //so that a dotted note (half again longer than a regular note) becomes the
+    //beat unit. The top number is always divisible by 3, with the exception
+    //of time signatures where the top number is 3. Common examples of compound
+    //time signatures are 6/8, 12/8, and 9/4.
+
+    return m_top==6 || m_top==9 || m_top==12;
+}
+
+//---------------------------------------------------------------------------------------
 int ImoTimeSignature::get_num_pulses()
 {
-    //returns the number of pulses (metronome pulses) implied by this TS
+    //returns the number of pulses (beats or metronome pulses) implied by this TS
 
-    return (is_compound_meter() ? m_top / 3 : m_top);
+    //In simple time signatures, such as  4/4, 3/4, 2/4, 3/8, and 2/2, the number
+    //of beats is given by the top number, with the exception of 3/8 which is
+    //conducted in one beat.
+    //TODO: Any other exception?
+    //In compound time signatures (6/x, 12/x, and 9/x) the number of beats is given
+    //by dividing the top number by three.
+    //TODO: Any exception?
+
+    if (is_compound_meter()
+        || (get_top_number() == 3 && get_bottom_number() == 8))
+        return m_top / 3;
+    else
+        return m_top;
 }
 
 //---------------------------------------------------------------------------------------
 TimeUnits ImoTimeSignature::get_ref_note_duration()
 {
-    // returns beat duration (in LDP time units)
+    // returns duration (in LDP time units) implied by Time Signature bottom number
 
     switch(m_bottom)
     {
@@ -4702,6 +5354,8 @@ TimeUnits ImoTimeSignature::get_ref_note_duration()
 //---------------------------------------------------------------------------------------
 TimeUnits ImoTimeSignature::get_measure_duration()
 {
+    //TODO Deal with non-standard time signatures
+
     return m_top * get_ref_note_duration();
 }
 
@@ -4712,55 +5366,28 @@ TimeUnits ImoTimeSignature::get_beat_duration()
 }
 
 
-
-//=======================================================================================
-// ImoTupletData implementation
-//=======================================================================================
-ImoTupletData::ImoTupletData(ImoTupletDto* UNUSED(pDto))
-    : ImoRelDataObj(k_imo_tuplet_data)
-{
-}
-
-
 //=======================================================================================
 // ImoTupletDto implementation
 //=======================================================================================
 ImoTupletDto::ImoTupletDto()
     : ImoSimpleObj(k_imo_tuplet_dto)
     , m_tupletType(ImoTupletDto::k_unknown)
+    , m_tupletNum(0)
     , m_nActualNum(0)
     , m_nNormalNum(0)
     , m_nShowBracket(k_yesno_default)
     , m_nPlacement(k_placement_default)
     , m_nShowNumber(ImoTuplet::k_number_actual)
+    , m_lineNum(0)
     , m_fOnlyGraphical(false)
-    , m_pTupletElm(NULL)
-    , m_pNR(NULL)
+    , m_pNR(nullptr)
 {
 }
 
 //---------------------------------------------------------------------------------------
-ImoTupletDto::ImoTupletDto(LdpElement* pTupletElm)
-    : ImoSimpleObj(k_imo_tuplet_dto)
-    , m_tupletType(ImoTupletDto::k_unknown)
-    , m_nActualNum(0)
-    , m_nNormalNum(0)
-    , m_nShowBracket(k_yesno_default)
-    , m_nPlacement(k_placement_default)
-    , m_nShowNumber(ImoTuplet::k_number_actual)
-    , m_fOnlyGraphical(false)
-    , m_pTupletElm(pTupletElm)
-    , m_pNR(NULL)
+ImoStaffObj* ImoTupletDto::get_staffobj()
 {
-}
-
-//---------------------------------------------------------------------------------------
-int ImoTupletDto::get_line_number()
-{
-    if (m_pTupletElm)
-        return m_pTupletElm->get_line_number();
-    else
-        return 0;
+    return m_pNR;
 }
 
 
@@ -4782,6 +5409,44 @@ void ImoTuplet::reorganize_after_object_deletion()
 {
     //TODO
 }
+
+
+//=======================================================================================
+// ImoVoltaBracket implementation
+//=======================================================================================
+ImoBarline* ImoVoltaBracket::get_start_barline()
+{
+    return static_cast<ImoBarline*>( get_start_object() );
+}
+
+//---------------------------------------------------------------------------------------
+ImoBarline* ImoVoltaBracket::get_stop_barline()
+{
+    return static_cast<ImoBarline*>( get_end_object() );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoVoltaBracket::reorganize_after_object_deletion()
+{
+    //Nothing to do. As a volta bracket involves only two objects, the volta bracket
+    //is automatically removed when one of the barlines is deleted.
+    //Also, in barline destructor, the other barline is informed.
+}
+
+
+////=======================================================================================
+//// ImoVoltaBracketData implementation
+////=======================================================================================
+//ImoVoltaBracketData::ImoVoltaBracketData(ImoVoltaBracketDto* pDto)
+//    : ImoRelDataObj(k_imo_volta_bracket_data)
+//    , m_fStart( pDto->is_start() )
+//{
+//}
+//
+////---------------------------------------------------------------------------------------
+//ImoVoltaBracketData::~ImoVoltaBracketData()
+//{
+//}
 
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -37,9 +37,10 @@
 #include "lomse_box_system.h"
 #include "lomse_box_slice_instr.h"
 #include "lomse_box_slice.h"
-#include "lomse_system_layouter.h"  //TimeGridTable
 #include "lomse_logger.h"
 #include "lomse_graphical_model.h"
+#include "lomse_timegrid_table.h"
+
 
 //other
 #include <sstream>
@@ -52,7 +53,7 @@ namespace lomse
 // CaretPositioner implementation
 //=======================================================================================
 CaretPositioner::CaretPositioner()
-    : m_pCursor(NULL)
+    : m_pCursor(nullptr)
 {
 }
 
@@ -110,11 +111,11 @@ DocCursorState CaretPositioner::click_point_to_cursor_state(GraphicModel* pGMode
         InnerLevelCaretPositioner* p = new_positioner(pTopImo, pGModel);
         SpElementCursorState innerState =
                         p->click_point_to_cursor_state(iPage, x, y, pImo, pGmo);
-        int topId = (innerState.get() == NULL ? k_no_imoid : pTopImo->get_id());
+        int topId = (innerState.get() == nullptr ? k_no_imoid : pTopImo->get_id());
         return DocCursorState(topId, innerState);
     }
 	else
-        return DocCursorState(pTopImo->get_id(), SharedPtr<ElementCursorState>());
+        return DocCursorState(pTopImo->get_id(), std::shared_ptr<ElementCursorState>());
 }
 
 
@@ -122,7 +123,7 @@ DocCursorState CaretPositioner::click_point_to_cursor_state(GraphicModel* pGMode
 // TopLevelCaretPositioner implementation
 //=======================================================================================
 TopLevelCaretPositioner::TopLevelCaretPositioner(GraphicModel* pGModel)
-    : m_pCursor(NULL)
+    : m_pCursor(nullptr)
     , m_pGModel(pGModel)
 {
 }
@@ -186,9 +187,12 @@ InnerLevelCaretPositioner::InnerLevelCaretPositioner(GraphicModel* pGModel)
 //=======================================================================================
 ScoreCaretPositioner::ScoreCaretPositioner(GraphicModel* pGModel)
     : InnerLevelCaretPositioner(pGModel)
-    , m_pDocCursor(NULL)
-    , m_pScoreCursor(NULL)
-    , m_pDoc(NULL)
+    , m_pDocCursor(nullptr)
+    , m_pScoreCursor(nullptr)
+    , m_pDoc(nullptr)
+    , m_pScore(nullptr)
+    , m_pMeter(nullptr)
+    , m_pBoxSystem(nullptr)
 {
 }
 
@@ -205,7 +209,7 @@ void ScoreCaretPositioner::layout_caret(Caret* pCaret, DocCursor* pCursor)
     m_pDocCursor = pCursor;
     m_pScoreCursor = static_cast<ScoreCursor*>(pCursor->get_inner_cursor());
     m_pDoc = pCursor->get_document();
-    m_pBoxSystem = NULL;
+    m_pBoxSystem = nullptr;
 
     //get score cursor state
     DocCursorState state = m_pDocCursor->get_state();
@@ -291,7 +295,7 @@ void ScoreCaretPositioner::caret_on_empty_timepos(Caret* pCaret)
                                             time);
     m_pBoxSystem = m_pGModel->get_system_box(iSystem);
     TimeGridTable* pTimeGrid = m_pBoxSystem->get_time_grid_table();
-    bounds.x = pTimeGrid->get_x_for_time(time);
+    bounds.x = pTimeGrid->get_x_for_note_rest_at_time(time);
 #endif
 
     //set caret
@@ -317,7 +321,7 @@ void ScoreCaretPositioner::caret_at_start_of_score(Caret* pCaret)
     GmoBoxScorePage* pBSP =
             static_cast<GmoBoxScorePage*>( m_pGModel->get_box_for_imo(scoreId) );
     m_pBoxSystem = dynamic_cast<GmoBoxSystem*>(pBSP->get_child_box(0));
-    GmoShapeStaff* pShape = (m_pBoxSystem ? m_pBoxSystem->get_staff_shape(0) : NULL);
+    GmoShapeStaff* pShape = (m_pBoxSystem ? m_pBoxSystem->get_staff_shape(0) : nullptr);
 
     URect bounds;
     if (pShape)
@@ -486,7 +490,8 @@ SpElementCursorState ScoreCaretPositioner::click_point_to_cursor_state(int iPage
         if (!(pImo->is_staffobj() || pGmo->is_box()) || pImo->is_barline() )
         {
             pGmo = m_pGModel->find_inner_box_at(iPage, x, y);
-            pImo = pGmo->get_creator_imo();
+            if (pGmo)
+                pImo = pGmo->get_creator_imo();
 
     //        stringstream msg;
     //        msg << "Click changed to: Gmo=" << pGmo->get_name() << ", Imo=" << pImo->get_name();
@@ -527,7 +532,7 @@ SpElementCursorState ScoreCaretPositioner::click_point_to_cursor_state(int iPage
     }
 
     //other cases: ignore click
-    return SharedPtr<ElementCursorState>();
+    return std::shared_ptr<ElementCursorState>();
 }
 
 

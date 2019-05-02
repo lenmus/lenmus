@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -161,14 +161,12 @@ void MidiServer::SetOutDevice(int nOutDevId)
             }
             if (nErr)
             {
-				LOMSE_LOG_ERROR(str(boost::format("Error %d opening Midi device") % nErr ));
+				LOMSE_LOG_ERROR("Error %d opening Midi device", nErr);
                 m_fMidiOK = false;
                 return;
             }
             else
-				LOMSE_LOG_INFO(str(boost::format(
-                        "Midi out device correctly set. OutDevId=%d")
-                        % m_nOutDevId ));
+				LOMSE_LOG_INFO("Midi out device correctly set. OutDevId=%d", m_nOutDevId);
         }
     }
 }

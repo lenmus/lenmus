@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -43,7 +43,6 @@ namespace lomse
 class ModelBuilder;
 class DocumentScope;
 class LibraryScope;
-class InternalModel;
 class ImoDocument;
 class Document;
 
@@ -59,15 +58,21 @@ protected:
     Document*       m_pDoc;
     string         m_fileLocator;
 
-    Compiler() {}
+    Compiler()
+        : m_pParser(nullptr)
+        , m_pAnalyser(nullptr)
+        , m_pModelBuilder(nullptr)
+        , m_pDoc(nullptr)
+    {
+    }
     Compiler(Parser* p, Analyser* a, ModelBuilder* mb, Document* pDoc);
 
 public:
     virtual ~Compiler();
 
     //compilation
-    virtual InternalModel* compile_file(const std::string& filename)=0;
-    virtual InternalModel* compile_string(const std::string& source)=0;
+    virtual ImoDocument* compile_file(const std::string& filename)=0;
+    virtual ImoDocument* compile_string(const std::string& source)=0;
 
     //info
     int get_num_errors();

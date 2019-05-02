@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -49,6 +49,31 @@
 
 using namespace agg;
 
+//---------------------------------------------------------------------------------------
+//AWARE: Microsoft deprecated strncpy() but the "security enhanced" new function
+//strncpy_s() is only defined by Microsoft which "coincidentally" makes your code
+//non-portable.
+//
+//The addressed security issue is, basically, that strncpy does not ensure that the
+//string is properly ended with '\0'. But this is not needed in this source code.
+//
+//This code addresses the need to suppress the annoying Microsoft warnings, which
+//is not easy. Thanks Microsoft!
+//
+//See:
+//  https://stackoverflow.com/questions/858252/alternatives-to-ms-strncpy-s
+//
+#if (defined(_MSC_VER) && (_MSC_VER >= 1400) )
+    #include <string>
+    using namespace std;
+
+    #define strncpy(dest, source, count)     strcpy_s((dest), (count), (source))
+#else
+    #define strncpy_s(dest, source, count)   strncpy((dest), (source), (count))
+#endif
+//---------------------------------------------------------------------------------------
+
+
 namespace lomse
 {
 
@@ -89,17 +114,18 @@ struct glyph_cache
         enum block_size_e { block_size = 16384-16 };
 
         //--------------------------------------------------------------------
-        font_cache() :
-            m_allocator(block_size),
-            m_font_signature(0)
-        {}
+        font_cache()
+            : m_allocator(block_size)
+            , m_font_signature(0)
+        {
+        }
 
         //--------------------------------------------------------------------
         void signature(const char* font_signature)
         {
-            m_font_signature = (char*)m_allocator.allocate(
-                    static_cast<unsigned int>(strlen(font_signature) + 1) );
-            strcpy(m_font_signature, font_signature);
+            int len = strlen(font_signature) + 1;
+            m_font_signature = (char*)m_allocator.allocate(len);
+            strncpy(m_font_signature, font_signature, len);
             memset(m_glyphs, 0, sizeof(m_glyphs));
         }
 
@@ -212,7 +238,7 @@ public:
             if(m_num_fonts >= m_max_fonts)
             {
                 obj_allocator<font_cache>::deallocate(m_fonts[0]);
-                memcpy(m_fonts,
+                memmove(m_fonts,
                         m_fonts + 1,
                         (m_max_fonts - 1) * sizeof(font_cache*));
                 m_num_fonts = m_max_fonts - 1;
@@ -322,6 +348,8 @@ public:
         m_fonts(max_fonts),
         m_engine(engine),
         m_change_stamp(-1),
+        m_dx(0.0),
+        m_dy(0.0),
         m_prev_glyph(0),
         m_last_glyph(0)
     {}

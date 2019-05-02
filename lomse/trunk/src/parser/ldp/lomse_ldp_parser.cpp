@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -46,13 +46,14 @@ namespace lomse
 
 LdpParser::LdpParser(ostream& reporter, LdpFactory* pFactory)
     : Parser(reporter)
-    , m_tree(NULL)
+    , m_tree(nullptr)
     , m_pLdpFactory(pFactory)
     //, m_fDebugMode(g_pLogger->IsAllowedTraceMask("LdpParser"))
-    //, m_pIgnoreSet((std::set<long>*)NULL)
-    , m_pTokenizer(NULL)
-    , m_pTk(NULL)
-    , m_curNode(NULL)
+    //, m_pIgnoreSet((std::set<long>*)nullptr)
+    , m_pTokenizer(nullptr)
+    , m_pTk(nullptr)
+    , m_state(A0_WaitingForStartOfElement)
+    , m_curNode(nullptr)
 {
 }
 
@@ -66,7 +67,7 @@ LdpParser::~LdpParser()
 void LdpParser::clear_all()
 {
     delete m_pTokenizer;
-    m_pTokenizer = NULL;
+    m_pTokenizer = nullptr;
 
     while (!m_stack.empty())
     {
@@ -74,10 +75,10 @@ void LdpParser::clear_all()
         delete data.second;
         m_stack.pop();
     }
-    m_curNode = NULL;
+    m_curNode = nullptr;
     m_numErrors = 0;
     delete m_tree;
-    m_tree = NULL;
+    m_tree = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -161,7 +162,7 @@ void LdpParser::do_syntax_analysis(LdpReader& reader)
     // exit if error
     if (m_state == A5_ExitError)
     {
-        m_tree = NULL;
+        m_tree = nullptr;
         return;
     }
 
@@ -169,7 +170,10 @@ void LdpParser::do_syntax_analysis(LdpReader& reader)
     if (!m_curNode)
     {
         LOMSE_LOG_ERROR("[LdpParser::do_syntax_analysis] LDP file format error.");
-        throw runtime_error("[LdpParser::do_syntax_analysis] LDP file format error.");
+        report_error("[LdpParser::do_syntax_analysis] LDP file format error.");
+        //throw runtime_error("[LdpParser::do_syntax_analysis] LDP file format error.");
+        m_tree = nullptr;
+        return;
     }
 
     m_tree = LOMSE_NEW LdpTree(m_curNode);
