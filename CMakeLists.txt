@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2018 LenMus project
+#  Copyright (c) 2002-2019 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -57,7 +57,7 @@
 #
 #-------------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 3.1)
 
 # project name
 project(lenmus)
@@ -91,12 +91,12 @@ else ()
 endif ()
 
 #check that the compiler supports c++11 and std::regex
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         message(FATAL_ERROR "GCC version must be at least 4.9!")
     endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     # require at least clang 3.4
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.4)
         message(FATAL_ERROR "Clang version must be at least 3.4!")
@@ -262,29 +262,16 @@ set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
-if(0)
-	if(WIN32)
-		set( UNITTEST_LIBDIR  ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
-		set( UNITTEST_INCLUDE_DIRS  ${LENMUS_ROOT_DIR}/packages/UnitTest++/src )
-		set( UNITTEST_LIBRARIES  "UnitTest++.vsnet2003.lib" )
-	elseif(UNIX)
-		include(FindPkgConfig)
-		pkg_check_modules(UNITTEST REQUIRED unittest++)
-		set( UNITTEST_LIBRARIES  "libunittest++.a" )
-	endif()
-	link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
-endif(0)
-
 if (LENMUS_ENABLE_UNIT_TESTS)
     find_package(UnitTest++)
     if(UNITTEST++_FOUND)
-        get_filename_component(UNITTEST++_LINK_DIR ${UNITTEST++_LIBRARY} DIRECTORY)
+        #get_filename_component(UNITTEST++_LINK_DIR ${UNITTEST++_LIBRARY} DIRECTORY)
         include_directories(${UNITTEST++_INCLUDE_DIR})
         link_libraries( ${UNITTEST++_LIBRARY} )
-        link_directories( ${UNITTEST++_LINK_DIR} )        
+        #link_directories( ${UNITTEST++_LINK_DIR} )        
         message(STATUS "UnitTest++ found: libraries= ${UNITTEST++_LIBRARY}" )
         message(STATUS "UnitTest++ found: include= ${UNITTEST++_INCLUDE_DIR}" )
-        message(STATUS "UnitTest++ found: libdir= ${UNITTEST++_LINK_DIR}" )
+        #message(STATUS "UnitTest++ found: libdir= ${UNITTEST++_LINK_DIR}" )
         if( WIN32 )
             link_directories( ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
         endif(WIN32)
@@ -305,7 +292,15 @@ message("LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 
 
 # Check for wxWidgets
+if(WIN32)
+    #See: https://stackoverflow.com/questions/41574177/cmake-findwxwidgets-fails-only-on-first-invocation-of-configure-command
+    set(WX_ROOT_DIR "$ENV{wxWidgets_DIR}")
+    set(wxWidgets_CONFIGURATION mswu)
+    set(wxWidgets_ROOT_DIR "$ENV{wxWidgets_DIR}")
+    set(wxWidgets_LIB_DIR "$ENV{wxWidgets_DIR}/lib/vc_lib")
+endif(WIN32)
 find_package(wxWidgets 3.0 COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
+#find_package(wxWidgets 3.0 HINTS "$ENV{wxWidgets_DIR}" COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
     message(STATUS "wxWidgets include dirs: " ${wxWidgets_INCLUDE_DIRS})
@@ -317,12 +312,12 @@ ENDIF(wxWidgets_FOUND)
 # Check for Sqlite3
 find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
-    include_directories( ${SQLite3_INCLUDE_DIRS} )
+    include_directories( ${SQLite3_INCLUDE_DIR} )
     link_libraries( ${SQLite3_LIBRARIES} )
     message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
-    message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
+    message(STATUS "SQLite3_INCLUDE_DIR => " ${SQLite3_INCLUDE_DIR})
 ELSE(SQLite3_FOUND)
-    message(SEND_ERROR "SQLite3 not found")
+    #message(SEND_ERROR "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
 include_directories("packages/wxSQLite3/include")
 
@@ -361,12 +356,14 @@ else()
     endif()
 endif()
 
-
 # Check for FreeType: header files required by some lomse headers
+if(WIN32)
+    set(FREETYPE_LIBRARY "$ENV{Freetype_DIR}/objs" )
+endif(WIN32)
 find_package(Freetype REQUIRED)              
 if( FREETYPE_FOUND )
     include_directories( ${FREETYPE_INCLUDE_DIRS} )
-    link_libraries( ${FREETYPE_LIBRARIES} )
+    link_libraries( ${FREETYPE_LIBRARY} )
     link_directories( ${FREETYPE_LINK_DIR} )        
     message("Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
     message("Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
@@ -380,10 +377,10 @@ find_package(PNG REQUIRED)
 if( PNG_FOUND )
     include_directories( ${PNG_INCLUDE_DIRS} )
     link_libraries( ${PNG_LIBRARIES} )
-    link_directories( ${PNG_LINK_DIR} )
+    #link_directories( ${PNG_LINK_DIR} )
     message("libpng found: libraries= ${PNG_LIBRARIES}" )
     message("libpng found: include= ${PNG_INCLUDE_DIRS}" )
-    message("libpng found: libdir= ${PNG_LINK_DIR}" )
+    #message("libpng found: libdir= ${PNG_LINK_DIR}" )
 else()
     message(SEND_ERROR "libpng package not found.")
 endif()
@@ -392,18 +389,17 @@ endif()
 find_package(ZLIB REQUIRED)
 if( ZLIB_FOUND )
     include_directories( ${ZLIB_INCLUDE_DIR} )
-    link_libraries( ${ZLIB_LIBRARIES} )
-    link_directories( ${ZLIB_LINK_DIR} )        
-    message("zlib found: libraries= ${ZLIB_LIBRARIES}" )
+    link_libraries( ${ZLIB_LIBRARY} )
+    #link_directories( ${ZLIB_LINK_DIR} )        
+    message("zlib found: libraries= ${ZLIB_LIBRARY}" )
     message("zlib found: include= ${ZLIB_INCLUDE_DIRS}" )
-    message("zlib found: libdir= ${ZLIB_LINK_DIR}" )
+    #message("zlib found: libdir= ${ZLIB_LINK_DIR}" )
 else()
     message(SEND_ERROR "zlib package not found.")
 endif()
 
-message(STATUS "CMAKE_MODULE_PATH => " ${CMAKE_MODULE_PATH})
-    
 
+#message( FATAL_ERROR "Fin de la prueba" )
 
 
 
