@@ -36,7 +36,7 @@ using namespace lomse;
 
 //wxWidgets
 //#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
-#include <wx/wxprec.h>
+//#include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/config.h>
 #if LENMUS_USE_EXT_HELP
