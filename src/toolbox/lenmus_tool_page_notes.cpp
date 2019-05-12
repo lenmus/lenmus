@@ -304,7 +304,7 @@ void GrpNoteDuration::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
 	for (int iB=0; iB < lm_NUM_DUR_BUTTONS; iB++)
 	{
 		if (iB % 5 == 0) {
@@ -504,7 +504,7 @@ void GrpOctave::create_controls_in_group(wxBoxSizer* pMainSizer)
     set_group_title(sTitle + " (Ctrl)");
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
     wxSize btSize(16, 16);
 	for (int iB=0; iB < lm_NUM_OCTAVE_BUTTONS; iB++)
 	{
@@ -672,7 +672,7 @@ void GrpVoiceStd::create_controls_in_group(wxBoxSizer* pMainSizer)
     set_group_title(sTitle + " (Alt)");
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
     wxSize btSize(16, 16);
 	for (int iB=0; iB < lm_NUM_VOICE_BUTTONS; iB++)
 	{
@@ -772,7 +772,7 @@ void GrpNoteAcc::create_controls_in_group(wxBoxSizer* pMainSizer)
 	    "acc_natural_sharp",
     };
 
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
     wxSize btSize(24, 24);
 	for (int iB=0; iB < lm_NUM_ACC_BUTTONS; iB++)
 	{
@@ -893,7 +893,7 @@ void GrpNoteDots::create_controls_in_group(wxBoxSizer* pMainSizer)
 	    "dot_3",
     };
 
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
     wxSize btSize(24, 24);
 	for (int iB=0; iB < lm_NUM_DOT_BUTTONS; iB++)
 	{

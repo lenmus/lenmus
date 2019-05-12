@@ -45,7 +45,7 @@ using namespace lenmus;
 //public:
 //    MyCadence() : Cadence() {}
 //
-//    bool my_is_valid_chord(CadenceChord* pChord, Chord* pBasicChord,
+//    bool my_is_valid_chord(Cadencelenmus::Chord* pChord, Chord* pBasicChord,
 //                           CadenceChord* pPrevChord, bool fExhaustive)
 //    {
 //        return check_chord(pChord, pBasicChord, pPrevChord, fExhaustive);
@@ -96,7 +96,7 @@ public:
         int iLeading =
             Cadence::find_leading_tone_in_previous_chord(pPrevChord, nStepLeading);
 
-        Chord* pBasicChord = Cadence::get_basic_chord_for(sFunct, nKey);
+        lenmus::Chord* pBasicChord = Cadence::get_basic_chord_for(sFunct, nKey);
 
         bool fValid = Cadence::check_chord(pChord, pBasicChord, pPrevChord, nKey,
                                            &nPrevAlter[0], nStepLeading, iLeading,
@@ -199,7 +199,7 @@ SUITE(CadenceTest)
             if (sFunct == wxEmptyString)
                 break;
 
-            Chord* pChord = Cadence::get_basic_chord_for(sFunct, k_key_C);     //major
+            lenmus::Chord* pChord = Cadence::get_basic_chord_for(sFunct, k_key_C);     //major
             if (pChord->get_chord_type() == ect_invalid)
             {
                 fError = true;
@@ -227,7 +227,7 @@ SUITE(CadenceTest)
     {
         //@010. get_basic_chord_for()
 
-        Chord* pChord = Cadence::get_basic_chord_for("I", k_key_C);
+        lenmus::Chord* pChord = Cadence::get_basic_chord_for("I", k_key_C);
         CHECK( pChord->intervals_to_string() == "M3,p5" );
         CHECK( pChord->note_steps_to_string() == "c,e,g" );
         delete pChord;

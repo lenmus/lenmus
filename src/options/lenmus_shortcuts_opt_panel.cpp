@@ -212,7 +212,7 @@ void ShortcutsOptPanel::create_controls()
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
 
 	m_pTitlePanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
-	m_pTitlePanel->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 92, false, wxEmptyString ) );
+	m_pTitlePanel->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
 	wxBoxSizer* pTitleSizer;
 	pTitleSizer = new wxBoxSizer( wxHORIZONTAL );

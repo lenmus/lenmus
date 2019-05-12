@@ -70,7 +70,7 @@ ToolGroup::ToolGroup(wxPanel* pParent, EGroupType nGroupType,
     , m_fSelected(true)
 {
     //set font to draw group labels
-    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, "Tahoma"));
+    SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma"));
 
     //Any ToolGroup can be used as a control in properties dialogs. In them,
     //the owner is not a ToolPage and pointer pColors is NULL
@@ -321,7 +321,7 @@ void ToolGroup::DoRender(wxDC& dc)
     //group title
     if (m_sTitle != "")
     {
-        dc.SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+        dc.SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
         if (!this->IsEnabled())
         {
             dc.SetTextForeground(*wxWHITE);

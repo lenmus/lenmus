@@ -96,7 +96,7 @@ void GeneralProperties::CreateControls()
         wxStaticText* text = new wxStaticText(this, wxID_ANY, label, wxDefaultPosition,
                                               wxDefaultSize, 0 );
         text->Wrap( -1 );
-        text->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+        text->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
         sizer->Add( text, 0, wxALL, 5 );
 
         //value
@@ -121,7 +121,7 @@ void GeneralProperties::CreateControls()
                     wxString sValue = wxString::Format("%d", value);
                     wxTextCtrl* ctrl = new wxTextCtrl(this, idCtrl, sValue, wxDefaultPosition,
                                                        wxDefaultSize, 0 );
-                    ctrl->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+                    ctrl->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
                     sizer->Add( ctrl, 0, wxALL, 5 );
                     m_controls.push_back(
                         ControlItem(idCtrl++, ctrl, k_ctrl_text, data.attrb, data.type) );
@@ -156,7 +156,7 @@ void GeneralProperties::CreateControls()
                 wxString sValue = wxString::Format("%.4f", value);
                 wxTextCtrl* ctrl = new wxTextCtrl(this, idCtrl, sValue, wxDefaultPosition,
                                                    wxDefaultSize, 0 );
-                ctrl->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+                ctrl->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
                 sizer->Add( ctrl, 0, wxALL, 5 );
                 m_controls.push_back(
                     ControlItem(idCtrl++, ctrl, k_ctrl_text, data.attrb, data.type) );
@@ -167,7 +167,7 @@ void GeneralProperties::CreateControls()
                 wxString value = to_wx_string( m_pImo->get_string_attribute(data.attrb) );
                 wxTextCtrl* ctrl = new wxTextCtrl(this, idCtrl, value, wxDefaultPosition,
                                                   wxDefaultSize, 0 );
-                ctrl->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+                ctrl->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
                 sizer->Add( ctrl, 0, wxALL, 5 );
                 m_controls.push_back(
                     ControlItem(idCtrl++, ctrl, k_ctrl_text, data.attrb, data.type) );
@@ -184,7 +184,7 @@ void GeneralProperties::CreateControls()
             wxStaticText* text = new wxStaticText(this, wxID_ANY, label, wxDefaultPosition,
                                                   wxDefaultSize, 0 );
             text->Wrap( -1 );
-            text->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+            text->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
             sizer->Add( text, 0, wxALL, 5 );
         }
 

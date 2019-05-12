@@ -671,7 +671,7 @@ void TheApp::set_up_locale(wxString lang)
     // locale object re-initialization
     delete m_pLocale;
     m_pLocale = LENMUS_NEW wxLocale();
-    if (!m_pLocale->Init("", lang, "", false, true))
+    if (!m_pLocale->Init("", lang, "", false))
     {
         wxMessageBox( wxString::Format("Language %s can not be set. "
             "Please, verify that any required language codepages are installed in your system.",

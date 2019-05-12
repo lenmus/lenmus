@@ -159,9 +159,9 @@ void InternetOptPanel::create_controls()
 
 	m_pLblTitle = LENMUS_NEW wxStaticText( m_pTitlePanel, wxID_ANY, "Internet connection options", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pLblTitle->Wrap( -1 );
-	m_pLblTitle->SetFont( wxFont( 8, 74, 90, 92, false, "Tahoma" ) );
+	m_pLblTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
-	pTitleSizer->Add( m_pLblTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
+	pTitleSizer->Add( m_pLblTitle, 0, wxALIGN_TOP|wxALL, 5 );
 
 
 	pTitleSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -188,7 +188,7 @@ void InternetOptPanel::create_controls()
 
 	m_pTxtCheckFreq = LENMUS_NEW wxStaticText( this, wxID_ANY, "Check for updates", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtCheckFreq->Wrap( -1 );
-	pSizerCheckFreq->Add( m_pTxtCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pSizerCheckFreq->Add( m_pTxtCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pCboCheckFreq = LENMUS_NEW wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN );
 	pSizerCheckFreq->Add( m_pCboCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -203,11 +203,11 @@ void InternetOptPanel::create_controls()
 
 	m_pTxtLastCheck = LENMUS_NEW wxStaticText( this, wxID_ANY, "Last successful check:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtLastCheck->Wrap( -1 );
-	pSizerLastCheck->Add( m_pTxtLastCheck, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
+	pSizerLastCheck->Add( m_pTxtLastCheck, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
 	m_pTxtLastCheckDate = LENMUS_NEW wxStaticText( this, wxID_ANY, "dd/mm/aaaa", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtLastCheckDate->Wrap( -1 );
-	pSizerLastCheck->Add( m_pTxtLastCheckDate, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
+	pSizerLastCheck->Add( m_pTxtLastCheckDate, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
 	pBoxUpdates->Add( pSizerLastCheck, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
@@ -228,7 +228,7 @@ void InternetOptPanel::create_controls()
 
 	m_pLblHostname = LENMUS_NEW wxStaticText( this, wxID_ANY, "Host:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblHostname->Wrap( -1 );
-	pSizerServerSettings->Add( m_pLblHostname, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pSizerServerSettings->Add( m_pLblHostname, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pTxtHostname = LENMUS_NEW wxTextCtrl( this, ID_TXT_HOSTNAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerServerSettings->Add( m_pTxtHostname, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -238,7 +238,7 @@ void InternetOptPanel::create_controls()
 
 	m_pLblPortNumber = LENMUS_NEW wxStaticText( this, wxID_ANY, "Port number:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPortNumber->Wrap( -1 );
-	pSizerServerSettings->Add( m_pLblPortNumber, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pSizerServerSettings->Add( m_pLblPortNumber, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pTxtPortNumber = LENMUS_NEW wxTextCtrl( this, ID_TXT_PORT_NUMBER, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pSizerServerSettings->Add( m_pTxtPortNumber, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -253,13 +253,13 @@ void InternetOptPanel::create_controls()
 
 	m_pLblSpacer1 = LENMUS_NEW wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblSpacer1->Wrap( -1 );
-	pSizerServerSettingsError->Add( m_pLblSpacer1, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5 );
+	pSizerServerSettingsError->Add( m_pLblSpacer1, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
 	m_pLblServerSettingsError = LENMUS_NEW wxStaticText( this, wxID_ANY, "Please enter data for both, host name and port number", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblServerSettingsError->Wrap( -1 );
 	m_pLblServerSettingsError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	pSizerServerSettingsError->Add( m_pLblServerSettingsError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	pSizerServerSettingsError->Add( m_pLblServerSettingsError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	pSizerProxy->Add( pSizerServerSettingsError, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -277,7 +277,7 @@ void InternetOptPanel::create_controls()
 
 	m_pLblUsername = LENMUS_NEW wxStaticText( this, wxID_ANY, "Username:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblUsername->Wrap( -1 );
-	pSizerUsername->Add( m_pLblUsername, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pSizerUsername->Add( m_pLblUsername, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pTxtUsername = LENMUS_NEW wxTextCtrl( this, ID_TXT_USERNAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerUsername->Add( m_pTxtUsername, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -287,7 +287,7 @@ void InternetOptPanel::create_controls()
 
 	m_pLblPassword = LENMUS_NEW wxStaticText( this, wxID_ANY, "Password:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPassword->Wrap( -1 );
-	pSizerUsername->Add( m_pLblPassword, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pSizerUsername->Add( m_pLblPassword, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pTxtPassword = LENMUS_NEW wxTextCtrl( this, ID_TXT_PASSWORD, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerUsername->Add( m_pTxtPassword, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -302,13 +302,13 @@ void InternetOptPanel::create_controls()
 
 	m_pSpacer2 = LENMUS_NEW wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSpacer2->Wrap( -1 );
-	pSizerErrorAuthentication->Add( m_pSpacer2, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5 );
+	pSizerErrorAuthentication->Add( m_pSpacer2, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
 	m_pLblAuthenticationError = LENMUS_NEW wxStaticText( this, wxID_ANY, "Please enter data for both, user name and password", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblAuthenticationError->Wrap( -1 );
 	m_pLblAuthenticationError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	pSizerErrorAuthentication->Add( m_pLblAuthenticationError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	pSizerErrorAuthentication->Add( m_pLblAuthenticationError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pBoxProxyAuthentication->Add( pSizerErrorAuthentication, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 

@@ -357,17 +357,14 @@ else()
 endif()
 
 # Check for FreeType: header files required by some lomse headers
-if(WIN32)
-    set(FREETYPE_LIBRARY "$ENV{Freetype_DIR}/objs" )
-endif(WIN32)
 find_package(Freetype REQUIRED)              
 if( FREETYPE_FOUND )
     include_directories( ${FREETYPE_INCLUDE_DIRS} )
     link_libraries( ${FREETYPE_LIBRARY} )
-    link_directories( ${FREETYPE_LINK_DIR} )        
+    #link_directories( ${FREETYPE_LINK_DIR} )        
     message("Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
     message("Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
-    message("Freetype found: libdir= ${FREETYPE_LINK_DIR}" )
+    #message("Freetype found: libdir= ${FREETYPE_LINK_DIR}" )
 else()
     message(SEND_ERROR "FreeType package not found.")
 endif()
@@ -675,12 +672,10 @@ endif()
 
 
 # add resource (RC) file for Windows
-if ( MSVC )
-    list( APPEND ALL_SOURCES    ${RESOURCES_DIR}/other/lenmus.rc )
-    source_group( "resources"   FILES ${RESOURCES_DIR}/other/lenmus.rc )
-endif()
-
-
+#if ( MSVC )
+#    list( APPEND ALL_SOURCES    ${RESOURCES_DIR}/other/lenmus.rc )
+#    source_group( "resources"   FILES ${RESOURCES_DIR}/other/lenmus.rc )
+#endif()
 
 if(0)
 # Dirty hack: I don't know why it conflicts with LIBCD. But for
@@ -696,6 +691,12 @@ endif(0)
 #Executable
 add_executable( ${LENMUS} ${ALL_SOURCES} )
 add_dependencies(${LENMUS} lenmus-version)
+
+# Compilation options
+if (WIN32)
+    # remove noisy warning 4996: function or variable may be unsafe (i.e. strcat)
+    set_target_properties(${LENMUS} PROPERTIES COMPILE_FLAGS "/wd4996")
+endif(WIN32)
 
 
 # libraries to link
