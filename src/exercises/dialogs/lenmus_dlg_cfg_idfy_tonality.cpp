@@ -315,13 +315,13 @@ void DlgCfgIdfyTonality::create_controls()
 
 	m_pKSErrorSpaces = LENMUS_NEW wxStaticText( m_pPanelKeySignatures, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pKSErrorSpaces->Wrap( -1 );
-	m_pKSErrorSizer->Add( m_pKSErrorSpaces, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	m_pKSErrorSizer->Add( m_pKSErrorSpaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pLblKeySignError = LENMUS_NEW wxStaticText( m_pPanelKeySignatures, wxID_ANY, _("You must choose at least one key signature! "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblKeySignError->Wrap( -1 );
 	m_pLblKeySignError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	m_pKSErrorSizer->Add( m_pLblKeySignError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	m_pKSErrorSizer->Add( m_pLblKeySignError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pKeySignaturesSizer->Add( m_pKSErrorSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -356,13 +356,13 @@ void DlgCfgIdfyTonality::create_controls()
 
 	m_pSpace1 = LENMUS_NEW wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSpace1->Wrap( -1 );
-	m_pErrorsSizer->Add( m_pSpace1, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	m_pErrorsSizer->Add( m_pSpace1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pLblGlobalError = LENMUS_NEW wxStaticText( this, wxID_ANY, _("You must choose at least one major and one minor in tab 'Key signatures'! "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblGlobalError->Wrap( -1 );
 	m_pLblGlobalError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	m_pErrorsSizer->Add( m_pLblGlobalError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	m_pErrorsSizer->Add( m_pLblGlobalError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pMainSizer->Add( m_pErrorsSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 

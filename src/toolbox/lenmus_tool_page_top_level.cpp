@@ -155,7 +155,7 @@ void GrpTopLevel::create_controls_in_group(wxBoxSizer* pMainSizer)
     set_group_title(_("Text and graphics"));
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
-    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, "Tahoma"));
+    SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma"));
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(24, 24);

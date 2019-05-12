@@ -716,19 +716,22 @@ int Cadence::generate_tenor_set(int iC, Chord* pBasicChord, NoteSet* pNoteSet)
 //---------------------------------------------------------------------------------------
 void Cadence::shuffle_set(NoteSet* pNoteSet, int numNotes)
 {
-    int idx[numNotes];
-    RandomGenerator::shuffle(numNotes, &idx[0]);
+	int* idx = new int[numNotes];
+    RandomGenerator::shuffle(numNotes, idx);
     #if (TRACE_CADENCE == 2)
         for (int i=0; i < numNotes; ++i)
-            TraceCadence("idx = %d", idx[i]);
+            TraceCadence("idx = %d", *idx[i]);
     #endif
 
-    FPitch fp[numNotes];
+	FPitch* fp = new FPitch[numNotes];
     for (int i=0; i < numNotes; ++i)
-        fp[i] = pNoteSet->pitch[i];
+        *(fp+i) = pNoteSet->pitch[i];
 
     for (int i=0; i < numNotes; ++i)
-        pNoteSet->pitch[i] = fp[ idx[i] ];
+        pNoteSet->pitch[i] = *(fp + *(idx+i));
+
+	delete[] idx;
+	delete[] fp;
 }
 
 //---------------------------------------------------------------------------------------

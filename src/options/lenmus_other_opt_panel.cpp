@@ -66,9 +66,9 @@ void OtherOptionsPanel::CreateControls()
 
 	m_pTxtTitle = LENMUS_NEW wxStaticText( m_pHeaderPanel, wxID_ANY, _("Other options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTxtTitle->Wrap( -1 );
-	m_pTxtTitle->SetFont( wxFont( 8, 74, 90, 92, false, "Tahoma" ) );
+	m_pTxtTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
-	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
+	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL, 5 );
 
 
 	pHeaderSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );

@@ -701,11 +701,11 @@ void ContentBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) c
 {
     if ( IsSelected(n) )
     {
-        dc.SetBrush( wxBrush(GetSelectionBackground(), wxSOLID) );
+        dc.SetBrush( wxBrush(GetSelectionBackground(), wxBRUSHSTYLE_SOLID) );
     }
     else // !selected
     {
-        dc.SetBrush( wxBrush(*wxWHITE, wxSOLID) );
+        dc.SetBrush( wxBrush(*wxWHITE, wxBRUSHSTYLE_SOLID) );
     }
 
 }

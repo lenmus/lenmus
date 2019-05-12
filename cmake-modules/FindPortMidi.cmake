@@ -12,40 +12,46 @@
 
 include(LibFindMacros)
 
-if( WIN32 )
-    set( PortMidi_LIBDIR  ${ROOT_DIR}/packages/wxMidi/lib/pm )
-    set( PortMidi_INCLUDE_DIR  ${ROOT_DIR}/wxMidi/include )
-    set( PortMidi_LIBRARY  "portmidi.lib" )
-    set( PortTime_LIBRARY  "porttime.lib" )
+find_path(PortMidi_INCLUDE_DIR
+	NAMES
+		portmidi.h
+		porttime.h
+    PATHS
+		/usr/local/include
+		/usr/include
+		/sw/include
+		/opt/local/include
+		/usr/freeware/include
+        $ENV{PortMidi_DIR}/include					#Windows
+        "C:/Program Files (x86)/portmidi/include"		#Windows
+        "C:/Program Files/portmidi/include"				#Windows
+)
 
-elseif ( UNIX )
-    find_path(PortMidi_INCLUDE_DIR NAMES portmidi.h porttime.h
-        PATHS
-        /usr/local/include
-        /usr/include
-        /sw/include
-        /opt/local/include
-        /usr/freeware/include
-    )
+find_library(PortMidi_LIBRARY
+    NAMES
+		portmidi
+    PATHS
+		/usr/lib/
+		/usr/local/lib
+		/sw
+		/usr/freeware
+        $ENV{PortMidi_DIR}/lib					#Windows
+        "C:/Program Files (x86)/portmidi/lib"		#Windows
+        "C:/Program Files/portmidi/lib"				#Windows
+)
 
-    find_library(PortMidi_LIBRARY
-       NAMES libportmidi.so libportmidi.a
-       PATHS
-       /usr/lib/
-       /usr/local/lib
-       /sw
-       /usr/freeware
-    )
-
-    find_library(PortTime_LIBRARY
-       NAMES libporttime.so libporttime.a
-       PATHS
-       /usr/lib/
-       /usr/local/lib
-       /sw
-       /usr/freeware
-    )
-endif()
+find_library(PortTime_LIBRARY
+    NAMES
+		porttime
+    PATHS
+		/usr/lib/
+		/usr/local/lib
+		/sw
+		/usr/freeware
+        $ENV{PortMidi_DIR}/lib					#Windows
+        "C:/Program Files (x86)/portmidi/lib"		#Windows
+        "C:/Program Files/portmidi/lib"				#Windows
+)
 
 # set the user variables
 set( PortMidi_INCLUDE_DIRS   "${PortMidi_INCLUDE_DIR}" )

@@ -106,7 +106,7 @@ void BarlineProperties::CreateControls()
 
 	m_pTxtBarline = new wxStaticText( this, wxID_ANY, _("Barline type"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtBarline->Wrap( -1 );
-	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
+	m_pTxtBarline->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Tahoma" ) );
 
 	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
 

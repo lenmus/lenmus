@@ -131,7 +131,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pTxtTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Welcome to LenMus"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtTitle->Wrap( -1 );
-	m_pTxtTitle->SetFont( wxFont( 16, 74, 90, 92, false, "Tahoma" ) );
+	m_pTxtTitle->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pHeadersSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -150,7 +150,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pLearnTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("About LenMus"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLearnTitle->Wrap( -1 );
-	m_pLearnTitle->SetFont( wxFont( 10, 74, 90, 92, false, "Tahoma" ) );
+	m_pLearnTitle->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pLearnSizer->Add( m_pLearnTitle, 0, wxALL, 5 );
 
@@ -184,7 +184,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pPhonascusTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Learn and practise music theory"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pPhonascusTitle->Wrap( -1 );
-	m_pPhonascusTitle->SetFont( wxFont( 10, 74, 90, 92, false, "Tahoma" ) );
+	m_pPhonascusTitle->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pPhonascusSizer->Add( m_pPhonascusTitle, 0, wxALL, 5 );
 
@@ -213,7 +213,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pRecentScoresTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Recent documents"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pRecentScoresTitle->Wrap( -1 );
-	m_pRecentScoresTitle->SetFont( wxFont( 10, 74, 90, 92, false, "Tahoma" ) );
+	m_pRecentScoresTitle->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pRecentScoresSizer->Add( m_pRecentScoresTitle, 0, wxRIGHT|wxLEFT, 5 );
 

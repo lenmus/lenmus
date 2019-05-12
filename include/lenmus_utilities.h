@@ -28,7 +28,7 @@
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
-class wxBitmapComboBox;
+#include <wx/bmpcbox.h>
 
 //lomse
 #include <lomse_pitch.h>

@@ -82,9 +82,9 @@ void LangOptionsPanel::create_controls()
 
 	m_pTitle = LENMUS_NEW wxStaticText( m_pTitlePannel, wxID_ANY, _("Language preferences"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTitle->Wrap( -1 );
-	m_pTitle->SetFont( wxFont( 8, 74, 90, 92, false, "Tahoma" ) );
+	m_pTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
-	pTitleSizer->Add( m_pTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
+	pTitleSizer->Add( m_pTitle, 0, wxALIGN_TOP|wxALL, 5 );
 
 
 	pTitleSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -102,7 +102,7 @@ void LangOptionsPanel::create_controls()
 
 	m_pLang = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Choose language to use:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLang->Wrap( -1 );
-	pLangSizer->Add( m_pLang, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pLangSizer->Add( m_pLang, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	wxArrayString m_pChoiceChoices;
 	m_pChoice = LENMUS_NEW wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_pChoiceChoices, 0 );
