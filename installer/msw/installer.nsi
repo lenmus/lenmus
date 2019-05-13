@@ -508,7 +508,7 @@ FunctionEnd
 Function un.onInit
   FindWindow $R0 "THMNISEdit2_MainWindowClass"
   IsWindow $R0 0 +3
-  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus est· ejecut·ndose. Antes de desinstalar lenmus debe cerrarlo."
+  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus est√° ejecut√°ndose. Antes de desinstalar lenmus debe cerrarlo."
   Abort
 
   UserInfo::GetAccountType
