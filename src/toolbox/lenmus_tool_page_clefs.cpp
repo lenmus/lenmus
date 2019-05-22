@@ -322,7 +322,7 @@ void GrpTimeType::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
     wxSize btSize(24, 24);
 	for (int iB=0; iB < k_num_time_buttons; iB++)
 	{

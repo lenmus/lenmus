@@ -446,7 +446,7 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
         wxCoord ysrc(damagedRect.y);
         wxCoord width(damagedRect.width);
         wxCoord height(damagedRect.height);
-        if (width > 0 and height > 0)
+        if (width > 0 && height > 0)
         {
             wxBitmap bitmap(*m_buffer);
             wxMemoryDC tempDC;

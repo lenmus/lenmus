@@ -59,6 +59,9 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+set( CMAKE_VERBOSE_MAKEFILE on )
+
+
 # project name
 project(lenmus)
 set( LENMUS_APP_NAME     "\"Lenmus Phonascus\"" )
@@ -198,6 +201,7 @@ else ()
 endif ()
 
 
+message(STATUS "Build type (CMAKE_BUILD_TYPE) is ${CMAKE_BUILD_TYPE}")
 message(STATUS "Build type (LENMUS_DEBUG_BUILD) set to ${LENMUS_DEBUG_BUILD}")
 
 # path to scores for tests
@@ -241,7 +245,6 @@ message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
 include_directories(
     ${LENMUS_ROOT_DIR}/include
     ${LENMUS_ROOT_DIR}/packages/wxMidi/src
-    ${UNITTEST_INCLUDE_DIRS}
 )
 
 
@@ -264,19 +267,14 @@ set(CMAKE_CONFIGURATION_TYPES Debug Release)
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
     find_package(UnitTest++)
-    if(UNITTEST++_FOUND)
-        #get_filename_component(UNITTEST++_LINK_DIR ${UNITTEST++_LIBRARY} DIRECTORY)
+    if(0) #UNITTEST++_FOUND)
         include_directories(${UNITTEST++_INCLUDE_DIR})
         link_libraries( ${UNITTEST++_LIBRARY} )
-        #link_directories( ${UNITTEST++_LINK_DIR} )        
         message(STATUS "UnitTest++ found: libraries= ${UNITTEST++_LIBRARY}" )
         message(STATUS "UnitTest++ found: include= ${UNITTEST++_INCLUDE_DIR}" )
-        #message(STATUS "UnitTest++ found: libdir= ${UNITTEST++_LINK_DIR}" )
-        if( WIN32 )
-            link_directories( ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
-        endif(WIN32)
     else(UNITTEST++_FOUND)
         message(STATUS "UnitTest++ not found. Unit tests disabled.")
+        message(STATUS "UnitTest++_DIR = $ENV{UnitTest++_DIR}")
 		set(LENMUS_ENABLE_UNIT_TESTS OFF)
     endif()
 endif(LENMUS_ENABLE_UNIT_TESTS)
@@ -295,18 +293,26 @@ message("LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 if(WIN32)
     #See: https://stackoverflow.com/questions/41574177/cmake-findwxwidgets-fails-only-on-first-invocation-of-configure-command
     set(WX_ROOT_DIR "$ENV{wxWidgets_DIR}")
-    set(wxWidgets_CONFIGURATION mswu)
+	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+		set(wxWidgets_CONFIGURATION mswud)
+	else()
+		set(wxWidgets_CONFIGURATION mswu)
+	endif()
     set(wxWidgets_ROOT_DIR "$ENV{wxWidgets_DIR}")
-    set(wxWidgets_LIB_DIR "$ENV{wxWidgets_DIR}/lib/vc_lib")
+    set(wxWidgets_LIB_DIR "$ENV{wxWidgets_DIR}/lib/vc_x64_lib")
 endif(WIN32)
 find_package(wxWidgets 3.0 COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
 #find_package(wxWidgets 3.0 HINTS "$ENV{wxWidgets_DIR}" COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
+    include_directories( ${wxWidgets_INCLUDE_DIRS} )
+    link_libraries( ${wxWidgets_LIBRARIES} )
     message(STATUS "wxWidgets include dirs: " ${wxWidgets_INCLUDE_DIRS})
+    message(STATUS "wxWidgets lib dir: " ${wxWidgets_LIB_DIR})
     message(STATUS "wxWidgets libraries: " ${wxWidgets_LIBRARIES})
 ELSE(wxWidgets_FOUND)
     message(SEND_ERROR "wxWidgets not found")
+    message(STATUS "wxWidgets_DIR = $ENV{wxWidgets_DIR}")
 ENDIF(wxWidgets_FOUND)
 
 # Check for Sqlite3
@@ -317,7 +323,8 @@ IF(SQLite3_FOUND)
     message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
     message(STATUS "SQLite3_INCLUDE_DIR => " ${SQLite3_INCLUDE_DIR})
 ELSE(SQLite3_FOUND)
-    #message(SEND_ERROR "SQLite3 not found")
+    message(SEND_ERROR "SQLite3 not found")
+    message(STATUS "SQLite3_DIR = $ENV{SQLite3_DIR}")
 ENDIF(SQLite3_FOUND)
 include_directories("packages/wxSQLite3/include")
 
@@ -330,6 +337,7 @@ IF(PortMidi_FOUND)
     message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
 ELSE(PortMidi_FOUND)
     message(SEND_ERROR "PortMidi not found")
+    message(STATUS "PortMidi_DIR = $ENV{PortMidi_DIR}")
 ENDIF(PortMidi_FOUND)
 
 # Check for Lomse (only if not building from Lomse sources)
@@ -360,13 +368,12 @@ endif()
 find_package(Freetype REQUIRED)              
 if( FREETYPE_FOUND )
     include_directories( ${FREETYPE_INCLUDE_DIRS} )
-    link_libraries( ${FREETYPE_LIBRARY} )
     #link_directories( ${FREETYPE_LINK_DIR} )        
     message("Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
     message("Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
-    #message("Freetype found: libdir= ${FREETYPE_LINK_DIR}" )
 else()
     message(SEND_ERROR "FreeType package not found.")
+    message(STATUS "FreeType_DIR = $ENV{FreeType_DIR}")
 endif()
 
 # Check for libpng: required by Lomse
@@ -394,9 +401,6 @@ if( ZLIB_FOUND )
 else()
     message(SEND_ERROR "zlib package not found.")
 endif()
-
-
-#message( FATAL_ERROR "Fin de la prueba" )
 
 
 
@@ -670,33 +674,39 @@ endif()
 
 
 
-
-# add resource (RC) file for Windows
-#if ( MSVC )
-#    list( APPEND ALL_SOURCES    ${RESOURCES_DIR}/other/lenmus.rc )
-#    source_group( "resources"   FILES ${RESOURCES_DIR}/other/lenmus.rc )
-#endif()
-
-if(0)
-# Dirty hack: I don't know why it conflicts with LIBCD. But for
-# now I need to continue. See:
-# http://mygoldenchariot.blogspot.com/2006/07/link-warning-lnk4098-defaultlib-libcd.html
-if(MSVC)
-    set(CMAKE_LINKER_FLAGS_DEBUG
-         ${CMAKE_LINKER_FLAGS_DEBUG} "/NODEFAULTLIB:LIBCD"
-    )
-endif()
-endif(0)
-
-#Executable
-add_executable( ${LENMUS} ${ALL_SOURCES} )
+# Define target
+add_executable( ${LENMUS} WIN32 MACOSX_BUNDLE  ${ALL_SOURCES} )
 add_dependencies(${LENMUS} lenmus-version)
 
-# Compilation options
+
+# Add resources
+#if(WIN32)
+    # Include a RC file for windows
+#    list(APPEND ALL_SOURCES ${RESOURCES_DIR}/other/lenmus.rc)
+#    source_group("resources" FILES ${RESOURCES_DIR}/other/lenmus.rc )
+#elseif(APPLE)
+    # Add an icon for the apple .app file
+    #list(APPEND ALL_SOURCES ${RESOURCES_DIR}/other/osx/carbon/wxmac.icns)
+#endif()
+
+
+# Compiler options
 if (WIN32)
     # remove noisy warning 4996: function or variable may be unsafe (i.e. strcat)
     set_target_properties(${LENMUS} PROPERTIES COMPILE_FLAGS "/wd4996")
 endif(WIN32)
+
+
+# Linker options
+#if(WIN32)
+	#if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+		#set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:WinMainCRTStartup")
+		#link_libraries(libucrtd.lib)
+	#else()
+		#set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:WinMainCRTStartup")
+		#link_libraries(libucrt.lib)
+	#endif()
+#endif(WIN32)
 
 
 # libraries to link
@@ -706,6 +716,53 @@ target_link_libraries ( ${LENMUS}
 			${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
 			${ZLIB_LIBRARIES}
 )
+
+
+# Target properties
+if(APPLE)
+#    set_target_properties(${PROJECT_NAME} PROPERTIES
+#        RESOURCE ${RESOURCES_DIR}/other/osx/carbon/wxmac.icns
+#        MACOSX_BUNDLE_ICON_FILE wxmac.icns
+#        MACOSX_BUNDLE_COPYRIGHT "Copyright LenMus"
+#        MACOSX_BUNDLE_GUI_IDENTIFIER "org.wxwidgets.minimal"
+#        )
+endif()
+
+if (WIN32)
+	# In Windows force to use static Runtime library
+	set(CompilerFlags
+			CMAKE_CXX_FLAGS
+			CMAKE_CXX_FLAGS_DEBUG
+			CMAKE_CXX_FLAGS_RELEASE
+			CMAKE_C_FLAGS
+			CMAKE_C_FLAGS_DEBUG
+			CMAKE_C_FLAGS_RELEASE
+		)
+	foreach(CompilerFlag ${CompilerFlags})
+		string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+	endforeach()
+endif(WIN32)
+
+# Display settings
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
+else()
+	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
+endif()
+message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
+
+set(CMAKE_PROPERTY_LIST SOURCE_DIR BINARY_DIR COMPILE_DEFINITIONS
+            COMPILE_OPTIONS INCLUDE_DIRECTORIES LINK_LIBRARIES)
+
+message("Configuration for target ${LENMUS}")
+
+foreach (prop ${CMAKE_PROPERTY_LIST})
+    get_property(propval TARGET ${LENMUS} PROPERTY ${prop} SET)
+    if (propval)
+        get_target_property(propval ${LENMUS} ${prop})
+        message (STATUS "${prop} = ${propval}")
+    endif()
+endforeach(prop)
 
 
 #///////////////////////////////////////////////////////////////////////////////

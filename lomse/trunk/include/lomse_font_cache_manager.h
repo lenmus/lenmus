@@ -123,7 +123,7 @@ struct glyph_cache
         //--------------------------------------------------------------------
         void signature(const char* font_signature)
         {
-            int len = strlen(font_signature) + 1;
+            int len = int( strlen(font_signature) + 1 );
             m_font_signature = (char*)m_allocator.allocate(len);
             strncpy(m_font_signature, font_signature, len);
             memset(m_glyphs, 0, sizeof(m_glyphs));

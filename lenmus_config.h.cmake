@@ -54,7 +54,7 @@
 //
 //--------------------------------------------------------------------------------------
 #define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@
-#define LENMUS_SOURCE_ROOT          @LENMUS_DBG_ROOT_PATH@          //driver letter not use
+#define LENMUS_SOURCE_ROOT          @LENMUS_SOURCE_ROOT@
 #define LENMUS_INSTALL_ROOT         "@LENMUS_INSTALL_ROOT@"         //Linux only
 
 
