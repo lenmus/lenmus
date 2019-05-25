@@ -247,16 +247,16 @@ set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
 
 if( UNIX )
     if (LENMUS_USE_VERSION_FOLDER)
-        set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
+        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
     else()
-        set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME} )
+        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME} )
     endif()
 elseif( WIN32 )
-    set(SHARED_DIR ${ROOT_INSTALL} )
+    set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_ROOT "${SHARED_DIR}/" )
+set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )
 
-message(STATUS "SHARED_DIR = ${SHARED_DIR}" )
+message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}" )
 message(STATUS "LENMUS_INSTALL_ROOT = ${LENMUS_INSTALL_ROOT}" )
 
 
@@ -785,9 +785,8 @@ endforeach(prop)
 # By default, the prefix is "/usr/local"
 #
 # Remember:
-#  LENMUS_ROOT_DIR: the root of the package source tree: i.e. $HOME/Downloads/lenmus-5.3
-#
-# Instalation paths:
+#  LENMUS_ROOT_DIR:
+#       path to source tree, to copy files from there: i.e. $HOME/projects/lenmus
 #  ROOT_INSTALL:
 #       path to install binaries: i.e.:
 #       '/usr/local'
@@ -804,10 +803,19 @@ if(WIN32)
     #is always specified at the moment when user executes the installer
     set(INSTALL_DIR bin)
     set(SHARED_DIR shared)
+    set(ROOT_SAMPLES ${INSTALL_DIR}/${LENMUS_PACKAGE_VERSION} )
 else()
     set(INSTALL_DIR "${ROOT_INSTALL}/bin")
     set(SHARED_DIR ${ROOT_INSTALL_HOME})
+    set(ROOT_SAMPLES $ENV{HOME}/${CMAKE_PROJECT_NAME} )
 endif()
+
+message("Installation paths:")
+message(STATUS "     ROOT_INSTALL = ${ROOT_INSTALL}")
+message(STATUS "     ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}")
+message(STATUS "     Binaries (INSTALL_DIR) = ${INSTALL_DIR}")
+message(STATUS "     Shared (SHARED_DIR) = ${SHARED_DIR}")
+message(STATUS "     Samples (ROOT_SAMPLES) = ${ROOT_SAMPLES}" )
 
 
 # install lenmus program
@@ -927,19 +935,8 @@ install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHAR
 install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png  DESTINATION "${SHARED_DIR}/share/pixmaps")
 
 
-    # 4. User scores and samples 
-    # ------------------------------------------------------------------------------
-if( UNIX )
-    set(ROOT_DATA_HOME $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_SAMPLES ${SHARED_DIR} )
-elseif( WIN32 )
-    set(ROOT_DATA_HOME ${INSTALL_DIR} )
-    set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_PACKAGE_VERSION} )
-endif()
-set(ROOT_SCORES ${ROOT_DATA_HOME}/scores )
-
-message("ROOT_SCORES = " ${ROOT_SCORES} )
-message("ROOT_SAMPLES = " ${ROOT_SAMPLES} )
+# 4. User scores and samples 
+# ------------------------------------------------------------------------------
 
 install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
 	    FILES_MATCHING PATTERN "*.lms"
