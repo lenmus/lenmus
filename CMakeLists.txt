@@ -59,7 +59,8 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-set( CMAKE_VERBOSE_MAKEFILE on )
+message(STATUS "Using CMake version ${CMAKE_VERSION}")
+message(STATUS "Begin CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
 
 
 # project name
@@ -67,6 +68,7 @@ project(lenmus)
 set( LENMUS_APP_NAME     "\"Lenmus Phonascus\"" )
 set( LENMUS_VENDOR_NAME  "\"Lenmus\"" )
 set( LENMUS_VENDOR_SITE  "\"http://www.lenmus.org\"" )
+message(STATUS "Project set CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
 
 # main directories 
 set( LENMUS_ROOT_DIR  ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -86,26 +88,27 @@ if(CMAKE_NO_STD_NAMESPACE)
 endif()
 
 # force to use c++11
-if (CMAKE_VERSION VERSION_LESS "3.1")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else ()
-    set(CMAKE_CXX_STANDARD 11)				#require c+11 or greater
-    set(CMAKE_CXX_STANDARD_REQUIRED ON) 	#prevent fallback to any previous standard
-endif ()
+set(CMAKE_CXX_STANDARD 11)				#require c+11 or greater
+set(CMAKE_CXX_STANDARD_REQUIRED ON) 	#prevent fallback to any previous standard
 
 #check that the compiler supports c++11 and std::regex
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         message(FATAL_ERROR "GCC version must be at least 4.9!")
     endif()
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # require at least clang 3.4
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.4)
         message(FATAL_ERROR "Clang version must be at least 3.4!")
     endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # require at least clang 3.4
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15)
+        message(FATAL_ERROR "MSVC version must be at least 15!")
+    endif()
 else()
-    message(WARNING "** Warning **: You are using an untested compiler! Lomse has only been tested with GCC and Clang.")
+    message(WARNING "** Warning **: You are using an untested compiler! (${CMAKE_CXX_COMPILER_ID}) LenMus has only been tested with GCC, Clang and MSVC")
 endif()
 
 
@@ -171,6 +174,7 @@ add_custom_target (lenmus-version ALL
 # set up configuration variables for lenmus_config.h
 #------------------------------------------------------
 
+
 # platform
 if(WIN32)
     set( LENMUS_PLATFORM_WIN32 "1")
@@ -215,11 +219,25 @@ set( LENMUS_SOURCE_ROOT          "\"${LENMUS_ROOT_DIR}/\"" )
 #
 #   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
 #
-# By default, the prefix is "/usr/local"
+# Defaults:
+#   Linux:      "/usr/local/lenmus"
+#   Windows:    "C:/Program Files (x86)/lenmus" or "C:/Program Files/lenmus"
 # ------------------------------------------------------------------------------
 set(LENMUS_USE_SOURCE_TREE 0)
 
-message("CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
+#set install folder 
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    #Fix CMAKE_INSTALL_PREFIX for Windows.
+    #Sometimes it points to 'Program Files (x86)' for x64 builds
+    if(WIN32)
+        if(CMAKE_CL_64) #CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(CMAKE_INSTALL_PREFIX "C:/Program Files/${CMAKE_PROJECT_NAME}")
+        else()
+            set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/${CMAKE_PROJECT_NAME}")
+        endif()
+    endif()
+endif()
+message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
 set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
 
 if( UNIX )
@@ -233,8 +251,8 @@ elseif( WIN32 )
 endif()
 set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )
 
-message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
-message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
+message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}" )
+message(STATUS "LENMUS_INSTALL_ROOT = ${LENMUS_INSTALL_ROOT}" )
 
 
 
@@ -368,7 +386,6 @@ endif()
 find_package(Freetype REQUIRED)              
 if( FREETYPE_FOUND )
     include_directories( ${FREETYPE_INCLUDE_DIRS} )
-    #link_directories( ${FREETYPE_LINK_DIR} )        
     message("Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
     message("Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
 else()
@@ -381,10 +398,8 @@ find_package(PNG REQUIRED)
 if( PNG_FOUND )
     include_directories( ${PNG_INCLUDE_DIRS} )
     link_libraries( ${PNG_LIBRARIES} )
-    #link_directories( ${PNG_LINK_DIR} )
     message("libpng found: libraries= ${PNG_LIBRARIES}" )
     message("libpng found: include= ${PNG_INCLUDE_DIRS}" )
-    #message("libpng found: libdir= ${PNG_LINK_DIR}" )
 else()
     message(SEND_ERROR "libpng package not found.")
 endif()
@@ -394,10 +409,8 @@ find_package(ZLIB REQUIRED)
 if( ZLIB_FOUND )
     include_directories( ${ZLIB_INCLUDE_DIR} )
     link_libraries( ${ZLIB_LIBRARY} )
-    #link_directories( ${ZLIB_LINK_DIR} )        
     message("zlib found: libraries= ${ZLIB_LIBRARY}" )
     message("zlib found: include= ${ZLIB_INCLUDE_DIRS}" )
-    #message("zlib found: libdir= ${ZLIB_LINK_DIR}" )
 else()
     message(SEND_ERROR "zlib package not found.")
 endif()
@@ -744,17 +757,13 @@ if (WIN32)
 endif(WIN32)
 
 # Display settings
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+message("Configuration for target ${LENMUS}")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
 else()
 	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
 endif()
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
-
-set(CMAKE_PROPERTY_LIST SOURCE_DIR BINARY_DIR COMPILE_DEFINITIONS
-            COMPILE_OPTIONS INCLUDE_DIRECTORIES LINK_LIBRARIES)
-
-message("Configuration for target ${LENMUS}")
 
 foreach (prop ${CMAKE_PROPERTY_LIST})
     get_property(propval TARGET ${LENMUS} PROPERTY ${prop} SET)
