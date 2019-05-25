@@ -4,7 +4,7 @@
 :: lenmus binaries in folder <root>\zz_build_area\bin
 ::
 :: Usage: 
-::   This script MUST BE RUN from <root>\scripts\ folder
+::   This script MUST BE RUN from folder <root>\scripts\
 ::      cd C:\Users\cecilio\source\repos\lenmus\scripts
 ::      build-lenmus.bat
 ::------------------------------------------------------------------------------

@@ -59,16 +59,22 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-message(STATUS "Using CMake version ${CMAKE_VERSION}")
-message(STATUS "Begin CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
-
-
 # project name
 project(lenmus)
 set( LENMUS_APP_NAME     "\"Lenmus Phonascus\"" )
 set( LENMUS_VENDOR_NAME  "\"Lenmus\"" )
 set( LENMUS_VENDOR_SITE  "\"http://www.lenmus.org\"" )
-message(STATUS "Project set CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
+
+# Define possible builds
+set(CMAKE_CONFIGURATION_TYPES Debug Release)
+
+
+# display settings
+message("Initial settings:")
+message("     Using CMake version ${CMAKE_VERSION}")
+message("     CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+message("     CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
+message("     CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 
 # main directories 
 set( LENMUS_ROOT_DIR  ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -137,7 +143,7 @@ set(MAN_INSTALL_DIR "/usr/share/man"
 #     + str: A string.
 #------------------------------------------------------
 MACRO(STRING_UNQUOTE var str)
-	SET(_ret "${str}")
+	set(_ret "${str}")
 	STRING(LENGTH "${str}" _strLen)
 
 	# if _strLen > 1
@@ -158,7 +164,7 @@ MACRO(STRING_UNQUOTE var str)
 		    STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
 	    ENDIF()
 	ENDIF()
-	SET(${var} "${_ret}")
+	set(${var} "${_ret}")
 ENDMACRO()
 
 
@@ -205,8 +211,7 @@ else ()
 endif ()
 
 
-message(STATUS "Build type (CMAKE_BUILD_TYPE) is ${CMAKE_BUILD_TYPE}")
-message(STATUS "Build type (LENMUS_DEBUG_BUILD) set to ${LENMUS_DEBUG_BUILD}")
+message(STATUS "LENMUS_DEBUG_BUILD set to ${LENMUS_DEBUG_BUILD}")
 
 # path to scores for tests
 set( LENMUS_TEST_SCORES_PATH     "\"${LENMUS_ROOT_DIR}/scores/samples/test_set/\"" )
@@ -242,16 +247,16 @@ set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
 
 if( UNIX )
     if (LENMUS_USE_VERSION_FOLDER)
-        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
+        set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
     else()
-        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME} )
+        set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME} )
     endif()
 elseif( WIN32 )
-    set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
+    set(SHARED_DIR ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )
+set(LENMUS_INSTALL_ROOT "${SHARED_DIR}/" )
 
-message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}" )
+message(STATUS "SHARED_DIR = ${SHARED_DIR}" )
 message(STATUS "LENMUS_INSTALL_ROOT = ${LENMUS_INSTALL_ROOT}" )
 
 
@@ -265,9 +270,6 @@ include_directories(
     ${LENMUS_ROOT_DIR}/packages/wxMidi/src
 )
 
-
-# Define possible builds
-set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 
 
@@ -766,7 +768,7 @@ endif()
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
 
 foreach (prop ${CMAKE_PROPERTY_LIST})
-    get_property(propval TARGET ${LENMUS} PROPERTY ${prop} SET)
+    get_property(propval TARGET ${LENMUS} PROPERTY ${prop} set)
     if (propval)
         get_target_property(propval ${LENMUS} ${prop})
         message (STATUS "${prop} = ${propval}")
@@ -784,55 +786,87 @@ endforeach(prop)
 #
 # Remember:
 #  LENMUS_ROOT_DIR: the root of the package source tree: i.e. $HOME/Downloads/lenmus-5.3
-#  ROOT_INSTALL:  install location: i.e. /usr/local
-#  ROOT_INSTALL_HOME: shared files i.e. /usr/local/share/lenmus/5.3/
+#
+# Instalation paths:
+#  ROOT_INSTALL:
+#       path to install binaries: i.e.:
+#       '/usr/local'
+#       'C:\Program Files\LenMus'
+#  ROOT_INSTALL_HOME:
+#       path to install shared files i.e.:
+#           '/usr/local/share/lenmus/5.3/'
+#           'C:\Program Files\LenMus'
 #///////////////////////////////////////////////////////////////////////////////
 
-    # lenmus program
-install( TARGETS ${LENMUS} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" )
+#Make paths relative
+if(WIN32)
+    #For CPack using NSIS, the DESTINATION path must be relative because installation path
+    #is always specified at the moment when user executes the installer
+    set(INSTALL_DIR bin)
+    set(SHARED_DIR shared)
+else()
+    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
+    set(SHARED_DIR ${ROOT_INSTALL_HOME})
+endif()
 
-    # 1. Software and essentials (ROOT_INSTALL_HOME):
-    # ------------------------------------------------------------------------------
 
-    # files in root folder
-install(FILES  AUTHORS CHANGELOG.md INSTALL LICENSE
-               NEWS README.md THANKS 
-        DESTINATION ${ROOT_INSTALL_HOME} )
+# install lenmus program
+install( TARGETS ${LENMUS} DESTINATION ${INSTALL_DIR})
 
-    # locale
-        # ADD_LANG
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_de.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-#install(FILES ${LENMUS_ROOT_DIR}/installer/msw/license_el_GR.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${ROOT_INSTALL_HOME}/locale")
-     
-    # locale. Common folder
-install(DIRECTORY ${LENMUS_ROOT_DIR}/locale/common  DESTINATION ${ROOT_INSTALL_HOME}/locale
+
+# 1. Software and essentials (ROOT_INSTALL_HOME):
+# ------------------------------------------------------------------------------
+
+# files in root folder
+install(
+    FILES
+        AUTHORS
+        CHANGELOG.md
+        INSTALL
+        LICENSE
+        NEWS
+        README.md
+        THANKS 
+    DESTINATION
+        ${SHARED_DIR}
+)
+
+# locale
+    # ADD_LANG
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_de.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION "${SHARED_DIR}/locale")
+#install(FILES ${LENMUS_ROOT_DIR}/installer/msw/license_el_GR.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
+
+
+# locale. Common folder
+install(DIRECTORY ${LENMUS_ROOT_DIR}/locale/common  DESTINATION ${SHARED_DIR}/locale
         FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
 
-    # locale. eBooks, help files and language catalogs for all languages
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${ROOT_INSTALL_HOME}/res
-        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${ROOT_INSTALL_HOME}/res
-        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${ROOT_INSTALL_HOME}/res
-        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${ROOT_INSTALL_HOME}/res
-        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
-        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${ROOT_INSTALL_HOME}/res/desktop")
 
-install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale    DESTINATION "${ROOT_INSTALL_HOME}"
+# locale. eBooks, help files and language catalogs for all languages
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${SHARED_DIR}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${SHARED_DIR}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${SHARED_DIR}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${SHARED_DIR}/res
+        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${SHARED_DIR}/res
+        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/res/desktop")
+
+install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale    DESTINATION "${SHARED_DIR}"
         FILES_MATCHING
         PATTERN "*.htm"
         #books 
@@ -859,47 +893,47 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale    DESTINATION "${ROOT_INSTALL_HOME
         PATTERN "x_*" EXCLUDE )
     
     # resources
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${ROOT_INSTALL_HOME}/res
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${ROOT_INSTALL_HOME}/res/desktop")
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${ROOT_INSTALL_HOME}/res
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/res/desktop")
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${ROOT_INSTALL_HOME}/res
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-#install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${ROOT_INSTALL_HOME}/res
+#install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${SHARED_DIR}/res
 #        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
 
 if (LENMUS_USE_LOMSE_SOURCES)
     #install Lomse fonts
     install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"
-            DESTINATION ${ROOT_INSTALL_HOME}/res/fonts
+            DESTINATION ${SHARED_DIR}/res/fonts
             FILES_MATCHING PATTERN "*.ttf" 
                            PATTERN "*.ttc"
                            PATTERN "Bravura.otf" )
 endif()
 
      # xrc
-install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
+install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${SHARED_DIR}
         FILES_MATCHING PATTERN "*.xrc"   PATTERN "x_*" EXCLUDE)
      
      # /templates
-install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
+install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${SHARED_DIR}
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
     # desktop and application icon 48x48 png
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications")
-install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/pixmaps")
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/share/applications")
+install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png  DESTINATION "${SHARED_DIR}/share/pixmaps")
 
 
     # 4. User scores and samples 
     # ------------------------------------------------------------------------------
 if( UNIX )
     set(ROOT_DATA_HOME $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_SAMPLES ${ROOT_INSTALL_HOME} )
+    set(ROOT_SAMPLES ${SHARED_DIR} )
 elseif( WIN32 )
-    set(ROOT_DATA_HOME ${ROOT_INSTALL} )
+    set(ROOT_DATA_HOME ${INSTALL_DIR} )
     set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_PACKAGE_VERSION} )
 endif()
 set(ROOT_SCORES ${ROOT_DATA_HOME}/scores )
@@ -921,25 +955,26 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES
 # CPack section: installers generation
 #///////////////////////////////////////////////////////////////////////////////
 
+# Common settings for all installers
 set(CPACK_PACKAGE_VENDOR "LenMus")
 set(CPACK_PACKAGE_DESCRIPTION "A program for aural training and learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 set(CPACK_PACKAGE_CONTACT "s.cecilio@gmail.com")
 
 if(UNIX)
-	#variables for Debian package
-	SET(CPACK_GENERATOR "DEB")
-	SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
+	# configure CPack for Debian package
+	set(CPACK_GENERATOR "DEB")
+	set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
 	set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
 	set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION} )
 	set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
 	set(CPACK_DEBIAN_PACKAGE_SECTION "education")
 
-	IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
+	if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
 	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-	ELSE()
+	else()
 	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
-	ENDIF() 
+	endif() 
 	 
 	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	if (LENMUS_USE_LOMSE_SOURCES)
@@ -949,9 +984,34 @@ if(UNIX)
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
 		        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
 	endif()
+    
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
 	message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
 
-	include(CPack)
-endif(UNIX)
+elseif(WIN32 AND NOT UNIX)
+    # configure CPack for NSIS installer
+    set(CPACK_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "lenmus")
+    set(CPACK_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
+    set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "lenmus")
+    #set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\cmake\\\\nsis_logo.bmp")
+    
+    set(CPACK_NSIS_COMPRESSOR "/SOLID lzma \r\n SetCompressorDictSize 32")
+    #set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\cmake\\\\nsis_icon.ico")
+    #set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\cmake\\\\nsis_icon.ico")
+    set(CPACK_NSIS_MODIFY_PATH "ON")
+    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
+    #set(CPACK_NSIS_DISPLAY_NAME "lenmus 0.1.1")
+    #set(CPACK_NSIS_INSTALLER_ICON_CODE "")
+    #set(CPACK_NSIS_INSTALLER_MUI_ICON_CODE "")
+    #set(CPACK_NSIS_PACKAGE_NAME "lenmus 0.1.1")
+    if(CMAKE_CL_64)
+        set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+    endif()
 
+	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
+
+endif()
+
+# Must be after the last CPACK macro
+include(CPack)
