@@ -51,13 +51,13 @@ if not exist "%build_path%" (
 :: create makefile
 cd %build_path%
 echo Creating makefile
-cmake -G "Ninja" %sources% -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="/MT /O2 /Ob2 /DNDEBUG" || exit /B 1
+cmake -G "Ninja" %sources% -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="/MT /O2 /Ob2 /DNDEBUG" || exit /B %E_BUIL_ERROR%
 echo -- Makefile created
 
 ::build program
 echo Building LenMus
 set start=%time%
-ninja || exit /B 1
+ninja || exit /B %E_BUIL_ERROR%
 set end=%time%
 
 :: compute elapsed time

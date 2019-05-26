@@ -3,7 +3,7 @@
 ; Galician language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Galician} ".\locale\license_gl_ES.txt"
+LicenseLangString license ${LANG_Galician} "${LENMUS_NSIS_LOCALE}\license_gl_ES.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Galician} "Por favor, elixa os compoñentes adicionais que se van instalar"

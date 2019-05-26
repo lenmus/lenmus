@@ -3,7 +3,7 @@
 ; French language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_French} ".\locale\license_fr.txt"
+LicenseLangString license ${LANG_French} "${LENMUS_NSIS_LOCALE}\license_fr.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_French} "S'il vous plaît, choisissez les composants optionels que vous voulez installer."

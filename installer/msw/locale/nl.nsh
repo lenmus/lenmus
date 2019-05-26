@@ -3,7 +3,7 @@
 ; Dutch language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Dutch} ".\locale\license_nl.txt"
+LicenseLangString license ${LANG_Dutch} "${LENMUS_NSIS_LOCALE}\license_nl.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Dutch} "Kies aub de optionele componenten die u wenst te installeren"

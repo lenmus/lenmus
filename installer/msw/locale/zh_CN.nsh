@@ -3,7 +3,7 @@
 ; Simplified Chinese  language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_SimpChinese} ".\locale\license_en.txt"
+LicenseLangString license ${LANG_SimpChinese} "${LENMUS_NSIS_LOCALE}\license_en.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_SimpChinese} "Please choose the optional components you would like to install"

@@ -1,7 +1,7 @@
 ;==============================================================================================
 ; Windows installer for LenMus. Unicode version
 ;
-; NSIS v2.46 script for generating the exe installer and uninstaller
+; NSIS v3.04 script for generating the exe installer and uninstaller
 ;
 ; To add a new language:
 ;   Search for ADD_LANG and modify inthese points
@@ -10,7 +10,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2013 Cecilio Salmeron
+;    Copyright (c) 2002-2019 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -33,7 +33,7 @@
   CRCCheck on
   
 ;set the compression algorithm to use (zlib | bzip2 | lzma)
-  SetCompressor lzma
+  SetCompressor /SOLID lzma
 
 ;use the new XP controls style when running on Windows XP
   XPStyle on
@@ -42,12 +42,10 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.3.1"               ;<--------- version 
-  !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
-  !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus_5.3.1.exe"     ;<--------- name of exec
+  !include "LenMusVersion.nsh"
+  !insertmacro LenMusVersion
 
-  Name "lenmus v5.3.1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v${APP_VERSION}"     ;product name displayed by the installer
 
 
 ;Specify path and name of resulting installer
@@ -265,8 +263,8 @@ Section  "-" "MainSection"
   CopyFiles:
      ClearErrors
      SetOverWrite try
-     SetOutPath "$INSTDIR\docs"
-     File "..\..\docs\html\install.htm"
+     ;SetOutPath "$INSTDIR\docs"
+     ;File "..\..\docs\html\install.htm"
 
     ; ADD_LANG
      File ".\locale\license_en.txt"
@@ -285,13 +283,16 @@ Section  "-" "MainSection"
      
      
      SetOutPath "$INSTDIR\bin"
-     File "${LENMUS_EXE}"       ;** REMEMBER to place exec in \installer\msw\ folder !
-     File "..\..\..\..\lomse\trunk\packages\freetype\bin\freetype6.dll"
-     File "..\..\..\..\lomse\trunk\packages\freetype\bin\zlib1.dll"
-     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
-     File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
-     File "msvcr71.dll"
-     File "msvcp71.dll"
+     File "..\..\zz_build-area\bin\*.*"
+     File "libpng16.dll"
+     File "zlib.dll"
+     ;File "${LENMUS_EXE}"       ;** REMEMBER to place exec in \installer\msw\ folder !
+     ;File "..\..\..\..\lomse\trunk\packages\freetype\bin\freetype6.dll"
+     ;File "..\..\..\..\lomse\trunk\packages\freetype\bin\zlib1.dll"
+     ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
+     ;File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
+     ;File "msvcr71.dll"
+     ;File "msvcp71.dll"
 
     ;locale. Common folder
      SetOutPath "$INSTDIR\locale\common"
@@ -363,8 +364,8 @@ Section  "-" "MainSection"
      File "..\..\res\icons\*.*"
      SetOutPath "$INSTDIR\res\sounds"
      File "..\..\res\sounds\*.*"
-     SetOutPath "$INSTDIR\res\keys"
-     File "..\..\res\keys\*.png"
+     ;SetOutPath "$INSTDIR\res\keys"
+     ;File "..\..\res\keys\*.png"
      SetOutPath "$INSTDIR\res\cursors"
      File "..\..\res\cursors\*.png"
      
@@ -375,8 +376,8 @@ Section  "-" "MainSection"
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
      
-;;     SetOutPath "$INSTDIR\templates"
-;;     File "..\..\templates\*.lms"
+     SetOutPath "$INSTDIR\templates"
+     File "..\..\templates\*.lms"
      
      SetOutPath "$INSTDIR\temp"
 

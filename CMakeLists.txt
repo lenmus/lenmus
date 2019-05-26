@@ -987,27 +987,22 @@ if(UNIX)
 
 elseif(WIN32 AND NOT UNIX)
     # configure CPack for NSIS installer
-    set(CPACK_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
+    set(CPACK_GENERATOR "NSIS")
+    set(CPACK_STRIP_FILES ON)
+    set(CPACK_PACKAGE_NAME "lenmus")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "lenmus")
     set(CPACK_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
     set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "lenmus")
-    #set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\cmake\\\\nsis_logo.bmp")
     
     set(CPACK_NSIS_COMPRESSOR "/SOLID lzma \r\n SetCompressorDictSize 32")
-    #set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\cmake\\\\nsis_icon.ico")
-    #set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\cmake\\\\nsis_icon.ico")
     set(CPACK_NSIS_MODIFY_PATH "ON")
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
-    #set(CPACK_NSIS_DISPLAY_NAME "lenmus 0.1.1")
-    #set(CPACK_NSIS_INSTALLER_ICON_CODE "")
-    #set(CPACK_NSIS_INSTALLER_MUI_ICON_CODE "")
-    #set(CPACK_NSIS_PACKAGE_NAME "lenmus 0.1.1")
     if(CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
     endif()
-
-	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
-
+    
+    set(CPACK_LENMUS_ROOT "${LENMUS_ROOT_DIR}")
+    set(CPACK_LENMUS_BUILD_INSTALLER_PATH "${CMAKE_BINARY_DIR}")
 endif()
 
 # Must be after the last CPACK macro
