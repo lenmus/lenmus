@@ -30,9 +30,9 @@
 //---------------------------------------------------------------------------------------
 // program name, version and related. To support store brands
 //---------------------------------------------------------------------------------------
-#define LENMUS_APP_NAME         @LENMUS_APP_NAME@
-#define LENMUS_VENDOR_NAME      @LENMUS_VENDOR_NAME@
-#define LENMUS_VENDOR_SITE      @LENMUS_VENDOR_SITE@
+#define LENMUS_APP_NAME         "@LENMUS_APP_NAME@"
+#define LENMUS_VENDOR_NAME      "@LENMUS_VENDOR_NAME@"
+#define LENMUS_VENDOR_SITE      "@LENMUS_VENDOR_SITE@"
 
 
 //--------------------------------------------------------------------------------------

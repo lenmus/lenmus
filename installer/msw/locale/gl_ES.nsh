@@ -6,9 +6,9 @@
 LicenseLangString license ${LANG_Galician} "${LENMUS_NSIS_LOCALE}\license_gl_ES.txt"
 
 ;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_Galician} "Por favor, elixa os compoñentes adicionais que se van instalar"
+LangString MSG_OptionalComponents   ${LANG_Galician} "Por favor, elixa os compoÃ±entes adicionais que se van instalar"
 LangString MSG_CONTINUE             ${LANG_Galician} "Quere continuar instalando?"
-LangString MSG_ABORT                ${LANG_Galician} "Instalación cancelada"
+LangString MSG_ABORT                ${LANG_Galician} "InstalaciÃ³n cancelada"
 LangString MSG_Running              ${LANG_Galician} "Another copy of this installer is already running."
 
 

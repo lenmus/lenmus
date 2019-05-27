@@ -56,14 +56,19 @@
 #   cmake -DLENMUS_ENABLE_UNIT_TESTS:BOOL=OFF ...
 #
 #-------------------------------------------------------------------------------------
+# To add a new language to the NSIS installer:
+#   Search for ADD_LANG and modify CMakeList.txt in these points
+#   Check that the added language is supported by NSIS in NSIS/Contrib/Language files/
+#
+#-------------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.1)
 
 # project name
 project(lenmus)
-set( LENMUS_APP_NAME     "\"Lenmus Phonascus\"" )
-set( LENMUS_VENDOR_NAME  "\"Lenmus\"" )
-set( LENMUS_VENDOR_SITE  "\"http://www.lenmus.org\"" )
+set( LENMUS_APP_NAME     "Lenmus Phonascus" )
+set( LENMUS_VENDOR_NAME  "LenMus" )
+set( LENMUS_VENDOR_SITE  "http://www.lenmus.org" )
 
 # Define possible builds
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
@@ -210,12 +215,20 @@ else ()
     set( LENMUS_RELEASE_INSTALL 1)
 endif ()
 
-
+message("LenMus configuration for building:")
 message(STATUS "LENMUS_DEBUG_BUILD set to ${LENMUS_DEBUG_BUILD}")
 
 # path to scores for tests
 set( LENMUS_TEST_SCORES_PATH     "\"${LENMUS_ROOT_DIR}/scores/samples/test_set/\"" )
 set( LENMUS_SOURCE_ROOT          "\"${LENMUS_ROOT_DIR}/\"" )
+
+# determine system arquitecture
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(SYSTEM_ARCHITECTURE "x64")
+else()
+    set(SYSTEM_ARCHITECTURE "x86")
+endif()
+message(STATUS "SYSTEM_ARCHITECTURE = ${SYSTEM_ARCHITECTURE}" )
 
 
 # installation folders
@@ -231,11 +244,16 @@ set( LENMUS_SOURCE_ROOT          "\"${LENMUS_ROOT_DIR}/\"" )
 set(LENMUS_USE_SOURCE_TREE 0)
 
 #set install folder 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT
+    OR (${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files/${CMAKE_PROJECT_NAME}")
+    OR (${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files (x86)/${CMAKE_PROJECT_NAME}")
+  )
+    message(STATUS "    CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT = ${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT}")
     #Fix CMAKE_INSTALL_PREFIX for Windows.
     #Sometimes it points to 'Program Files (x86)' for x64 builds
     if(WIN32)
-        if(CMAKE_CL_64) #CMAKE_SIZEOF_VOID_P EQUAL 8)
+        message(STATUS "    Win32. SYSTEM_ARCHITECTURE = ${SYSTEM_ARCHITECTURE}")
+        if(${SYSTEM_ARCHITECTURE} STREQUAL "x64")
             set(CMAKE_INSTALL_PREFIX "C:/Program Files/${CMAKE_PROJECT_NAME}")
         else()
             set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/${CMAKE_PROJECT_NAME}")
@@ -254,10 +272,8 @@ if( UNIX )
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )
 
 message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}" )
-message(STATUS "LENMUS_INSTALL_ROOT = ${LENMUS_INSTALL_ROOT}" )
 
 
 
@@ -282,6 +298,7 @@ include_directories(
 #
 ###############################################################################
 
+message("Checking for LenMus dependencies:")
 
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
@@ -306,7 +323,7 @@ if (LENMUS_ENABLE_UNIT_TESTS)
 else()
 	set(LENMUS_ENABLE_UNIT_TESTS "0")
 endif()	
-message("LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
+message(STATUS "LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 
 
 # Check for wxWidgets
@@ -370,7 +387,7 @@ if (LENMUS_USE_LOMSE_SOURCES)
         ${LOMSE_ROOT_DIR}/packages/minizip
         ${LOMSE_ROOT_DIR}/packages
     )
-    message("LOMSE: Not using Lomse library, but building with its sources")
+    message(STATUS "LOMSE: Not using Lomse library, but building with its sources")
 else()
     find_package(Lomse 0.25)                    
     if( LOMSE_FOUND )
@@ -388,8 +405,8 @@ endif()
 find_package(Freetype REQUIRED)              
 if( FREETYPE_FOUND )
     include_directories( ${FREETYPE_INCLUDE_DIRS} )
-    message("Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
-    message("Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
+    message(STATUS "Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
+    message(STATUS "Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
 else()
     message(SEND_ERROR "FreeType package not found.")
     message(STATUS "FreeType_DIR = $ENV{FreeType_DIR}")
@@ -400,8 +417,8 @@ find_package(PNG REQUIRED)
 if( PNG_FOUND )
     include_directories( ${PNG_INCLUDE_DIRS} )
     link_libraries( ${PNG_LIBRARIES} )
-    message("libpng found: libraries= ${PNG_LIBRARIES}" )
-    message("libpng found: include= ${PNG_INCLUDE_DIRS}" )
+    message(STATUS "libpng found: libraries= ${PNG_LIBRARIES}" )
+    message(STATUS "libpng found: include= ${PNG_INCLUDE_DIRS}" )
 else()
     message(SEND_ERROR "libpng package not found.")
 endif()
@@ -411,18 +428,13 @@ find_package(ZLIB REQUIRED)
 if( ZLIB_FOUND )
     include_directories( ${ZLIB_INCLUDE_DIR} )
     link_libraries( ${ZLIB_LIBRARY} )
-    message("zlib found: libraries= ${ZLIB_LIBRARY}" )
-    message("zlib found: include= ${ZLIB_INCLUDE_DIRS}" )
+    message(STATUS "zlib found: libraries= ${ZLIB_LIBRARY}" )
+    message(STATUS "zlib found: include= ${ZLIB_INCLUDE_DIRS}" )
 else()
     message(SEND_ERROR "zlib package not found.")
 endif()
 
 
-
-# "Print all warnings", macros for GCC & __UNIX__
-if(UNIX)
-    add_definitions( -Wall -DGCC -D__UNIX__ )
-endif(UNIX)
 
 #process template header config file to replace CMake settings
 configure_file(
@@ -711,6 +723,11 @@ if (WIN32)
     set_target_properties(${LENMUS} PROPERTIES COMPILE_FLAGS "/wd4996")
 endif(WIN32)
 
+# "Print all warnings", macros for GCC & __UNIX__
+if(UNIX)
+    add_definitions( -Wall -DGCC -D__UNIX__ )
+endif(UNIX)
+
 
 # Linker options
 #if(WIN32)
@@ -758,7 +775,7 @@ if (WIN32)
 	endforeach()
 endif(WIN32)
 
-# Display settings
+# Display compiler and linker settings
 message("Configuration for target ${LENMUS}")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
@@ -766,14 +783,6 @@ else()
 	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
 endif()
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
-
-foreach (prop ${CMAKE_PROPERTY_LIST})
-    get_property(propval TARGET ${LENMUS} PROPERTY ${prop} set)
-    if (propval)
-        get_target_property(propval ${LENMUS} ${prop})
-        message (STATUS "${prop} = ${propval}")
-    endif()
-endforeach(prop)
 
 
 #///////////////////////////////////////////////////////////////////////////////
@@ -811,11 +820,11 @@ else()
 endif()
 
 message("Installation paths:")
-message(STATUS "     ROOT_INSTALL = ${ROOT_INSTALL}")
-message(STATUS "     ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}")
-message(STATUS "     Binaries (INSTALL_DIR) = ${INSTALL_DIR}")
-message(STATUS "     Shared (SHARED_DIR) = ${SHARED_DIR}")
-message(STATUS "     Samples (ROOT_SAMPLES) = ${ROOT_SAMPLES}" )
+message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
+message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}")
+message(STATUS "Binaries (INSTALL_DIR) = ${INSTALL_DIR}")
+message(STATUS "Shared (SHARED_DIR) = ${SHARED_DIR}")
+message(STATUS "Samples (ROOT_SAMPLES) = ${ROOT_SAMPLES}" )
 
 
 # install lenmus program
@@ -854,6 +863,51 @@ install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTIN
 #install(FILES ${LENMUS_ROOT_DIR}/installer/msw/license_el_GR.txt   DESTINATION "${SHARED_DIR}/locale")
 install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
 install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
+
+
+#generate include files with translations for NSIS installer 
+if(WIN32)
+    #GUI translations
+    set(NSIS_TRANSLATIONS ${CMAKE_BINARY_DIR}/mui_locale.nsh)
+    file(REMOVE ${NSIS_TRANSLATIONS})
+    file(APPEND ${NSIS_TRANSLATIONS} ";translations for installer GUI\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !addincludedir \"$")
+    file(APPEND ${NSIS_TRANSLATIONS} "{LENMUS_NSIS_LOCALE}\"\n")
+        # ADD_LANG
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include de.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include eu.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include zh_CN.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include nl.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include en.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include fr.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include gl_ES.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include de.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} ";**  !include el_GR.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include it.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include es.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include tr.nsh\n")
+    
+    message("translations for NSIS installer created: ${NSIS_TRANSLATIONS}")
+
+    #Available languages
+    set(NSIS_LANGUAGES ${CMAKE_BINARY_DIR}/mui_languages.nsh)
+    file(REMOVE ${NSIS_LANGUAGES})
+    file(APPEND ${NSIS_LANGUAGES} ";available languages for the installer\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE English    ;first language is the default language\n")
+        # ADD_LANG
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Basque\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE SimpChinese\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Dutch\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE French\n")        
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Galician\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE German\n")
+    file(APPEND ${NSIS_LANGUAGES} ";**  !insertmacro MUI_LANGUAGE Greek\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Italian\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Spanish\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Turkish\n")
+
+    message("languages for NSIS installer created: ${NSIS_LANGUAGES}")
+endif()
 
 
 # locale. Common folder
@@ -895,6 +949,7 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale    DESTINATION "${SHARED_DIR}"
         PATTERN "z_*" EXCLUDE
         PATTERN "*~" EXCLUDE
         #exclude unsupported languages
+            # ADD_LANG
         PATTERN "kk/" EXCLUDE
         PATTERN "ru/" EXCLUDE
         PATTERN "el_GR/" EXCLUDE
@@ -953,7 +1008,7 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES
 #///////////////////////////////////////////////////////////////////////////////
 
 # Common settings for all installers
-set(CPACK_PACKAGE_VENDOR "LenMus")
+set(CPACK_PACKAGE_VENDOR ${LENMUS_VENDOR_NAME})
 set(CPACK_PACKAGE_DESCRIPTION "A program for aural training and learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 set(CPACK_PACKAGE_CONTACT "s.cecilio@gmail.com")
@@ -964,7 +1019,7 @@ if(UNIX)
 	set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
 	set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
 	set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION} )
-	set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
+	set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${LENMUS_VENDOR_SITE}")
 	set(CPACK_DEBIAN_PACKAGE_SECTION "education")
 
 	if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
@@ -985,25 +1040,30 @@ if(UNIX)
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
 	message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
 
-elseif(WIN32 AND NOT UNIX)
+elseif(WIN32)
     # configure CPack for NSIS installer
+    # AWARE: Only variables starting with "CPACK_" are used to customize the installer.
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_STRIP_FILES ON)
     set(CPACK_PACKAGE_NAME "lenmus")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "lenmus")
     set(CPACK_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
-    set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "lenmus")
     
-    set(CPACK_NSIS_COMPRESSOR "/SOLID lzma \r\n SetCompressorDictSize 32")
-    set(CPACK_NSIS_MODIFY_PATH "ON")
-    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
-    if(CMAKE_CL_64)
-        set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
-    endif()
+    #name of the package file to generate, not including the extension
+    set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${SYSTEM_ARCHITECTURE}-setup")
     
+    #some paths used while building the installer
     set(CPACK_LENMUS_ROOT "${LENMUS_ROOT_DIR}")
     set(CPACK_LENMUS_BUILD_INSTALLER_PATH "${CMAKE_BINARY_DIR}")
+    set(CPACK_LENMUS_INSTALL_PATH "${ROOT_INSTALL_HOME}")
+
+	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
+	message("Installation default path: ${CPACK_LENMUS_INSTALL_PATH}" )
 endif()
 
 # Must be after the last CPACK macro
 include(CPack)
+
+message(" ")
+message("End of CMakeLists.txt ==================================================")
+message(" ")
+message("Generation starts:")

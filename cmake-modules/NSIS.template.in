@@ -1,12 +1,7 @@
 ;==============================================================================================
-; Windows installer for LenMus. Unicode version
+; Template to generate the Windows installer for LenMus. Unicode version
 ;
 ; NSIS v3.04 script for generating the exe installer and uninstaller
-;
-; To add a new language:
-;   Search for ADD_LANG and modify inthese points
-;   Chack that language is supported by NSIS in NSIS/Contrib/Language files/
-;
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
@@ -32,7 +27,10 @@
 ;is not corrupted
   CRCCheck on
   
-;set the compression algorithm to use (zlib | bzip2 | lzma)
+;build Unicode installer
+  Unicode true
+  
+;set the compression algorithm to use
   SetCompressor /SOLID lzma
 
 ;use the new XP controls style when running on Windows XP
@@ -41,35 +39,37 @@
 ;set Execution Level to Admin
   RequestExecutionLevel admin
 
+;values set in CMake/CPack script
+;Aware: only variables starting by 'CPACK_" are used by CPack to configure this template 
+  !define APP_VERSION "@CPACK_PACKAGE_VERSION@"                         ;version. e.g.: "5.4.2" 
+  !define LENMUS_ROOT "@CPACK_LENMUS_ROOT@"                             ;path to lenmus sources
+  !define INSTALLER_NAME "@CPACK_OUTPUT_FILE_NAME@"                     ;name of installer. e.g: "lenmus-5.4.2-win64.exe"
+  !define INSTALLER_BUILD_FOLDER "@CPACK_LENMUS_BUILD_INSTALLER_PATH@"  ;path for building the installer
+  !define INST_DIR "@CPACK_TEMPORARY_DIRECTORY@"
+
+;fix char separator in install path
+  !searchreplace INSTALL_PATH "@CPACK_LENMUS_INSTALL_PATH@" "/" "\"
+
+    
 ;some helper defines and variables
-  !define APP_VERSION "@CPACK_PACKAGE_VERSION@"         ;version. e.g.: "5.4.1" 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus.exe"                       ;name of exec. e.g.: "lenmus_5.4.1.exe" 
-  !define LENMUS_NSIS_RESOURCES "@CPACK_LENMUS_ROOT@\installer\msw"
-  !define LENMUS_NSIS_LOCALE "@CPACK_LENMUS_ROOT@\installer\msw\locale"
+  !define LENMUS_EXE "lenmus.exe"                                   ;name of exec. e.g.: "lenmus_5.4.1.exe" 
+  !define LENMUS_NSIS_RESOURCES "${LENMUS_ROOT}\installer\msw"
+  !define LENMUS_NSIS_LOCALE "${LENMUS_ROOT}\installer\msw\locale"
 
-  Name "lenmus v${APP_VERSION}"     ;product name displayed by the installer
+;product name displayed by the installer
+  Name "lenmus v${APP_VERSION}"     
 
-
-;Specify path and name of resulting installer
-
-
-;define path and filename of installer and uninstaller
-;  !define INSTALLER_NAME "@CPACK_OUTPUT_FILE_NAME@"
-!ifdef NSIS_UNICODE
-  !define INSTALLER_NAME "lenmus-5.4.U-win64.exe"
-!else
-  !define INSTALLER_NAME "lenmus-5.4.2-win64.exe"
-!endif
-  !define UNINSTALLER_NAME "uninstall_lenmus_${APP_VERSION}.exe"
+;Specify path and name for uninstaller
+  !define UNINSTALLER_NAME "uninstall-${INSTALLER_NAME}"
   OutFile "${INSTALLER_NAME}"
 
 ;define the default installation directory and registry key
   !define REGISTRY_UNINSTALL "LenMus_${APP_VERSION}"
   !define REGISTRY_DATA "LenMus\Phonascus\${APP_VERSION}"
 
-  InstallDir "$PROGRAMFILES\LenMus${APP_VERSION}"
+  InstallDir "${INSTALL_PATH}-${APP_VERSION}"
   InstallDirRegKey HKCU "Software\${REGISTRY_DATA}" ""
 
 
@@ -152,19 +152,8 @@
 
   ;available languages
   !define MUI_LANGDLL_ALLLANGUAGES
-  
-  ; ADD_LANG
-  !insertmacro MUI_LANGUAGE "English" ;first language is the default language
-  !insertmacro MUI_LANGUAGE "Basque"
-  !insertmacro MUI_LANGUAGE "SimpChinese"
-  !insertmacro MUI_LANGUAGE "Dutch"
-  !insertmacro MUI_LANGUAGE "French"         
-  !insertmacro MUI_LANGUAGE "Galician"
-  !insertmacro MUI_LANGUAGE "German"
-;**  !insertmacro MUI_LANGUAGE "Greek"
-  !insertmacro MUI_LANGUAGE "Italian"
-  !insertmacro MUI_LANGUAGE "Spanish"
-  !insertmacro MUI_LANGUAGE "Turkish"
+  !addincludedir "${INSTALLER_BUILD_FOLDER}"
+  !include "mui_languages.nsh"
 
   ;reserve files for languages
     ;These files should be inserted before other files in the data block
@@ -184,31 +173,17 @@
 
 
 ;---------------------------------------------------------------------------------------------------
-; ADD_LANG
 ;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
-  !addincludedir "${LENMUS_NSIS_LOCALE}\"
-  !include "eu.nsh"
-  !include "zh_CN.nsh"
-  !include "nl.nsh"
-  !include "en.nsh"
-  !include "fr.nsh"
-  !include "gl_ES.nsh"
-  !include "de.nsh"
-;**  !include "el_GR.nsh"
-  !include "it.nsh"
-  !include "es.nsh"
-  !include "tr.nsh"
-
-
-
+  !addincludedir "${INSTALLER_BUILD_FOLDER}"
+  !include "mui_locale.nsh"
 
 
 ; *********************************************************************
 ; Install Sections
 ; *********************************************************************
 
-;Specify the requested execution level for Windows Vista and Windows 7
+;Specify the requested execution level for Windows
   RequestExecutionLevel admin
  
 
@@ -272,118 +247,16 @@ Section  "-" "MainSection"
   CopyFiles:
      ClearErrors
      SetOverWrite try
-     ;SetOutPath "$INSTDIR\docs"
-     ;File "@CPACK_LENMUS_ROOT@\docs\html\install.htm"
-
-    ; ADD_LANG
-     File "${LENMUS_NSIS_LOCALE}\license_en.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_es.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_fr.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_tr.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_nl.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_eu.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_it.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_gl_ES.txt"
-     File "${LENMUS_NSIS_LOCALE}\license_de.txt"
-;**     File "${LENMUS_NSIS_LOCALE}\license_el_GR.txt"
      
-     File "${LENMUS_NSIS_LOCALE}\LICENSE_GNU_GPL_1.3.txt"
-     File "${LENMUS_NSIS_LOCALE}\LICENSE_GNU_FDL_1.3.txt"
-     
-     
+     ;Copy the entire tree produced by the CMake INSTALL target.
+     SetOutPath "$INSTDIR"
+     @CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS@
+     @CPACK_NSIS_FULL_INSTALL@
+      
+     ;install required dlls
      SetOutPath "$INSTDIR\bin"
-     File "@CPACK_LENMUS_BUILD_INSTALLER_PATH@\bin\*.*"
      File "${LENMUS_NSIS_RESOURCES}\libpng16.dll"
      File "${LENMUS_NSIS_RESOURCES}\zlib.dll"
-
-    ;locale. Common folder
-     SetOutPath "$INSTDIR\locale\common"
-     File "@CPACK_LENMUS_ROOT@\locale\common\*.*"
-
-    ; ADD_LANG
-     SetOutPath "$INSTDIR\locale\en"
-     File "@CPACK_LENMUS_ROOT@\locale\en\*.htm"
-     SetOutPath "$INSTDIR\locale\es"
-     File "@CPACK_LENMUS_ROOT@\locale\es\*.mo"
-     File "@CPACK_LENMUS_ROOT@\locale\es\*.htm"
-     SetOutPath "$INSTDIR\locale\fr"
-     File "@CPACK_LENMUS_ROOT@\locale\fr\*.mo"
-;**     File "@CPACK_LENMUS_ROOT@\locale\fr\*.htm"
-     SetOutPath "$INSTDIR\locale\tr"
-     File "@CPACK_LENMUS_ROOT@\locale\tr\*.mo"
-;**     File "@CPACK_LENMUS_ROOT@\locale\tr\*.htm"
-     SetOutPath "$INSTDIR\locale\nl"
-     File "@CPACK_LENMUS_ROOT@\locale\nl\*.mo"
-;**     File "@CPACK_LENMUS_ROOT@\locale\nl\*.htm"
-     SetOutPath "$INSTDIR\locale\eu"
-     File "@CPACK_LENMUS_ROOT@\locale\eu\*.mo"
-;**     File "@CPACK_LENMUS_ROOT@\locale\eu\*.htm"
-     SetOutPath "$INSTDIR\locale\it"
-     File "@CPACK_LENMUS_ROOT@\locale\it\*.mo"
-;**     File "@CPACK_LENMUS_ROOT@\locale\it\*.htm"
-     SetOutPath "$INSTDIR\locale\gl_ES"
-     File "@CPACK_LENMUS_ROOT@\locale\gl_ES\*.mo"
-     File "@CPACK_LENMUS_ROOT@\locale\gl_ES\*.htm"
-     SetOutPath "$INSTDIR\locale\zh_CN"
-     File "@CPACK_LENMUS_ROOT@\locale\zh_CN\*.mo"
-     File "@CPACK_LENMUS_ROOT@\locale\zh_CN\*.htm"
-     SetOutPath "$INSTDIR\locale\de"
-     File "@CPACK_LENMUS_ROOT@\locale\de\*.mo"
-     File "@CPACK_LENMUS_ROOT@\locale\de\*.htm"
-;**     SetOutPath "$INSTDIR\locale\el_GR"
-;**     File "@CPACK_LENMUS_ROOT@\locale\el_GR\*.mo"
-;**     File "@CPACK_LENMUS_ROOT@\locale\el_GR\*.htm"
-
-    ; ADD_LANG
-     SetOutPath "$INSTDIR\locale\en\books"
-     File "@CPACK_LENMUS_ROOT@\locale\en\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\es\books"
-     File "@CPACK_LENMUS_ROOT@\locale\es\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\fr\books"
-     File "@CPACK_LENMUS_ROOT@\locale\fr\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\tr\books"
-     File "@CPACK_LENMUS_ROOT@\locale\tr\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\nl\books"
-     File "@CPACK_LENMUS_ROOT@\locale\nl\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\eu\books"
-     File "@CPACK_LENMUS_ROOT@\locale\eu\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\it\books"
-     File "@CPACK_LENMUS_ROOT@\locale\it\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\gl_ES\books"
-     File "@CPACK_LENMUS_ROOT@\locale\gl_ES\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\zh_CN\books"
-     File "@CPACK_LENMUS_ROOT@\locale\zh_CN\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\de\books"
-     File "@CPACK_LENMUS_ROOT@\locale\de\books\*.lmb"
-;**     SetOutPath "$INSTDIR\locale\el_GR\books"
-;**     File "@CPACK_LENMUS_ROOT@\locale\el_GR\books\*.lmb"
-
-    
-    ;resources
-     SetOutPath "$INSTDIR\res\bitmaps"
-     File "@CPACK_LENMUS_ROOT@\res\bitmaps\*.*"
-     SetOutPath "$INSTDIR\res\icons"
-     File "@CPACK_LENMUS_ROOT@\res\icons\*.*"
-     SetOutPath "$INSTDIR\res\sounds"
-     File "@CPACK_LENMUS_ROOT@\res\sounds\*.*"
-     ;SetOutPath "$INSTDIR\res\keys"
-     ;File "@CPACK_LENMUS_ROOT@\res\keys\*.png"
-     SetOutPath "$INSTDIR\res\cursors"
-     File "@CPACK_LENMUS_ROOT@\res\cursors\*.png"
-     
-     SetOutPath "$INSTDIR\res\fonts"
-     File "@CPACK_LENMUS_ROOT@\res\fonts\*.ttf"
-     File "@CPACK_LENMUS_ROOT@\res\fonts\*.ttc"
-
-     SetOutPath "$INSTDIR\xrc"
-     File "@CPACK_LENMUS_ROOT@\xrc\*.xrc"
-     
-     SetOutPath "$INSTDIR\templates"
-     File "@CPACK_LENMUS_ROOT@\templates\*.lms"
-     
-     SetOutPath "$INSTDIR\temp"
-
-     SetOutPath "$INSTDIR\logs"
 
       IfErrors +1 EndCopyFiles
         StrCmp $STEP "ErrorCopyingFiles" "Error_CopyFiles"
@@ -470,9 +343,9 @@ Section $(TITLE_Scores) Scores
      ClearErrors
      SetOverwrite on
      SetOutPath "$INSTDIR\scores\MusicXML"
-     File "@CPACK_LENMUS_ROOT@\scores\MusicXML\*.xml"
+     File "${LENMUS_ROOT}\scores\MusicXML\*.xml"
      SetOutPath "$INSTDIR\scores\samples"
-     File "@CPACK_LENMUS_ROOT@\scores\samples\*.lms"
+     File "${LENMUS_ROOT}\scores\samples\*.lms"
      IfErrors +1 EndCopyScores
         StrCmp $STEP "ErrorCopyingScores" "Error_CopyScores"
         StrCpy "$STEP" "ErrorCopyingScores" 
