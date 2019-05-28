@@ -7,7 +7,7 @@ wxString sTxt;
 //strings to customize MUI pages and message boxes
 /* MSG_OptionalComponents */    sTxt = _("Please choose the optional components you would like to install");
 /* MSG_CONTINUE */              sTxt = _("Would you like to continue the installation?");
-/* MSG_ABORT */                 sTxt = _("Installation canceled"
+/* MSG_ABORT */                 sTxt = _("Installation canceled");
 /* MSG_Running */               sTxt = _("The installer is already running.");
 
 //section titles, what user sees to select components for installation

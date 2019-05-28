@@ -3,7 +3,7 @@
 ; Turkish language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Turkish} ".\locale\license_tr.txt"
+LicenseLangString license ${LANG_Turkish} "${LENMUS_NSIS_LOCALE}\license_tr.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Turkish} "Lütfen, kurmak istediğiniz isteğe bağlı parçaları seç"

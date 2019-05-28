@@ -3,7 +3,7 @@
 ; German language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_German} ".\locale\license_de.txt"
+LicenseLangString license ${LANG_German} "${LENMUS_NSIS_LOCALE}\license_de.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_German} "Please choose the optional components you would like to install"

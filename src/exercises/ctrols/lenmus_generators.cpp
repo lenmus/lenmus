@@ -67,21 +67,23 @@ void RandomGenerator::shuffle(int nNum, int* pIdx)
     //fill array pointed by pIdx ( int idx[nNum] ) with unique integers
     //in the range 0..nNum-1, arranged at random
 
-    int from[nNum];
+    int* from = new int[nNum];
     for (int i=0; i < nNum; ++i)
-        from[i] = i;
+        *(from + i) = i;
     int jmax = nNum-1;
     int k=0;
     for (int i=0; i < nNum; ++i)
     {
         int j = random_number(0, jmax);
-        *(pIdx+k) = from[j];
+        *(pIdx+k) = *(from + j);
         ++k;
         for (int i1=j+1; i1 <= jmax; ++i1)
-            from[i1-1] = from[i1];
+            *(from + i1-1) = *(from + i1);
         --jmax;
     }
-    *(pIdx+k) = from[0];
+    *(pIdx+k) = *from;
+
+	delete[] from;
 }
 
 //---------------------------------------------------------------------------------------

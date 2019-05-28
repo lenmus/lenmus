@@ -70,6 +70,3 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(PortMidi  DEFAULT_MSG  PortMidi_LIBRARY  PortM
 # show the PortMidi_INCLUDE_DIRS and PortMidi_LIBRARIES variables only in the advanced view
 MARK_AS_ADVANCED(PortMidi_LIBRARY PortMidi_INCLUDE_DIR)
 
-MESSAGE ( "PortMidi_INCLUDE_DIRS => ${PortMidi_INCLUDE_DIRS}" )
-MESSAGE ( "PortMidi_LIBRARIES => ${PortMidi_LIBRARIES}" )
-

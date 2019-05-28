@@ -183,6 +183,9 @@ DYNFUNC(return, int,                   sqlite3_stmt_readonly,         (sqlite3_s
 #if SQLITE_VERSION_NUMBER >= 3007000
 DYNFUNC(return, int,                   sqlite3_stmt_status,           (sqlite3_stmt* pStmt, int op, int resetFlg), (pStmt, op, resetFlg));
 #endif
+#if SQLITE_VERSION_NUMBER >= 3012001
+DYNFUNC(return, int,                   sqlite3_system_errno,          (sqlite3* db), (db));
+#endif
 DYNFUNC(return, int,                   sqlite3_threadsafe,            (void), ());
 // DYNFUNC(return, int,                   sqlite3_total_changes,         (sqlite3 *db), (db));
 // DYNFUNC(return, void *,                sqlite3_trace,                 (sqlite3 *db, void(*xTrace)(void*,const char*), void *pArg), (db, xTrace, pArg));
@@ -225,6 +228,15 @@ DYNFUNC(return, const char *,          sqlite3_column_table_name,     (sqlite3_s
 DYNFUNC(return, const char *,          sqlite3_column_origin_name,    (sqlite3_stmt *pStmt, int iCol), (pStmt, iCol));
 // DYNFUNC(return, const void *,          sqlite3_column_origin_name16,  (sqlite3_stmt *pStmt, int iCol), (pStmt, iCol));
 DYNFUNC(return, int,                   sqlite3_table_column_metadata, (sqlite3 *db, const char *zDbName, const char *zTableName, const char *zColumnName, char const **pzDataType, char const **pzCollSeq, int *pNotNull, int *pPrimaryKey, int *pAutoinc), (db, zDbName, zTableName, zColumnName, pzDataType, pzCollSeq, pNotNull, pPrimaryKey, pAutoinc));
+#endif
+
+#if WXSQLITE3_USER_AUTHENTICATION
+#if SQLITE_VERSION_NUMBER >= 3008007
+DYNFUNC(return, int,                   sqlite3_user_authenticate,     (sqlite3 *db, const char *zUsername, const char *aPW, int nPW), (db, zUsername, aPW, nPW));
+DYNFUNC(return, int,                   sqlite3_user_add,              (sqlite3 *db, const char *zUsername, const char *aPW, int nPW, int isAdmin), (db, zUsername, aPW, nPW, isAdmin));
+DYNFUNC(return, int,                   sqlite3_user_change,           (sqlite3 *db, const char *zUsername, const char *aPW, int nPW, int isAdmin), (db, zUsername, aPW, nPW, isAdmin));
+DYNFUNC(return, int,                   sqlite3_user_delete,           (sqlite3 *db, const char *zUsername), (db, zUsername));
+#endif
 #endif
 
 #if WXSQLITE3_HAVE_CODEC
