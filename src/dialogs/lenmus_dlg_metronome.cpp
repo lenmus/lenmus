@@ -260,7 +260,7 @@ void DlgMetronome::create_dialog()
 
 	bSizer15->Add( bSizer5, 0, wxEXPAND, 5 );
 
-	bSizer4->Add( bSizer15, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer4->Add( bSizer15, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
@@ -297,7 +297,7 @@ void DlgMetronome::create_dialog()
 
 	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	bSizer4->Add( bSizer6, 1, wxEXPAND|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer4->Add( bSizer6, 1, wxEXPAND|wxLEFT, 5 );
 
 	pMainSizer->Add( bSizer4, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 

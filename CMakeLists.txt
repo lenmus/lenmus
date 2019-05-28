@@ -708,7 +708,8 @@ add_dependencies(${LENMUS} lenmus-version)
 
 # Add resources
 #if(WIN32)
-    # Include a RC file for windows
+    # Windows users expect to see an icon associated with your program.
+    # So, include a RC file for windows with the icon
 #    list(APPEND ALL_SOURCES ${RESOURCES_DIR}/other/lenmus.rc)
 #    source_group("resources" FILES ${RESOURCES_DIR}/other/lenmus.rc )
 #elseif(APPLE)
