@@ -126,10 +126,10 @@ void HelpDlg::create_controls()
 
 	m_pMsg = new wxStaticText( this, wxID_ANY, _("Opening Internet browser. Please wait ..."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pMsg->Wrap( -1 );
-	pMainSizer->Add( m_pMsg, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
+	pMainSizer->Add( m_pMsg, 0, wxALL|wxEXPAND, 5 );
 
 	m_pGauge = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
-	pMainSizer->Add( m_pGauge, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
+	pMainSizer->Add( m_pGauge, 0, wxALL|wxEXPAND, 5 );
 
 
 	pMainSizer->Add( 0, 0, 1, wxEXPAND, 5 );

@@ -204,7 +204,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
         {
             nOutput++;
             nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
-            m_pOutCombo->SetClientData(nItem, reinterpret_cast<void*>(i));
+            m_pOutCombo->SetClientData(nItem, (void*)(size_t)i);
             //wxLogMessage("[WizardDevicesPage::Create] nItem=%d, i=%d", nItem, i);
             if (nOutDevId == i)
                 iSelOut = nItem;
@@ -322,7 +322,7 @@ bool WizardDevicesPage::TransferDataFromWindow()
         int nOutDevId = static_cast<int>(
                 reinterpret_cast<long long>(m_pOutCombo->GetClientData(nIndex) ) );
     #else
-        int nOutDevId = (int) m_pOutCombo->GetClientData(nIndex);
+        int nOutDevId = (int)(size_t) m_pOutCombo->GetClientData(nIndex);
     #endif
     MidiServer* pMidi = m_appScope.get_midi_server();
     pMidi->SetOutDevice(nOutDevId);

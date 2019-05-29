@@ -81,7 +81,7 @@ public:
     wxString    sTemplate;      //associated template file
 };
 
-#define lmNUM_TEMPLATES 18
+#define lmNUM_TEMPLATES 10
 static TemplateData m_Templates[lmNUM_TEMPLATES];
 static wxString m_language = "??";
 
@@ -180,23 +180,25 @@ ScoreWizard::ScoreWizard(wxWindow* parent, ApplicationScope& appScope)
         //AWARE: When addign more templates, update lmNUM_TEMPLATES;
         //                                  Displayed name                  Template file
         m_Templates[0] =  TemplateData( _("Empty (manuscript paper)"),    "" );
-        m_Templates[1] =  TemplateData( _("Brass quintet"),               "brass_quintet.lms" );
-        m_Templates[2] =  TemplateData( _("Brass trio"),                  "brass_trio.lms" );
-        m_Templates[3] =  TemplateData( _("Choir 4 voices (SATB)"),       "choir_SATB.lms" );
-        m_Templates[4] =  TemplateData( _("Choir SATB + piano"),          "choir_SATB_piano.lms" );
-        m_Templates[5] =  TemplateData( _("Choir 3 voices (SSA)"),        "choir_SSA.lms" );
-        m_Templates[6] =  TemplateData( _("Choir SSA + piano"),           "choir_SSA_piano.lms" );
-        m_Templates[7] =  TemplateData( _("Flute"),                       "flute.lms" );
-        m_Templates[8] =  TemplateData( _("Guitar"),                      "guitar.lms" );
-        m_Templates[9] =  TemplateData( _("Piano"),                       "piano.lms" );
-        m_Templates[10] = TemplateData( _("Violin and piano"),            "violin_piano.lms" );
-        m_Templates[11] = TemplateData( _("Viola and piano"),             "viola_piano.lms" );
-        m_Templates[12] = TemplateData( _("Cello and piano"),             "cello_piano.lms" );
-        m_Templates[13] = TemplateData( _("String quartet"),              "string_quartet.lms" );
-        m_Templates[14] = TemplateData( _("Violin"),                      "violin.lms" );
-        m_Templates[15] = TemplateData( _("Trio sonata"),                 "trio_sonata.lms" );
-        m_Templates[16] = TemplateData( _("Woodwind trio"),               "woodwind_trio.lms" );
-        m_Templates[17] = TemplateData( _("Woodwind quintet"),            "woodwind_quintet.lms" );
+		m_Templates[1] = TemplateData(_("Cello and piano"),				  "cello_piano.lms");
+		m_Templates[2] =  TemplateData( _("Flute"),                       "flute.lms" );
+        m_Templates[3] =  TemplateData( _("Guitar"),                      "guitar.lms" );
+        m_Templates[4] =  TemplateData( _("Piano"),                       "piano.lms" );
+		m_Templates[5] = TemplateData(_("Trio sonata"),				      "trio_sonata.lms");
+		m_Templates[6] = TemplateData(_("Tuba"),						  "tuba.lms");
+		m_Templates[7] = TemplateData(_("Viola and piano"),			      "viola_piano.lms");
+		m_Templates[8] = TemplateData(_("Violin"),						  "violin.lms");
+		m_Templates[9] = TemplateData( _("Violin and piano"),             "violin_piano.lms" );
+        m_Templates[10] = TemplateData( _("Voice and keyboard"),          "voice_keyboard.lms" );
+        //m_Templates[13] = TemplateData( _("String quartet"),              "string_quartet.lms" );
+        //m_Templates[16] = TemplateData( _("Woodwind trio"),               "woodwind_trio.lms" );
+        //m_Templates[17] = TemplateData( _("Woodwind quintet"),            "woodwind_quintet.lms" );
+        //m_Templates[1] =  TemplateData( _("Brass quintet"),               "brass_quintet.lms" );
+        //m_Templates[2] =  TemplateData( _("Brass trio"),                  "brass_trio.lms" );
+        //m_Templates[3] =  TemplateData( _("Choir 4 voices (SATB)"),       "choir_SATB.lms" );
+        //m_Templates[4] =  TemplateData( _("Choir SATB + piano"),          "choir_SATB_piano.lms" );
+        //m_Templates[5] =  TemplateData( _("Choir 3 voices (SSA)"),        "choir_SSA.lms" );
+        //m_Templates[6] =  TemplateData( _("Choir SSA + piano"),           "choir_SSA_piano.lms" );
         //AWARE: When addign more templates, update lmNUM_TEMPLATES;
         m_language = ApplicationScope::get_language();
     }
@@ -515,6 +517,8 @@ bool ScoreWizardKeyPage::Create(wxWizard* parent)
     for (int j=0, i = k_min_minor_key; i <= k_max_minor_key; i++, j++)
     {
         m_tMinorKeys[j].nKeyType = (EKeySignature)i;
+        if (i == 16)
+            j = 1;
         m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format("%s (%d%s)",;
     }
 
