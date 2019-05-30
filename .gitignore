@@ -42,12 +42,10 @@ zz_*
 z_*
 x_*
 
-# folders for building and debugging
-res/fonts/
-
 #books
 books/src/L1_Dictation/
 books/src/L1_MusicReading/syllabus.txt
+books/src/L1_MusicReading/figures/fail*
 books/src/L3_MusicReading/
 books/src/TestingNewExercises/
 
@@ -129,6 +127,7 @@ res/icons/total_marks.png
 res/icons/wrong_answers.png
 res/icons/wrong_answers.svg
 res/sounds/midi-sample.mid
+res/fonts/
 
 #scores
 scores/
