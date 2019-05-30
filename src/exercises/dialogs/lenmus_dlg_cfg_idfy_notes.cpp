@@ -265,11 +265,11 @@ void DlgCfgIdfyNotes::create_controls()
 	m_pLblNotesError->Wrap( -1 );
 	m_pLblNotesError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	m_pNotesErrorSizer->Add( m_pLblNotesError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	m_pNotesErrorSizer->Add( m_pLblNotesError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pSpaceNotes = LENMUS_NEW wxStaticText( m_pPanelNotes, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSpaceNotes->Wrap( -1 );
-	m_pNotesErrorSizer->Add( m_pSpaceNotes, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	m_pNotesErrorSizer->Add( m_pSpaceNotes, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pSelectedNotesSizer->Add( m_pNotesErrorSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 

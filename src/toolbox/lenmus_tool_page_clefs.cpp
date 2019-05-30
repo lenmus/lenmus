@@ -222,7 +222,7 @@ void GrpClefType::create_controls_in_group(wxBoxSizer* pMainSizer)
     m_pClefList = new wxBitmapComboBox();
     m_pClefList->Create(this, k_id_clef_list, wxEmptyString, wxDefaultPosition,
                         wxSize(135, 72), 0, NULL, wxCB_READONLY);
-	pCtrolsSizer->Add( m_pClefList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	pCtrolsSizer->Add( m_pClefList, 0, wxALL, 5 );
 
     LoadClefList();
 	this->Layout();
@@ -322,7 +322,7 @@ void GrpTimeType::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
     wxSize btSize(24, 24);
 	for (int iB=0; iB < k_num_time_buttons; iB++)
 	{
@@ -454,7 +454,7 @@ void GrpKeyType::create_controls_in_group(wxBoxSizer* pMainSizer)
     m_pKeyList->Create(this, k_id_key_list, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
                        0, NULL, wxCB_READONLY);
 
-	pCtrolsSizer->Add( m_pKeyList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	pCtrolsSizer->Add( m_pKeyList, 0, wxALL, 5 );
 
     //load initial data
     m_pKeyRad[0]->SetValue(true);

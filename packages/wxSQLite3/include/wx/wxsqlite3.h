@@ -27,7 +27,7 @@
 #include "wx/wxsqlite3def.h"
 
 /// wxSQLite3 version string
-#define wxSQLITE3_VERSION_STRING   wxT("wxSQLite3 3.1.1")
+#define wxSQLITE3_VERSION_STRING   wxT("wxSQLite3 3.3.1")
 
 #define WXSQLITE_ERROR 1000
 
@@ -65,7 +65,8 @@ enum wxSQLite3LimitType
   WXSQLITE_LIMIT_ATTACHED            = 7,
   WXSQLITE_LIMIT_LIKE_PATTERN_LENGTH = 8,
   WXSQLITE_LIMIT_VARIABLE_NUMBER     = 9,
-  WXSQLITE_LIMIT_TRIGGER_DEPTH       = 10
+  WXSQLITE_LIMIT_TRIGGER_DEPTH       = 10,
+  WXSQLITE_LIMIT_WORKER_THREADS      = 11 
 };
 
 /// Enumeration of journal modes
@@ -98,9 +99,10 @@ enum wxSQLite3StatementStatus
 #define WXSQLITE_OPEN_SHAREDCACHE      0x00020000
 #define WXSQLITE_OPEN_PRIVATECACHE     0x00040000
 
-#define WXSQLITE_CHECKPOINT_PASSIVE 0
-#define WXSQLITE_CHECKPOINT_FULL    1
-#define WXSQLITE_CHECKPOINT_RESTART 2
+#define WXSQLITE_CHECKPOINT_PASSIVE  0
+#define WXSQLITE_CHECKPOINT_FULL     1
+#define WXSQLITE_CHECKPOINT_RESTART  2
+#define WXSQLITE_CHECKPOINT_TRUNCATE 3
 
 inline void operator++(wxSQLite3LimitType& value)
 {
@@ -133,8 +135,8 @@ public:
   static const wxString ErrorCodeAsString(int errorCode);
 
 private:
-  int      m_errorCode;     ///< SQLite3 error code associated with this exception
-  wxString m_errorMessage;  ///< SQLite3 error message associated with this exception
+  int      m_errorCode;       ///< SQLite3 error code associated with this exception
+  wxString m_errorMessage;    ///< SQLite3 error message associated with this exception
 };
 
 /// SQL statment buffer for use with SQLite3's printf method
@@ -369,7 +371,11 @@ public:
   /// Execute the user defined authorizer function (internal use only)
   static int  ExecAuthorizer(void*, int type,
                              const char* arg1, const char* arg2,
-                             const char* arg3, const char* arg4);
+                             const char* arg3, const char* arg4
+#if WXSQLITE3_USER_AUTHENTICATION
+                           , const char* arg5
+#endif
+                            );
 
   /// Execute the user defined commit hook (internal use only)
   static int ExecCommitHook(void* hook);
@@ -519,11 +525,13 @@ public:
   * \param arg2 second argument (value depends on "type")
   * \param arg3 third argument (name of database if applicable)
   * \param arg4 fourth argument (name of trigger or view if applicable)
+  * \param arg5 fifth argument (name of authorized user or empty if user authentication is not activated)
   * \return a wxAuthorizationResult, i.e. SQLITE_OK, SQLITE_DENY or SQLITE_IGNORE
   */
   virtual wxAuthorizationResult Authorize(wxAuthorizationCode type,
                                           const wxString& arg1, const wxString& arg2,
-                                          const wxString& arg3, const wxString& arg4) = 0;
+                                          const wxString& arg3, const wxString& arg4,
+                                          const wxString& arg5) = 0;
   /// Convert authorization code to string
   /**
   * \param type wxAuthorizationCode. The value signifies what kind of operation is to be authorized.
@@ -2579,6 +2587,55 @@ public:
   */
   bool IsEncrypted() const { return m_isEncrypted; }
 
+  /// Authenticate the user on a database with user authentication
+  /**
+  * \param username name of the user to be authenticated
+  * \param password password
+  * \return TRUE if the authentication succeeded, FALSE otherwise
+  */
+  bool UserLogin(const wxString& username, const wxString& password);
+
+  /// Add a user to a database with user authentication
+  /**
+  * \param username name of the user to be added
+  * \param password password
+  * \param isAdmin TRUE to give the new user admin privileges (default: FALSE)
+  * \return TRUE if the authentication succeeded, FALSE otherwise
+  */
+  bool UserAdd(const wxString& username, const wxString& password, bool isAdmin = false);
+
+  /// Change password and/or privileges of a user on a database with user authentication
+  /**
+  * \param username name of the user for which the credentials should be changed
+  * \param password modified password
+  * \param isAdmin modified admin privilege
+  * \return TRUE if the credentials could be changed, FALSE otherwise
+  */
+  bool UserChange(const wxString& username, const wxString& password, bool isAdmin);
+
+  /// Delete a user from a database with user authentication
+  /**
+  * \param username name of the user to be removed
+  * \return TRUE if the user could be deleted, FALSE otherwise
+  */
+  bool UserDelete(const wxString& username);
+
+  /// Check whether a user of a database with user authentication is privileged
+  /**
+  * \param username name of the user to be checked
+  * \return TRUE if the user exists and is privileged, FALSE otherwise
+  */
+  bool UserIsPrivileged(const wxString& username);
+
+  /// Get a list of users for a database with user authentication
+  /**
+  * A privileged user can list the users registered in the database. For a non-privileged user this
+  * method will throw an exception.
+  *
+  * \param userList array of user names
+  */
+  void GetUserList(wxArrayString& userList);
+
   /// Query the value of a database limit
   /**
   * This method allows to query several database limits. Consult the SQLite
@@ -2606,6 +2663,12 @@ public:
   * Consult the SQLite documentation for further explanation.
   */
   void ReleaseMemory();
+
+  /// Get system error code
+  /**
+  * Get the underlying system error code after a SQLite function has failed, i.e. a file couldn't be opened
+  */
+  int GetSystemErrorCode() const;
 
   /// Convert database limit type to string
   /**
@@ -2741,6 +2804,12 @@ public:
   */
   static bool HasMetaDataSupport();
 
+  /// Check whether wxSQLite3 has been compiled with user authentication support
+  /**
+  * \return TRUE if user authentication support is enabled, FALSE otherwise
+  */
+  static bool HasUserAuthenticationSupport();
+
   /// Check whether wxSQLite3 has been compiled with loadable extension support
   /**
   * \return TRUE if loadable extension support is enabled, FALSE otherwise
@@ -2830,6 +2899,7 @@ private:
   static bool  ms_sharedCacheEnabled;        ///< Flag whether SQLite shared cache is enabled
   static bool  ms_hasEncryptionSupport;      ///< Flag whether wxSQLite3 has been compiled with encryption support
   static bool  ms_hasMetaDataSupport;        ///< Flag whether wxSQLite3 has been compiled with meta data support
+  static bool  ms_hasUserAuthentication;     ///< Flag whether wxSQLite3 has been compiled with user authentication support
   static bool  ms_hasLoadExtSupport;         ///< Flag whether wxSQLite3 has been compiled with loadable extension support
   static bool  ms_hasNamedCollectionSupport; ///< Flag whether wxSQLite3 has been compiled with support for named collections
   static bool  ms_hasIncrementalBlobSupport; ///< Flag whether wxSQLite3 has support for incremental BLOBs

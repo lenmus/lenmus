@@ -234,11 +234,11 @@ void DlgCfgTheoIntervals::create_controls()
 	m_pLblClefError->Wrap( -1 );
 	m_pLblClefError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	bSizer36->Add( m_pLblClefError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	bSizer36->Add( m_pLblClefError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pSpace5 = LENMUS_NEW wxStaticText( m_pPanelClefs, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSpace5->Wrap( -1 );
-	bSizer36->Add( m_pSpace5, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	bSizer36->Add( m_pSpace5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	wxID_ANY3->Add( bSizer36, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -338,13 +338,13 @@ void DlgCfgTheoIntervals::create_controls()
 
 	wxID_STATIC1 = LENMUS_NEW wxStaticText( m_pPanelKeys, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	wxID_STATIC1->Wrap( -1 );
-	bSizer9->Add( wxID_STATIC1, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
+	bSizer9->Add( wxID_STATIC1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pLblKeySignError = LENMUS_NEW wxStaticText( m_pPanelKeys, wxID_ANY, _("You must choose one at least! "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblKeySignError->Wrap( -1 );
 	m_pLblKeySignError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	bSizer9->Add( m_pLblKeySignError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	bSizer9->Add( m_pLblKeySignError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxID_ANY1->Add( bSizer9, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -375,7 +375,7 @@ void DlgCfgTheoIntervals::create_controls()
 
 	wxID_STATIC2 = LENMUS_NEW wxStaticText( m_pPanelOther, wxID_ANY, _("Above"), wxDefaultPosition, wxDefaultSize, 0 );
 	wxID_STATIC2->Wrap( -1 );
-	bSizer131->Add( wxID_STATIC2, 0, wxALIGN_LEFT|wxADJUST_MINSIZE|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+	bSizer131->Add( wxID_STATIC2, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxArrayString m_pCboAboveLinesChoices;
 	m_pCboAboveLines = LENMUS_NEW wxChoice( m_pPanelOther, lmID_LEDGER_ABOVE, wxDefaultPosition, wxSize( 60,-1 ), m_pCboAboveLinesChoices, 0 );
@@ -389,7 +389,7 @@ void DlgCfgTheoIntervals::create_controls()
 
 	wxID_STATIC3 = LENMUS_NEW wxStaticText( m_pPanelOther, wxID_ANY, _("Below"), wxDefaultPosition, wxDefaultSize, 0 );
 	wxID_STATIC3->Wrap( -1 );
-	bSizer141->Add( wxID_STATIC3, 0, wxALIGN_LEFT|wxADJUST_MINSIZE|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+	bSizer141->Add( wxID_STATIC3, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxArrayString m_pCboBelowLinesChoices;
 	m_pCboBelowLines = LENMUS_NEW wxChoice( m_pPanelOther, lmID_LEDGER_BELOW, wxDefaultPosition, wxSize( 60,-1 ), m_pCboBelowLinesChoices, 0 );
@@ -426,13 +426,13 @@ void DlgCfgTheoIntervals::create_controls()
 
 	wxID_STATIC4 = LENMUS_NEW wxStaticText( m_pPanelOther, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	wxID_STATIC4->Wrap( -1 );
-	bSizer161->Add( wxID_STATIC4, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer161->Add( wxID_STATIC4, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	 m_pLblIntvalTypeError = LENMUS_NEW wxStaticText( m_pPanelOther, wxID_ANY, _("You must choose one at least! "), wxDefaultPosition, wxDefaultSize, 0 );
 	 m_pLblIntvalTypeError->Wrap( -1 );
 	m_pLblIntvalTypeError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
-	bSizer161->Add(  m_pLblIntvalTypeError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
+	bSizer161->Add(  m_pLblIntvalTypeError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pBoxIntvalTypes->Add( bSizer161, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 

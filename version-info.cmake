@@ -2,7 +2,16 @@
 # This is part of CMake configuration file for building makefiles and installfiles
 # for the LenMus Phonascus program
 #-------------------------------------------------------------------------------------
-# This module creates the include file "lenmus_version.h"
+# This module creates the include file "lenmus_version.h", and sets the
+# following variables:
+#    LENMUS_VERSION_MAJOR   e.g.: 5 )
+#    LENMUS_VERSION_MINOR   e.g.: 4 )
+#    LENMUS_VERSION_PATCH   e.g.: 2 )
+#    LENMUS_PACKAGE_VERSION e.g.: "5.4.2"
+#    LENMUS_VERSION         Same value than LENMUS_PACKAGE_VERSION  e.g.: 5.4.2
+#    LENMUS_VERSION_BUILD   LenMus Git version (e.g.: "fa23b7f4" or "fa23b7f4-dirty")
+#    LENMUS_VERSION_LONG    e.g.: 5.4.2-fa23b7f4
+#    LENMUS_VERSION_GIT     e.g.: 'Release_5.4.2-46-g557537bc-dirty'
 #
 #-------------------------------------------------------------------------------------
 
@@ -14,9 +23,6 @@ set( LENMUS_VERSION_PATCH 2 )
 set( LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )
 set( LENMUS_VERSION "${LENMUS_PACKAGE_VERSION}" )
 set( LENMUS_VERSION_LONG "${LENMUS_VERSION}-nogit" )
-
-message (STATUS "  LenMus version        = '${LENMUS_VERSION}'")
-message (STATUS "  LenMus version string = '${LENMUS_PACKAGE_VERSION}'")
 
 if (EXISTS ${LENMUS_ROOT_DIR}/.git)
   find_package (Git)
@@ -43,7 +49,12 @@ if (EXISTS ${LENMUS_ROOT_DIR}/.git)
     endif()
   endif()
 endif()
-message (STATUS "  LenMus version long   = '${LENMUS_VERSION_LONG}'" )
+
+message ("LenMus version info:")
+message (STATUS "LenMus version (LENMUS_VERSION) = '${LENMUS_VERSION}'")
+message (STATUS "LenMus version string (LENMUS_PACKAGE_VERSION) = '${LENMUS_PACKAGE_VERSION}'")
+message (STATUS "LenMus build (LENMUS_VERSION_BUILD) = '${LENMUS_VERSION_BUILD}'")
+message (STATUS "LenMus version long (LENMUS_VERSION_LONG) = '${LENMUS_VERSION_LONG}'")
 
 # define a header file to pass version information to source code
 configure_file(

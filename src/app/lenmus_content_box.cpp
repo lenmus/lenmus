@@ -188,7 +188,7 @@ void BookContentBox::DoHandleItemClick(int item, int flags)
 {
     // the item should become the current one only if it is a final node
     int nItem = LocateTreeItem(item);
-    if (m_aTree[nItem].nLevel==0 || !m_aTree[nItem].fHasChildren)
+    if (nItem > 0 && (m_aTree[nItem].nLevel==0 || !m_aTree[nItem].fHasChildren))
         SetSelection(item);
 
 }

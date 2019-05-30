@@ -153,7 +153,7 @@ protected:
     virtual wxCoord OnMeasureItem(size_t n) const;
     virtual void OnDrawSeparator(wxDC& dc, wxRect& rect, size_t n) const;
     virtual void OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const;
-    virtual wxCoord OnGetLineHeight(size_t line) const;
+    virtual wxCoord OnGetRowHeight(size_t row) const;
 
     // flags for DoHandleItemClick
     enum

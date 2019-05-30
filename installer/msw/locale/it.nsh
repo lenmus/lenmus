@@ -3,7 +3,7 @@
 ; Italian language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Italian} ".\locale\license_it.txt"
+LicenseLangString license ${LANG_Italian} "${LENMUS_NSIS_LOCALE}\license_it.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Italian} "Si prega di scegliere i componenti opzionali da installare"

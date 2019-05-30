@@ -101,9 +101,9 @@ void PlaybackOptPanel::create_controls()
 
 	m_pTxtTitle = new wxStaticText( m_pHeaderPanel, wxID_ANY, _("Playback options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTxtTitle->Wrap( -1 );
-	m_pTxtTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pTxtTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Tahoma") ) );
 
-	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
+	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL, 5 );
 
 
 	pHeaderSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );

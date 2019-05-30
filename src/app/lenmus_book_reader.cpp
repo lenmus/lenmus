@@ -538,7 +538,7 @@ bool BooksCollection::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int 
             #ifdef _MBCS    //if Win95/98/Me release
                 //change encoding from utf-8 to local encoding
                 wxCSConv conv("utf-8");
-                sTitle = wxString(sTitle.wc_str(conv), convLocal);     //wxConvLocal);
+                sTitle = wxString(sTitle.wc_str(conv), wxConvLocal);
             #endif
         }
         else if (sElement == "page") {

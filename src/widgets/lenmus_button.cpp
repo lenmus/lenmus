@@ -108,9 +108,9 @@ void BitmapButton::Create(const wxPoint& pos, const wxSize& size)
 
     // button font text
 #ifdef __WIN32__
-    m_font = new wxFont(8,wxDEFAULT,wxNORMAL,wxBOLD);
+    m_font = new wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 #else
-    m_font = new wxFont(10,wxDEFAULT,wxNORMAL,wxBOLD);
+    m_font = new wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 #endif
     m_laststate = k_button_New;
 

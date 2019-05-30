@@ -127,14 +127,14 @@ void AboutDialog::CreateControls()
     pTitlesSizer = new wxBoxSizer( wxVERTICAL );
 
     m_pTxtTitle = new wxStaticText( this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, 0 );
-    m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, "Arial" ) );
+    m_pTxtTitle->SetFont( wxFont( 14, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Arial" ) );
 
-    pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pTitlesSizer->Add(m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
     m_pTxtSubtitle = new wxStaticText( this, wxID_ANY, _("A free program for music language learning"), wxDefaultPosition, wxDefaultSize, 0 );
-    m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, "Arial" ) );
+    m_pTxtSubtitle->SetFont( wxFont( 10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, "Arial" ) );
 
-    pTitlesSizer->Add( m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
+	pTitlesSizer->Add(m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
     pHeadersSizer->Add( pTitlesSizer, 1, wxEXPAND|wxALL, 5 );
 
@@ -408,7 +408,7 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
         "<td>Jack Van Handenhove</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("Simplified Chinese") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
-        "<td>Wenxi Lu (卢文汐)</td></tr>"
+        L"<td>Wenxi Lu (卢文汐)</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("French") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         "<td>Carlos Alarcia</td></tr>"

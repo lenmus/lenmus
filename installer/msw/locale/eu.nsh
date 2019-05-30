@@ -3,7 +3,7 @@
 ; Basque language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Basque} ".\locale\license_eu.txt"
+LicenseLangString license ${LANG_Basque} "${LENMUS_NSIS_LOCALE}\license_eu.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Basque} "Mesedez, aukeratu instalatu nahi zenituzkeen bestelako osagaia"

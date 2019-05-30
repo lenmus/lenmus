@@ -701,11 +701,11 @@ void ContentBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) c
 {
     if ( IsSelected(n) )
     {
-        dc.SetBrush( wxBrush(GetSelectionBackground(), wxSOLID) );
+        dc.SetBrush( wxBrush(GetSelectionBackground(), wxBRUSHSTYLE_SOLID) );
     }
     else // !selected
     {
-        dc.SetBrush( wxBrush(*wxWHITE, wxSOLID) );
+        dc.SetBrush( wxBrush(*wxWHITE, wxBRUSHSTYLE_SOLID) );
     }
 
 }
@@ -715,9 +715,9 @@ void ContentBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) c
 // ContentBoxCtrol painting
 // ----------------------------------------------------------------------------
 
-wxCoord ContentBoxCtrol::OnGetLineHeight(size_t line) const
+wxCoord ContentBoxCtrol::OnGetRowHeight(size_t row) const
 {
-    return OnMeasureItem(line) + 2*m_ptMargins.y;
+    return OnMeasureItem(row) + 2*m_ptMargins.y;
 }
 
 void ContentBoxCtrol::OnDrawSeparator(wxDC& WXUNUSED(dc),
@@ -747,7 +747,7 @@ void ContentBoxCtrol::OnPaint(wxPaintEvent& WXUNUSED(event))
     const size_t lineMax = GetVisibleEnd();
     for ( size_t line = GetVisibleRowsBegin(); line < lineMax; line++ )
     {
-        const wxCoord hLine = OnGetLineHeight(line);
+        const wxCoord hLine = OnGetRowHeight(line);
         rectLine.height = hLine;
 
         // and draw the ones which intersect the update rect

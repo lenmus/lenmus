@@ -9,6 +9,8 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
 
+include(LibFindMacros)
+
 if ( SQLite3_INCLUDE_DIR AND SQLite3_LIBRARIES )
    # in cache already
    SET(SQLite3_FIND_QUIETLY TRUE)
@@ -22,23 +24,25 @@ if( NOT WIN32 )
   pkg_check_modules(SQLite3 REQUIRED sqlite3 )
 endif( NOT WIN32 )
 
-FIND_PATH(SQLite3_INCLUDE_DIR NAMES sqlite3.h
-  PATHS
-  ${_SQLite3IncDir}
+FIND_PATH(SQLite3_INCLUDE_DIR
+	NAMES
+		sqlite3.h
+	PATHS
+		${_SQLite3IncDir}
+		$ENV{SQLite3_DIR}/include				#Windows
 )
 
-FIND_LIBRARY(SQLite3_LIBRARIES NAMES sqlite3
-  PATHS
-  ${_SQLite3LinkDir}
+FIND_LIBRARY(SQLite3_LIBRARIES
+	NAMES
+		sqlite3
+	PATHS
+		${_SQLite3LinkDir}
+		$ENV{SQLite3_DIR}/lib					#Windows
 )
-
 
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(SQLite3 DEFAULT_MSG SQLite3_INCLUDE_DIR SQLite3_LIBRARIES )
 
 # show the SQLite3_INCLUDE_DIR and SQLite3_LIBRARIES variables only in the advanced view
 MARK_AS_ADVANCED(SQLite3_INCLUDE_DIR SQLite3_LIBRARIES )
-
-MESSAGE ( "SQLite3_INCLUDE_DIR => ${SQLite3_INCLUDE_DIR}" )
-MESSAGE ( "SQLite3_LIBRARIES => ${SQLite3_LIBRARIES}" )
 

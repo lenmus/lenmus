@@ -34,6 +34,7 @@
     #include <wx/bmpcbox.h>
     #include <wx/statline.h>
     #include <wx/clrpicker.h>
+	#include <wx/bmpcbox.h>
 #endif
 
 
@@ -232,7 +233,7 @@ void GrpBarlines2::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
-    wxBoxSizer* pButtonsSizer;
+    wxBoxSizer* pButtonsSizer = nullptr;
 	for (int iB=0; iB < k_num_barline_buttons; iB++)
 	{
 		if (iB % 5 == 0) {
