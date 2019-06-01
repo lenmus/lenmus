@@ -571,10 +571,6 @@ bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
     if ( parser.Found("t") )
     {
-        bool fUseCout = false;
-        #if (LENMUS_PLATFORM_UNIX == 1)
-            fUseCout = true;
-        #endif
         //AWARE: In MS Windows, commands cannot write to the same command-line window
         // that started the program. Therefore, in MS Windows the results will be
         // written to file "unit-tests-results.txt"
@@ -592,6 +588,10 @@ bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
         //in the same console. The fault is with Windows, not with wxWidgets.
 
         #if (LENMUS_ENABLE_UNIT_TESTS == 1)
+            bool fUseCout = false;
+            #if (LENMUS_PLATFORM_UNIX == 1)
+                fUseCout = true;
+            #endif
             MyTestRunner oTR(nullptr, fUseCout);
             oTR.RunTests();
         #else

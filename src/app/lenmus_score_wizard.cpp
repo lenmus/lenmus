@@ -81,7 +81,7 @@ public:
     wxString    sTemplate;      //associated template file
 };
 
-#define lmNUM_TEMPLATES 10
+#define lmNUM_TEMPLATES 11
 static TemplateData m_Templates[lmNUM_TEMPLATES];
 static wxString m_language = "??";
 

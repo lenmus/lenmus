@@ -419,6 +419,20 @@ if( PNG_FOUND )
     link_libraries( ${PNG_LIBRARIES} )
     message(STATUS "libpng found: libraries= ${PNG_LIBRARIES}" )
     message(STATUS "libpng found: include= ${PNG_INCLUDE_DIRS}" )
+    message(STATUS "libpng found: definitions= ${PNG_DEFINITIONS}" )
+    message(STATUS "libpng found: version string= ${PNG_VERSION_STRING}" )
+	string(REPLACE "." ";" PNG_VERSION_LIST ${PNG_VERSION_STRING})
+	list(GET PNG_VERSION_LIST 0 PNG_VERSION_MAJOR)
+	list(GET PNG_VERSION_LIST 1 PNG_VERSION_MINOR)
+	if(${PNG_VERSION_MINOR} STREQUAL "6")
+		set(PNG_DEPENDENCY "libpng16-16")
+	elseif(${PNG_VERSION_MINOR} STREQUAL "2")
+		set(PNG_DEPENDENCY "libpng12-0")
+	else()
+		set(PNG_DEPENDENCY "libpng")
+	endif()
+    message(STATUS "libpng found: major=${PNG_VERSION_MAJOR}, minor=${PNG_VERSION_MINOR}" )
+    message(STATUS "libpng found: dependency to add=${PNG_DEPENDENCY}" )
 else()
     message(SEND_ERROR "libpng package not found.")
 endif()
@@ -929,33 +943,38 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
 install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/res/desktop")
 
-install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale    DESTINATION "${SHARED_DIR}"
+install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
+		DESTINATION "${SHARED_DIR}"
         FILES_MATCHING
-        PATTERN "*.htm"
-        #books 
-        PATTERN "*.lmb"
-        #help
-        PATTERN "*.html"
-        PATTERN "*.js"
-        PATTERN "*.map"
-        PATTERN "*.inv"
-        PATTERN "*.png"
-        PATTERN "*.gif"
-        PATTERN "*.jpg"
-        PATTERN "*.css"
-        #language catalogs
-        PATTERN "*.po"
-        PATTERN "*.mo"
-        PATTERN "x_*" EXCLUDE
-        PATTERN "z_*" EXCLUDE
-        PATTERN "*~" EXCLUDE
-        #exclude unsupported languages
-            # ADD_LANG
-        PATTERN "kk/" EXCLUDE
-        PATTERN "ru/" EXCLUDE
-        PATTERN "el_GR/" EXCLUDE
-        PATTERN "x_*" EXCLUDE )
-    
+		    PATTERN "*.htm"
+		    #books 
+		    PATTERN "*.lmb"
+		    #help
+		    PATTERN "*.html"
+		    PATTERN "*.js"
+		    PATTERN "*.map"
+		    PATTERN "*.inv"
+		    PATTERN "*.png"
+		    PATTERN "*.gif"
+		    PATTERN "*.jpg"
+		    PATTERN "*.css"
+		    #language catalogs
+		    PATTERN "*.po"
+		    PATTERN "*.mo"
+		    PATTERN "x_*" EXCLUDE
+		    PATTERN "z_*" EXCLUDE
+		    PATTERN "*~" EXCLUDE
+		    #exclude unsupported languages
+		        # ADD_LANG
+		    PATTERN "kk/" EXCLUDE
+		    PATTERN "ru/" EXCLUDE
+		    PATTERN "el_GR/" EXCLUDE
+		    PATTERN "x_*" EXCLUDE
+			#exclude Sphinx related folders until editor is ready
+		    PATTERN "images/" EXCLUDE
+		    PATTERN "help/" EXCLUDE
+		)
+
     # resources
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
@@ -1032,10 +1051,10 @@ if(UNIX)
 	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	if (LENMUS_USE_LOMSE_SOURCES)
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-		            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
+		            libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
 	else()
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
-		        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
+		        libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
 	endif()
     
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )

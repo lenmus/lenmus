@@ -175,10 +175,14 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
                     eIconInternet, eIconInternet,
                     LENMUS_NEW TreeItemData((long)eOptInternet) );
 
-    // Keyboard shortcuts
-    wxTreeItemId ShortcutsId = m_pTreeCtrl->AppendItem(rootId, _("Shortcuts"),
-                    eIconShortcuts, eIconShortcuts,
-                    LENMUS_NEW TreeItemData((long)eOptShortcuts) );
+    wxTreeItemId ShortcutsId = 0;
+    if (m_appScope.are_experimental_features_enabled())
+    {
+        // Keyboard shortcuts
+       ShortcutsId = m_pTreeCtrl->AppendItem(rootId, _("Shortcuts"),
+                        eIconShortcuts, eIconShortcuts,
+                        LENMUS_NEW TreeItemData((long)eOptShortcuts) );
+    }
 
     // Playback options
     wxTreeItemId PlaybackId = m_pTreeCtrl->AppendItem(rootId, _("Playback"),

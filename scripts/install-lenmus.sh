@@ -41,8 +41,8 @@ echo "-- Done"
 app=`ls | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
 
 #uninstall current version of LenMus, if installed
-installed=`dpkg -l | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*'`
-oldapp=$(echo $installed | egrep -o 'lenmus_[0-9]*.[0-9]*.[0-9]*' | head -n1)
+installed=`dpkg -l | grep 'lenmus'`	#_[0-9]*.[0-9]*.[0-9]*'`
+oldapp=$(echo $installed | egrep -o 'lenmus' | head -n1) #'lenmus_[0-9]*.[0-9]*.[0-9]*' | head -n1)
 
 if [ -n "$oldapp" ]; then
     echo -e "${enhanced}Removing old lenmus package ${oldapp}${reset}"

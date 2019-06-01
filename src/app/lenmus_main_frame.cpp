@@ -1005,15 +1005,19 @@ void MainFrame::create_menu()
 
     wxMenu* pMenuHelp = LENMUS_NEW wxMenu;
 
-
-    create_menu_item(pMenuHelp, k_menu_help_users_guide,  _("LenMus manual"),
-                _("Open user's manual"), wxITEM_NORMAL, "tool_help", "\tF1");
-    create_menu_item(pMenuHelp, k_menu_help_editor_quick,  _("Editor quick guide"),
-                _("Show editor quick guide"), wxITEM_NORMAL, "tool_quick_guide", "\tCtrl+H");
+    bool fInclude = m_appScope.are_experimental_features_enabled();
+    if (fInclude)
+    {
+        create_menu_item(pMenuHelp, k_menu_help_users_guide,  _("LenMus manual"),
+                    _("Open user's manual"), wxITEM_NORMAL, "tool_help", "\tF1");
+        create_menu_item(pMenuHelp, k_menu_help_editor_quick,  _("Editor quick guide"),
+                    _("Show editor quick guide"), wxITEM_NORMAL, "tool_quick_guide", "\tCtrl+H");
+    }
     create_menu_item(pMenuHelp, k_menu_help_study_guide,  _("Study guide"),
                 _("How to use LenMus in your studies"), wxITEM_NORMAL, "tool_study_guide");
-    create_menu_item(pMenuHelp, k_menu_help_search,  _("Search help"),
-                _("Search help documentation"), wxITEM_NORMAL, "tool_search_help");
+    if (fInclude)
+        create_menu_item(pMenuHelp, k_menu_help_search,  _("Search help"),
+                    _("Search help documentation"), wxITEM_NORMAL, "tool_search_help");
     pMenuHelp->AppendSeparator();
 	create_menu_item(pMenuHelp, k_menu_check_for_updates, _("Check now for updates"),
 				_("Connect to the Internet and check for program updates"), wxITEM_NORMAL,
@@ -1233,9 +1237,11 @@ void MainFrame::open_file()
     }
     else
     {
-        sFilter += "|*.lms;*.lmb;*.lmd|";
+        sFilter += "|*.lms;*.lmb;*.lmd;*.xml;*.mxl;*.musicxml|";
         sFilter += _("LenMus files");
-        sFilter += "|*.lms;*.lmb;*.lmd";
+        sFilter += "|*.lms;*.lmb;*.lmd|";
+        sFilter += _("MusicXML files");
+        sFilter += "|*.xml;*.mxl;*.musicxml";
     }
     wxString sFile = ::wxFileSelector(_("Choose the file to open"),
                                       lastUsedPath,   //default path

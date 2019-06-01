@@ -25,7 +25,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.pngmath']
+extensions = []	#'sphinx.ext.imgmath']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['../../theme/_templates']
@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'lenmus'
-copyright = u'2014 LenMus project. Licensed under the GNU Free Documentation License, version 1.3 or later (http://www.gnu.org/licenses/fdl.html)'
+copyright = u'2014-2019 LenMus project. Licensed under the GNU Free Documentation License, version 1.3 or later (http://www.gnu.org/licenses/fdl.html)'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -136,8 +136,9 @@ html_last_updated_fmt = '%Y-%b-%d'
 
 # If true, Sphinx will add “permalinks” for each heading and description 
 # environment as paragraph signs that become visible when the mouse hovers 
-# over them. Default: True.
-html_add_permalinks = False
+# over them. This value determines the text for the permalink; it defaults to "¶".
+# Set it to None or the empty string to disable permalinks.
+html_add_permalinks = "¶"
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {
