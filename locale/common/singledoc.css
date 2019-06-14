@@ -1,16 +1,15 @@
-/* RCS-ID: $Id: singledoc.css,v 1.2 2005/11/03 17:00:35 cecilios Exp $ */
 /* CSS Style Sheet for stand-alone documents */
 
 /* Etiquetas HTML */
 BODY {
-    margin-top: 2em;
-    margin-left: 5em;
-    margin-right: 5em;
-    margin-bottom: 3em;
-    FONT-FAMILY: Verdana, Helvetica, Arial;
-    FONT-SIZE: 8pt; voice-family: inherit;
-    BACKGROUND: #ffffff;
-    COLOR: #000000;
+    line-height: 1.5;
+    margin: auto;
+    padding: 0px;
+    font-family: "DejaVu Sans", Arial, Helvetica, sans-serif;
+    min-width: 40em;
+    max-width: 50em;
+    color: #000000;
+	font-size: 0.9em;
 }
 HR {
     MARGIN: 2em 0px; HEIGHT: 1px;
@@ -33,7 +32,10 @@ INPUT {
 H1 {
     MARGIN: 1em 0px 0.2em; 
     BORDER-BOTTOM: #ccc 1px solid; 
-    COLOR: #7f8adc;
+    COLOR: #7f8adc;p {
+    text-align: justify;
+}
+
     FONT-WEIGHT: bold; FONT-SIZE: 160%
 }
 H2 {
@@ -60,7 +62,10 @@ H5 {
     COLOR: #1C2567;
     FONT-SIZE: 90%
 }
-H6 {
+H6 {p {
+    text-align: justify;
+}
+
     MARGIN: 1em 0px 0.2em; 
     BORDER-BOTTOM: #ccc 1px solid; 
     color: #1C2567;
@@ -70,6 +75,9 @@ H6 {
 }
 FORM {
     DISPLAY: inline; MARGIN: 0px
+}
+p {
+    text-align: justify;
 }
 
 LI {

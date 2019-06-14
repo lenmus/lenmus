@@ -272,6 +272,7 @@ if( UNIX )
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
+set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )	#LENMUS_INSTALL_ROOT is needed for lenmus_config.h
 
 message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}" )
 
@@ -419,6 +420,20 @@ if( PNG_FOUND )
     link_libraries( ${PNG_LIBRARIES} )
     message(STATUS "libpng found: libraries= ${PNG_LIBRARIES}" )
     message(STATUS "libpng found: include= ${PNG_INCLUDE_DIRS}" )
+    message(STATUS "libpng found: definitions= ${PNG_DEFINITIONS}" )
+    message(STATUS "libpng found: version string= ${PNG_VERSION_STRING}" )
+	string(REPLACE "." ";" PNG_VERSION_LIST ${PNG_VERSION_STRING})
+	list(GET PNG_VERSION_LIST 0 PNG_VERSION_MAJOR)
+	list(GET PNG_VERSION_LIST 1 PNG_VERSION_MINOR)
+	if(${PNG_VERSION_MINOR} STREQUAL "6")
+		set(PNG_DEPENDENCY "libpng16-16")
+	elseif(${PNG_VERSION_MINOR} STREQUAL "2")
+		set(PNG_DEPENDENCY "libpng12-0")
+	else()
+		set(PNG_DEPENDENCY "libpng")
+	endif()
+    message(STATUS "libpng found: major=${PNG_VERSION_MAJOR}, minor=${PNG_VERSION_MINOR}" )
+    message(STATUS "libpng found: dependency to add=${PNG_DEPENDENCY}" )
 else()
     message(SEND_ERROR "libpng package not found.")
 endif()
@@ -702,7 +717,11 @@ endif()
 
 
 # Define target
-add_executable( ${LENMUS} WIN32 MACOSX_BUNDLE  ${ALL_SOURCES} )
+if(UNIX)
+	add_executable( ${LENMUS} ${ALL_SOURCES} )
+else()
+	add_executable( ${LENMUS} WIN32 ${ALL_SOURCES} )
+endif()
 add_dependencies(${LENMUS} lenmus-version)
 
 
@@ -752,14 +771,14 @@ target_link_libraries ( ${LENMUS}
 
 
 # Target properties
-if(APPLE)
+#if(APPLE)
 #    set_target_properties(${PROJECT_NAME} PROPERTIES
 #        RESOURCE ${RESOURCES_DIR}/other/osx/carbon/wxmac.icns
 #        MACOSX_BUNDLE_ICON_FILE wxmac.icns
 #        MACOSX_BUNDLE_COPYRIGHT "Copyright LenMus"
 #        MACOSX_BUNDLE_GUI_IDENTIFIER "org.wxwidgets.minimal"
 #        )
-endif()
+#endif()
 
 if (WIN32)
 	# In Windows force to use static Runtime library
@@ -829,7 +848,8 @@ message(STATUS "Samples (ROOT_SAMPLES) = ${ROOT_SAMPLES}" )
 
 
 # install lenmus program
-install( TARGETS ${LENMUS} DESTINATION ${INSTALL_DIR})
+install(TARGETS ${LENMUS}
+		RUNTIME DESTINATION ${INSTALL_DIR} )
 
 
 # 1. Software and essentials (ROOT_INSTALL_HOME):
@@ -927,35 +947,39 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/res/desktop")
 
-install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale    DESTINATION "${SHARED_DIR}"
+install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
+		DESTINATION "${SHARED_DIR}"
         FILES_MATCHING
-        PATTERN "*.htm"
-        #books 
-        PATTERN "*.lmb"
-        #help
-        PATTERN "*.html"
-        PATTERN "*.js"
-        PATTERN "*.map"
-        PATTERN "*.inv"
-        PATTERN "*.png"
-        PATTERN "*.gif"
-        PATTERN "*.jpg"
-        PATTERN "*.css"
-        #language catalogs
-        PATTERN "*.po"
-        PATTERN "*.mo"
-        PATTERN "x_*" EXCLUDE
-        PATTERN "z_*" EXCLUDE
-        PATTERN "*~" EXCLUDE
-        #exclude unsupported languages
-            # ADD_LANG
-        PATTERN "kk/" EXCLUDE
-        PATTERN "ru/" EXCLUDE
-        PATTERN "el_GR/" EXCLUDE
-        PATTERN "x_*" EXCLUDE )
-    
+		    PATTERN "*.htm"
+		    #books 
+		    PATTERN "*.lmb"
+		    #help
+		    PATTERN "*.html"
+		    PATTERN "*.js"
+		    PATTERN "*.map"
+		    PATTERN "*.inv"
+		    PATTERN "*.png"
+		    PATTERN "*.gif"
+		    PATTERN "*.jpg"
+		    PATTERN "*.css"
+		    #language catalogs
+		    PATTERN "*.po"
+		    PATTERN "*.mo"
+		    PATTERN "x_*" EXCLUDE
+		    PATTERN "z_*" EXCLUDE
+		    PATTERN "*~" EXCLUDE
+		    #exclude unsupported languages
+		        # ADD_LANG
+		    PATTERN "kk/" EXCLUDE
+		    PATTERN "ru/" EXCLUDE
+		    PATTERN "el_GR/" EXCLUDE
+		    PATTERN "x_*" EXCLUDE
+			#exclude Sphinx related folders until editor is ready
+		    PATTERN "images/" EXCLUDE
+		    PATTERN "help/" EXCLUDE
+		)
+
     # resources
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${SHARED_DIR}/res
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
@@ -986,9 +1010,23 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${SHARED_DIR}
 install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${SHARED_DIR}
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
-    # desktop and application icon 48x48 png
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/share/applications")
-install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png  DESTINATION "${SHARED_DIR}/share/pixmaps")
+
+# Do platform specific post target stuff
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	#if(DEFINED XDG_APPS_INSTALL_DIR)
+	#	set(DESKTOP_DESTINATION ${XDG_APPS_INSTALL_DIR} )
+	#else()
+	#	set(DESKTOP_DESTINATION "/usr/share/applications" )
+	#endif()
+	#install( FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop DESTINATION ${DESKTOP_DESTINATION} ) 
+	#message(STATUS "XDG_APPS_INSTALL_DIR = ${XDG_APPS_INSTALL_DIR}" ) 
+	#message(STATUS "DESKTOP_DESTINATION = ${DESKTOP_DESTINATION}" ) 
+
+    # Install desktop entry
+    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop DESTINATION "/usr/share/applications" )
+    # Install icon
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png DESTINATION "/usr/share/pixmaps" )
+endif()
 
 
 # 4. User scores and samples 
@@ -1022,6 +1060,7 @@ if(UNIX)
 	set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION} )
 	set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${LENMUS_VENDOR_SITE}")
 	set(CPACK_DEBIAN_PACKAGE_SECTION "education")
+    set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries
 
 	if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
 	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
@@ -1032,10 +1071,10 @@ if(UNIX)
 	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	if (LENMUS_USE_LOMSE_SOURCES)
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-		            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
+		            libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
 	else()
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
-		        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
+		        libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
 	endif()
     
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
@@ -1045,7 +1084,7 @@ elseif(WIN32)
     # configure CPack for NSIS installer
     # AWARE: Only variables starting with "CPACK_" are used to customize the installer.
     set(CPACK_GENERATOR "NSIS")
-    set(CPACK_STRIP_FILES ON)
+    set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries
     set(CPACK_PACKAGE_NAME "lenmus")
     set(CPACK_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
     

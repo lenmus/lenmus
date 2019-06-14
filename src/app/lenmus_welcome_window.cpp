@@ -277,10 +277,10 @@ void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& event)
 {
-//    wxString sDoc = "editor_quick_guide.htm";
-//    ShowDocument(sDoc);
-    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_editor_quick);
-    ::wxPostEvent(this, myEvent);
+////    wxString sDoc = "editor_quick_guide.htm";
+////    ShowDocument(sDoc);
+//    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_editor_quick);
+//    ::wxPostEvent(this, myEvent);
 }
 
 //---------------------------------------------------------------------------------------
@@ -334,10 +334,10 @@ void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnInstructions(wxHyperlinkEvent& event)
 {
-//    wxString sDoc = "study-guide.htm";
-//    ShowDocument(sDoc);
-    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_study_guide);
-    ::wxPostEvent(this, myEvent);
+    wxString sDoc = "study-guide.htm";
+    ShowDocument(sDoc);
+//    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_study_guide);
+//    ::wxPostEvent(this, myEvent);
 }
 
 

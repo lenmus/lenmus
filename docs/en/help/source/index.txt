@@ -20,7 +20,7 @@ Table of Contents
     score/index.txt
 
 
-**Legal notice:** Copyright © 2014-2015 Cecilio Salmeron
+**Legal notice:** Copyright © 2014-2019 Cecilio Salmeron
 The text of and illustrations in The LenMus Users' Guide are licensed under the Creative Commons Attribution–Share Alike 3.0 Unported license ("CC-BY-SA"). An explanation of CC-BY-SA is available at http://creativecommons.org/licenses/by-sa/3.0/. In accordance with CC-BY-SA, if you distribute this document or an adaptation of it, you must provide the URL for the original version.
 
 .. image:: creative-commons-by-sa-88x31.png
