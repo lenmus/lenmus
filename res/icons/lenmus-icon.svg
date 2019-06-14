@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg99"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="lenmus-icon.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata105">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs103">
+    <linearGradient
+       id="linearGradient2356"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop2354" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="952"
+     id="namedview101"
+     showgrid="false"
+     inkscape:zoom="38.360543"
+     inkscape:cx="5.8398094"
+     inkscape:cy="6.9857244"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg99" />
+  <rect
+     style="display:inline;opacity:0.98000004;fill:#7f8adc;fill-opacity:1;stroke:#7f8adc;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect4554"
+     width="15.999999"
+     height="15.999998"
+     x="5e-07"
+     y="5.4632568e-07" />
+  <rect
+     style="display:inline;opacity:0.98999999;fill:#ffffff;fill-opacity:1;stroke:#f20000;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.46666667"
+     id="rect817"
+     width="14.129102"
+     height="7.0645509"
+     x="0.93846428"
+     y="0.93243438" />
+  <path
+     style="display:inline;fill:#000000;fill-opacity:1;stroke-width:0.24682778"
+     d="M 5.9189038,12.278636 C 2.3804977,11.714286 0.16810449,9.0686387 1.5116284,6.7902364 2.5561625,5.0188731 4.5983979,4.013194 7.9557935,4.013194 c 2.6954775,0 4.2670545,0.6880735 5.6138765,1.7212379 2.490056,1.9101546 1.052026,5.3118811 -2.456854,6.2928781 -1.3789415,0.385505 -3.6604932,0.495912 -5.1939122,0.251326 z M 9.9142792,11.325865 C 10.353357,10.958575 10.491862,10.541739 10.576514,9.3328521 10.773432,6.5204926 9.1900872,4.3478813 7.1331365,4.6079581 5.883161,4.7660072 5.4825232,5.2336759 5.3467708,6.6931839 5.0972763,9.3755291 6.5545096,11.790308 8.42269,11.790308 c 0.5494767,0 1.1657907,-0.191901 1.4915892,-0.464443 z"
+     id="path4541"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ssssssssssss" />
+</svg>
