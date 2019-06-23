@@ -2413,15 +2413,35 @@ void MainFrame::on_open_help(wxCommandEvent& event)
             pHelp->display_section(10300);  //general-rules
             break;
         case k_menu_help_study_guide:
-            pHelp->display_section(10101);  //study-guide
+        {
+            //pHelp->display_section(10101);  //study-guide
+            Paths* pPaths = m_appScope.get_paths();
+            wxString sPath = pPaths->GetLocalePath();
+            wxFileName oFile(sPath, "study-guide.htm", wxPATH_NATIVE);
+            if (!oFile.FileExists())
+            {
+                //try to display the english version
+                sPath = pPaths->GetLocaleRootPath();
+                oFile.AssignDir(sPath);
+                oFile.AppendDir("en");
+                oFile.SetFullName("study-guide.htm");
+                if (!oFile.FileExists())
+                {
+                    wxMessageBox(_("Sorry: File not found!"));
+                    wxLogMessage("[MainFrame::on_open_help] File %s' not found!",
+                                 oFile.GetFullPath().wx_str() );
+                    return;
+                }
+            }
+            ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
             break;
+        }
         case k_menu_help_users_guide:
             pHelp->display_section(10000);  //index
             break;
 
         case k_menu_help_search:
             pHelp->display_section(3);      //search
-            break;
 
         default:
             pHelp->display_section(10000);  //index
