@@ -92,10 +92,12 @@ echo -e "${enhanced}Creating makefile${reset}"
 cmake -G "Unix Makefiles" ${sources}  || exit 1
 echo ""
 
+
 #build program
-echo -e "${enhanced}Building LenMus${reset}"
+num_jobs=`getconf _NPROCESSORS_ONLN`	#number of jobs to create (as many as the number of processors)
+echo -e "${enhanced}Building LenMus. This will use ${num_jobs} jobs.${reset}"
 start_time=$(date -u +"%s")
-make -j2 || exit 1
+make -j$num_jobs || exit 1
 end_time=$(date -u +"%s")
 secs=$(($end_time-$start_time))
 echo "Build time: $(($secs / 60))m:$(($secs % 60))s"
