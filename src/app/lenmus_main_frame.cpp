@@ -1711,7 +1711,7 @@ void MainFrame::create_toolbars()
     //prepare icons size
     long nIconSize = pPrefs->Read("/Toolbars/IconSize", 16);
     wxSize nSize(nIconSize, nIconSize);
-
+    int nHeight = -1;   //nIconSize+14;     //ComboBox and ComboBitmap height
 
     //create main tool bar
     m_pToolbar = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
@@ -1798,7 +1798,7 @@ void MainFrame::create_toolbars()
             wxITEM_NORMAL, _("Reduce image size"));
 
     m_pComboZoom = LENMUS_NEW wxComboBox(m_pTbZoom, k_id_combo_zoom, "",
-                                         wxDefaultPosition, wxSize(90, -1) );
+                                         wxDefaultPosition, wxSize(90, nHeight) );
     m_pComboZoom->Append("25%");
     m_pComboZoom->Append("50%");
     m_pComboZoom->Append("75%");
@@ -1851,15 +1851,15 @@ void MainFrame::create_toolbars()
         wxITEM_CHECK);
         //metronome tempo
     m_pSpinMetronome = LENMUS_NEW wxSpinCtrl(m_pTbMtr, k_id_spin_metronome, "", wxDefaultPosition,
-        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 1, 400);
+        wxSize(60, nHeight), wxSP_ARROW_KEYS | wxSP_WRAP, 1, 400);
     m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
     m_pTbMtr->AddControl(m_pSpinMetronome);
         //metronome beat
 	m_pBeatNoteChoice = LENMUS_NEW
         wxBitmapComboBox(m_pTbMtr, k_id_metronome_beat, wxEmptyString,
-                         wxDefaultPosition, wxSize(60, -1),
+                         wxDefaultPosition, wxSize(60, nHeight),
                          0, nullptr, wxCB_READONLY);
-	load_metronome_beat_notes(nSize);
+	load_metronome_beat_notes(wxSize(24,24));   //as ComboBoxes take some height, 24px images fit well when 16px icons are used
     m_pTbMtr->AddControl(m_pBeatNoteChoice);
     m_pTbMtr->Realize();
 
