@@ -903,7 +903,7 @@ if(WIN32)
     file(APPEND ${NSIS_TRANSLATIONS} "  !include fr.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include gl_ES.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include de.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} ";**  !include el_GR.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include el.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include it.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include es.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include tr.nsh\n")
@@ -922,7 +922,7 @@ if(WIN32)
     file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE French\n")        
     file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Galician\n")
     file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE German\n")
-    file(APPEND ${NSIS_LANGUAGES} ";**  !insertmacro MUI_LANGUAGE Greek\n")
+    file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Greek\n")
     file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Italian\n")
     file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Spanish\n")
     file(APPEND ${NSIS_LANGUAGES} "  !insertmacro MUI_LANGUAGE Turkish\n")
@@ -973,7 +973,6 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
 		        # ADD_LANG
 		    PATTERN "kk/" EXCLUDE
 		    PATTERN "ru/" EXCLUDE
-		    PATTERN "el_GR/" EXCLUDE
 		    PATTERN "x_*" EXCLUDE
 			#exclude Sphinx related folders until editor is ready
 		    PATTERN "images/" EXCLUDE

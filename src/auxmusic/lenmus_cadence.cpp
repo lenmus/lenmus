@@ -630,7 +630,7 @@ int Cadence::generate_soprano_set(int iC, Chord* pBasicChord, NoteSet* pNoteSet)
 }
 
 //---------------------------------------------------------------------------------------
-int Cadence::generate_alto_set(int iC, FPitch fpSoprano, Chord* pBasicChord,
+int Cadence::generate_alto_set(int WXUNUSED(iC), FPitch fpSoprano, Chord* pBasicChord,
                                NoteSet* pNoteSet)
 {
     // Generate the set of possible notes for Alto voice, ordered at random.
@@ -674,7 +674,7 @@ int Cadence::generate_alto_set(int iC, FPitch fpSoprano, Chord* pBasicChord,
 }
 
 //---------------------------------------------------------------------------------------
-int Cadence::generate_tenor_set(int iC, Chord* pBasicChord, NoteSet* pNoteSet)
+int Cadence::generate_tenor_set(int WXUNUSED(iC), Chord* pBasicChord, NoteSet* pNoteSet)
 {
     //all chord notes are possible. Bass <= Tenor <= Alto
 
@@ -716,22 +716,22 @@ int Cadence::generate_tenor_set(int iC, Chord* pBasicChord, NoteSet* pNoteSet)
 //---------------------------------------------------------------------------------------
 void Cadence::shuffle_set(NoteSet* pNoteSet, int numNotes)
 {
-	int* idx = new int[numNotes];
+    int* idx = new int[numNotes];
     RandomGenerator::shuffle(numNotes, idx);
     #if (TRACE_CADENCE == 2)
         for (int i=0; i < numNotes; ++i)
             TraceCadence("idx = %d", *idx[i]);
     #endif
 
-	FPitch* fp = new FPitch[numNotes];
+    FPitch* fp = new FPitch[numNotes];
     for (int i=0; i < numNotes; ++i)
         *(fp+i) = pNoteSet->pitch[i];
 
     for (int i=0; i < numNotes; ++i)
         pNoteSet->pitch[i] = *(fp + *(idx+i));
 
-	delete[] idx;
-	delete[] fp;
+    delete[] idx;
+    delete[] fp;
 }
 
 //---------------------------------------------------------------------------------------
@@ -888,7 +888,7 @@ void Cadence::get_chromatic_alterations(CadenceChord* pChord, EKeySignature nKey
 
 //---------------------------------------------------------------------------------------
 bool Cadence::check_chord(CadenceChord* pChord, Chord* pBasicChord,
-                          CadenceChord* pPrevChord, EKeySignature nKey,
+                          CadenceChord* pPrevChord, EKeySignature WXUNUSED(nKey),
                           int nPrevAlter[4], int nStepLeading, int iLeading,
                           bool fExhaustive)
 {
