@@ -47,7 +47,7 @@ class GmoShapeStem;
 class GmoShapeAccidentals;
 class GmoShapeFlag;
 class ScoreMeter;
-class ShapesStorage;
+class EngraversMap;
 class VoiceRelatedShape;
 
 //---------------------------------------------------------------------------------------
@@ -56,14 +56,16 @@ class NoteEngraver : public Engraver
 protected:
     ImoNote* m_pNote;
     int m_clefType;
-    ShapesStorage* m_pShapesStorage;
+    int m_octaveShift;
+    int m_idxStaff;
+    EngraversMap* m_pEngravers;
 
 public:
     NoteEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                 ShapesStorage* pShapesStorage, int iInstr, int iStaff);
+                 EngraversMap* pEngravers, int iInstr, int iStaff);
     virtual ~NoteEngraver() {}
 
-    GmoShape* create_shape(ImoNote* pNote, int clefType, UPoint uPos,
+    GmoShape* create_shape(ImoNote* pNote, int clefType, int octaveShift, UPoint uPos,
                            Color color=Color(0,0,0));
     GmoShape* create_tool_dragged_shape(int noteType, EAccidentals acc, int dots);
     UPoint get_drag_offset();
@@ -125,41 +127,53 @@ class StemFlagEngraver : public Engraver
 protected:
     int m_iInstr;
     int m_iStaff;
-    GmoShapeNote* m_pNoteShape;
-    GmoShapeNote* m_pBaseNoteShape;
     int m_noteType;
     bool m_fStemDown;
     bool m_fWithFlag;
     bool m_fShortFlag;
+    bool m_fCrossStaffChord;
     LUnits m_uStemLength;
     Color m_color;
     double m_fontSize;
     ImoObj* m_pCreatorImo;
+    GmoShapeNote* m_pFlagNoteShape;     //Flag note is the note that has the flag: the
+                                        //min pitch note for stem down or the max pitch
+                                        //note for stem up.
+
+    GmoShapeNote* m_pRefNoteShape;      //Ref note is opposite one: the max pitch note
+                                        //for stem down or the min pitch note for stem up.
+    GmoShapeNote* m_pBaseNoteShape;
 
 public:
     StemFlagEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                      ImoObj* pCreatorImo, int iInstr, int iStaff);
     virtual ~StemFlagEngraver() {}
 
-    void add_stem_flag(GmoShapeNote* pNoteShape, GmoShapeNote* pBaseNoteShape,
-                       int noteType, bool fStemDown, bool fWithFlag,
-                       bool fShortFlag, LUnits stemLength, Color color);
+    void add_stem_flag_to_note(GmoShapeNote* pNoteShape, int noteType, bool fStemDown,
+                               bool fWithFlag, bool fShortFlag, LUnits stemLength,
+                               Color color);
+
+    void add_stem_flag_to_chord(GmoShapeNote* pMinNoteShape, GmoShapeNote* pMaxNoteShape,
+                       GmoShapeNote* pBaseNoteShape, int noteType, bool fStemDown, bool fWithFlag,
+                       bool fShortFlag, bool fCrossStaffChord, LUnits stemLength,
+                       Color color);
 
 protected:
-    void determine_position_and_size_of_stem();
+    void add_stem_and_flag();
+    void determine_stem_x_left();
+    void determine_stem_y_pos();
     void add_stem_shape();
     void add_flag_shape_if_required();
 
     void add_voice(VoiceRelatedShape* pVRS);
-    void determine_stem_x_left();
-    void determine_stem_y_note();
-    void adjust_stem_size_for_flag();
+
 
     LUnits m_uStemThickness;
     LUnits m_uxStem;
-    LUnits m_uyStemNote;        //the nearest point to notehead
-    LUnits m_uyStemFlag;        //the nearest point to the flag
-    GmoShapeNotehead* m_pNoteheadShape;
+    LUnits m_yStemTop;          //top of fixed/extensible when up/down, respectively
+    LUnits m_yStemFlag;         //join between fixed and extensible segments
+    LUnits m_yStemBottom;       //bottom of extensible/fixed when up/down, respectively
+    GmoShapeNotehead* m_pRefNoteheadShape;
 
     LUnits get_glyph_offset(int iGlyph);
     int get_glyph_for_flag();

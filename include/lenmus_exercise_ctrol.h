@@ -175,7 +175,6 @@ protected:
     //wrappers for event handlers
     static void on_new_problem(void* pThis, SpEventInfo pEvent);
     static void on_play_event(void* pThis, SpEventInfo pEvent);
-    //static void on_end_of_play_event(void* pThis, SpEventInfo pEvent);
     static void on_display_solution(void* pThis, SpEventInfo pEvent);
     static void on_settings(void* pThis, SpEventInfo pEvent);
     static void on_see_source_score(void* pThis, SpEventInfo pEvent);
@@ -277,7 +276,7 @@ public:
 protected:
     //implementation of some virtual methods
     void play(bool fVisualTracking=true);
-    void play_specific_sound(int nButton) {}
+    void play_specific_sound(int WXUNUSED(nButton)) {}
     void display_solution();
     void display_problem_score();
     void delete_scores();

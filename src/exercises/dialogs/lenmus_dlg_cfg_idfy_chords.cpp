@@ -315,7 +315,7 @@ bool DlgCfgIdfyChord::VerifyData()
     fLocalError |= fError;
 
     //check that at least one play mode is choosen
-    if (m_fTheoryMode) {
+    if (!m_fTheoryMode) {
         fAtLeastOne = false;
         for (i=0; i < 3; i++) {
             fAtLeastOne |= m_pChkPlayMode[i]->GetValue();

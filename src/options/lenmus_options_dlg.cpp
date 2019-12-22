@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2019 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -108,7 +108,7 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
     : wxDialog(parent, ID_DIALOG, _("Configuration options"),
-               wxDefaultPosition, wxSize(640, 480),
+               wxDefaultPosition, wxSize(750, 570),
                wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX )
     , m_appScope(appScope)
     , m_pSplitWindow(NULL)
@@ -116,7 +116,6 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
     , m_pPanel(NULL)
     , m_pBtnOK(NULL)
     , m_pBtnCancel(NULL)
-    , m_pBtnHelp(NULL)
 {
     SetExtraStyle(GetExtraStyle()|wxWS_EX_BLOCK_EVENTS);
 
@@ -258,14 +257,11 @@ void OptionsDlg::CreateControls()
     wxBoxSizer* pButtonsSizer = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     pMainSizer->Add(pButtonsSizer, 0, wxALIGN_RIGHT|wxALL, 5);
 
-    m_pBtnOK = LENMUS_NEW wxButton( this, ID_BUTTON_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pBtnOK = LENMUS_NEW wxButton( this, ID_BUTTON_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnOK, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_pBtnCancel = LENMUS_NEW wxButton( this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pBtnCancel = LENMUS_NEW wxButton( this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnCancel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-    m_pBtnHelp = LENMUS_NEW wxButton( this, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
-    pButtonsSizer->Add(m_pBtnHelp, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 }
 
@@ -365,7 +361,7 @@ void OptionsDlg::OnTreectrlItemSelected( wxTreeEvent& event )
 }
 
 //---------------------------------------------------------------------------------------
-void OptionsDlg::OnButtonAcceptClick(wxCommandEvent& event)
+void OptionsDlg::OnButtonAcceptClick(wxCommandEvent& WXUNUSED(event))
 {
     //save current panel id and TreeCtrl itemId, so to start next time with this panel
     wxConfigBase* pPrefs = m_appScope.get_preferences();

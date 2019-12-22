@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -57,11 +57,13 @@ class PartsEngraver;
 class ScoreLayouter;
 class ScoreMeter;
 class ShapesCreator;
-class ShapesStorage;
+class EngraversMap;
 class SpAlgColumn;
 class StaffObjsCursor;
 class TimeGridTable;
 class TypeMeasureInfo;
+class GmoBoxSystem;
+class VerticalProfile;
 
 //---------------------------------------------------------------------------------------
 // Barlines at the end of a column
@@ -74,11 +76,11 @@ enum EColumnBarlinesInfo
 
 
 //---------------------------------------------------------------------------------------
-// SpacingAlgorithm
-// Abstract class providing the public interface for any spacing algorithm.
-// The idea is to facilitate testing different algorithms without having to
-// rewrite other parts of the code.
-//
+/** %SpacingAlgorithm
+    Abstract class providing the public interface for any spacing algorithm.
+    The idea is to facilitate testing different algorithms without having to
+    rewrite other parts of the code.
+*/
 class SpacingAlgorithm
 {
 protected:
@@ -86,14 +88,15 @@ protected:
     ScoreMeter*     m_pScoreMeter;
     ScoreLayouter*  m_pScoreLyt;
     ImoScore*       m_pScore;
-    ShapesStorage&  m_shapesStorage;
+    EngraversMap&  m_engravers;
     ShapesCreator*  m_pShapesCreator;
     PartsEngraver*  m_pPartsEngraver;
+    VerticalProfile* m_pVProfile;
 
 public:
     SpacingAlgorithm(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                      ScoreLayouter* pScoreLyt, ImoScore* pScore,
-                     ShapesStorage& shapesStorage, ShapesCreator* pShapesCreator,
+                     EngraversMap& engravers, ShapesCreator* pShapesCreator,
                      PartsEngraver* pPartsEngraver);
     virtual ~SpacingAlgorithm();
 
@@ -142,7 +145,9 @@ public:
     //boxes and shapes management
     virtual void reposition_slices_and_staffobjs(int iFirstCol, int iLastCol,
                                         LUnits yShift, LUnits* yMin, LUnits* yMax) = 0;
-    virtual void add_shapes_to_boxes(int iCol, ShapesStorage* pStorage) = 0;
+    virtual void reposition_full_measure_rests(int iFirstCol, int iLastCol,
+                                               GmoBoxSystem* pBox) = 0;
+    virtual void add_shapes_to_boxes(int iCol, VerticalProfile* pVProfile) = 0;
     virtual void delete_shapes(int iCol) = 0;
     virtual GmoBoxSliceInstr* get_slice_instr(int iCol, int iInstr) = 0;
     virtual void set_slice_final_position(int iCol, LUnits left, LUnits top) = 0;
@@ -210,8 +215,8 @@ public:
     inline ColStaffObjsEntry* get_prolog_key(ShapeId idx) { return m_prologKeys[idx]; }
 
     //boxes and shapes
-    void add_shapes_to_boxes(int iCol, ShapesStorage* pStorage);
-    GmoBoxSliceInstr* create_slice_instr(ImoInstrument* pInstr, LUnits yTop);
+    void add_shapes_to_boxes(int iCol);
+    GmoBoxSliceInstr* create_slice_instr(ImoInstrument* pInstr, int idxStaff, LUnits yTop);
     inline GmoBoxSliceInstr* get_slice_instr(int iInstr) { return m_sliceInstrBoxes[iInstr]; }
     void set_slice_width(LUnits width);
     void set_slice_final_position(LUnits left, LUnits top);
@@ -250,13 +255,6 @@ protected:
 class SpAlgColumn: public SpacingAlgorithm
 {
 protected:
-    LibraryScope&   m_libraryScope;
-    ScoreMeter*     m_pScoreMeter;
-    ScoreLayouter*  m_pScoreLyt;
-    ImoScore*       m_pScore;
-    ShapesStorage&  m_shapesStorage;
-    ShapesCreator*  m_pShapesCreator;
-    PartsEngraver*  m_pPartsEngraver;
     ColumnsBuilder* m_pColsBuilder;
     std::vector<ColumnData*> m_colsData;
 
@@ -264,7 +262,7 @@ protected:
 public:
     SpAlgColumn(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                 ScoreLayouter* pScoreLyt, ImoScore* pScore,
-                ShapesStorage& shapesStorage, ShapesCreator* pShapesCreator,
+                EngraversMap& engravers, ShapesCreator* pShapesCreator,
                 PartsEngraver* pPartsEngraver);
     virtual ~SpAlgColumn();
 
@@ -277,7 +275,7 @@ public:
     //spacing algorithm
     void do_spacing_algorithm();
     //boxes and shapes
-    virtual void add_shapes_to_boxes(int iCol, ShapesStorage* pStorage);
+    virtual void add_shapes_to_boxes(int iCol, VerticalProfile* pVProfile);
     virtual GmoBoxSliceInstr* get_slice_instr(int iCol, int iInstr);
     virtual void set_slice_final_position(int iCol, LUnits left, LUnits top);
     virtual void create_boxes_for_column(int iCol, LUnits left, LUnits top);
@@ -327,9 +325,12 @@ public:
     ///prepare for receiving information for a new column
     virtual void start_column_measurements(int iCol) = 0;
     ///save information for staff object in current column
-    virtual void include_object(ColStaffObjsEntry* pCurEntry, int iCol, int iLine, int iInstr, ImoStaffObj* pSO,
-                                TimeUnits rTime, int nStaff, GmoShape* pShape,
+    virtual void include_object(ColStaffObjsEntry* pCurEntry, int iCol, int iInstr,
+                                int  iStaff, ImoStaffObj* pSO, GmoShape* pShape,
                                 bool fInProlog=false) = 0;
+    ///save info for a full-measure rest
+    virtual void include_full_measure_rest(GmoShape* pRestShape, ColStaffObjsEntry* pCurEntry,
+                                           GmoShape* pNonTimedShape) = 0;
     ///terminate current column
     virtual void finish_column_measurements(int iCol) = 0;
 
@@ -367,7 +368,7 @@ public:
 
     ///create slice instr box for column iCol and access it
     virtual GmoBoxSliceInstr* create_slice_instr(int iCol, ImoInstrument* pInstr,
-            LUnits yTop);
+                                                 int idxStaff, LUnits yTop);
     ///set width of slice box for column iCol
     virtual void set_slice_width(int iCol, LUnits width);
 
@@ -386,14 +387,13 @@ protected:
     ScoreMeter*     m_pScoreMeter;
     ScoreLayouter*  m_pScoreLyt;
     ImoScore*       m_pScore;
-    ShapesStorage&  m_shapesStorage;
+    EngraversMap&  m_engravers;
     ShapesCreator*  m_pShapesCreator;
     PartsEngraver*  m_pPartsEngraver;
     StaffObjsCursor* m_pSysCursor;  //cursor for traversing the score
     ColumnBreaker*  m_pBreaker;
     std::vector<LUnits> m_SliceInstrHeights;
     LUnits m_stavesHeight;      //system height without top and bottom margins
-    UPoint m_pagePos;           //to track current position
 
     int m_iColumn;   //[0..n-1] current column. (-1 if no column yet created!)
     int m_iColStartMeasure;     //to store index at which next measure starts
@@ -412,7 +412,7 @@ protected:
 public:
     ColumnsBuilder(ScoreMeter* pScoreMeter, vector<ColumnData*>& colsData,
                    ScoreLayouter* pScoreLyt, ImoScore* pScore,
-                   ShapesStorage& shapesStorage,
+                   EngraversMap& engravers,
                    ShapesCreator* pShapesCreator,
                    PartsEngraver* pPartsEngraver,
                    SpAlgColumn* pSpAlgorithm);
@@ -434,7 +434,7 @@ public:
     }
 
     //managing shapes
-    void add_shapes_to_boxes(int iCol, ShapesStorage* pStorage);
+    void add_shapes_to_boxes(int iCol);
     void delete_shapes(int iCol);
     void create_boxes_for_column(int iCol, LUnits xLeft, LUnits yTop);
 
@@ -450,7 +450,7 @@ protected:
 
     void store_info_about_attached_objects(ImoStaffObj* pSO, GmoShape* pShape,
                                            int iInstr, int iStaff, int iCol, int iLine,
-                                           ImoInstrument* pInstr);
+                                           ImoInstrument* pInstr, int idxStaff);
 
     bool determine_if_is_in_prolog(ImoStaffObj* pSO, TimeUnits rTime, int iInstr,
                                    int idx);

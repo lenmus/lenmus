@@ -66,6 +66,8 @@ class GmoLayer;
 class SelectionSet;
 class Control;
 class ScoreStub;
+class GmMeasuresTable;
+
 
 //---------------------------------------------------------------------------------------
 //valid areas for mouse interaction
@@ -147,13 +149,14 @@ public:
     inline bool is_modified() { return m_modified; }
     inline long get_model_id() { return m_modelId; }
     int get_page_number_containing(GmoObj* pGmo);
+    GmMeasuresTable* get_measures_table(ImoId scoreId);
 
     //special accessors
     GmoShapeStaff* get_shape_for_first_staff_in_first_system(ImoId scoreId);
 
     //drawing
     void draw_page(int iPage, UPoint& origin, Drawer* pDrawer, RenderOptions& opt);
-    void highlight_object(ImoStaffObj* pSO, bool value);
+    //void highlight_object(ImoStaffObj* pSO, bool value);
 
     //hit testing and related
     GmoObj* hit_test(int iPage, LUnits x, LUnits y);
@@ -168,7 +171,7 @@ public:
     GmoShape* get_shape_for_noterest(ImoNoteRest* pNR);
 
     //creation
-    ScoreStub* add_stub_for(ImoId scoreId);
+    ScoreStub* add_stub_for(ImoScore* pScore);
     void store_in_map_imo_shape(ImoObj* pImo, GmoShape* pShape);
     void add_to_map_imo_to_box(GmoBox* child);
     void add_to_map_ref_to_box(GmoBox* pBox);
@@ -180,11 +183,8 @@ public:
 
     //active and pointed elements
 
-    /** Returns pointer to GmoBoxSystem containing the requested timepos. If pointer
-        @c iPage is not @nullptr, it also updates its
-        content with the index of the GmoBoxScorePage in which the system is
-        contained. If there is no system for the given timepos, returns @nullptr and
-        iPage is set to -1.
+    /** Returns pointer to GmoBoxSystem containing the requested timepos.
+        If there is no system for the given timepos, returns @nullptr.
 
         This method gives preference to finding a system containing an event at the
         given @c tiempos instead of non-timed staff objects. For example, the last
@@ -193,14 +193,16 @@ public:
 
         @param scoreId
         @param time The time position (absolute time units) for the requested system.
-        @param iPage Pointer to an int that will be updated with the page index in
-            which the returned system is included.
     */
-    GmoBoxSystem* get_system_for(ImoId scoreId, TimeUnits timepos, int* iPage=nullptr);
+    GmoBoxSystem* get_system_for(ImoId scoreId, TimeUnits timepos);
     GmoBoxSystem* get_system_box(int iSystem);
+
+    GmoBoxSystem* get_system_for_staffobj(ImoId id);
+
 
     //tests
     void dump_page(int iPage, ostream& outStream);
+
 
 protected:
     ScoreStub* get_stub_for(ImoId scoreId);

@@ -80,8 +80,6 @@ EBookCtrol::EBookCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* p
 //---------------------------------------------------------------------------------------
 EBookCtrol::~EBookCtrol()
 {
-    ////delete objects
-    //    delete m_pOptions;
 }
 
 //---------------------------------------------------------------------------------------
@@ -508,7 +506,7 @@ void ExerciseCtrol::change_from_learning_to_practising()
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_exercise_activated(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_exercise_activated(void* WXUNUSED(pThis), SpEventInfo pEvent)
 {
     if (pEvent->is_on_click_event())
     {
@@ -523,43 +521,43 @@ void ExerciseCtrol::on_exercise_activated(void* pThis, SpEventInfo pEvent)
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_new_problem(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_new_problem(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_new_problem();
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_play_event(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_play_event(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->play();
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_display_solution(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_display_solution(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_display_solution();
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_settings(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_settings(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_settings_button();
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_see_source_score(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_see_source_score(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_debug_show_source_score();
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_see_midi_events(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_see_midi_events(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_debug_show_midi_events();
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_go_back_event(void* pThis, SpEventInfo pEvent)
+void ExerciseCtrol::on_go_back_event(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_go_back();
 }
@@ -723,7 +721,7 @@ void ExerciseCtrol::OnQuestionAnswered(int iQ, bool fSuccess)
         //determine user response time
         wxTimeSpan tsResponse = wxDateTime::Now().Subtract( m_tmAsked );
         wxASSERT(!tsResponse.IsNegative());
-        m_pProblemManager->UpdateQuestion(m_iQ, fSuccess, tsResponse);
+        m_pProblemManager->UpdateQuestion(iQ, fSuccess, tsResponse);
     }
 }
 
@@ -919,7 +917,7 @@ void CompareCtrol::initialize_strings()
 }
 
 //---------------------------------------------------------------------------------------
-void CompareCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void CompareCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     //create buttons for the answers: three buttons in one row
 
@@ -990,7 +988,7 @@ CompareScoresCtrol::~CompareScoresCtrol()
 }
 
 //---------------------------------------------------------------------------------------
-void CompareScoresCtrol::play(bool fVisualTracking)
+void CompareScoresCtrol::play(bool WXUNUSED(fVisualTracking))
 {
     if (m_pCanvas->is_loading_document())
     {
@@ -1880,49 +1878,49 @@ void FullEditorCtrol::create_problem_display_box(ImoContent* pWrapper, ImoStyle*
 //}
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_new_problem(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_new_problem(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->process_event(k_click_new_problem);
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_play_problem(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_play_problem(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->process_event(k_click_play_or_stop_problem);
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_play_user_score(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_play_user_score(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->process_event(k_click_play_or_stop_user_score);
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_correct_exercise(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_correct_exercise(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->process_event(k_click_done);
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_settings(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_settings(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->on_settings_button();
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_see_source_score(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_see_source_score(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->on_debug_show_source_score();
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_see_midi_events(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_see_midi_events(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->on_debug_show_midi_events();
 }
 
 //---------------------------------------------------------------------------------------
-void FullEditorCtrol::on_go_back_event(void* pThis, SpEventInfo pEvent)
+void FullEditorCtrol::on_go_back_event(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<FullEditorCtrol*>(pThis))->on_go_back();
 }

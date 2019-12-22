@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -27,64 +27,56 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#ifndef __LOMSE_NOTEREST_ENGRAVER_H__        //to avoid nested includes
-#define __LOMSE_NOTEREST_ENGRAVER_H__
+#ifndef __LOMSE_ENGRAVERS_MAP_H__        //to avoid nested includes
+#define __LOMSE_ENGRAVERS_MAP_H__
 
 #include "lomse_basic.h"
-#include "lomse_injectors.h"
-#include "lomse_engraver.h"
-#include "lomse_im_note.h"
+
+#include <map>
+using namespace std;
 
 namespace lomse
 {
 
 //forward declarations
-class GmoShape;
-class FontStorage;
-class GmoShapeBeam;
-class GmoShapeTuplet;
-class ScoreMeter;
-class ShapesStorage;
-class BeamEngraver;
-class TupletEngraver;
+class Engraver;
+class ImoObj;
+
 
 //---------------------------------------------------------------------------------------
-class NoterestEngraver : public Engraver
+// Helper class to store the engravers for shapes under construction so that they can
+//  later be retrieved.
+//  It is used when the shap creation process involves two or more ImoStaffObj objects.
+//  This is the case, for example, of lyrics, chords, ImoRelObj and ImoAuxRelObj.
+class EngraversMap
 {
 protected:
-    ShapesStorage* m_pShapesStorage;
-    LUnits m_lineSpacing;
-    Color m_color;
-    double m_fontSize;
-    ImoNoteRest* m_pNoteRest;
-    GmoShape* m_pNoteRestShape;
+	std::map<ImoObj*, Engraver*> m_engravers;   //engraver for an ImoObj
+	std::map<string, Engraver*> m_engravers2;   //engraver for a tag (for lyrics)
 
 public:
-    virtual ~NoterestEngraver() {}
+    EngraversMap() {}
+    ~EngraversMap() {}
 
+    //engravers
+    inline void save_engraver(Engraver* pEngrv, ImoObj* pImo) {
+        m_engravers[pImo] = pEngrv;
+    }
+    inline void save_engraver(Engraver* pEngrv, const string& tag) {
+        m_engravers2[tag] = pEngrv;
+    }
+    Engraver* get_engraver(ImoObj* pImo);
+    Engraver* get_engraver(const string& tag);
+    inline void remove_engraver(ImoObj* pImo) { m_engravers.erase(pImo); }
+    inline void remove_engraver(const string& tag) { m_engravers2.erase(tag); }
 
-protected:
-    NoterestEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                 ShapesStorage* pShapesStorage, int iInstr, int iStaff);
+    //suppor for debug and unit tests
+    void delete_engravers();
 
-//    void layout_tuplet();
-
-    inline bool is_beamed() { return m_pNoteRest->is_beamed(); }
-
-    //helper
-    inline bool has_stem() { return m_pNoteRest->get_note_type() >= k_half; }
-    inline bool has_flag() { return m_pNoteRest->get_note_type() >= k_eighth; }
-//    Tenths get_glyph_offset(int iGlyph);
-
-    LUnits m_uyStaffTopLine;
-    LUnits m_uxLeft, m_uyTop;       //current position
-    GmoShapeBeam* m_pStartBeamShape;
-    GmoShapeBeam* m_pEndBeamShape;
-    GmoShapeTuplet* m_pTupletShape;
 };
 
 
 }   //namespace lomse
 
-#endif    // __LOMSE_NOTEREST_ENGRAVER_H__
+#endif    // __LOMSE_ENGRAVERS_MAP_H__
 

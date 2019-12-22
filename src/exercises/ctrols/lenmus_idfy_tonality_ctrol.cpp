@@ -93,7 +93,7 @@ void IdfyTonalityCtrol::set_problem_space()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyTonalityCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void IdfyTonalityCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     //create buttons for the answers, 5 columns, 7 rows
 
@@ -208,7 +208,7 @@ void IdfyTonalityCtrol::on_settings_changed()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyTonalityCtrol::EnableButtons(bool value)
+void IdfyTonalityCtrol::EnableButtons(bool WXUNUSED(value))
 {
 }
 
@@ -220,7 +220,7 @@ wxDialog* IdfyTonalityCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* IdfyTonalityCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyTonalityCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     //answer buttons no allowed to play tonalities
     return NULL;
@@ -303,7 +303,7 @@ void IdfyTonalityCtrol::ComputeRightAnswerButtons()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyTonalityCtrol::prepare_score(EClef nClef, EKeySignature nKey,
+wxString IdfyTonalityCtrol::prepare_score(EClef WXUNUSED(nClef), EKeySignature nKey,
                                           ImoScore** pProblemScore)
 {
     //delete the previous score

@@ -2,14 +2,20 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>5.4.1</version>
-    <package>LenMus Phonascus 5.4.1</package>
+    <version>5.5</version>
+    <package>LenMus Phonascus 5.5</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-- This is just a maintenace release This is a maintenace release
-  to address a bug in LenMus installation.
+This is a maintenance release to add the Greek translation and
+some few small improvements, and to fix bugs. Main changes:
+- The translation to the Greek language has been added.
+- Cadences generator have been re-coded to remove bugs.
+- Now it is posible to select the beat note value in metronome.
+- Keyboard buttons Page Up/Down are now operative in eBooks.
+- More visual tracking options during playback.
      </description>
     <download_url>http://www.lenmus.org/en/phonascus/downloads</download_url>
 </platform>
 
 </UpdateData>
+

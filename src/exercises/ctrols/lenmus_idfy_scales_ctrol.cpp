@@ -93,7 +93,7 @@ void IdfyScalesCtrol::set_problem_space()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyScalesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void IdfyScalesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     //create buttons for the answers, two rows
 
@@ -327,7 +327,7 @@ wxString IdfyScalesCtrol::set_new_problem()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore** pScore)
+wxString IdfyScalesCtrol::prepare_score(EClef WXUNUSED(nClef), EScaleType nType, ImoScore** pScore)
 {
     //create the scale
     Scale scale(m_fpRootNote, nType, m_nKey);

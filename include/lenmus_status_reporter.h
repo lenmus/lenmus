@@ -57,10 +57,12 @@ public:
     virtual ~DefaultStatusReporter() {}
 
     //updating fields
-    void report_status(const wxString& sText) {}
-    void report_mouse_data(int nPage, TimeUnits rTime, int nMeasure, UPoint uPos) {}
-    void report_caret_data(int nPage, TimeUnits rTime, int nMeasure) {}
-    void report_caret_time(const string& timecode) {}
+    void report_status(const wxString& WXUNUSED(sText)) {}
+    void report_mouse_data(int WXUNUSED(nPage), TimeUnits WXUNUSED(rTime),
+                           int WXUNUSED(nMeasure), UPoint WXUNUSED(uPos)) {}
+    void report_caret_data(int WXUNUSED(nPage), TimeUnits WXUNUSED(rTime),
+                           int WXUNUSED(nMeasure)) {}
+    void report_caret_time(const string& WXUNUSED(timecode)) {}
 };
 
 

@@ -23,7 +23,7 @@
 
 #include "lenmus_idfy_cadences_ctrol_params.h"
 #include "lenmus_cadences_constrains.h"
-#include "lenmus_dlg_cfg_idfy_cadences.h"
+#include "lenmus_dlg_cfg_cadences.h"
 #include "lenmus_generators.h"
 #include "lenmus_document_canvas.h"
 #include "lenmus_chord.h"
@@ -87,7 +87,7 @@ void IdfyCadencesCtrol::set_problem_space()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     //create buttons for the answers, 2 rows, 4 cols, no labels
     ImoStyle* pDefStyle = m_pDoc->get_default_style();
@@ -227,7 +227,7 @@ wxDialog* IdfyCadencesCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* IdfyCadencesCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyCadencesCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     //answer buttons not allowed for playing cadences
     return NULL;
@@ -351,7 +351,7 @@ string IdfyCadencesCtrol::get_initial_msge()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
+wxString IdfyCadencesCtrol::prepare_score(EClef WXUNUSED(nClef), ECadenceType nType,
                                            ImoScore** pProblemScore,
                                            ImoScore** pSolutionScore)
 {

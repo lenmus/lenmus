@@ -90,7 +90,6 @@ private:
     OptionsPanel*        m_pPanel;        // current displayed panel
     wxButton*            m_pBtnOK;
     wxButton*            m_pBtnCancel;
-    wxButton*            m_pBtnHelp;
 
     //other member variables
     OptionsPanel*   m_cPanels[eOptMaxValue];        // options' panels collection

@@ -95,6 +95,9 @@ ApplicationScope::ApplicationScope(ostream& reporter)
 //---------------------------------------------------------------------------------------
 ApplicationScope::~ApplicationScope()
 {
+    //restore cout buffer
+    cout.rdbuf(m_cout_buffer);
+
     delete m_pPaths;
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
@@ -317,8 +320,8 @@ void ApplicationScope::create_logger()
     // - Macro LOMSE_LOG_INFO always work.
     // - Both write logs to lomse-log.txt
 
-    logger.set_logging_mode(Logger::k_normal_mode); //k_normal_mode k_debug_mode k_trace_mode
-    logger.set_logging_areas(Logger::k_score_player);   //k_events); //k_layout); //k_all  k_mvc | );
+    logger.set_logging_mode(Logger::k_trace_mode); //k_normal_mode k_debug_mode k_trace_mode
+    logger.set_logging_areas(Logger::k_layout); //k_score_player);   //k_events); //k_layout); //k_all  k_mvc | );
 
 	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();

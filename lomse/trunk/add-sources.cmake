@@ -49,10 +49,13 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/lomse_box_system.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_caret.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_caret_positioner.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_engravers_map.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_fragment_mark.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_glyphs.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_gm_basic.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_graphical_model.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_handler.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_gm_measures_table.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_overlays_generator.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_selections.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_barline.cpp
@@ -61,13 +64,14 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_brace_bracket.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_line.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_note.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_octave_shift.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_staff.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_text.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_tie.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_tuplet.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_volta_bracket.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_wedge.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shapes.cpp
-    ${LOMSE_SRC_DIR}/graphic_model/lomse_shapes_storage.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_sizers.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_tempo_line.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_time_grid.cpp
@@ -91,6 +95,7 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_lyric_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_metronome_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_note_engraver.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_octave_shift_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_ornament_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_rest_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_slur_engraver.cpp
@@ -100,6 +105,7 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_time_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_tuplet_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_volta_engraver.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_wedge_engraver.cpp
 
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_blocks_container_layouter.cpp
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_document_layouter.cpp
@@ -114,6 +120,7 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_system_layouter.cpp
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_table_layouter.cpp
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_text_splitter.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_vertical_profile.cpp
 )
 
 set(GUI_CONTROLS_FILES
@@ -132,7 +139,7 @@ set(INTERNAL_MODEL_FILES
     ${LOMSE_SRC_DIR}/internal_model/lomse_im_figured_bass.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_im_note.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_internal_model.cpp
-    ${LOMSE_SRC_DIR}/internal_model/lomse_measures_table.cpp
+    ${LOMSE_SRC_DIR}/internal_model/lomse_im_measures_table.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_model_builder.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_score_algorithms.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_score_utilities.cpp

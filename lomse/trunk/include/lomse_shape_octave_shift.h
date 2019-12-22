@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -27,60 +27,62 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#ifndef __LOMSE_SHAPES_STORAGE_H__        //to avoid nested includes
-#define __LOMSE_SHAPES_STORAGE_H__
+#ifndef __LOMSE_SHAPE_OCTAVE_SHIFT_H__        //to avoid nested includes
+#define __LOMSE_SHAPE_OCTAVE_SHIFT_H__
 
 #include "lomse_basic.h"
-#include <map>
-#include <list>
-using namespace std;
+#include "lomse_injectors.h"
+#include "lomse_engraver.h"
+#include "lomse_shape_base.h"
+#include "lomse_shape_text.h"
+#include "lomse_internal_model.h"
+
+#include "lomse_shape_base.h"
+#include "lomse_vertex_source.h"
+#include "agg_trans_affine.h"
 
 namespace lomse
 {
 
 //forward declarations
-class GmoShape;
-class GmoBox;
-class Engraver;
 class ImoObj;
+class GmoShapeBarline;
+class GmoShapeText;
 
 
-// helper class to store shapes under construction and its engravers
 //---------------------------------------------------------------------------------------
-class ShapesStorage
+class GmoShapeOctaveShift : public GmoCompositeShape
 {
 protected:
-	std::map<ImoObj*, Engraver*> m_engravers;
-	std::map<string, Engraver*> m_engravers2;
-	std::list< pair<GmoShape*, int> > m_readyShapes;
+    bool m_fTwoLines;
+    bool m_fEndCorner;
+    LUnits m_xLineStart;
+    LUnits m_yLineStart;
+    LUnits m_yLineEnd;
+    LUnits m_uLineThick;
 
 public:
-    ShapesStorage() {}
-    ~ShapesStorage();
+    GmoShapeOctaveShift(ImoObj* pCreatorImo, ShapeId idx, Color color);
+    virtual ~GmoShapeOctaveShift();
 
-    //engravers
-    inline void save_engraver(Engraver* pEngrv, ImoObj* pImo) {
-        m_engravers[pImo] = pEngrv;
-    }
-    inline void save_engraver(Engraver* pEngrv, const string& tag) {
-        m_engravers2[tag] = pEngrv;
-    }
-    Engraver* get_engraver(ImoObj* pImo);
-    Engraver* get_engraver(const string& tag);
-    inline void remove_engraver(ImoObj* pImo) { m_engravers.erase(pImo); }
-    inline void remove_engraver(const string& tag) { m_engravers2.erase(tag); }
+    void on_draw(Drawer* pDrawer, RenderOptions& opt);
 
-    //final shapes
-    void add_ready_shapes_to_model(GmoBox* pBox);
-    void delete_ready_shapes();
+    void set_layout_data(LUnits xStart, LUnits xEnd, LUnits yStart, LUnits yEnd,
+                         LUnits uLineThick, bool fEndCorner);
 
-    //suppor for debug and unit tests
-    void delete_engravers();
+    //support for handlers
+    int get_num_handlers();
+    UPoint get_handler_point(int i);
+    void on_handler_dragged(int iHandler, UPoint newPos);
+    void on_end_of_handler_drag(int iHandler, UPoint newPos);
+
+protected:
 
 };
 
 
+
 }   //namespace lomse
 
-#endif    // __LOMSE_SHAPES_STORAGE_H__
+#endif    // __LOMSE_SHAPE_OCTAVE_SHIFT_H__
 

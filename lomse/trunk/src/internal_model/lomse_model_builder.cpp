@@ -37,7 +37,7 @@
 #include "lomse_score_utilities.h"
 #include "lomse_logger.h"
 #include "lomse_im_factory.h"
-#include "lomse_measures_table.h"
+#include "lomse_im_measures_table.h"
 
 #include <math.h>       //round
 
@@ -122,7 +122,7 @@ void PitchAssigner::assign_pitch(ImoScore* pScore)
     StaffObjsCursor cursor(pScore);
 
     int staves = cursor.get_num_staves();
-    m_context.assign(staves, {0,0,0,0,0,0,0});          //alterations, per staff index
+    m_context.assign(staves, {{0,0,0,0,0,0,0}} );       //alterations, per staff index
 
     int numInstrs = cursor.get_num_instruments();
     vector<ImoKeySignature*> keys;                      //key, per instrument

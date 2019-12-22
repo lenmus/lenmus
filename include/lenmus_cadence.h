@@ -46,12 +46,12 @@ class Chord;
 //
 // a) Terminal (Conclusivas)
 //
-//  - Perfect authentic (Auténtica), chords in root position
+//  - Perfect authentic (AutÃ©ntica), chords in root position
 //      * V -> I
 //      * V7 -> I
 //      * I(64) -> V  (6-4 cadencial. En Do: Sol-Do-Mi / Sol-Si-re)
-//      * V con 5ª aum -> I
-//      * V con 5ª dism -> I
+//      * V con 5Âª aum -> I
+//      * V con 5Âª dism -> I
 //  - Plagal (Plagal):
 //      * IV -> I
 //      * iv -> I
@@ -77,9 +77,9 @@ class Chord;
 //      * I -> V
 //      * IV6 -> V
 //      * II -> V,
-//      * IIdim(6) -> V (sexta napolitana = II dim en 1ª inversión.
+//      * IIdim(6) -> V (sexta napolitana = II dim en 1Âª inversiÃ³n.
 //                     Ej: en Do: Fa-lab-reb -Sol-si-re)
-//      * VdeV con 5ª dim y en 2ª inversión -> V (sexta aumentada)
+//      * VdeV con 5Âª dim y en 2Âª inversiÃ³n -> V (sexta aumentada)
 //
 
 //AWARE: any change in this enumeration requires the appropriate change in

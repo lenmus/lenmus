@@ -90,7 +90,7 @@ void IdfyNotesCtrol::set_problem_space()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     ImoStyle* pDefStyle = m_pDoc->get_default_style();
     ImoInlineWrapper* pBox;
@@ -299,7 +299,7 @@ wxDialog* IdfyNotesCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* IdfyNotesCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyNotesCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     return NULL;
 }
@@ -427,19 +427,19 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::on_play_all_notes_event(void* pThis, SpEventInfo pEvent)
+void IdfyNotesCtrol::on_play_all_notes_event(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<IdfyNotesCtrol*>(pThis))->play_all_notes();
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::on_play_a4_event(void* pThis, SpEventInfo pEvent)
+void IdfyNotesCtrol::on_play_a4_event(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<IdfyNotesCtrol*>(pThis))->play_a4();
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::on_continue_event(void* pThis, SpEventInfo pEvent)
+void IdfyNotesCtrol::on_continue_event(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<IdfyNotesCtrol*>(pThis))->on_continue();
 }

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -61,6 +61,8 @@ class ImoStaffObj;
 class PlayerGui;
 class Task;
 class VisualEffect;
+class FragmentMark;
+class ApplicationMark;
 
 class Document;
 typedef std::shared_ptr<Document>     SpDocument;
@@ -1015,6 +1017,88 @@ public:
 
     //@}    //Visual effects during playback
 
+
+
+    //interface to GraphicView. Application markings on the score
+    /// @name Interface to GraphicView. Application markings on the score
+    //@{
+
+    /** Create a new FragmentMark on the score at the given time position for notes and
+        rest. If no note/rest exists in the given timepos, the mark will be placed at
+        the estimated position at which the note would be placed.
+        @param scoreId  Id. of the score on which the mark will be added.
+        @param timepos The position for the mark, in Time Units from the start
+               of the score.
+
+        The mark will cover all staves of the system and its height will be that of
+        the system box. After creation you can use methods FragmentMark::top() and
+        FragmentMark::bottom() to define
+        the instruments and staves range to cover, as well as to change the extra height
+        with method FragmentMark::extra_height().
+
+        By default, the properties of the created mark are as follows:
+        - Marker type is <tt>k_mark_line</tt>, that is, a vertical line.
+        - Line color is transparent red (Color(255,0,0,128)).
+        - Line thickness is six tenths, referred to the first staff of the system at
+            which the mark is placed.
+        - Line style solid.
+
+        The mark properties (type, color, position, length, etc.) can later be
+        changed. See methods: FragmentMark::type(), FragmentMark::color(),
+        FragmentMark::top(), FragmentMark::bottom(), FragmentMark::x_shift(),
+        FragmentMark:: line_style() and FragmentMark::extra_height().
+
+        <b>Example of use:</b>
+
+        @code
+        ImoId scoreId = ...
+        TimeUnits timepos = ...
+        FragmentMark* mark = pInteractor->add_fragment_mark(scoreId, timepos);
+
+        //customize the mark: magenta solid color, covering second and third instruments
+        mark->color(Color(255,0,255))->thickness(5)->top(1)->bottom(2);
+            ...
+
+        //change its appearance: rounded open bracket, cyan transparent color
+        mark->type(k_mark_open_rounded)->color(Color(0,255,255,128));
+            ...
+
+        //when no longer needed remove it
+        pInteractor->remove_mark(mark);
+
+        Marks cannot be repositioned. If this is needed, just delete current mark and
+        create a new one at the desired new position.
+
+        @endcode
+    */
+    FragmentMark* add_fragment_mark_at_note_rest(ImoId scoreId, TimeUnits timepos);
+
+    /** Create a new FragmentMark on the score at the barline at the given time position.
+        Take into account that barlines have the same timepos than the first
+        note/rest after the barline. If there is no a barline at the given timepos, this
+        method will place the mark on the note/rest position for the passed timepos.
+        @param scoreId  Id. of the score on which the mark will be added.
+        @param timepos The position for the mark, in Time Units from the start
+               of the score.
+
+        See add_fragment_mark_at_note_rest() for more details.
+    */
+    FragmentMark* add_fragment_mark_at_barline(ImoId scoreId, TimeUnits timepos);
+
+    /** Create a new FragmentMark on the score at the given staff object position.
+        @param pSO Pointer to the staff object defining the position for the mark.
+
+        See add_fragment_mark_at_note_rest() for more details.
+    */
+    FragmentMark* add_fragment_mark_at_staffobj(ImoStaffObj* pSO);
+
+    /** Hide the mark and delete it.
+        @param mark  Pointer to the mark to remove. After executing this method the
+            pointer will no longer be valid.
+    */
+    void remove_mark(ApplicationMark* mark);
+
+    //@}    //Application markings on the score
 
 
     //interface to GraphicView. Printing

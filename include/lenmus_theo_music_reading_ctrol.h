@@ -63,8 +63,8 @@ public:
     //implementation of virtual methods
     void initialize_strings() {}
     void initialize_ctrol();
-    void create_answer_buttons(LUnits height, LUnits spacing) {}
-    ImoScore* prepare_aux_score(int nButton) { return NULL; }
+    void create_answer_buttons(LUnits WXUNUSED(height), LUnits WXUNUSED(spacing)) {}
+    ImoScore* prepare_aux_score(int WXUNUSED(nButton)) { return NULL; }
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
 

@@ -34,6 +34,10 @@
 #include "lomse_injectors.h"
 #include "lomse_image.h"
 
+//GmoShapeDebug
+#include "lomse_vertex_source.h"
+#include "agg_trans_affine.h"
+
 namespace lomse
 {
 
@@ -121,6 +125,33 @@ public: //TO_FIX: constructor used in tests.
                         libraryScope, fontSize )
     {
     }
+};
+
+//---------------------------------------------------------------------------------------
+//A shape for debug purposes, to draw lines, points, etc. used during design and debug
+class GmoShapeDebug : public GmoSimpleShape, public VertexSource
+{
+protected:
+    std::list<Vertex> m_vertices;       //list of vertices
+    std::list<Vertex>::iterator m_it;   //points to current vertex
+
+    int m_nContour;                 //current countour
+    agg::trans_affine   m_trans;    //affine transformation to apply
+
+
+public:
+    GmoShapeDebug(Color color=Color(0,0,0), UPoint uPos=UPoint(0.0f, 0.0f),
+                  USize uSize=USize(1000.0f, 1000.0f));
+
+    virtual void on_draw(Drawer* pDrawer, RenderOptions& opt) override;
+    virtual void add_vertex(Vertex& vertex);
+    virtual void add_vertex(char cmd, LUnits x, LUnits y);
+    virtual void close_vertex_list();
+
+    //VertexSource
+    unsigned vertex(double* px, double* py) override;
+    void rewind(int UNUSED(pathId) = 0) override;
+
 };
 
 //---------------------------------------------------------------------------------------
@@ -429,6 +460,19 @@ protected:
                           Color color, LibraryScope& libraryScope)
         : GmoCompositeShape(pCreatorImo, GmoObj::k_shape_time_signature, idx, color)
         , m_libraryScope(libraryScope)
+    {
+    }
+};
+
+//---------------------------------------------------------------------------------------
+class GmoShapeOctaveGlyph : public GmoShapeGlyph
+{
+protected:
+    friend class OctaveShiftEngraver;
+    GmoShapeOctaveGlyph(ImoObj* pCreatorImo, ShapeId idx, unsigned int iGlyph, UPoint pos,
+                        Color color, LibraryScope& libraryScope, double fontSize)
+        : GmoShapeGlyph(pCreatorImo, GmoObj::k_shape_octave_glyph, idx, iGlyph,
+                        pos, color, libraryScope, fontSize)
     {
     }
 };

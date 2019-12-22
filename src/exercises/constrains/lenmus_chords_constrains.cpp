@@ -35,8 +35,6 @@ namespace lenmus
 ChordConstrains::ChordConstrains(wxString sSection, ApplicationScope& appScope)
     : ExerciseOptions(sSection, appScope)
 {
-    m_sSection = sSection;
-    m_fSettingsLink = false;
     load_settings();
 }
 

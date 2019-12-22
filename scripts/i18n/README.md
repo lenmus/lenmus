@@ -84,7 +84,7 @@ Purpose: upload language packs to Sourceforge, to files to download
 
 ## users-guide scripts
 
-This scripts are for managing the translation of the User's Guide. The scripts must be executed in order. And each script performs an step in the translation:
+These scripts are for managing the translation of the User's Guide. The scripts must be executed in order. And each script performs an step in the translation:
 
 - Step 1: Extract document’s translatable messages into pot files.
 - Step 2: Create/update the .po files, for the specified language.

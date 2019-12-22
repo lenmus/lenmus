@@ -118,7 +118,7 @@ wxEND_EVENT_TABLE()
 DlgMetronome::DlgMetronome(ApplicationScope& appScope, wxWindow* parent,
                            GlobalMetronome* pMtr)
     : wxDialog(parent, wxID_ANY, _("Metronome settings"), wxDefaultPosition,
-               wxSize(-1,-1), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+               wxSize(-1,500), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
     , m_appScope(appScope)
     , m_pMtr(pMtr)
     , m_tempo(pMtr->get_mm())
@@ -158,7 +158,7 @@ void DlgMetronome::create_dialog()
     //                         0, nullptr, wxCB_READONLY);
     // - in header, replace wxChoice -> wxBitmapComboBox (1 replz.)
 
-	this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
+	this->SetSizeHints( wxSize( -1,500 ), wxSize( -1,500 ) );
 
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
@@ -211,10 +211,10 @@ void DlgMetronome::create_dialog()
 
 	bSizer2->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_pIncrementButton = new wxButton( this, k_id_button_increment, _("+"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pIncrementButton = new wxButton( this, k_id_button_increment, "+", wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_pIncrementButton, 0, wxALL, 5 );
 
-	m_pDecrementButton = new wxButton( this, k_id_button_decrement, _("-"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pDecrementButton = new wxButton( this, k_id_button_decrement, "-", wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_pDecrementButton, 0, wxALL, 5 );
 
 
@@ -246,7 +246,7 @@ void DlgMetronome::create_dialog()
 	m_lblCount->Wrap( -1 );
 	bSizer111->Add( m_lblCount, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	m_pTxtCount = new wxStaticText( this, wxID_ANY, _("12"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtCount = new wxStaticText( this, wxID_ANY, "12", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtCount->Wrap( -1 );
 	bSizer111->Add( m_pTxtCount, 0, wxTOP|wxBOTTOM|wxRIGHT, 5 );
 
@@ -275,7 +275,7 @@ void DlgMetronome::create_dialog()
 	m_lblMax->Wrap( -1 );
 	bSizer7->Add( m_lblMax, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pTxtMax = new wxStaticText( this, wxID_ANY, _("207 ms (50 BPM)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtMax = new wxStaticText( this, wxID_ANY, "207 ms (50 BPM)", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtMax->Wrap( -1 );
 	bSizer7->Add( m_pTxtMax, 0, wxRIGHT|wxLEFT, 5 );
 
@@ -288,7 +288,7 @@ void DlgMetronome::create_dialog()
 	m_lblMin->Wrap( -1 );
 	bSizer8->Add( m_lblMin, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pTxtMin = new wxStaticText( this, wxID_ANY, _("203 ms (51 BPM)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtMin = new wxStaticText( this, wxID_ANY, "203 ms (51 BPM)", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtMin->Wrap( -1 );
 	bSizer8->Add( m_pTxtMin, 0, wxRIGHT|wxLEFT, 5 );
 
@@ -518,7 +518,7 @@ void DlgMetronome::display_tempo()
 }
 
 //---------------------------------------------------------------------------------------
-void DlgMetronome::on_tempo_choice(wxCommandEvent& event)
+void DlgMetronome::on_tempo_choice(wxCommandEvent& WXUNUSED(event))
 {
     int i = m_pItalianTempo->GetSelection();
     set_tempo( m_tempi[i].defaultTempo );

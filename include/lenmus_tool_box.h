@@ -157,8 +157,9 @@ public:
     void update_tools_info(ToolsInfo* pInfo);
     void create_controls_in_group(wxBoxSizer* pMainSizer);
     EToolGroupID get_group_id() { return k_grp_MouseMode; }
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor) {}
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection) {}
+    void synchronize_with_cursor(bool UNUSED(fEnable), DocCursor* UNUSED(pCursor)) {}
+    void synchronize_with_selection(bool UNUSED(fEnable),
+                                    SelectionSet* UNUSED(pSelection)) {}
 
 	//access to options
 	int get_mouse_mode();

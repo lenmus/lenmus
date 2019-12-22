@@ -1,40 +1,56 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.4.2
+[Since last version] 5.5
 =============================
+
+* NONE
+
+
+Version [5.5] (January 8th, 2020)
+===============================================================================
+
+This is a maintenance release to add the translation to the Greek language and some few
+small improvements, and to fix bugs. The main changes are:
+
+* The translation to the Greek language has been added. Thanks to Avgeris Tsironis (Αυγέρης Τσιρώνης).
+* The cadences generator have been re-coded to remove bugs in Cadences exercises.
+* Updates the MS Windows installer for Windows 10 x64.
+* Improves metronome by adding a metronome settings window and allowing to select
+  the beat note value.
+* Keyboard buttons Page Up/Down are now operative in eBooks.
+* More visual tracking options during playback.
+* Fix to display the Study Guide in the selected language.
+* Fix bug in options for theo idfy/build interval and for cadences exercises, causing to
+  ignore some selected options.
+* Includes the latest Lomse library with improvements, mainly in MusicXML import and
+  music notation support.
+* Links for features not yet fully operational have been disabled.
+
+
+Version [5.4.2] (July 26th, 2016)
+===============================================================================
+
+This is a maintenance release:
 
 * Fixed #55: Compilation errors when using C++11.
 * Fixed #40: Added a man page for lenmus.
+* Includes the latest Lomse library with improvements in music renderization.
 
 
-Version [5.4.2] (July, 26th, 2016)
+Version [5.4.1] (December 18th, 2015)
 ===============================================================================
 
-This is a maintenace release:
-
-* Fixed #28: Printing does not work properly. 
-* Fixed typos in English and Spanish eBooks.
-* Fixed problem with CreativeCommons image in eBooks.
-* Added debug option for displaying a dump of internal model.
-* Version numbering scheme modified for adding commit sha1.
-* Inludes de latest Lomse library with improvements in music renderization.
-
-
-
-Version [5.4.1] (December, 18th, 2015)
-===============================================================================
-
-This is a maintenace release to address an important bug in LenMus installation,
+This is a maintenance release to address an important bug in LenMus installation,
 preventing help files to install properly. The only changes are:
 
 * Adds the missing help documentation files.
-* Inludes de latest Lomse library with improvements, mainly in MusicXML import.
+* Includes the latest Lomse library with improvements, mainly in MusicXML import.
 * Fixes a bug in QuestionBox due to wxString 3.0 conversion.
 * And, updates some score templates to LDP 2.0.
 
 
-Version 5.4 (September, 26th, 2015)
+Version 5.4 (September 26th, 2015)
 ===============================================================================
 
 The main goal of this release is to simplify LenMus installation. I've changed the way in
@@ -619,8 +635,9 @@ Version 1.0 (Jan/04):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...HEAD
-[5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.2
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.5...HEAD
+[5.5]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...Release_5.5
+[5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...Release_5.4.2
 [5.4.1]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.1
 
 

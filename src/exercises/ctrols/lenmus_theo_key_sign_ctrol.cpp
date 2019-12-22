@@ -139,7 +139,7 @@ void TheoKeySignCtrol::initialize_strings()
 }
 
 //---------------------------------------------------------------------------------------
-void TheoKeySignCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void TheoKeySignCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     //create 15 buttons for the answers: three rows, five buttons per row
 

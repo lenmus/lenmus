@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -36,9 +36,12 @@
 #include "lomse_score_meter.h"
 #include "lomse_box_slice_instr.h"
 #include "lomse_box_slice.h"
+#include "lomse_box_system.h"
 #include "lomse_score_layouter.h"
-
+#include "lomse_gm_measures_table.h"
 #include "lomse_calligrapher.h"
+#include "lomse_graphical_model.h"
+#include "lomse_vertical_profile.h"
 
 #include <vector>
 #include <cmath>   //abs
@@ -57,19 +60,11 @@ namespace lomse
 SpAlgGourlay::SpAlgGourlay(LibraryScope& libraryScope,
                                        ScoreMeter* pScoreMeter,
                                        ScoreLayouter* pScoreLyt, ImoScore* pScore,
-                                       ShapesStorage& shapesStorage,
+                                       EngraversMap& engravers,
                                        ShapesCreator* pShapesCreator,
                                        PartsEngraver* pPartsEngraver)
-    : SpAlgColumn(libraryScope, pScoreMeter, pScoreLyt, pScore, shapesStorage,
+    : SpAlgColumn(libraryScope, pScoreMeter, pScoreLyt, pScore, engravers,
                   pShapesCreator, pPartsEngraver)
-    , m_libraryScope(libraryScope)
-    , m_pScoreMeter(pScoreMeter)
-    , m_pScoreLyt(pScoreLyt)
-    , m_pScore(pScore)
-    , m_shapesStorage(shapesStorage)
-    , m_pShapesCreator(pShapesCreator)
-    , m_pPartsEngraver(pPartsEngraver)
-    //
     , m_pCurSlice(nullptr)
     , m_pLastEntry(nullptr)
     , m_prevType(TimeSlice::k_undefined)
@@ -141,15 +136,18 @@ void SpAlgGourlay::new_column(TimeSlice* pSlice)
 }
 
 //---------------------------------------------------------------------------------------
-void SpAlgGourlay::include_object(ColStaffObjsEntry* pCurEntry, int iCol, int UNUSED(iLine),
-                                  int UNUSED(iInstr), ImoStaffObj* pSO,
-                                  TimeUnits UNUSED(rTime),
-                                  int UNUSED(nStaff), GmoShape* pShape, bool fInProlog)
+void SpAlgGourlay::include_object(ColStaffObjsEntry* pCurEntry, int iCol, int iInstr,
+                                  int iStaff, ImoStaffObj* pSO, GmoShape* pShape,
+                                  bool fInProlog)
 {
     StaffObjData* pData = LOMSE_NEW StaffObjData();
     m_data.push_back(pData);
 
+    int idxStaff = m_pScoreMeter->staff_index(iInstr, iStaff);
     pData->m_pShape = pShape;
+    pData->m_idxStaff = idxStaff;
+    pData->m_iStaff = iStaff;
+
 
     //determine slice type for the new object to include
 //    dbgLogger << "include_object(). StaffObj type = " << pSO->get_name()
@@ -167,6 +165,9 @@ void SpAlgGourlay::include_object(ColStaffObjsEntry* pCurEntry, int iCol, int UN
             case k_imo_direction:
             case k_imo_metronome_mark:
             case k_imo_go_back_fwd:
+            case k_imo_figured_bass:
+            case k_imo_sound_change:
+            case k_imo_system_break:
                 curType = TimeSlice::k_non_timed;
                 break;
 
@@ -181,8 +182,8 @@ void SpAlgGourlay::include_object(ColStaffObjsEntry* pCurEntry, int iCol, int UN
 
             default:
                 stringstream ss;
-                ss << "Investigate: un-expected staff object. Type= "
-                   << pSO->get_obj_type();
+                ss << "Investigate: un-expected staff object. Name= "
+                   << pSO->get_name();
                 LOMSE_LOG_ERROR(ss.str());
                 curType = TimeSlice::k_non_timed;
         }
@@ -263,8 +264,20 @@ void SpAlgGourlay::include_object(ColStaffObjsEntry* pCurEntry, int iCol, int UN
         }
     }
 
+//    //save data about full-measure rests
+//    if (pSO->is_rest() && static_cast<ImoRest*>(pSO)->is_full_measure())
+//        m_pCurColumn->include_full_measure_rest(pShape, pCurEntry);
+
+
     m_pLastEntry = pCurEntry;
     ++m_numEntries;
+}
+//---------------------------------------------------------------------------------------
+void SpAlgGourlay::include_full_measure_rest(GmoShape* pRestShape,
+                                             ColStaffObjsEntry* pCurEntry,
+                                             GmoShape* pNonTimedShape)
+{
+    m_pCurColumn->include_full_measure_rest(pRestShape, pCurEntry, pNonTimedShape);
 }
 
 //---------------------------------------------------------------------------------------
@@ -510,13 +523,27 @@ void SpAlgGourlay::reposition_slices_and_staffobjs(int iFirstCol, int iLastCol,
 
         //reposition staffobjs
         m_columns[iCol]->move_shapes_to_final_positions(m_data, xLeft, yTop + yShift,
-                                                        yMin, yMax, m_pScoreMeter);
+                                                        yMin, yMax, m_pScoreMeter,
+                                                        m_pVProfile);
 
         //assign the final width to the boxes
         LUnits colWidth = m_columns[iCol]->get_column_width();
         set_slice_width(iCol, colWidth);
 
         xLeft += colWidth;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void SpAlgGourlay::reposition_full_measure_rests(int iFirstCol, int iLastCol,
+                                                 GmoBoxSystem* pBox)
+{
+    GraphicModel* pGM = m_pScoreLyt->get_graphic_model();
+    GmMeasuresTable* pMeasures = pGM->get_measures_table( m_pScore->get_id() );
+
+    for (int iCol = iFirstCol; iCol < iLastCol; ++iCol)
+    {
+        m_columns[iCol]->reposition_full_measure_rests(pBox, pMeasures);
     }
 }
 
@@ -696,7 +723,7 @@ void SpAlgGourlay::dump_column_data(int iCol, ostream& outStream)
 
 //---------------------------------------------------------------------------------------
 void SpAlgGourlay::add_shapes_to_box(int iCol, GmoBoxSliceInstr* pSliceInstrBox,
-                                   int iInstr)
+                                     int iInstr)
 {
     m_columns[iCol]->add_shapes_to_box(pSliceInstrBox, iInstr, m_data);
 }
@@ -1082,8 +1109,9 @@ void TimeSlice::dump(ostream& ss)
 
 //---------------------------------------------------------------------------------------
 void TimeSlice::add_shapes_to_box(GmoBoxSliceInstr* pSliceInstrBox, int iInstr,
-                                         vector<StaffObjData*>& data)
+                                  vector<StaffObjData*>& data)
 {
+    GmoBoxSystem* pBoxSystem = pSliceInstrBox->get_system_box();
     ColStaffObjsEntry* pEntry = m_firstEntry;
     int iMax = m_iFirstData + m_numEntries;
     for (int i=m_iFirstData; i < iMax; ++i, pEntry = pEntry->get_next())
@@ -1093,7 +1121,22 @@ void TimeSlice::add_shapes_to_box(GmoBoxSliceInstr* pSliceInstrBox, int iInstr,
         {
             GmoShape* pShape = pData->get_shape();
             if (pShape)
-                pSliceInstrBox->add_shape(pShape, GmoShape::k_layer_notes);
+			{
+                pSliceInstrBox->add_shape(pShape, GmoShape::k_layer_notes,
+                                          pData->m_iStaff);
+
+                //collect barlines info for box system (measures table)
+				if (pBoxSystem && pShape->is_shape_barline())
+				{
+                    ImoStaffObj* pSO = pEntry->imo_object();
+				    if (pSO && pSO->is_barline()
+                        && !static_cast<ImoBarline*>(pSO)->is_middle())
+                    {
+                        pBoxSystem->add_barline_info(pEntry->measure(),
+                                                     pEntry->num_instrument());
+                    }
+				}
+            }
         }
     }
 }
@@ -1112,7 +1155,8 @@ void TimeSlice::delete_shapes(vector<StaffObjData*>& data)
 //---------------------------------------------------------------------------------------
 void TimeSlice::move_shapes_to_final_positions(vector<StaffObjData*>& data, LUnits xPos,
                                                LUnits yPos, LUnits* yMin, LUnits* yMax,
-                                               ScoreMeter* UNUSED(pMeter))
+                                               ScoreMeter* UNUSED(pMeter),
+                                               VerticalProfile* pVProfile)
 {
     int iMax = m_iFirstData + m_numEntries;
     for (int i=m_iFirstData; i < iMax; ++i)
@@ -1125,6 +1169,9 @@ void TimeSlice::move_shapes_to_final_positions(vector<StaffObjData*>& data, LUni
             LUnits xLeft = xPos + pShape->get_anchor_offset() + m_xLeft;
             pShape->set_origin_and_notify_observers(xLeft + pData->m_xUserShift,
                                                     yPos + pData->m_yUserShift);
+
+            //save info for vertical profile
+            pVProfile->update(pShape, pData->m_idxStaff);
 
             //update system vertical limits
             *yMax = max(*yMax, pShape->get_bottom());
@@ -1201,7 +1248,8 @@ void TimeSliceProlog::assign_spacing_values(vector<StaffObjData*>& data,
 void TimeSliceProlog::move_shapes_to_final_positions(vector<StaffObjData*>& data,
                                                      LUnits xPos, LUnits yPos,
                                                      LUnits* yMin, LUnits* yMax,
-                                                     ScoreMeter* UNUSED(pMeter))
+                                                     ScoreMeter* UNUSED(pMeter),
+                                                     VerticalProfile* pVProfile)
 {
     ColStaffObjsEntry* pEntry = m_firstEntry;
     int iMax = m_iFirstData + m_numEntries;
@@ -1223,6 +1271,9 @@ void TimeSliceProlog::move_shapes_to_final_positions(vector<StaffObjData*>& data
             //move shape
             pShape->set_origin_and_notify_observers(xLeft + pData->m_xUserShift,
                                                     yPos + pData->m_yUserShift);
+
+            //save info for vertical profile
+            pVProfile->update(pShape, pData->m_idxStaff);
 
             //update system vertical limits
             *yMax = max(*yMax, pShape->get_bottom());
@@ -1411,7 +1462,8 @@ void TimeSliceNonTimed::assign_spacing_values(vector<StaffObjData*>& data,
 void TimeSliceNonTimed::move_shapes_to_final_positions(vector<StaffObjData*>& data,
                                                        LUnits xPos, LUnits yPos,
                                                        LUnits* yMin, LUnits* yMax,
-                                                       ScoreMeter* pMeter)
+                                                       ScoreMeter* pMeter,
+                                                       VerticalProfile* pVProfile)
 {
     //vector for current position on each staff
     vector<LUnits> positions;
@@ -1436,6 +1488,9 @@ void TimeSliceNonTimed::move_shapes_to_final_positions(vector<StaffObjData*>& da
             //move shape
             pShape->set_origin_and_notify_observers(xLeft + pData->m_xUserShift,
                                                     yPos + pData->m_yUserShift);
+
+            //save info for vertical profile
+            pVProfile->update(pShape, pData->m_idxStaff);
 
             positions[iStaff] += pShape->get_width();
             if (!pShape->is_shape_invisible())
@@ -1858,6 +1913,10 @@ ColumnDataGourlay::ColumnDataGourlay(TimeSlice* pSlice)
 //---------------------------------------------------------------------------------------
 ColumnDataGourlay::~ColumnDataGourlay()
 {
+    list<FullMeasureRestData*>::iterator itR;
+    for (itR = m_rests.begin(); itR != m_rests.end(); ++itR)
+        delete *itR;
+    m_rests.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1893,6 +1952,15 @@ void ColumnDataGourlay::dump(ostream& outStream, bool fOrdered)
         }
         outStream << endl;
     }
+}
+
+//---------------------------------------------------------------------------------------
+void ColumnDataGourlay::include_full_measure_rest(GmoShape* pShape,
+                                                  ColStaffObjsEntry* pEntry,
+                                                  GmoShape* pNonTimedShape)
+{
+    FullMeasureRestData* pRest = LOMSE_NEW FullMeasureRestData(pShape, pEntry,pNonTimedShape);
+    m_rests.push_back(pRest);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1995,16 +2063,45 @@ void ColumnDataGourlay::delete_shapes(vector<StaffObjData*>& data)
 void ColumnDataGourlay::move_shapes_to_final_positions(vector<StaffObjData*>& data,
                                                        LUnits xPos, LUnits yPos,
                                                        LUnits* yMin, LUnits* yMax,
-                                                       ScoreMeter* pMeter)
+                                                       ScoreMeter* pMeter,
+                                                       VerticalProfile* pVProfile)
 {
     m_xPos = xPos;
 
     TimeSlice* pSlice = m_pFirstSlice;
     for (int i=0; i < num_slices(); ++i)
     {
-        pSlice->move_shapes_to_final_positions(data, xPos, yPos, yMin, yMax, pMeter);
+        pSlice->move_shapes_to_final_positions(data, xPos, yPos, yMin, yMax, pMeter,
+                                               pVProfile);
         xPos += pSlice->get_width();
         pSlice = pSlice->next();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ColumnDataGourlay::reposition_full_measure_rests(GmoBoxSystem* pBox,
+                                                      GmMeasuresTable* pMeasures)
+{
+    list<FullMeasureRestData*>::iterator it;
+    for (it = m_rests.begin(); it != m_rests.end(); ++it)
+    {
+        ColStaffObjsEntry* pEntry = (*it)->get_rest_entry();
+        int iInstr = pEntry->num_instrument();
+        int iMeasure = pEntry->measure();
+
+        //determine space for centering the rest
+        //discount the width of any non-timed after start measure barline
+        GmoShape* pShapeNT = (*it)->get_non_timed_shape();
+        LUnits xStart = (pShapeNT ? pShapeNT->get_right()
+                                  : pMeasures->get_start_barline_right(iInstr, iMeasure, pBox));
+
+        GmoShape* pRestShape = (*it)->get_rest_shape();
+        LUnits xEnd = pMeasures->get_end_barline_left(iInstr, iMeasure, pBox);
+        LUnits space = xEnd - xStart - pRestShape->get_width();
+
+        //determine new xPos for the rest and move there
+        LUnits xNew = space/2.0f + xStart;
+        pRestShape->set_origin_and_notify_observers(xNew, 0.0);
     }
 }
 

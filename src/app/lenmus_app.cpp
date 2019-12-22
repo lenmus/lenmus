@@ -881,7 +881,7 @@ wxString TheApp::get_installer_language()
 }
 
 //---------------------------------------------------------------------------------------
-int TheApp::FilterEvent(wxEvent& event)
+int TheApp::FilterEvent(wxEvent& WXUNUSED(event))
 {
 //#if (LENMUS_DEBUG_BUILD == 1)
 //	if (event.GetEventType()==wxEVT_KEY_DOWN)

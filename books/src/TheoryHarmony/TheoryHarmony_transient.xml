@@ -34,7 +34,7 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -43,11 +43,11 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n f3 w p2)(n c4 w)(n f4 w p1)(n a4 w))
-            (text ''IV'' (style "figured-bass-10") dx:-65 dy:200)
+            (chord (n f3 w p2 (text ''IV'' (style "figured-bass-10") dx:-15 dy:80))
+				(n c4 w)(n f4 w p1)(n a4 w))
             (barline)
-            (chord (n g3 w p2)(n b3 w)(n d4 w p1)(n g4 w))
-            (text ''V'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n g3 w p2 (text ''V'' (style "figured-bass-10") dx:-10 dy:80))
+				(n b3 w)(n d4 w p1)(n g4 w))
             (barline end)
         )))
     </music>
@@ -57,7 +57,7 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -66,13 +66,13 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n g3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
-            (text ''I'' (style "figured-bass-10") dx:-60 dy:200)
-            (text ''6'' (style "figured-bass-7") dx:-40 dy:185)
-            (text ''4'' (style "figured-bass-7") dx:-40 dy:210)
+            (chord (n g3 w p2 (text ''I'' (style "figured-bass-10") dx:-10 dy:80)
+            	(text ''6'' (style "figured-bass-7") dx:10 dy:65)
+            	(text ''4'' (style "figured-bass-7") dx:10 dy:90))
+				(n c4 w)(n e4 w p1)(n g4 w))
             (barline)
-            (chord (n g3 w p2)(n b3 w)(n d4 w p1)(n g4 w))
-            (text ''V'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n g3 w p2 (text ''V'' (style "figured-bass-10") dx:-5 dy:80))
+				(n b3 w)(n d4 w p1)(n g4 w))
             (barline end)
         )))
     </music>
@@ -88,7 +88,7 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -97,12 +97,12 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n f3 w p2)(n a3 w)(n d4 w p1)(n a4 w))
-            (text ''IV'' (style "figured-bass-10") dx:-60 dy:200)
-            (text ''6'' (style "figured-bass-7") dx:-35 dy:185)
+            (chord (n f3 w p2 (text ''IV'' (style "figured-bass-10") dx:-15 dy:80)
+            	(text ''6'' (style "figured-bass-7") dx:10 dy:65))
+				(n a3 w)(n d4 w p1)(n a4 w))
             (barline)
-            (chord (n e3 w p2)(n b3 w)(n e4 w p1)(n +g4 w))
-            (text ''V'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n e3 w p2 (text ''V'' (style "figured-bass-10") dx:-10 dy:80))
+				(n b3 w)(n e4 w p1)(n +g4 w))
             (barline end)
         )))
     </music>
@@ -118,7 +118,7 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -127,18 +127,18 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n a3 w p2)(n c4 w)(n e4 w p1)(n c5 w))
-            (text ''I'' (style "figured-bass-10") dx:-60 dy:200)
+            (chord (n a3 w p2 (text ''I'' (style "figured-bass-10") dx:-10 dy:80))
+				(n c4 w)(n e4 w p1)(n c5 w))
             (barline)
-            (chord (n g3 w p2)(n b3 w)(n d4 w p1)(n d5 w))
-            (text ''VII'' (style "figured-bass-10") dx:-60 dy:200)
+            (chord (n g3 w p2 (text ''VII'' (style "figured-bass-10") dx:-10 dy:80))
+				(n b3 w)(n d4 w p1)(n d5 w))
             (barline)
-            (chord (n f3 w p2)(n a3 w)(n f4 w p1)(n c5 w))
-            (text ''VI'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n f3 w p2 (text ''VI'' (style "figured-bass-10") dx:-5 dy:80))
+				(n a3 w)(n f4 w p1)(n c5 w))
             (barline)
-            (chord (n e3 w p2)(n +g3 w)(n d4 w p1)(n b4 w))
-            (text ''V'' (style "figured-bass-10") dx:-50 dy:200)
-            (text ''7'' (style "figured-bass-7") dx:-30 dy:185)
+            (chord (n e3 w p2 (text ''V'' (style "figured-bass-10") dx:-10 dy:80)
+		        (text ''7'' (style "figured-bass-7") dx:10 dy:65))
+				(n +g3 w)(n d4 w p1)(n b4 w))
             (barline end)
         )))
     </music>
@@ -158,7 +158,7 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -167,11 +167,11 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
-            (text ''V'' (style "figured-bass-10") dx:-60 dy:200)
+            (chord (n g2 w p2 (text ''V'' (style "figured-bass-10") dx:-10 dy:100))
+				(n g3 w)(n d4 w p1)(n b4 w))
             (barline)
-            (chord (n f2 w p2)(n a3 w)(n f4 w p1)(n c5 w))
-            (text ''IV'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n f2 w p2 (text ''IV'' (style "figured-bass-10") dx:-15 dy:100))
+				(n a3 w)(n f4 w p1)(n c5 w))
             (barline end)
         )))
     </music>
@@ -181,7 +181,7 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -190,11 +190,11 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
-            (text ''V'' (style "figured-bass-10") dx:-60 dy:200)
+            (chord (n g2 w p2 (text ''V'' (style "figured-bass-10") dx:-10 dy:90))
+				(n g3 w)(n d4 w p1)(n b4 w))
             (barline)
-            (chord (n a2 w p2)(n e3 w)(n c4 w p1)(n a4 w))
-            (text ''VI'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n a2 w p2 (text ''VI'' (style "figured-bass-10") dx:-15 dy:90))
+				(n e3 w)(n c4 w p1)(n a4 w))
             (barline end)
         )))
     </music>

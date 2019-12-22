@@ -35,7 +35,7 @@
 #include "lomse_injectors.h"
 #include "lomse_score_enums.h"
 #include "lomse_logger.h"
-#include "lomse_shapes_storage.h"
+#include "lomse_engravers_map.h"
 #include "lomse_spacing_algorithm.h"
 
 #include <vector>
@@ -84,9 +84,10 @@ struct PendingAuxObjs
     int m_iStaff;
     int m_iCol;
     int m_iLine;
+    int m_idxStaff;
 
     PendingAuxObjs(ImoStaffObj* pSO, GmoShape* pMainShape, int iInstr, int iStaff,
-                   int iCol, int iLine, ImoInstrument* pInstr)
+                   int iCol, int iLine, ImoInstrument* pInstr, int idxStaff)
         : m_pSO(pSO)
         , m_pMainShape(pMainShape)
         , m_pInstr(pInstr)
@@ -94,6 +95,7 @@ struct PendingAuxObjs
         , m_iStaff(iStaff)
         , m_iCol(iCol)
         , m_iLine(iLine)
+        , m_idxStaff(idxStaff)
     {
     }
 
@@ -134,7 +136,7 @@ protected:
     ImoScore*       m_pScore;
     ScoreMeter*     m_pScoreMeter;
     SpacingAlgorithm* m_pSpAlgorithm;
-    ShapesStorage   m_shapesStorage;
+    EngraversMap    m_engravers;
     ShapesCreator*  m_pShapesCreator;
     PartsEngraver*  m_pPartsEngraver;
     UPoint          m_cursor;
@@ -191,6 +193,10 @@ public:
     virtual LUnits get_target_size_for_system(int iSystem);
     virtual LUnits get_column_width(int iCol);
     virtual bool column_has_system_break(int iCol);
+
+    //support for building the GmMeasuresTable
+        //invoked when a non-middle barline is found
+    void finish_measure(int iInstr, GmoShapeBarline* pBarlineShape);
 
     //support for debugging and unit tests
     void dump_column_data(int iCol, ostream& outStream=dbgLogger);
@@ -324,21 +330,24 @@ class ShapesCreator
 protected:
     LibraryScope& m_libraryScope;
     ScoreMeter* m_pScoreMeter;
-    ShapesStorage& m_shapesStorage;
+    EngraversMap& m_engravers;
     PartsEngraver* m_pPartsEngraver;
     map<string, LyricEngraver*> m_lyricEngravers;
 
 public:
     ShapesCreator(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                  ShapesStorage& shapesStorage, PartsEngraver* pPartsEngraver);
-    ~ShapesCreator() {}
+                  EngraversMap& engravers, PartsEngraver* pPartsEngraver);
+    ~ShapesCreator();
+
 
     enum {k_flag_small_clef=0x01, };
 
     //StaffObj shapes
     GmoShape* create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int iStaff,
-                                    UPoint pos, int clefType=0, unsigned flags=0);
+                                    UPoint pos, int clefType=0, int octaveShift=0,
+                                    unsigned flags=0);
     GmoShape* create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iStaff,
+                                  int idxStaff, VerticalProfile* pVProfile,
                                   GmoShape* pParentShape);
     GmoShape* create_invisible_shape(ImoObj* pSO, int iInstr, int iStaff,
                                      UPoint uPos, LUnits width);
@@ -346,28 +355,36 @@ public:
     //RelObj shapes
     void start_engraving_relobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                 GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                int iSystem, int iCol, int iLine, ImoInstrument* pInstr);
+                                int iSystem, int iCol, int iLine, ImoInstrument* pInstr,
+                                int idxStaff, VerticalProfile* pVProfile);
     void continue_engraving_relobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                    GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                    int iSystem, int iCol, int iLine,
-                                   ImoInstrument* pInstr);
+                                   ImoInstrument* pInstr, int idxStaff,
+                                   VerticalProfile* pVProfile);
     void finish_engraving_relobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                  GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                  int iSystem, int iCol, int iLine, LUnits prologWidth,
-                                 ImoInstrument* pInstr);
+                                 ImoInstrument* pInstr, int idxStaff,
+                                 VerticalProfile* pVProfile);
+    GmoShape* create_first_or_intermediate_shape(ImoRelObj* pRO);
+    GmoShape* create_last_shape(ImoRelObj* pRO);
 
     //AuxRelObj shapes
     void start_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO, const string& tag,
                                    GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                   int iSystem, int iCol, int iLine, ImoInstrument* pInstr);
+                                   int iSystem, int iCol, int iLine, ImoInstrument* pInstr,
+                                   int idxStaff, VerticalProfile* pVProfile);
     void continue_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO, const string& tag,
                                    GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                    int iSystem, int iCol, int iLine,
-                                   ImoInstrument* pInstr);
+                                   ImoInstrument* pInstr, int idxStaff,
+                                   VerticalProfile* pVProfile);
     void finish_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO, const string& tag,
                                     GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                     int iSystem, int iCol, int iLine, LUnits prologWidth,
-                                    ImoInstrument* pInstr);
+                                    ImoInstrument* pInstr, int idxStaff,
+                                    VerticalProfile* pVProfile);
 
     //other shapes
     GmoShape* create_measure_number_shape(ImoObj* pCreator, const string& number,

@@ -79,7 +79,7 @@ void IdfyScalesCtrolParams::process(ImoParamInfo* pParam)
         Params for IdfyChordCtrol - html object type="Application/LenMusIdfyChord"
 
         keys        Keyword "all", "allMajor", "allMinor" or a list of allowed
-                    key signatures, i.e.: "Do,Fas". Default: all
+                    key signatures, i.e.: "C,F+". Default: all
                     AWARE: if major and minor scales selected, the chosen key signatures
                     will be automatically transformed into major/minor, even if it is
                     not specified in the keys list. For example, <keys>C</keys> will
@@ -95,7 +95,7 @@ void IdfyScalesCtrolParams::process(ImoParamInfo* pParam)
                         non-tonal: WT (Whole Tones), Ch (Chromatic)
 
 
-                    Default: "MN, mN, mH, mM"
+                    Default: "MN,mN,mH,mM"
 
         mode        'theory' | 'earTraining'  Keyword indicating type of exercise
 
@@ -113,7 +113,7 @@ void IdfyScalesCtrolParams::process(ImoParamInfo* pParam)
         <exercise type="IdfyScales" width="100%" height="300" border="0">
             <control_go_back>th1_140_scales</control_go_back>
             <keys>all</keys>
-            <scales>MN, mN</scales>
+            <scales>MN,mN</scales>
             <mode>theory</mode>
         </exercise>
 

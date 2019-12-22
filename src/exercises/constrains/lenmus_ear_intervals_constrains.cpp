@@ -34,7 +34,6 @@ EarIntervalsConstrains::EarIntervalsConstrains(wxString sSection,
                                                ApplicationScope& appScope)
     : ExerciseOptions(sSection, appScope)
 {
-    m_sSection = sSection;
     load_settings();
 }
 

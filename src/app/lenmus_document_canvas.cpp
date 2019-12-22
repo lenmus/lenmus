@@ -56,6 +56,9 @@
 #include <lomse_im_factory.h>
 #include <lomse_visual_effect.h>
 #include <lomse_tempo_line.h>
+#include <lomse_fragment_mark.h>
+//tests
+#include "lomse_score_algorithms.h"
 
 //wxWidgets
 #include <wx/filename.h>
@@ -379,7 +382,7 @@ void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::update_window(VRect damagedRect)
+void DocumentWindow::update_window(VRect WXUNUSED(damagedRect))
 {
     // Invoking update_window() results in just putting immediately the content
     // of the currently rendered buffer to the window without neither calling
@@ -532,7 +535,7 @@ void DocumentWindow::on_show_contextual_menu(lmShowContextualMenuEvent& event)
 
 //---------------------------------------------------------------------------------------
 void DocumentWindow::display_document(LdpReader& reader, int viewType,
-                                      const string& title)
+                                      const string& WXUNUSED(title))
 {
     LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
@@ -859,7 +862,7 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
 //---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event,
+void DocumentWindow::on_page_changed_in_toolbox(ToolBoxPageChangedEvent& WXUNUSED(event),
                                                 ToolBox* pToolBox)
 {
     //pToolBox->save_configuration(&m_toolboxCfg);
@@ -1042,6 +1045,10 @@ void DocumentWindow::process_key(wxKeyEvent& event)
 {
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
+        //check for document scroll commands
+        if (process_document_navigation_commands(event))
+            return;
+
         //check if it is a command for ToolBox
         EditInterface* pEditGui  = m_appScope.get_edit_gui();
         if (is_edition_enabled() && pEditGui
@@ -1061,9 +1068,31 @@ void DocumentWindow::process_key(wxKeyEvent& event)
 
     //If a key down (EVT_KEY_DOWN) event is caught and the event handler does not
     //call event.Skip() then the corresponding char event (EVT_CHAR) will not happen.
-    //This is by design of wxWidgets and enables the programs that handle both types of
+    //This is by design of wxWidgets and enables programs that handle both types of
     //events to be a bit simpler.
     event.Skip();       //to generate Key char event
+}
+
+//---------------------------------------------------------------------------------------
+bool DocumentWindow::process_document_navigation_commands(wxKeyEvent& event)
+{
+    //returns true if command processed
+
+    bool fEventProcessed = true;
+    switch (event.GetKeyCode())
+    {
+        case WXK_PAGEUP:
+            scroll_page(true /*true=up*/);
+            break;
+
+        case WXK_PAGEDOWN:
+            scroll_page(false /*false=down*/);
+            break;
+
+        default:
+            fEventProcessed = false;
+    }
+    return fEventProcessed;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1760,21 +1789,16 @@ void DocumentWindow::on_scroll(wxScrollWinEvent& event)
                 yPos = event.GetPosition() - m_yMargin;
             }
 
-            #if (LENMUS_PLATFORM_WIN32 == 1)  //---------------------------------------------
-            {
-                //In Windows, up/down buttons remain enabled even when reaching top/bottom
-                if (yPos < m_yMinViewport)
-                    yPos = m_yMinViewport;
-                else if (yPos > m_yMaxViewport)
-                    yPos = m_yMaxViewport;
+            //limit scrolling when reaching document top/bottom
+            if (yPos < m_yMinViewport)
+                yPos = m_yMinViewport;
+            else if (yPos > m_yMaxViewport)
+                yPos = m_yMaxViewport;
 
-                //in Windows the scroll thumb remains at top, so we have to
-                //reposition it manually
-                if (type != wxEVT_SCROLLWIN_THUMBTRACK)
-                    SetScrollPos(wxVERTICAL, m_yMargin + yPos);
-            }
-            #endif  //-----------------------------------------------------------------------
+            //reposition the scroll thumb
+            SetScrollPos(wxVERTICAL, m_yMargin + yPos);
 
+            //reposition the document viewport
             spInteractor->new_viewport(xPos, yPos); //, k_no_redraw);    //BUG_001
         }
 
@@ -1798,21 +1822,16 @@ void DocumentWindow::on_scroll(wxScrollWinEvent& event)
                 xPos = event.GetPosition() - m_xMargin;
             }
 
-            #if (LENMUS_PLATFORM_WIN32 == 1)  //---------------------------------------------
-            {
-                //In Windows, up/down buttons remain enabled even when reaching top/bottom
-                if (xPos < m_xMinViewport)
-                    xPos = m_xMinViewport;
-                else if (xPos > m_xMaxViewport)
-                    xPos = m_xMaxViewport;
+            //limit scrolling when reaching document left/right
+            if (xPos < m_xMinViewport)
+                xPos = m_xMinViewport;
+            else if (xPos > m_xMaxViewport)
+                xPos = m_xMaxViewport;
 
-                //in Windows the scroll thumb remains at top, so we have to
-                //reposition it manually
-                if (type != wxEVT_SCROLLWIN_THUMBTRACK)
-                    SetScrollPos(wxHORIZONTAL, m_xMargin + xPos);
-            }
-            #endif  //-----------------------------------------------------------------------
+            //reposition the scroll thumb
+            SetScrollPos(wxHORIZONTAL, m_xMargin + xPos);
 
+            //reposition the document viewport
             spInteractor->new_viewport(xPos, yPos); //, k_no_redraw);    //BUG_001
         }
     }
@@ -1836,17 +1855,44 @@ void DocumentWindow::scroll_line(bool fUp)
         else
             yPos += m_yPixelsPerScrollUnit;
 
-        #if (LENMUS_PLATFORM_WIN32 == 1)  //---------------------------------------------
-        {
-            //In Windows, up/down buttons remain enabled even when reaching top/bottom
-            if (yPos < m_yMinViewport)
-                yPos = m_yMinViewport;
-            else if (yPos > m_yMaxViewport)
-                yPos = m_yMaxViewport;
-        }
-        #endif  //-----------------------------------------------------------------------
+        //limit scrolling when reaching document top/bottom
+        if (yPos < m_yMinViewport)
+            yPos = m_yMinViewport;
+        else if (yPos > m_yMaxViewport)
+            yPos = m_yMaxViewport;
 
+        //reposition the document viewport
         spInteractor->new_viewport(xPos, yPos);     //, k_no_redraw);    //BUG_001
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::scroll_page(bool fUp)
+{
+    if (!m_pPresenter)
+        return;
+
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        int xPos, yPos;
+        spInteractor->get_viewport(&xPos, &yPos);
+
+        if (fUp)
+            yPos -= m_yScrollPageHeight;
+        else
+            yPos += m_yScrollPageHeight;
+
+        //limit scrolling when reaching document top/bottom
+        if (yPos < m_yMinViewport)
+            yPos = m_yMinViewport;
+        else if (yPos > m_yMaxViewport)
+            yPos = m_yMaxViewport;
+
+        //reposition the scroll thumb
+        SetScrollPos(wxVERTICAL, m_yMargin + yPos);
+
+        //reposition the document viewport
+        spInteractor->new_viewport(xPos, yPos); //, k_no_redraw);    //BUG_001
     }
 }
 
@@ -1861,50 +1907,137 @@ void DocumentWindow::debug_dump_spacing_data()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::debug_do_api_test()
 {
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        Document* pDoc = m_pPresenter->get_document_raw_ptr();
+        ImoScore* pScore = dynamic_cast<ImoScore*>( pDoc->get_content_item(0) );
+
+        if (pScore)
+        {
+            ImoId scoreId = pScore->get_id();
+
+            //green mark: open rounded at staffobj (key signature).
+            //From second instrument to last one
+            ScoreCursor cursor(pDoc, pScore);     //cursor points to clef
+            cursor.move_next();         //now points to key signature
+            ImoStaffObj* pSO = dynamic_cast<ImoStaffObj*>(*(cursor));
+            FragmentMark* mark = spInteractor->add_fragment_mark_at_staffobj(pSO);
+            mark->color(Color(0,255,0))->top(1);
+            mark->type(k_mark_open_rounded);
+
+            cursor.move_next();         //now points to time signature
+            pSO = dynamic_cast<ImoStaffObj*>(*(cursor));
+            mark = spInteractor->add_fragment_mark_at_staffobj(pSO);
+            mark->color(Color(0,255,0))->top(1);
+            mark->type(k_mark_close_rounded);
+
+            //blue curly marks: at first barline (measure 1, beat 0) and second
+            //barline  (measure 2, beat 0). The whole system
+            TimeUnits timepos = ScoreAlgorithms::get_timepos_for(pScore, 1, 0);
+            mark = spInteractor->add_fragment_mark_at_barline(scoreId, timepos);
+            mark->color(Color(0,0,255,128))->type(k_mark_open_curly);
+
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 2, 0);
+            mark = spInteractor->add_fragment_mark_at_barline(scoreId, timepos);
+            mark->color(Color(0,0,255,128))->type(k_mark_close_curly);
+
+            //red line mark: first note after first barline (measure 1, beat 0)
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 1, 0);
+            spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+
+            //magenta line mark: at interpolated timepos. Only third instrument
+            timepos += k_duration_eighth;    //at first quarter dotted note position
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(255,0,255,128))->type(k_mark_line)->top(2);
+
+            //solid blue curly mark: instruments 2,3 & 4
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 1, 1);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(0,0,255))->top(1,0)->bottom(3);
+            mark->type(k_mark_open_curly)->x_shift(-5.0);   //some space before
+
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 1, 2);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(0,0,255))->top(1,0)->bottom(3);
+            mark->type(k_mark_close_curly)->x_shift(25.0);  //some space to skip noteheads
+
+            //magenta squared mark: instruments 2,3 & 4
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 2,1);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(255,0,255,128))->top(1,0)->bottom(3);
+            mark->type(k_mark_open_squared);
+
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 2,2);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(255,0,255,128))->top(1,0)->bottom(3);
+            mark->type(k_mark_close_squared);
+
+            //green line mark: instruments 2,3 & 4
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 3,0);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(0, 255,0))->top(1,0)->bottom(3);
+            mark->type(k_mark_line);
+
+            //red rounded mark: instruments 2,3 & 4
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 4,0);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(255,0,0))->top(1,0)->bottom(3);
+            mark->type(k_mark_open_rounded);
+
+            timepos = ScoreAlgorithms::get_timepos_for(pScore, 4,1);
+            mark = spInteractor->add_fragment_mark_at_note_rest(scoreId, timepos);
+            mark->color(Color(255,0,0))->top(1,0)->bottom(3);
+            mark->type(k_mark_close_rounded);
+
+//            spInteractor->remove_mark(mark);
+        }
+    }
+
+    //Test 2 ===================
     //create empty document
 //    delete m_pPresenter;
 //    m_pPresenter = m_lomse.new_document(k_view_vertical_book);
 
-    //Add content to the document
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        //get the document to edit
-        Document* pDoc = m_pPresenter->get_document_raw_ptr();
+//    //Add content to the document
+//    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+//    {
+//        //get the document to edit
+//        Document* pDoc = m_pPresenter->get_document_raw_ptr();
+//
+//        //add an empty score to the document
+//        ImoScore* pScore = pDoc->add_score();
+//
+//        //add an instrument (an score part) to the score
+//        ImoInstrument* pInstr = pScore->add_instrument();
+//
+//        //add some content to this instrument
+//        pInstr->add_clef(k_clef_G2);			//G clef on second line
+//        pInstr->add_key_signature(k_key_D);		//D major key signature
+//        pInstr->add_time_signature(4, 4);		//4/4 time signature
+//
+//        //create the first note to insert: D4 half note
+//        //The following code shows the right way for creating nodes before
+//        //adding them to the model by using the ImFactory object (in lomse_im_factory.h).
+//        ImoNote* pNote = static_cast<ImoNote*>( ImFactory::inject(k_imo_note, pDoc) );
+//        pNote->set_note_type_and_dots(k_half, 0);
+//        pNote->set_voice(1);
+//        pNote->set_notated_pitch(k_step_D, 4, k_no_accidentals);
+//        pInstr->insert_staffobj_at(nullptr, pNote);		//append at end
+//
+//        pInstr->add_object("(r h)");            //add a rest, duration: half
+//        pInstr->add_barline(k_barline_simple);  //add barline to finish first measure
+//        pInstr->add_object("(n f4 q.)");        //add note: flat F4 dotted quarter note
+//        pInstr->add_object("(n a4 e)");         //add the third note: A4 8th note
+//
+//        //update the internal data structures
+//        pScore->end_of_changes();
+//
+////        DlgDebug dlg(this, "Low level API",
+////                     to_wx_string(pScore->get_version_string()) );
+////        dlg.ShowModal();
+//    }
 
-        //add an empty score to the document
-        ImoScore* pScore = pDoc->add_score();
-
-        //add an instrument (an score part) to the score
-        ImoInstrument* pInstr = pScore->add_instrument();
-
-        //add some content to this instrument
-        pInstr->add_clef(k_clef_G2);			//G clef on second line
-        pInstr->add_key_signature(k_key_D);		//D major key signature
-        pInstr->add_time_signature(4, 4);		//4/4 time signature
-
-        //create the first note to insert: D4 half note
-        //The following code shows the right way for creating nodes before
-        //adding them to the model by using the ImFactory object (in lomse_im_factory.h).
-        ImoNote* pNote = static_cast<ImoNote*>( ImFactory::inject(k_imo_note, pDoc) );
-        pNote->set_note_type_and_dots(k_half, 0);
-        pNote->set_voice(1);
-        pNote->set_notated_pitch(k_step_D, 4, k_no_accidentals);
-        pInstr->insert_staffobj_at(nullptr, pNote);		//append at end
-
-        pInstr->add_object("(r h)");            //add a rest, duration: half
-        pInstr->add_barline(k_barline_simple);  //add barline to finish first measure
-        pInstr->add_object("(n f4 q.)");        //add note: flat F4 dotted quarter note
-        pInstr->add_object("(n a4 e)");         //add the third note: A4 8th note
-
-        //update the internal data structures
-        pScore->end_of_changes();
-
-//        DlgDebug dlg(this, "Low level API",
-//                     to_wx_string(pScore->get_version_string()) );
-//        dlg.ShowModal();
-    }
-
-
+    //Test 1 ===================
 //    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
 //    {
 //        //get the document to edit
@@ -2316,7 +2449,7 @@ wxMenu* DocumentWindow::get_contextual_menu(bool fInitialize)
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_popup_cut(wxCommandEvent& event)
+void DocumentWindow::on_popup_cut(wxCommandEvent& WXUNUSED(event))
 {
 	WXUNUSED(event);
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
@@ -2345,7 +2478,7 @@ void DocumentWindow::on_popup_cut(wxCommandEvent& event)
 //}
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_popup_properties(wxCommandEvent& event)
+void DocumentWindow::on_popup_properties(wxCommandEvent& WXUNUSED(event))
 {
 	WXUNUSED(event);
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())

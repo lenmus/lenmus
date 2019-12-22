@@ -55,7 +55,7 @@ public:
     // implementation of virtual methods
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
-    ImoScore* prepare_aux_score(int nButton) { return NULL; }
+    ImoScore* prepare_aux_score(int WXUNUSED(nButton)) { return NULL; }
 
 
 private:

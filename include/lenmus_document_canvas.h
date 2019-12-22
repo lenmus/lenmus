@@ -242,6 +242,7 @@ protected:
 
     //key press processing
     void process_key(wxKeyEvent& event);
+    bool process_document_navigation_commands(wxKeyEvent& event);
 
     //Lomse events
     void on_play_score(SpEventInfo pEvent);
@@ -251,6 +252,7 @@ protected:
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);
+    void scroll_page(bool fUp);
 
     void delete_rendering_buffer();
     void create_rendering_buffer();

@@ -44,7 +44,7 @@
 #include "lomse_ldp_exporter.h"
 #include "lomse_autobeamer.h"
 #include "lomse_im_attributes.h"
-#include "lomse_measures_table.h"
+#include "lomse_im_measures_table.h"
 #include "lomse_score_utilities.h"
 
 
@@ -488,6 +488,8 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_line_style] = "line-style";
         m_TypeToName[k_imo_lyrics_text_info] = "lyric-text";
         m_TypeToName[k_imo_midi_info] = "midi-info";
+        m_TypeToName[k_imo_octave_shift] = "octave-shift";
+        m_TypeToName[k_imo_octave_shift_dto] = "octave-shift-dto";
         m_TypeToName[k_imo_option] = "opt";
         m_TypeToName[k_imo_page_info] = "page-info";
         m_TypeToName[k_imo_param_info] = "param";
@@ -506,6 +508,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_time_modification_dto] = "time-modificator-dto";
         m_TypeToName[k_imo_tuplet_dto] = "tuplet-dto";
         m_TypeToName[k_imo_volta_bracket_dto] = "volta_bracket_dto";
+        m_TypeToName[k_imo_wedge_dto] = "wedge_dto";
 
         // ImoRelDataObj (A)
         m_TypeToName[k_imo_beam_data] = "beam-data";
@@ -551,10 +554,12 @@ const string& ImoObj::get_name(int type)
         // ImoRelObj (A)
         m_TypeToName[k_imo_beam] = "beam";
         m_TypeToName[k_imo_chord] = "chord";
+        m_TypeToName[k_imo_octave_shift] = "octave-shift";
         m_TypeToName[k_imo_slur] = "slur";
         m_TypeToName[k_imo_tie] = "tie";
         m_TypeToName[k_imo_tuplet] = "tuplet";
         m_TypeToName[k_imo_volta_bracket] = "volta-bracket";
+        m_TypeToName[k_imo_wedge] = "wedge";
 
         //abstract and non-valid objects
         m_TypeToName[k_imo_obj] = "non-valid";
@@ -1439,6 +1444,70 @@ void ImoBeam::reorganize_after_object_deletion()
     autobeamer.do_autobeam();
 }
 
+//---------------------------------------------------------------------------------------
+int ImoBeam::get_max_staff()
+{
+    list< pair<ImoStaffObj*, ImoRelDataObj*> >& notes = get_related_objects();
+    ImoStaffObj* pSO = notes.front().first;
+    if (pSO->get_instrument()->get_num_staves() == 1)
+        return pSO->get_staff();
+
+    list< pair<ImoStaffObj*, ImoRelDataObj*> >::iterator it;
+    int iStaff = 0;
+    for (it=notes.begin(); it != notes.end(); ++it)
+    {
+        if ((*it).first->is_note())
+        {
+            ImoNote* pNote = static_cast<ImoNote*>((*it).first);
+            if (pNote->is_in_chord())
+            {
+                ImoChord* pChord = pNote->get_chord();
+                list< pair<ImoStaffObj*, ImoRelDataObj*> >& chordNotes = pChord->get_related_objects();
+                list< pair<ImoStaffObj*, ImoRelDataObj*> >::iterator itC;
+                for (itC=chordNotes.begin(); itC != chordNotes.end(); ++itC)
+                {
+                    iStaff = max(iStaff, ((*itC).first)->get_staff());
+                }
+            }
+            else
+                iStaff = max(iStaff, ((*it).first)->get_staff());
+        }
+    }
+    return iStaff;
+}
+
+//---------------------------------------------------------------------------------------
+int ImoBeam::get_min_staff()
+{
+    list< pair<ImoStaffObj*, ImoRelDataObj*> >& notes = get_related_objects();
+    ImoStaffObj* pSO = notes.front().first;
+    if (pSO->get_instrument()->get_num_staves() == 1)
+        return pSO->get_staff();
+
+    list< pair<ImoStaffObj*, ImoRelDataObj*> >::iterator it;
+    int iStaff = 10000;
+    for (it=notes.begin(); it != notes.end() && iStaff != 0; ++it)
+    {
+        if ((*it).first->is_note())
+        {
+            ImoNote* pNote = static_cast<ImoNote*>((*it).first);
+            if (pNote->is_in_chord())
+            {
+                ImoChord* pChord = pNote->get_chord();
+                list< pair<ImoStaffObj*, ImoRelDataObj*> >& chordNotes = pChord->get_related_objects();
+                list< pair<ImoStaffObj*, ImoRelDataObj*> >::iterator itC;
+                for (itC=chordNotes.begin(); itC != chordNotes.end(); ++itC)
+                {
+                    iStaff = min(iStaff, ((*itC).first)->get_staff());
+                }
+            }
+            else
+                iStaff = min(iStaff, ((*it).first)->get_staff());
+        }
+    }
+    return iStaff;
+}
+
 
 //=======================================================================================
 // ImoBezierInfo implementation
@@ -1856,7 +1925,8 @@ int ImoRelations::get_priority(int type)
         priority[k_imo_slur] = 5;
         priority[k_imo_fermata] = 6;
         priority[k_imo_text_repetition_mark] = 7;
-
+        priority[k_imo_wedge] = 8;
+        priority[k_imo_octave_shift] = 8;
         fMapInitialized = true;
     };
 
@@ -2548,8 +2618,10 @@ void ImoInstrument::reserve_space_for_lyrics(int iStaff, LUnits space)
     pInfo->add_space_for_lyrics(space);
 }
 
+
 // ImoSounds interface
 LOMSE_IMPLEMENT_IMOSOUNDS_INTERFACE(ImoInstrument);
+
 
 //---------------------------------------------------------------------------------------
 // Instrument API
@@ -5434,19 +5506,33 @@ void ImoVoltaBracket::reorganize_after_object_deletion()
 }
 
 
-////=======================================================================================
-//// ImoVoltaBracketData implementation
-////=======================================================================================
-//ImoVoltaBracketData::ImoVoltaBracketData(ImoVoltaBracketDto* pDto)
-//    : ImoRelDataObj(k_imo_volta_bracket_data)
-//    , m_fStart( pDto->is_start() )
-//{
-//}
-//
-////---------------------------------------------------------------------------------------
-//ImoVoltaBracketData::~ImoVoltaBracketData()
-//{
-//}
+//=======================================================================================
+// ImoWedge implementation
+//=======================================================================================
+void ImoWedge::reorganize_after_object_deletion()
+{
+    //Nothing to do. As a wedge involves only two objects, the wedge is removed when
+    //one of the ImoDirections is deleted.
+}
+
+//=======================================================================================
+// ImoWedgeDto implementation
+//=======================================================================================
+ImoWedgeDto::~ImoWedgeDto()
+{
+}
+
+
+//=======================================================================================
+// ImoOctaveShift implementation
+//=======================================================================================
+void ImoOctaveShift::reorganize_after_object_deletion()
+{
+    //Nothing to do. As an octave-shift involves only two objects, the wedge is removed when
+    //one of the ImoDirections is deleted.
+}
+
+
 
 
 

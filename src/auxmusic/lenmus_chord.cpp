@@ -771,6 +771,7 @@ wxString Chord::type_to_name(EChordType nType)
     if (!fNameInitialized)
     {
         // Triads
+        //name[ect_MajorTriad] = wxCONTEXT("Chord name", "Major triad");
         name[ect_MajorTriad] = _("Major triad");
         name[ect_MinorTriad] = _("Minor triad");
         name[ect_AugTriad] = _("Augmented triad");
