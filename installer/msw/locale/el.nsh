@@ -3,7 +3,7 @@
 ; Greek language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Greek} "${LENMUS_NSIS_LOCALE}\license_el_GR.txt"
+LicenseLangString license ${LANG_Greek} "${LENMUS_NSIS_LOCALE}\license_el.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Greek} "Please choose the optional components you would like to install"
@@ -33,7 +33,7 @@ LangString SHORTCUT_NAME_EXEC           ${LANG_Greek} "Run ${APP_NAME}"
 LangString SHORTCUT_NAME_UNINSTALL      ${LANG_Greek} "Uninstall ${APP_NAME}"
 
 ;other strings
-LangString OTHER_LangName             ${LANG_Greek} "el_GR"
+LangString OTHER_LangName             ${LANG_Greek} "el"
 
 ;End Greek language file
 ;=========================================================================================

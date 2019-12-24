@@ -834,20 +834,35 @@ if(WIN32)
     #For CPack using NSIS, the DESTINATION path must be relative because installation path
     #is always specified at the moment when user executes the installer
     set(INSTALL_DIR bin)
-    set(SHARED_DIR shared)
-    set(ROOT_SAMPLES ${INSTALL_DIR}/${LENMUS_PACKAGE_VERSION} )
+    set(SAMPLES_DIR .)
+    set(LOCALE_DIR .)
+    set(LOCALE_LICENSES_DIR locale)
+    set(RES_DIR res)
+    set(TEMPLATES_DIR .)
+    set(XRC_DIR .)
+    set(DOCS_DIR .)
 else()
     set(INSTALL_DIR "${ROOT_INSTALL}/bin")
-    set(SHARED_DIR ${ROOT_INSTALL_HOME})
-    set(ROOT_SAMPLES $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(LOCALE_DIR "${ROOT_INSTALL_HOME}/locale")
+    set(LOCALE_LICENSES_DIR "${ROOT_INSTALL_HOME}/locale")
+    set(RES_DIR "${ROOT_INSTALL_HOME}/res")
+    set(TEMPLATES_DIR "${ROOT_INSTALL_HOME}/templates")
+    set(XRC_DIR "${ROOT_INSTALL_HOME}/xrc")
+    set(DOCS_DIR ${ROOT_INSTALL_HOME})
 endif()
 
 message("Installation paths:")
 message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
 message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}")
 message(STATUS "Binaries (INSTALL_DIR) = ${INSTALL_DIR}")
-message(STATUS "Shared (SHARED_DIR) = ${SHARED_DIR}")
-message(STATUS "Samples (ROOT_SAMPLES) = ${ROOT_SAMPLES}" )
+message(STATUS "Samples (SAMPLES_DIR) = ${SAMPLES_DIR}" )
+message(STATUS "Locale (LOCALE_DIR) = ${LOCALE_DIR}")
+message(STATUS "Locale licenses (LOCALE_LICENSES_DIR) = ${LOCALE_LICENSES_DIR}")
+message(STATUS "Res (RES_DIR) = ${RES_DIR}")
+message(STATUS "Templates (TEMPLATES_DIR) = ${TEMPLATES_DIR}")
+message(STATUS "Xrc (XRC_DIR) = ${XRC_DIR}")
+message(STATUS "Docs (DOCS_DIR) = ${DOCS_DIR}")
 
 
 # install lenmus program
@@ -869,24 +884,24 @@ install(
         README.md
         THANKS 
     DESTINATION
-        ${SHARED_DIR}
+        ${DOCS_DIR}
 )
 
 # locale
     # ADD_LANG
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_de.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_el.txt   DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
-install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_de.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_el.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION ${LOCALE_LICENSES_DIR})
+install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION ${LOCALE_LICENSES_DIR})
 
 
 #generate include files with translations for NSIS installer 
@@ -899,17 +914,16 @@ if(WIN32)
     file(APPEND ${NSIS_TRANSLATIONS} "{LENMUS_NSIS_LOCALE}\"\n")
         # ADD_LANG
     file(APPEND ${NSIS_TRANSLATIONS} "  !include de.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} "  !include eu.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} "  !include zh_CN.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} "  !include nl.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include el.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include en.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include es.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include eu.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include fr.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include gl_ES.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} "  !include de.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} "  !include el.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include it.nsh\n")
-    file(APPEND ${NSIS_TRANSLATIONS} "  !include es.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include nl.nsh\n")
     file(APPEND ${NSIS_TRANSLATIONS} "  !include tr.nsh\n")
+    file(APPEND ${NSIS_TRANSLATIONS} "  !include zh_CN.nsh\n")
     
     message("translations for NSIS installer created: ${NSIS_TRANSLATIONS}")
 
@@ -935,25 +949,15 @@ endif()
 
 
 # locale. Common folder
-install(DIRECTORY ${LENMUS_ROOT_DIR}/locale/common  DESTINATION ${SHARED_DIR}/locale
-        FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
+#install(DIRECTORY ${LENMUS_ROOT_DIR}/locale/common  DESTINATION ${LOCALE_DIR}
+#        FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
 
 
 # locale. eBooks, help files and language catalogs for all languages
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${SHARED_DIR}/res
-        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${SHARED_DIR}/res
-        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${SHARED_DIR}/res
-        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${SHARED_DIR}/res
-        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${SHARED_DIR}/res
-        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
-
 install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
-		DESTINATION "${SHARED_DIR}"
+		DESTINATION ${LOCALE_DIR}
         FILES_MATCHING
+		    PATTERN "common/*.*"
 		    PATTERN "*.htm"
 		    #books 
 		    PATTERN "*.lmb"
@@ -978,38 +982,38 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
 		    PATTERN "ru/" EXCLUDE
 		    PATTERN "x_*" EXCLUDE
 			#exclude Sphinx related folders until editor is ready
-		    PATTERN "images/" EXCLUDE
-		    PATTERN "help/" EXCLUDE
+		    PATTERN "images/*.*" EXCLUDE
+		    PATTERN "help/*.*" EXCLUDE
 		)
 
     # resources
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${SHARED_DIR}/res
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${RES_DIR}
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${SHARED_DIR}/res
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${RES_DIR}
         FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${SHARED_DIR}/res/desktop")
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${SHARED_DIR}/res
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_DIR}/desktop")
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${SHARED_DIR}/res
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-#install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${SHARED_DIR}/res
+#install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${RES_DIR}
 #        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
 
 if (LENMUS_USE_LOMSE_SOURCES)
     #install Lomse fonts
     install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"
-            DESTINATION ${SHARED_DIR}/res/fonts
+            DESTINATION ${RES_DIR}/fonts
             FILES_MATCHING PATTERN "*.ttf" 
                            PATTERN "*.ttc"
                            PATTERN "Bravura.otf" )
 endif()
 
      # xrc
-install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${SHARED_DIR}
+install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${XRC_DIR}
         FILES_MATCHING PATTERN "*.xrc"   PATTERN "x_*" EXCLUDE)
      
      # /templates
-install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${SHARED_DIR}
+install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${TEMPLATES_DIR}
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
 
@@ -1034,7 +1038,7 @@ endif()
 # 4. User scores and samples 
 # ------------------------------------------------------------------------------
 
-install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
+install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
 	    FILES_MATCHING PATTERN "*.lms"
 	    PATTERN ".svn" EXCLUDE
 	    PATTERN "test_set" EXCLUDE

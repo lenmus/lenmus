@@ -217,7 +217,7 @@ void SlurEngraver::compute_control_points()
 
     //normalize ref. points, remove useless ones and find the peak point
     vector<UPoint> refPoint;    //intermediate ref. points, normalized
-    unsigned iPeak = 0;        //index on refPoint vector, for peak point
+    size_t iPeak = 0;        //index on refPoint vector, for peak point
     LUnits yPeak = 0.0f;
     vector<UPoint>::iterator it;
     for (it=m_dataPoints.begin(); it < m_dataPoints.end(); ++it)
@@ -235,7 +235,7 @@ void SlurEngraver::compute_control_points()
         //when slur below y is positive
         if ((m_fSlurBelow && y > 0.0f) || (!m_fSlurBelow && y < 0.0f))
         {
-            unsigned i = refPoint.size();
+            size_t i = refPoint.size();
             refPoint.push_back(UPoint(xAux, yAux));
 
             if ((i == 0)
