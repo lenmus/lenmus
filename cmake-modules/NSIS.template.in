@@ -230,15 +230,15 @@ Section  "-" "MainSection"
   ; vars initialization
   StrCpy "$STEP" "Nil" 
 
-  ;If a previous version exits delete old installed files, but no scores nor templates
+  ;If a previous version exits delete old installed files
   ;-----------------------------------------------------------------------------------
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\bin"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\books"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\docs"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\samples"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\share"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\templates"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
 
 
