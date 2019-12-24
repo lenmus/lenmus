@@ -884,7 +884,7 @@ install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATI
 install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${SHARED_DIR}/locale")
 install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${SHARED_DIR}/locale")
 install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION "${SHARED_DIR}/locale")
-#install(FILES ${LENMUS_ROOT_DIR}/installer/msw/license_el_GR.txt   DESTINATION "${SHARED_DIR}/locale")
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_el.txt   DESTINATION "${SHARED_DIR}/locale")
 install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
 install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${SHARED_DIR}/locale")
 
