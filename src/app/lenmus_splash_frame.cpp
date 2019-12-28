@@ -51,8 +51,9 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColor,
                              long splashStyle, int milliseconds,
-                             wxWindow* parent, wxWindowID id, const wxPoint& pos,
-                             const wxSize& size, long style)
+                             wxWindow* parent, wxWindowID id,
+                             const wxPoint& WXUNUSED(pos),
+                             const wxSize& WXUNUSED(size), long WXUNUSED(style))
    : wxFrame(parent, id, wxEmptyString, wxDefaultPosition, wxSize(100, 100),
              wxFRAME_SHAPED
              | wxBORDER_NONE     //wxBORDER_SIMPLE

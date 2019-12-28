@@ -31,6 +31,7 @@ using namespace lomse;
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
+#include <wx/stdpaths.h>
 
 //other
 #include <sstream>
@@ -50,100 +51,29 @@ namespace lenmus
 
 //=======================================================================================
 // Paths implementation
+//
+// Files to install are divided in groups:
+//  1. LenMus program, other binaries, and related files (INSTALL_DIR)
+//  2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
+//  3. Configuration files, user & version dependent (CONFIG_DIR)
+//  4. User scores and samples, user dependent (DATA_DIR)
+//  5. Logs and temporal files, user dependent (LOGS_DIR)
+
 //=======================================================================================
 Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     : m_appScope(appScope)
 {
-    //Receives the full path to the LenMus executable folder (/bin) and
-    //extracts the root path
+    //Save the full path to the LenMus executable
     m_sBin = sBinPath;
-    #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-        m_root.AssignDir(LENMUS_SOURCE_ROOT);
 
-        #if (LENMUS_PLATFORM_WIN32 == 1)
-            //Ignore drive letter in Windows
-            wxFileName drive;
-            drive.GetCwd();
-            m_root.SetVolume( drive.GetVolume() );
-        #endif
-
-    #else
-        m_root.AssignDir(sBinPath);
-        m_root.RemoveLastDir();
-    #endif
-    m_root.Normalize();
-
-    // ------------------------------------------------------------------------------
-    //      Linux                       Windows                 Windows (Debug)
-    //    Default <prefix> = /usr/local
-    //
-    // 0. The lenmus program
-    // ------------------------------------------------------------------------------
-    //      <prefix>                    lenmus                  lm\temp\lenmus
-    //          + /bin                      + \bin                  + \z_bin
-    //
-    // 1. Shared non-modificable files (INSTALL_ROOT):
-    // ------------------------------------------------------------------------------
-    //      <prefix>/share/lenmus       lenmus                  lm\projects\lenmus\trunk
-    //          + /xrc                      + \xrc
-    //          + /res                      + \res
-    //          + /locale                   + \locale
-    //          + /books                    + \books
-    //          + /templates                + \templates
-    //          + /test-scores              + \test-scores
-    //          + /samples
-    //
-    // 2. Logs & temporal files (ROOT_G2)
-    // ------------------------------------------------------------------------------
-    //      ~/.config/lenmus/           lenmus                  lm\temp\lenmus
-    //          + /logs                      + \logs
-    //          + /temp                      + \temp
-    //
-    // 3. Configuration files (user dependent):
-    // ------------------------------------------------------------------------------
-    //      ~/.config/lenmus/5.0/       lenmus\bin              lm\temp\lenmus
-    //
-    // 4. User data: scores, samples, etc.
-    // ------------------------------------------------------------------------------
-    //      ~/lenmus                    lenmus                  lm\projects\lenmus\trunk
-    //          + /scores                   + \scores           (INSTALL_ROOT)
-    //          + /5.0/samples              + \5.0\samples
-	//
-
-
-
-	wxFileName path;
-    wxString sVersion = m_appScope.get_version_string();
-
-#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-    //Debug version or Release version for tests.
-    //Use source tree
-    wxFileName oInstallHome = m_root;
-    wxFileName oLogsHome = m_root;
-    oLogsHome.AssignDir(sBinPath);
-    wxFileName oConfigHome = m_root;
-    oConfigHome.AssignDir(sBinPath);
-    wxFileName oDataHome = m_root;
-
-#elif (LENMUS_PLATFORM_WIN32 == 1)
-    //Windows Release version, to install
-    //Use install root. Binaries in /bin folder
-    //Configuration files in /bin, All others in install root
-
-    wxFileName oInstallHome = m_root;
-    wxFileName oLogsHome = m_root;
-    wxFileName oConfigHome = m_root;
-    oConfigHome.AppendDir("bin");
-    wxFileName oDataHome = m_root;
-
-
-#elif (LENMUS_PLATFORM_UNIX == 1)
-    //Linux Release version, to install
-    //Use install root. Binaries in /bin folder
-    //Configuration and user dependent files in /home
-
-    //get user home folder
+    //determine user home folder
+#if (LENMUS_PLATFORM_UNIX == 1)
     char* homedir = getenv("HOME");
+#elif (LENMUS_PLATFORM_WIN32 == 1)
+    char* homedir = getenv("USERPROFILE");
+#elif (LENMUS_PLATFORM_MAC == 1)
+    char* homedir = getenv("HOME");      //TODO
+#endif
     if (homedir == NULL)
     {
         struct passwd* pw = getpwuid(getuid());
@@ -152,35 +82,121 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     string sHomedir(homedir);
     wxString sHome = to_wx_string(sHomedir);
 
-    //1. Shared non-modificable files: LENMUS_INSTALL_ROOT (<prefix>/share/lenmus)
-    wxFileName oInstallHome;
-    oInstallHome.AssignDir( LENMUS_INSTALL_ROOT );
 
-    //2. Logs & temporal files: ~/.config/lenmus/
+	//determine version string
+    wxString sVersion = m_appScope.get_version_string();
+
+
+    //determine all paths, according to the following specifications:
+    //
+    // - when the program is a debug build (LENMUS_DEBUG_BUILD == 1) or is not a build
+    //   for installation (LENMUS_RELEASE_INSTALL == 0) the root of the source tree
+    //   is used. The root of the source tree is provided by configuration
+    //   macro LENMUS_SOURCE_ROOT.
+    //
+    // - Otherwise, there is a root path for each group of files, as described in the
+    //   following table:
+    //
+    // ------------------------------------------------------------------------------
+    //    Linux                       			Windows
+    //    <prefix> = /usr/local					$INSTDIR = C:\Program Files
+    //											$PROFILE = C:\Users\<user>
+    //											$DOCUMENTS = C:\Users\<user>
+    //
+    // 1. The lenmus program (INSTALL_DIR):
+    // ------------------------------------------------------------------------------
+    //      <prefix>/bin                		$INSTDIR\lenmus-x.x.x\bin
+    //
+    // 2. Shared non-modificable files (SHARED_ROOT):
+    // ------------------------------------------------------------------------------
+    //      <prefix>/share/lenmus       		$INSTDIR\lenmus-x.x.x
+    //          + /xrc                      		+ \xrc
+    //          + /res                      		+ \res
+    //          + /locale                   		+ \locale
+    //          + /books                    		+ \books
+    //          + /templates                		+ \templates
+    //          + /test-scores              		+ \test-scores
+    //          + /samples							+ \samples
+	//          + AUTHORS							+ AUTHORS
+	//          + LICENSE							+ LICENSE
+	//		    + ...								+ ...
+    //
+    // 3. User dependent configuration files (CONFIG_DIR):
+    // ------------------------------------------------------------------------------
+    //      ~/.config/lenmus/x.x.x			$PROFILE\AppData\Local\lenmus\x.x.x
+	//			+ lenmus.db						+ lenmus.db
+	//			+ lenmus.ini					+ lenmus.dini
+    //
+    // 4. User data: scores (DATA_DIR)
+    // ------------------------------------------------------------------------------
+    //      ~/lenmus/scores                 $DOCUMENTS\lenmus\scores
+	//
+    // 5. Logs & temporal files, per user (LOGS_DIR)
+    // ------------------------------------------------------------------------------
+    //      ~/lenmus/temp      				$PROFILE\AppData\Local\lenmus\temp
+    //
+	//
+    wxFileName path;
+
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    //Debug version or Release version for tests.
+    //Use source tree
+    m_installRoot.AssignDir(LENMUS_SOURCE_ROOT);
+
+    #if (LENMUS_PLATFORM_WIN32 == 1)
+        //Ignore drive letter in Windows
+        wxFileName drive;
+        drive.GetCwd();
+        m_installRoot.SetVolume( drive.GetVolume() );
+    #endif
+    m_installRoot.Normalize();
+
+    wxFileName oInstallHome(m_installRoot);
+    wxFileName oSharedHome(m_installRoot);
     wxFileName oLogsHome;
-    oLogsHome.AssignDir( sHome );
-    oLogsHome.AppendDir(".config");
-    if (!::wxDirExists( oLogsHome.GetFullPath() ))
-	{
-		oLogsHome.Mkdir(0777);
-        if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , oLogsHome.GetFullPath().ToStdString().c_str() );
-    }
-    oLogsHome.AppendDir("lenmus");
-    if (!::wxDirExists( oLogsHome.GetFullPath() ))
-	{
-		oLogsHome.Mkdir(0777);
-        if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , oLogsHome.GetFullPath().ToStdString().c_str() );
-    }
+    oLogsHome.AssignDir(sBinPath);
+    wxFileName oConfigHome;
+    oConfigHome.AssignDir(sBinPath);
+    wxFileName oDataHome(m_installRoot);
 
-    //3. Configuration files: ~/.config/lenmus/5.x/
+#elif (LENMUS_PLATFORM_UNIX == 1)
+    //Linux Release version
+
+    //1. LenMus program, other binaries, and related files (INSTALL_DIR)
+    //      /usr/local/bin
+    m_installRoot.AssignDir( LENMUS_INSTALL_ROOT );
+    m_installRoot.Normalize();
+    wxFileName oInstallHome(m_installRoot);
+    LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
+
+    //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
+    //      /usr/local/share/lenmus/x.x.x/
+    wxFileName oSharedHome(m_installRoot);
+    oSharedHome.AppendDir("share");
+    oSharedHome.AppendDir("lenmus");
+    oSharedHome.AppendDir(sVersion);
+    LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );
+
+    //3. Configuration files, user & version dependent (CONFIG_DIR)
+    //      ~/.config/lenmus/x.x.x/
     wxFileName oConfigHome;
     oConfigHome.AssignDir( sHome );
     oConfigHome.AppendDir(".config");
+    if (!::wxDirExists( oConfigHome.GetFullPath() ))
+	{
+		oConfigHome.Mkdir(0777);
+        if (!::wxDirExists( oConfigHome.GetFullPath() ))
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oConfigHome.GetFullPath().ToStdString().c_str() );
+    }
     oConfigHome.AppendDir("lenmus");
+    if (!::wxDirExists( oConfigHome.GetFullPath() ))
+	{
+		oConfigHome.Mkdir(0777);
+        if (!::wxDirExists( oConfigHome.GetFullPath() ))
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oConfigHome.GetFullPath().ToStdString().c_str() );
+    }
     oConfigHome.AppendDir(sVersion);
     if (!::wxDirExists( oConfigHome.GetFullPath() ))
 	{
@@ -189,8 +205,10 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oConfigHome.GetFullPath().ToStdString().c_str() );
     }
+    LOMSE_LOG_INFO("Config root = %s", oConfigHome.GetFullPath().ToStdString().c_str() );
 
-    //4. User data: ~/lenmus/
+    //4. User scores, user dependent (DATA_DIR)
+    //      ~/lenmus/scores/
     wxFileName oDataHome;
     oDataHome.AssignDir( sHome );
     oDataHome.AppendDir("lenmus");
@@ -201,157 +219,155 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oDataHome.GetFullPath().ToStdString().c_str() );
     }
+    oDataHome.AppendDir("scores");
+    LOMSE_LOG_INFO("Data root = %s", oDataHome.GetFullPath().ToStdString().c_str() );
+
+    //5. Logs and temporal files, user dependent (LOGS_DIR)
+    //      ~/lenmus/temp/
+    wxFileName oLogsHome;
+    oLogsHome.AssignDir( sHome );
+    oLogsHome.AppendDir("lenmus");
+    oLogsHome.AppendDir("temp");
+    if (!::wxDirExists( oLogsHome.GetFullPath() ))
+	{
+		oLogsHome.Mkdir(0777);
+        if (!::wxDirExists( oLogsHome.GetFullPath() ))
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oLogsHome.GetFullPath().ToStdString().c_str() );
+    }
+    LOMSE_LOG_INFO("Logs root = %s\n", oLogsHome.GetFullPath().ToStdString().c_str() );
+
+#elif (LENMUS_PLATFORM_WIN32 == 1)
+    //Windows Release version
+
+    wxFileName oInstallHome = m_installRoot;
+    wxFileName oLogsHome = m_installRoot;
+    wxFileName oConfigHome = m_installRoot;
+    oConfigHome.AppendDir("bin");
+    wxFileName oDataHome = m_installRoot;
+
+    wxStandardPaths& stdPaths = wxStandardPaths::Get();
+    LOMSE_LOG_INFO("LocalDataDir = %s",
+                   stdPaths.GetUserLocalDataDir().ToStdString().c_str() );
+    LOMSE_LOG_INFO("UserDataDir = %s",
+                   stdPaths.GetUserDataDir().ToStdString().c_str() );
+    LOMSE_LOG_INFO("DocumentsDir = %s",
+                   stdPaths.GetDocumentsDir().ToStdString().c_str() );
+
+    //1. LenMus program, other binaries, and related files (INSTALL_DIR)
+    //      "C:\Program Files\lenmus-x.x.x"
+    wxFileName oInstallHome;
+    oInstallHome.AssignDir( LENMUS_INSTALL_ROOT );
+
+    //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
+
+    //3. Configuration files, user & version dependent (CONFIG_DIR)
+    //      "C:\Users\<user>\AppData\Local\lenmus\x.x.x\"
+    wxFileName oConfigHome( stdPaths.GetUserLocalDataDir() );
+    oConfigHome.AppendDir("lenmus");
+    if (!::wxDirExists( oConfigHome.GetFullPath() ))
+	{
+		oConfigHome.Mkdir(0777);
+        if (!::wxDirExists( oConfigHome.GetFullPath() ))
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oConfigHome.GetFullPath().ToStdString().c_str() );
+    }
+    oConfigHome.AppendDir(sVersion);
+    if (!::wxDirExists( oConfigHome.GetFullPath() ))
+	{
+		oConfigHome.Mkdir(0777);
+        if (!::wxDirExists( oConfigHome.GetFullPath() ))
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oConfigHome.GetFullPath().ToStdString().c_str() );
+    }
+
+    //4. User scores and samples, user dependent (DATA_DIR)
+    //      "C:\Users\<user>\lenmus\"
+    wxFileName oDataHome( stdPaths.GetUserLocalDataDir() );
+    oDataHome.AssignDir( sHome );
+    oDataHome.AppendDir("lenmus");
+    if (!::wxDirExists( oDataHome.GetFullPath() ))
+	{
+		oDataHome.Mkdir(0777);
+        if (!::wxDirExists( oDataHome.GetFullPath() ))
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oDataHome.GetFullPath().ToStdString().c_str() );
+    }
+
+    //5. Logs and temporal files, user dependent (LOGS_DIR)
+    //      "C:\Users\<user>\lenmus\"
+    wxFileName oLogsHome(oConfigHome);
+
 #endif
 
-    // Group 1. Software and essentials
+    //determine paths for subfolders
 
-    path = oInstallHome;
+    // Group 2 subfolders. Shared non-modificable files
+
+    path = oSharedHome;
     path.AppendDir("xrc");
     m_sXrc = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("res");
     path.AppendDir("icons");
     m_sImages = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("res");
     path.AppendDir("cursors");
     m_sCursors = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("res");
     path.AppendDir("sounds");
     m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("locale");
     m_sLocaleRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("templates");
     m_sTemplates = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("test-scores");
     m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oInstallHome;
+    path = oSharedHome;
     path.AppendDir("res");
     path.AppendDir("fonts");
     m_sFonts = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-
-    // Group 2. Logs and temporal files
-
-    path = oLogsHome;
-    path.AppendDir("temp");
-    m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    if (!::wxDirExists( path.GetFullPath() ))
-	{
-		path.Mkdir(0777);
-        if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , path.GetFullPath().ToStdString().c_str() );
-    }
-
-    path = oLogsHome;
-    path.AppendDir("logs");
-    m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    if (!::wxDirExists( path.GetFullPath() ))
-	{
-		path.Mkdir(0777);
-        if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , path.GetFullPath().ToStdString().c_str() );
-    }
+    path = oSharedHome;
+    path.AppendDir("samples");
+    m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
-    // Group 3. Configuration files, user dependent
+    // Group 3 subfolders. Configuration files, user & version dependent
 
     path = oConfigHome;
     m_sConfig = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
-    // Group 4. User scores and samples
+    // Group 4 subfolders. User data: scores
 
     path = oDataHome;
-//TODO: Else code fails: no permision to create folders if they do not exist
-#if 1
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-#else
-    path.AppendDir("scores");
-    m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    if (!::wxDirExists( path.GetFullPath() ))
-	{
-		path.Mkdir(0777);
-        if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , path.GetFullPath().ToStdString().c_str() );
-    }
-    path.AppendDir(sVersion);
-    if (!::wxDirExists( path.GetFullPath() ))
-	{
-		path.Mkdir(0777);
-        if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , path.GetFullPath().ToStdString().c_str() );
-    }
-    path.AppendDir("samples");
-    m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    if (!::wxDirExists( path.GetFullPath() ))
-	{
-		path.Mkdir(0777);
-        if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , path.GetFullPath().ToStdString().c_str() );
-    }
-#endif
-}
 
-//---------------------------------------------------------------------------------------
-void Paths::create_folders()
-{
-	//create temp folder if it does not exist. Otherwise the program will
-    //fail when the user tries to open an eMusicBook
-    if (!::wxDirExists(m_sTemp))
-	{
-		//bypass for bug in unicode build (GTK) for wxMkdir
-        //::wxMkDir(m_sTemp.wx_str());
-		wxFileName oFN(m_sTemp);
-		oFN.Mkdir(0777);
-        if (!::wxDirExists(m_sTemp))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , oFN.GetFullPath().ToStdString().c_str() );
-    }
 
-#if (LENMUS_PLATFORM_UNIX == 1)
-    //create folders if they don't exist
-    if (!::wxDirExists(m_sLogs))
-	{
-		wxFileName oFN(m_sLogs);
-		oFN.Mkdir(0777);
-        if (!::wxDirExists(m_sLogs))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , oFN.GetFullPath().ToStdString().c_str() );
-    }
-    if (!::wxDirExists(m_sConfig))
-	{
-		wxFileName oFN(m_sConfig);
-		oFN.Mkdir(0777);
-        if (!::wxDirExists(m_sConfig))
-            LOMSE_LOG_ERROR("Failed to create '%s'."
-                            , oFN.GetFullPath().ToStdString().c_str() );
-    }
-#endif
+    // Group 5 subfolders. Logs and temporal files
+
+    path = oLogsHome;
+    m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 }
 
 //---------------------------------------------------------------------------------------
 Paths::~Paths()
 {
-    //SaveUserPreferences();
 }
 
 //---------------------------------------------------------------------------------------
@@ -421,8 +437,17 @@ void Paths::log_paths()
                    oLogsHome.GetFullPath().ToStdString().c_str() );
     oLogsHome.AppendDir(".config");
     oLogsHome.AppendDir("lenmus");
-    LOMSE_LOG_INFO("final oLogsHome = %s",
+    LOMSE_LOG_INFO("final oLogsHome = %s\n",
                    oLogsHome.GetFullPath().ToStdString().c_str() );
+
+    wxStandardPaths& stdPaths = wxStandardPaths::Get();
+    LOMSE_LOG_INFO("LocalDataDir = %s",
+                   stdPaths.GetUserLocalDataDir().ToStdString().c_str() );
+    LOMSE_LOG_INFO("UserDataDir = %s",
+                   stdPaths.GetUserDataDir().ToStdString().c_str() );
+    LOMSE_LOG_INFO("DocumentsDir = %s",
+                   stdPaths.GetDocumentsDir().ToStdString().c_str() );
+
     //END_DBG -----------------------------------------------------------------------
 #endif
 }
@@ -448,33 +473,6 @@ string Paths::dump_paths()
     s << "Fonts = " << to_std_string(GetFontsPath()) << endl;
     return s.str();
 }
-
-////---------------------------------------------------------------------------------------
-//void Paths::LoadUserPreferences()
-//{
-//    // load settings form user congiguration data or default values
-//
-//	// Only the path for group 4 files can be selected by the user
-//    pPrefs->Read("/Paths/Scores", &m_sScores);
-//
-//}
-//
-////! save path settings in user configuration data
-//void Paths::SaveUserPreferences()
-//{
-//    //pPrefs->Write("/Paths/Locale", m_sLocaleRoot);
-//    pPrefs->Write("/Paths/Scores", m_sScores);
-//    //pPrefs->Write("/Paths/Temp", m_sTemp);
-//    //pPrefs->Write("/Paths/Xrc", m_sXrc);
-//    //pPrefs->Write("/Paths/Images", m_sImages);
-//    //pPrefs->Write("/Paths/Sounds", m_sSounds);
-//    //pPrefs->Write("/Paths/Config", m_sConfig);
-//    //pPrefs->Write("/Paths/Logs", m_sLogs);
-//
-//    // bin path is not user configurable
-//    //pPrefs->Write("/Paths/Bin", m_sBin);
-//
-//}
 
 //---------------------------------------------------------------------------------------
 void Paths::ClearTempFiles()

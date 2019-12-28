@@ -112,7 +112,7 @@ static BarlinesDBEntry m_tBarlinesDB[k_max_barline+1];
 
 
 //---------------------------------------------------------------------------------------
-GrpBarlines::GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer,
+GrpBarlines::GrpBarlines(ToolPage* pParent, wxBoxSizer* WXUNUSED(pMainSizer),
                              int nValidMouseModes)
         : ToolGroup(pParent, k_group_type_tool_selector, pParent->GetColors(),
                       nValidMouseModes)
@@ -154,7 +154,7 @@ void GrpBarlines::create_controls_in_group(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBarlines::OnBarlinesList(wxCommandEvent& event)
+void GrpBarlines::OnBarlinesList(wxCommandEvent& WXUNUSED(event))
 {
     //Notify owner page about the tool change
     WXUNUSED(event);
@@ -182,15 +182,16 @@ void GrpBarlines::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBarlines::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpBarlines::synchronize_with_cursor(bool WXUNUSED(fEnable),
+                                          DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(true);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBarlines::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+void GrpBarlines::synchronize_with_selection(bool WXUNUSED(fEnable),
+                                             SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(true);
@@ -218,7 +219,7 @@ void GrpBarlines::synchronize_with_selection(bool fEnable,
 // GrpBarlines2 implementation
 //=======================================================================================
 GrpBarlines2::GrpBarlines2(ToolPage* pParent, wxBoxSizer* pMainSizer,
-                           int nValidMouseModes)
+                           int WXUNUSED(nValidMouseModes))
     : ToolButtonsGroup(pParent, k_group_type_options, k_num_barline_buttons,
                          lmTBG_ONE_SELECTED, pMainSizer,
                          k_id_button_barline, k_tool_barline, pParent->GetColors())
@@ -309,7 +310,7 @@ void GrpBarlines2::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBarlines2::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpBarlines2::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);

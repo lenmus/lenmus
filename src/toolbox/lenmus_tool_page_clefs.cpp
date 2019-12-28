@@ -177,7 +177,7 @@ wxBEGIN_EVENT_TABLE(GrpClefType, ToolGroup)
 wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
-GrpClefType::GrpClefType(ToolPage* pParent, wxBoxSizer* pMainSizer,
+GrpClefType::GrpClefType(ToolPage* pParent, wxBoxSizer* WXUNUSED(pMainSizer),
                              int nValidMouseModes)
         : ToolGroup(pParent, k_group_type_tool_selector, pParent->GetColors(),
                       nValidMouseModes)
@@ -229,7 +229,7 @@ void GrpClefType::create_controls_in_group(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpClefType::OnClefList(wxCommandEvent& event)
+void GrpClefType::OnClefList(wxCommandEvent& WXUNUSED(event))
 {
     //Notify owner page about the tool change
     WXUNUSED(event);
@@ -260,15 +260,16 @@ void GrpClefType::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpClefType::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpClefType::synchronize_with_cursor(bool WXUNUSED(fEnable),
+                                          DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(true);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpClefType::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+void GrpClefType::synchronize_with_selection(bool WXUNUSED(fEnable),
+                                             SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(true);
@@ -377,15 +378,16 @@ void GrpTimeType::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpTimeType::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpTimeType::synchronize_with_cursor(bool WXUNUSED(fEnable),
+                                          DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(true);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpTimeType::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+void GrpTimeType::synchronize_with_selection(bool WXUNUSED(fEnable),
+                                             SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(true);
@@ -410,7 +412,7 @@ static GrpKeyType::lmKeysData m_tMinorKeys[k_num_minor_keys];
 
 
 //---------------------------------------------------------------------------------------
-GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer,
+GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* WXUNUSED(pMainSizer),
                            int nValidMouseModes)
         : ToolGroup(pParent, k_group_type_tool_selector, pParent->GetColors(),
                       nValidMouseModes)
@@ -465,7 +467,7 @@ void GrpKeyType::create_controls_in_group(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpKeyType::OnKeyType(wxCommandEvent& event)
+void GrpKeyType::OnKeyType(wxCommandEvent& WXUNUSED(event))
 {
     //load list box with the appropiate keys for selected key type
 
@@ -476,7 +478,7 @@ void GrpKeyType::OnKeyType(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpKeyType::OnKeyList(wxCommandEvent& event)
+void GrpKeyType::OnKeyList(wxCommandEvent& WXUNUSED(event))
 {
     //An item has been selected in keys combo. Notify owner page about the tool change
 
@@ -552,15 +554,15 @@ void GrpKeyType::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpKeyType::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpKeyType::synchronize_with_cursor(bool WXUNUSED(fEnable), DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(true);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpKeyType::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+void GrpKeyType::synchronize_with_selection(bool WXUNUSED(fEnable),
+                                            SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(true);

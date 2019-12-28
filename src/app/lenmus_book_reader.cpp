@@ -259,7 +259,7 @@ wxZipEntry* BooksCollection::find_entry(const wxString& name)
 }
 
 //---------------------------------------------------------------------------------------
-bool BooksCollection::add_lms_pages(wxZipInputStream& zip, const wxString& sBookPath)
+bool BooksCollection::add_lms_pages(wxZipInputStream& WXUNUSED(zip), const wxString& sBookPath)
 {
 	map<wxString, wxZipEntry*>::const_iterator it;
     for (it = m_bookEntries.begin(); it != m_bookEntries.end(); ++it)
@@ -281,7 +281,7 @@ bool BooksCollection::add_lms_pages(wxZipInputStream& zip, const wxString& sBook
 }
 
 //---------------------------------------------------------------------------------------
-bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBookPath)
+bool BooksCollection::add_lmd_pages(wxZipInputStream& WXUNUSED(zip), const wxString& sBookPath)
 {
 	map<wxString, wxZipEntry*>::const_iterator it;
     for (it = m_bookEntries.begin(); it != m_bookEntries.end(); ++it)
@@ -303,7 +303,7 @@ bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBook
 }
 
 //---------------------------------------------------------------------------------------
-void BooksCollection::determine_book_format(wxZipInputStream& zip)
+void BooksCollection::determine_book_format(wxZipInputStream& WXUNUSED(zip))
 {
     wxZipEntry* pEntry = find_entry("mimetype");
     if (pEntry)
@@ -662,7 +662,7 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
 }
 
 //---------------------------------------------------------------------------------------
-wxString BooksCollection::FindPageById(int id)
+wxString BooksCollection::FindPageById(int WXUNUSED(id))
 {
     //size_t cnt = m_contents.size();
     //for (size_t i = 0; i < cnt; i++)

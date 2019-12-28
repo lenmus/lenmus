@@ -38,13 +38,6 @@
 # location by specifying option CMAKE_INSTALL_PREFIX:
 #   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix ...
 #
-# By default, lenmus is installed in a version subfolder, such as
-# /usr/local/share/lenmus/5.3/<files>, so that several lenmus versions can
-# coexist in your machine. But if this is not required, you can install without 
-# the version folder (i.e. to /usr/local/share/lenmus/<files>) by setting option
-# LENMUS_USE_VERSION_FOLDER to OFF:
-#   cmake -DLENMUS_USE_VERSION_FOLDER:BOOL=OFF ...
-#
 # The default folder (in Linux) for installing man pages is
 #   /usr/share/man
 # You can specify other location by using option MAN_INSTALL_DIR:
@@ -127,9 +120,6 @@ endif()
 set( CMAKE_MODULE_PATH    "${LENMUS_ROOT_DIR}/cmake-modules" )
 
 # some options for building
-OPTION(LENMUS_USE_VERSION_FOLDER
-    "Install LenMus using a version subfolder (i.e. /usr/local/share/lenmus/5.3/)"
-    ON)
 OPTION(LENMUS_USE_LOMSE_SOURCES
     "Build LenMus using Lomse sources instead of using the library"
     ON)
@@ -238,7 +228,7 @@ message(STATUS "SYSTEM_ARCHITECTURE = ${SYSTEM_ARCHITECTURE}" )
 #   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
 #
 # Defaults:
-#   Linux:      "/usr/local/lenmus"
+#   Linux:      "/usr/local"
 #   Windows:    "C:/Program Files (x86)/lenmus" or "C:/Program Files/lenmus"
 # ------------------------------------------------------------------------------
 set(LENMUS_USE_SOURCE_TREE 0)
@@ -262,19 +252,17 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT
 endif()
 message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
 set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
+set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL}/" )	#LENMUS_INSTALL_ROOT is needed for lenmus_config.h
 
+
+#set shared folder
 if( UNIX )
-    if (LENMUS_USE_VERSION_FOLDER)
-        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
-    else()
-        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME} )
-    endif()
+	set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
 elseif( WIN32 )
-    set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
+    set(SHARED_DIR ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )	#LENMUS_INSTALL_ROOT is needed for lenmus_config.h
 
-message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}" )
+message(STATUS "SHARED_DIR = ${SHARED_DIR}" )
 
 
 
@@ -305,7 +293,7 @@ message("Checking for LenMus dependencies:")
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
     find_package(UnitTest++)
-    if(0) #UNITTEST++_FOUND)
+    if(UNITTEST++_FOUND)
         include_directories(${UNITTEST++_INCLUDE_DIR})
         link_libraries( ${UNITTEST++_LIBRARY} )
         message(STATUS "UnitTest++ found: libraries= ${UNITTEST++_LIBRARY}" )
@@ -466,7 +454,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 if (LENMUS_USE_LOMSE_SOURCES)
     #define path were fonts will be installed.
-    set( FONTS_PATH   "${ROOT_INSTALL_HOME}/res/fonts" )
+    set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
 
     # include Lomse build options and create the include file "lomse_config.h"
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
@@ -822,14 +810,14 @@ message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
 #  ROOT_INSTALL:
 #       path to install binaries: i.e.:
 #       '/usr/local'
-#       'C:\Program Files\LenMus'
-#  ROOT_INSTALL_HOME:
+#       'C:\Program Files\lenmus'
+#  SHARED_DIR:
 #       path to install shared files i.e.:
 #           '/usr/local/share/lenmus/5.3/'
-#           'C:\Program Files\LenMus'
+#           'C:\Program Files\lenmus'
 #///////////////////////////////////////////////////////////////////////////////
 
-#Make paths relative
+# set installation paths
 if(WIN32)
     #For CPack using NSIS, the DESTINATION path must be relative because installation path
     #is always specified at the moment when user executes the installer
@@ -844,36 +832,35 @@ if(WIN32)
 else()
     set(INSTALL_DIR "${ROOT_INSTALL}/bin")
     set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(LOCALE_DIR "${ROOT_INSTALL_HOME}/locale")
-    set(LOCALE_LICENSES_DIR "${ROOT_INSTALL_HOME}/locale")
-    set(RES_DIR "${ROOT_INSTALL_HOME}/res")
-    set(TEMPLATES_DIR "${ROOT_INSTALL_HOME}/templates")
-    set(XRC_DIR "${ROOT_INSTALL_HOME}/xrc")
-    set(DOCS_DIR ${ROOT_INSTALL_HOME})
+    set(LOCALE_DIR ${SHARED_DIR})
+    set(LOCALE_LICENSES_DIR ${SHARED_DIR})
+    set(RES_DIR "${SHARED_DIR}/res")
+    set(TEMPLATES_DIR ${SHARED_DIR})
+    set(XRC_DIR ${SHARED_DIR})
+    set(DOCS_DIR ${SHARED_DIR})
 endif()
 
 message("Installation paths:")
 message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
-message(STATUS "ROOT_INSTALL_HOME = ${ROOT_INSTALL_HOME}")
-message(STATUS "Binaries (INSTALL_DIR) = ${INSTALL_DIR}")
-message(STATUS "Samples (SAMPLES_DIR) = ${SAMPLES_DIR}" )
-message(STATUS "Locale (LOCALE_DIR) = ${LOCALE_DIR}")
-message(STATUS "Locale licenses (LOCALE_LICENSES_DIR) = ${LOCALE_LICENSES_DIR}")
-message(STATUS "Res (RES_DIR) = ${RES_DIR}")
-message(STATUS "Templates (TEMPLATES_DIR) = ${TEMPLATES_DIR}")
-message(STATUS "Xrc (XRC_DIR) = ${XRC_DIR}")
-message(STATUS "Docs (DOCS_DIR) = ${DOCS_DIR}")
+message(STATUS "INSTALL_DIR = ${INSTALL_DIR}")
+message(STATUS "SHARED_DIR = ${SHARED_DIR}")
+message(STATUS "SAMPLES_DIR = ${SAMPLES_DIR}" )
+message(STATUS "LOCALE_DIR = ${LOCALE_DIR}")
+message(STATUS "LOCALE_LICENSES_DIR = ${LOCALE_LICENSES_DIR}")
+message(STATUS "RES_DIR = ${RES_DIR}")
+message(STATUS "TEMPLATES_DIR = ${TEMPLATES_DIR}")
+message(STATUS "XRC_DIR = ${XRC_DIR}")
+message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 
-
-# install lenmus program
+# 0. LenMus program and other binary and related files (INSTALL_DIR)
+# ------------------------------------------------------------------------------
 install(TARGETS ${LENMUS}
 		RUNTIME DESTINATION ${INSTALL_DIR} )
 
-
-# 1. Software and essentials (ROOT_INSTALL_HOME):
+# 1. non-modificable data, which must be shared among users on the computer (SHARED_DIR):
 # ------------------------------------------------------------------------------
 
-# files in root folder
+# text files in root folder (license, etc.)
 install(
     FILES
         AUTHORS
@@ -978,12 +965,8 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
 		    PATTERN "*~" EXCLUDE
 		    #exclude unsupported languages
 		        # ADD_LANG
-		    PATTERN "kk/" EXCLUDE
-		    PATTERN "ru/" EXCLUDE
-		    PATTERN "x_*" EXCLUDE
-			#exclude Sphinx related folders until editor is ready
-		    PATTERN "images/*.*" EXCLUDE
-		    PATTERN "help/*.*" EXCLUDE
+		    PATTERN "kk/*.*" EXCLUDE
+		    PATTERN "ru/*.*" EXCLUDE
 		)
 
     # resources
@@ -1001,18 +984,17 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
 
 if (LENMUS_USE_LOMSE_SOURCES)
     #install Lomse fonts
-    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"
-            DESTINATION ${RES_DIR}/fonts
+    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
             FILES_MATCHING PATTERN "*.ttf" 
                            PATTERN "*.ttc"
                            PATTERN "Bravura.otf" )
-endif()
+endif(LENMUS_USE_LOMSE_SOURCES)
 
      # xrc
 install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${XRC_DIR}
         FILES_MATCHING PATTERN "*.xrc"   PATTERN "x_*" EXCLUDE)
      
-     # /templates
+     # templates
 install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${TEMPLATES_DIR}
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
@@ -1035,7 +1017,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 
-# 4. User scores and samples 
+# 4. samples 
 # ------------------------------------------------------------------------------
 
 install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
@@ -1100,7 +1082,7 @@ elseif(WIN32)
     #some paths used while building the installer
     set(CPACK_LENMUS_ROOT "${LENMUS_ROOT_DIR}")
     set(CPACK_LENMUS_BUILD_INSTALLER_PATH "${CMAKE_BINARY_DIR}")
-    set(CPACK_LENMUS_INSTALL_PATH "${ROOT_INSTALL_HOME}")
+    set(CPACK_LENMUS_INSTALL_PATH "${SHARED_DIR}")
 
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
 	message("Installation default path: ${CPACK_LENMUS_INSTALL_PATH}" )

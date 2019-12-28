@@ -75,9 +75,10 @@ class HtmlSpacerCell : public wxHtmlCell
 {
     public:
         HtmlSpacerCell(int width) : wxHtmlCell() {m_Width = width; }
-        void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2,
-            wxHtmlRenderingInfo& info) {};
-        void Layout(int w)
+        void Draw(wxDC& WXUNUSED(dc), int WXUNUSED(x), int WXUNUSED(y),
+                  int WXUNUSED(view_y1), int WXUNUSED(view_y2),
+                  wxHtmlRenderingInfo& WXUNUSED(info)) {};
+        void Layout(int WXUNUSED(w))
             { wxHtmlCell::Layout(m_Width); }
 
     wxDECLARE_NO_COPY_CLASS(HtmlSpacerCell);
@@ -561,7 +562,7 @@ void ContentBoxCtrol::SetSelectionBackground(const wxColour& col)
 // ContentBoxCtrol appearance
 // ----------------------------------------------------------------------------
 
-wxColour ContentBoxCtrol::GetSelectedTextColour(const wxColour& colFg) const
+wxColour ContentBoxCtrol::GetSelectedTextColour(const wxColour& WXUNUSED(colFg)) const
 {
     return *wxWHITE;
 }
@@ -697,7 +698,7 @@ wxCoord ContentBoxCtrol::OnMeasureItem(size_t n) const
     return cell->GetHeight() + cell->GetDescent(); // + 4;
 }
 
-void ContentBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const
+void ContentBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& WXUNUSED(rect), size_t n) const
 {
     if ( IsSelected(n) )
     {
@@ -783,7 +784,7 @@ void ContentBoxCtrol::OnPaint(wxPaintEvent& WXUNUSED(event))
 // ContentBoxCtrol keyboard/mouse handling
 // ============================================================================
 
-void ContentBoxCtrol::DoHandleItemClick(int item, int flags)
+void ContentBoxCtrol::DoHandleItemClick(int item, int WXUNUSED(flags))
 {
     // has anything worth telling the client code about happened?
     bool notify = false;

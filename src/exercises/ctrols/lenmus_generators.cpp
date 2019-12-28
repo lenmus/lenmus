@@ -562,7 +562,7 @@ bool ProblemSpace::is_deck_loaded(long nDeckID)
 {
     //returns true if set is already loaded in this space
 
-    std::list<long>::iterator it = std::find(m_decks.begin(), m_decks.end(), m_nDeckID);
+    std::list<long>::iterator it = std::find(m_decks.begin(), m_decks.end(), nDeckID);
     return it != m_decks.end();
 }
 
@@ -1273,12 +1273,10 @@ void LeitnerManager::update_question_for_learning(int iQ, bool fSuccess, wxTimeS
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::update_question_for_practising(int iQ, bool fSuccess, wxTimeSpan tsResponse)
+void LeitnerManager::update_question_for_practising(int WXUNUSED(iQ), bool fSuccess,
+                                                    wxTimeSpan WXUNUSED(tsResponse))
 {
     //in practise mode no performance data is updated/saved. Only update displayed statistics
-
-    WXUNUSED(iQ);
-    WXUNUSED(tsResponse);
 
     if (fSuccess)
         m_nRight++;
@@ -1545,11 +1543,9 @@ int QuizManager::ChooseQuestion()
 }
 
 //---------------------------------------------------------------------------------------
-void QuizManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)
+void QuizManager::UpdateQuestion(int WXUNUSED(iQ), bool fSuccess,
+                                 wxTimeSpan WXUNUSED(tsResponse))
 {
-    WXUNUSED(iQ);
-    WXUNUSED(tsResponse);
-
     if (fSuccess)
         m_nRight[m_nCurrentTeam]++;
     else

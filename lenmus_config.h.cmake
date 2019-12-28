@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2019 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,21 +36,17 @@
 
 
 //--------------------------------------------------------------------------------------
+//  Paths only used during program develpment and for unit tests.
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 //  Paths and installation folders
 //  
-//  LENMUS_SOURCE_ROOT  must always point to source tree root
-//  LENMUS_INSTALL_ROOT root to install shared non-modificable files (Linux only).
+//  LENMUS_SOURCE_ROOT must always point to source tree root. It is only used during
+//  program develpment and for unit tests.
 //
-//  In Debug build always use source tree. Binaries, config and logs in z_bin
-//  In Release mode, it depends on LENMUS_RELEASE_INSTALL:
-//
-//  a) LENMUS_RELEASE_INSTALL == 0
-//      Release build but include Debug menu and use source tree. 
-//      Binaries, config and logs in z_bin.
-//
-//  b) LENMUS_RELEASE_INSTALL == 1
-//      Release build, to install or distribute.
-//      Use install root. No debug menu.
+//  LENMUS_INSTALL_ROOT must point to the folder in which the installer places the
+//	lenmus executable. I've not found a simple way of determining this path at run time,
+//  so it is simpler to have this information here.
 //
 //--------------------------------------------------------------------------------------
 #define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@
@@ -59,20 +55,21 @@
 
 
 //---------------------------------------------------------------------------------------
-// build type
+// Build type
 //
 // LENMUS_DEBUG_BUILD determines if it is a Debug or a Release build.
 //
-// For Debug buils, LENMUS_RELEASE_INSTALL determines if it is a build for testing or
+// For Debug builds, LENMUS_RELEASE_INSTALL determines if it is a build for testing or
 // for installation/distribution:
 //
-// a) LENMUS_RELEASE_INSTALL == 0 means it is a Release build for testing. 
-//    The LENMUS_SOURCE_ROOT tree folders are used and debug menu is included.
+//  a) LENMUS_RELEASE_INSTALL == 0
+//      Release build but include Debug menu.
+//      Uses files from source tree.
 //
-// b) LENMUS_RELEASE_INSTALL == 1 means it is a Release build for 
-//    installation/distribution. No debug menu is included. In Linux, the
-//    LENMUS_INSTALL_ROOT is used for shared non-modificable files and all others
-//    go to /home folder. In Windows, the installation root is used.
+//  b) LENMUS_RELEASE_INSTALL == 1
+//      Release build, to install or distribute. No debug menu.
+//      Uses install roots.
+//
 //---------------------------------------------------------------------------------------
 #define LENMUS_DEBUG_BUILD          @LENMUS_DEBUG_BUILD@
 #define LENMUS_RELEASE_INSTALL      @LENMUS_RELEASE_INSTALL@

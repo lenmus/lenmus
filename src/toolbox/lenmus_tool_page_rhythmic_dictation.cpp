@@ -134,7 +134,7 @@ wxBEGIN_EVENT_TABLE(GrpRhythmicDictation, ToolGroup)
 wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
-GrpRhythmicDictation::GrpRhythmicDictation(ToolPage* pParent, wxBoxSizer* pMainSizer)
+GrpRhythmicDictation::GrpRhythmicDictation(ToolPage* pParent, wxBoxSizer* WXUNUSED(pMainSizer))
         : ToolGroup(pParent, k_group_type_tool_selector, pParent->GetColors())
         , m_selectedToolID(k_tool_none)
 {
@@ -247,13 +247,13 @@ void GrpRhythmicDictation::on_options_button(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpRhythmicDictation::update_tools_info(ToolsInfo* pInfo)
+void GrpRhythmicDictation::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 {
     //TODO: define ToolsInfo options for this group
 }
 
 //---------------------------------------------------------------------------------------
-void GrpRhythmicDictation::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpRhythmicDictation::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
@@ -261,7 +261,7 @@ void GrpRhythmicDictation::synchronize_with_cursor(bool fEnable, DocCursor* pCur
 
 //---------------------------------------------------------------------------------------
 void GrpRhythmicDictation::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+                                                  SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(fEnable);

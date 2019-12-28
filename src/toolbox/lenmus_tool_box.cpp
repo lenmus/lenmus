@@ -239,7 +239,7 @@ ToolPage* ToolBox::CreatePage(EToolPageID nPanel)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolBox::AddPage(ToolPage* pPage, int nToolId)
+void ToolBox::AddPage(ToolPage* pPage, int WXUNUSED(nToolId))
 {
     //Adds a page to the toolbox.
 
@@ -290,7 +290,7 @@ void ToolBox::SelectToolPage(EToolPageID iPage)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolBox::OnResize(wxSizeEvent& event)
+void ToolBox::OnResize(wxSizeEvent& WXUNUSED(event))
 {
 //TODO TB
     //wxSize newSize = event.GetSize();

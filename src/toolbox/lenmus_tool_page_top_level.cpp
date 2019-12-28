@@ -185,20 +185,20 @@ void GrpTopLevel::create_controls_in_group(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpTopLevel::update_tools_info(ToolsInfo* pInfo)
+void GrpTopLevel::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 {
     //TODO: define ToolsInfo options and update them
 }
 
 //---------------------------------------------------------------------------------------
-void GrpTopLevel::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpTopLevel::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpTopLevel::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+void GrpTopLevel::synchronize_with_selection(bool fEnable, SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(fEnable);

@@ -660,7 +660,7 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
 }
 
 //---------------------------------------------------------------------------------------
-wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+wxString Composer::CreateLastMeasure(int WXUNUSED(nNumMeasure), ETimeSignature nTimeSign,
                                      bool fOnlyQuarterNotes, TimeUnits rPickupDuration)
 {
     // Returns a final meaure. This final measure has only a note, long enough, and
@@ -694,7 +694,7 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
 }
 
 //---------------------------------------------------------------------------------------
-wxString Composer::CreateAnacruxMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+wxString Composer::CreateAnacruxMeasure(int WXUNUSED(nNumMeasure), ETimeSignature nTimeSign,
                                         TimeUnits rPickupDuration)
 {
 	wxString sMeasure = "";
@@ -955,7 +955,7 @@ FPitch Composer::RandomPitch()
 }
 
 //---------------------------------------------------------------------------------------
-void Composer::GetRandomHarmony(int nFunctions, std::vector<long>& aFunction)
+void Composer::GetRandomHarmony(int WXUNUSED(nFunctions), std::vector<long>& aFunction)
 {
     //Fills array 'pFunction' with an ordered set of harmonic functions to
     //build a melody. i.e.: I,V,I,IV,II,III,IV,I
@@ -1516,7 +1516,7 @@ void Composer::ComputeArch(bool fUp, int iStart, int nPoints, DiatonicPitch dnLo
 
 //---------------------------------------------------------------------------------------
 FPitch Composer::NearestNoteOnChord(DiatonicPitch nPoint, ImoNote* pNotePrev,
-                                    ImoNote* pNoteCur,
+                                    ImoNote* WXUNUSED(pNoteCur),
                                     std::vector<FPitch>& aOnChordPitch)
 {
 //    #if (TRACE_COMPOSER == 1)
@@ -1741,7 +1741,7 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
 }
 
 //---------------------------------------------------------------------------------------
-void Composer::NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOnChord2,
+void Composer::NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* WXUNUSED(pOnChord2),
                                     ImoNote* pNonChord[], FPitch scale[7])
 {
     // Receives the two on-chord notes and the non-chord notes between them, and assign
@@ -1772,7 +1772,7 @@ void Composer::NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOn
 }
 
 //---------------------------------------------------------------------------------------
-void Composer::PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote* pOnChord2,
+void Composer::PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote* WXUNUSED(pOnChord2),
                                ImoNote* pNonChord[], FPitch scale[7])
 {
     // Receives the two on-chord notes and the non-chord notes between them, and assign
@@ -1808,7 +1808,7 @@ void Composer::PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote
 
 //---------------------------------------------------------------------------------------
 void Composer::ThirdFifthNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1,
-                               ImoNote* pOnChord2,
+                               ImoNote* WXUNUSED(pOnChord2),
                                ImoNote* pNonChord[], FPitch scale[7])
 {
     // Receives the two on-chord notes and the non-chord notes between them, and assign

@@ -1228,7 +1228,7 @@ void MainFrame::open_file()
     if (lastUsedPath.empty())
     {
         Paths* pPaths = m_appScope.get_paths();
-        lastUsedPath = pPaths->GetScoresPath();
+        lastUsedPath = pPaths->GetSamplesPath();
     }
 
     // ask for the file to open/import
