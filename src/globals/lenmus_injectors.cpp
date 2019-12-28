@@ -325,7 +325,7 @@ void ApplicationScope::create_logger()
 
 	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();
-    wxString sLogFile = get_paths()->GetLogPath() + sUserId + "_Debug_log.txt";
+    wxString sLogFile = get_paths()->GetLogPath() + sUserId + "_lenmus_log.txt";
 	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), "w") );
 	wxLog::SetActiveTarget(logger);
 	wxLogMessage("[ApplicationScope::create_logger] Log messages derived to file.");

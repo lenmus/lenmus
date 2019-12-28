@@ -312,6 +312,10 @@ if (LENMUS_ENABLE_UNIT_TESTS)
 else()
 	set(LENMUS_ENABLE_UNIT_TESTS "0")
 endif()	
+if(WIN32)
+    #TODO: I have problems to link with UnitTest++, so disable it for now
+	set(LENMUS_ENABLE_UNIT_TESTS "0")
+endif()
 message(STATUS "LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 
 
@@ -830,14 +834,18 @@ if(WIN32)
     set(XRC_DIR .)
     set(DOCS_DIR .)
 else()
-    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
+    set(INSTALL_DIR "${ROOT_INSTALL}/bin")                   # C:\Program Files\lenmus-5.4.3\bin  
     set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(LOCALE_DIR ${SHARED_DIR})
+    set(LOCALE_DIR ${SHARED_DIR})                            # C:\Program Files\lenmus\res
     set(LOCALE_LICENSES_DIR ${SHARED_DIR})
     set(RES_DIR "${SHARED_DIR}/res")
     set(TEMPLATES_DIR ${SHARED_DIR})
     set(XRC_DIR ${SHARED_DIR})
     set(DOCS_DIR ${SHARED_DIR})
+#Install root = C:\Program Files\lenmus-5.4.3\bin    --> GetBinPath()
+#Shared root = C:\Program Files\lenmus\res\fonts\
+#Config root = C:\Users\cecilio\AppData\Local\lenmus\5.4.3\
+#Data root = C:\Users\cecilio\AppData\Local\Lenmus Phonascus\lenmus\scores\
 endif()
 
 message("Installation paths:")
@@ -1022,7 +1030,6 @@ endif()
 
 install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
 	    FILES_MATCHING PATTERN "*.lms"
-	    PATTERN ".svn" EXCLUDE
 	    PATTERN "test_set" EXCLUDE
 )
 

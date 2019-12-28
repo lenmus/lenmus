@@ -36,9 +36,6 @@
 
 
 //--------------------------------------------------------------------------------------
-//  Paths only used during program develpment and for unit tests.
-//--------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------
 //  Paths and installation folders
 //  
 //  LENMUS_SOURCE_ROOT must always point to source tree root. It is only used during

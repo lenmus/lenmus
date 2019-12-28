@@ -1196,6 +1196,10 @@ void MainFrame::quit()
 //---------------------------------------------------------------------------------------
 void MainFrame::on_about(wxCommandEvent& WXUNUSED(event))
 {
+    Paths* pPaths = m_appScope.get_paths();
+    wxLogMessage("Install root = %s\nShared root = %s\nConfig root = %s\nData root = %s\n",
+        pPaths->GetBinPath(), pPaths->GetFontsPath(), pPaths->GetConfigPath(), pPaths->GetScoresPath());
+
     AboutDialog dlg(this, m_appScope);
     dlg.ShowModal();
 }
