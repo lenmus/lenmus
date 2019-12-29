@@ -834,18 +834,14 @@ if(WIN32)
     set(XRC_DIR .)
     set(DOCS_DIR .)
 else()
-    set(INSTALL_DIR "${ROOT_INSTALL}/bin")                   # C:\Program Files\lenmus-5.4.3\bin  
+    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
     set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(LOCALE_DIR ${SHARED_DIR})                            # C:\Program Files\lenmus\res
+    set(LOCALE_DIR ${SHARED_DIR})
     set(LOCALE_LICENSES_DIR ${SHARED_DIR})
     set(RES_DIR "${SHARED_DIR}/res")
     set(TEMPLATES_DIR ${SHARED_DIR})
     set(XRC_DIR ${SHARED_DIR})
     set(DOCS_DIR ${SHARED_DIR})
-#Install root = C:\Program Files\lenmus-5.4.3\bin    --> GetBinPath()
-#Shared root = C:\Program Files\lenmus\res\fonts\
-#Config root = C:\Users\cecilio\AppData\Local\lenmus\5.4.3\
-#Data root = C:\Users\cecilio\AppData\Local\Lenmus Phonascus\lenmus\scores\
 endif()
 
 message("Installation paths:")

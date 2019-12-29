@@ -62,20 +62,20 @@ wxString ApplicationScope::m_language;
 //=======================================================================================
 ApplicationScope::ApplicationScope(ostream& reporter)
     : m_reporter(reporter)
-    , m_pPaths(NULL)            //lazzy instantiation. Singleton scope.
-    , m_pPrefs(NULL)            //lazzy instantiation. Singleton scope.
-    , m_pMidi(NULL)             //lazzy instantiation. Singleton scope.
-    , m_pPlayer(NULL)           //lazzy instantiation. Singleton scope.
-    , m_pLomseScope(NULL)
-    , m_pColors(NULL)
-    , m_pMetronome(NULL)
+    , m_pPaths(nullptr)            //lazzy instantiation. Singleton scope.
+    , m_pPrefs(nullptr)            //lazzy instantiation. Singleton scope.
+    , m_pMidi(nullptr)             //lazzy instantiation. Singleton scope.
+    , m_pPlayer(nullptr)           //lazzy instantiation. Singleton scope.
+    , m_pLomseScope(nullptr)
+    , m_pColors(nullptr)
+    , m_pMetronome(nullptr)
     , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
-    , m_pDB(NULL)
-    , m_pProxySettings(NULL)
-    , m_pWavePlayer(NULL)
-    , m_pEditGui(NULL)
-    , m_pKeyTranslator(NULL)
-    , m_pHelp(NULL)
+    , m_pDB(nullptr)
+    , m_pProxySettings(nullptr)
+    , m_pWavePlayer(nullptr)
+    , m_pEditGui(nullptr)
+    , m_pKeyTranslator(nullptr)
+    , m_pHelp(nullptr)
     , m_sAppName(LENMUS_APP_NAME)
     , m_sVendorName(LENMUS_VENDOR_NAME)
     , m_fAnswerSoundsEnabled(true)
@@ -124,7 +124,7 @@ ApplicationScope::~ApplicationScope()
 void ApplicationScope::on_language_changed(wxString lang)
 {
     delete m_pHelp;
-    m_pHelp = NULL;
+    m_pHelp = nullptr;
     m_language = lang;
 }
 
@@ -300,7 +300,7 @@ void ApplicationScope::create_preferences_object()
     wxFileName filename(path, "lenmus", "ini" );
 
     delete m_pPrefs;
-    wxConfigBase::Set((wxConfigBase*) NULL);
+    wxConfigBase::Set((wxConfigBase*) nullptr);
     wxFileConfig* pConfig =
         LENMUS_NEW wxFileConfig("lenmus", "LenMus", filename.GetFullPath(),
                          "lenmus", wxCONFIG_USE_LOCAL_FILE );
@@ -325,10 +325,11 @@ void ApplicationScope::create_logger()
 
 	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();
-    wxString sLogFile = get_paths()->GetLogPath() + sUserId + "_lenmus_log.txt";
-	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), "w") );
-	wxLog::SetActiveTarget(logger);
+    wxString sLogFile = get_paths()->GetLogPath() + sUserId + "-lenmus-log.txt";
+	wxLog *lmLogger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), "w") );
+	wxLog::SetActiveTarget(lmLogger);
 	wxLogMessage("[ApplicationScope::create_logger] Log messages derived to file.");
+    LOMSE_LOG_INFO("lenmus log file = [%s]", sLogFile.ToStdString().c_str() );
 }
 
 //---------------------------------------------------------------------------------------

@@ -111,23 +111,23 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
                wxDefaultPosition, wxSize(750, 570),
                wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX )
     , m_appScope(appScope)
-    , m_pSplitWindow(NULL)
-    , m_pTreeCtrl(NULL)
-    , m_pPanel(NULL)
-    , m_pBtnOK(NULL)
-    , m_pBtnCancel(NULL)
+    , m_pSplitWindow(nullptr)
+    , m_pTreeCtrl(nullptr)
+    , m_pPanel(nullptr)
+    , m_pBtnOK(nullptr)
+    , m_pBtnCancel(nullptr)
 {
     SetExtraStyle(GetExtraStyle()|wxWS_EX_BLOCK_EVENTS);
 
     //initialize panel's array
     for (int i=0; i < eOptMaxValue; i++)
-        m_cPanels[i] = NULL;
+        m_cPanels[i] = nullptr;
 
     //Get last used panel
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     m_nCurPanel = pPrefs->Read("/UserOptions/OptionsPanel", 0L);
-    if (m_nCurPanel < 0 || m_nCurPanel >= eOptMaxValue)
-        m_nCurPanel = 0;
+    if (m_nCurPanel < 0L || m_nCurPanel >= eOptMaxValue)
+        m_nCurPanel = 0L;
 
     // create the Options Dialog and panel # m_nCurPanel
     CreateControls();
@@ -276,7 +276,7 @@ void OptionsDlg::CreateImageList()
     // For each item in TreeCtrol you have to:
     //   1. define an icon id string (unique)
     //   2. Add a PNG file to res/icons
-    //   3. Modify lmArtProvider to deal with it and return the bitmap
+    //   3. Modify ArtProvider to deal with it and return the bitmap
 
 
     int nImageSize = 24;    //image size in pixels
@@ -338,7 +338,7 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
         default:
             wxASSERT(false);
     }
-    return (OptionsPanel*)NULL;
+    return (OptionsPanel*)nullptr;
 
 }
 

@@ -439,7 +439,7 @@ int FragmentsTable::SplitFragment(wxString sSource)
 
 //---------------------------------------------------------------------------------------
 TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
-                                            TimeSignConstrains* pValidTimeSigns)
+                                             TimeSignConstrains* WXUNUSED(pValidTimeSigns))
 {
     //return the total duration of the pattern
 

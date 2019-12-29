@@ -81,7 +81,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             homedir = pw->pw_dir;
         #elif (LENMUS_PLATFORM_WIN32 == 1)
             //TODO
-        #endif  
+        #endif
     }
     string sHomedir(homedir);
     wxString sHome = to_wx_string(sHomedir);
@@ -132,7 +132,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     // ------------------------------------------------------------------------------
     //      ~/.config/lenmus/x.x.x			$PROFILE\AppData\Local\lenmus\x.x.x
 	//			+ lenmus.db						+ lenmus.db
-	//			+ lenmus.ini					+ lenmus.dini
+	//			+ lenmus.ini					+ lenmus.ini
     //
     // 4. User data: scores (DATA_DIR)
     // ------------------------------------------------------------------------------
@@ -173,7 +173,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     m_installRoot.AssignDir( LENMUS_INSTALL_ROOT );
     m_installRoot.Normalize();
     wxFileName oInstallHome(m_installRoot);
-    LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
     //      /usr/local/share/lenmus/x.x.x/
@@ -181,7 +180,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     oSharedHome.AppendDir("share");
     oSharedHome.AppendDir("lenmus");
     oSharedHome.AppendDir(sVersion);
-    LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );
 
     //3. Configuration files, user & version dependent (CONFIG_DIR)
     //      ~/.config/lenmus/x.x.x/
@@ -211,7 +209,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oConfigHome.GetFullPath().ToStdString().c_str() );
     }
-    LOMSE_LOG_INFO("Config root = %s", oConfigHome.GetFullPath().ToStdString().c_str() );
 
     //4. User scores, user dependent (DATA_DIR)
     //      ~/lenmus/scores/
@@ -233,7 +230,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oDataHome.GetFullPath().ToStdString().c_str() );
     }
-    LOMSE_LOG_INFO("Data root = %s", oDataHome.GetFullPath().ToStdString().c_str() );
 
     //5. Logs and temporal files, user dependent (LOGS_DIR)
     //      ~/lenmus/temp/
@@ -248,7 +244,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
-    LOMSE_LOG_INFO("Logs root = %s\n", oLogsHome.GetFullPath().ToStdString().c_str() );
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     //Windows Release version
@@ -256,16 +251,19 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 
     //1. LenMus program, other binaries, and related files (INSTALL_DIR)
     //      "C:/Program Files/lenmus-x.x.x/"
-    m_installRoot.AssignDir(sBinPath);  // LENMUS_INSTALL_ROOT );
+    //TODO: Fix this. Using sBinPath is working only when the user runs lenmus by
+    //      mouse click on main menu or in symlinks, becuase tehy will point to the
+    //      path in which the lenmus.exe is placed, and then sBinPath will point to
+    //      that path. This should be fixed by using GetModuleFileName(). See:
+    //      https://stackoverflow.com/questions/1528298/get-path-of-executable
+    m_installRoot.AssignDir(sBinPath);
     m_installRoot.RemoveLastDir();
     m_installRoot.Normalize();
     wxFileName oInstallHome(m_installRoot);
-    LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
     //      "C:/Program Files/lenmus-x.x.x/"
     wxFileName oSharedHome(m_installRoot);
-    LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );
 
     //3. Configuration files, user & version dependent (CONFIG_DIR)
     //      "C:\Users\<user>\AppData\Local\lenmus\x.x.x\"
@@ -290,7 +288,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oConfigHome.GetFullPath().ToStdString().c_str() );
     }
-    LOMSE_LOG_INFO("Config root = %s", oConfigHome.GetFullPath().ToStdString().c_str() );
 
     //4. User scores, user dependent (DATA_DIR)
     //      "C:\Users\<user>\lenmus\scores"
@@ -314,8 +311,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oDataHome.GetFullPath().ToStdString().c_str() );
     }
-    LOMSE_LOG_INFO("sHome = %s", sHome.ToStdString().c_str() );
-    LOMSE_LOG_INFO("Data root = %s", oDataHome.GetFullPath().ToStdString().c_str() );
 
     //5. Logs and temporal files, user dependent (LOGS_DIR)
     //      "C:\Users\<user>\lenmus\"
@@ -327,9 +322,14 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
-    LOMSE_LOG_INFO("Logs root = %s\n", oLogsHome.GetFullPath().ToStdString().c_str() );
 
 #endif
+    LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Config root = %s", oConfigHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("sHome = %s", sHome.ToStdString().c_str() );
+    LOMSE_LOG_INFO("Data root = %s", oDataHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Logs root = %s\n", oLogsHome.GetFullPath().ToStdString().c_str() );
 
     //determine paths for subfolders
     wxFileName path;
@@ -451,37 +451,11 @@ void Paths::log_paths()
     LOMSE_LOG_INFO("Log = %s", GetLogPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Fonts = %s\n", GetFontsPath().ToStdString().c_str() );
 
-    //DBG: For debugging code for home folder assignment --------------------------
-#if (LENMUS_PLATFORM_UNIX == 1)
-    char* homedir = getenv("HOME");
-    if (homedir == NULL)
-    {
-        struct passwd* pw = getpwuid(getuid());
-        homedir = pw->pw_dir;
-    }
-    string sHomedir(homedir);
-    wxString sHome = to_wx_string(sHomedir);
-    LOMSE_LOG_INFO("homedir = %s", sHome.ToStdString().c_str() );
-
-    wxFileName oLogsHome;
-    oLogsHome.AssignDir( sHome );
-    LOMSE_LOG_INFO("initial oLogsHome = %s",
-                   oLogsHome.GetFullPath().ToStdString().c_str() );
-    oLogsHome.AppendDir(".config");
-    oLogsHome.AppendDir("lenmus");
-    LOMSE_LOG_INFO("final oLogsHome = %s\n",
-                   oLogsHome.GetFullPath().ToStdString().c_str() );
-
-    wxStandardPaths& stdPaths = wxStandardPaths::Get();
-    LOMSE_LOG_INFO("LocalDataDir = %s",
-                   stdPaths.GetUserLocalDataDir().ToStdString().c_str() );
-    LOMSE_LOG_INFO("UserDataDir = %s",
-                   stdPaths.GetUserDataDir().ToStdString().c_str() );
-    LOMSE_LOG_INFO("DocumentsDir = %s",
-                   stdPaths.GetDocumentsDir().ToStdString().c_str() );
-
-    //END_DBG -----------------------------------------------------------------------
-#endif
+    wxLogMessage("Install root = %s", GetBinPath());
+    wxLogMessage("Shared root = %s", GetFontsPath());
+    wxLogMessage("Config root = %s", GetConfigPath());
+    wxLogMessage("Data root = %s", GetScoresPath());
+    wxLogMessage("Logs root = %s", GetLogPath());
 }
 
 //---------------------------------------------------------------------------------------
