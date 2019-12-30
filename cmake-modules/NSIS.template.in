@@ -115,9 +115,9 @@
   ;choose installation directory
     !insertmacro MUI_PAGE_DIRECTORY
 
-  ;select optional components
-    !define MUI_COMPONENTSPAGE_TEXT_COMPLIST $(MSG_OptionalComponents)
-    !insertmacro MUI_PAGE_COMPONENTS
+;  ;select optional components
+;    !define MUI_COMPONENTSPAGE_TEXT_COMPLIST $(MSG_OptionalComponents)
+;    !insertmacro MUI_PAGE_COMPONENTS
 
   ;ask about creating links on Start Menu
     !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
