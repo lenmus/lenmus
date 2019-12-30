@@ -3,8 +3,9 @@
 # Create a ZIP archive with all language files to translate.
 # This script MUST BE RUN from scripts/i18n/ folder, in source tree
 #
-# usage: ./langpacks 5.2            (for all languages)
-#        ./langpacks 5.2 gl_ES      (for one language)
+# usage: ./langpacks 5.2            (to create packages for all languages)
+#        ./langpacks 5.2 gl_ES      (to create package for gl_ES language)
+#        ./langpacks 5.2 xx			(to create pot package for new languages)
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -19,13 +20,13 @@ function LanguagePack()
     if [ -f ../../locale/$2/study-guide.htm ]
     then
         zip -j ../../x_langpack/pack_$1_$2.zip  \
-            $(find ../../langtool/locale/$2 -name "*.po") \
+            $(find ../../../langtool/locale/$2 -name "*.po") \
             ../../locale/$2/lenmus_$2.po \
             ../../locale/$2/wxmidi_$2.po \
             ../../locale/$2/study-guide.htm
     else
         zip -j ../../x_langpack/pack_$1_$2.zip  \
-            $(find ../../langtool/locale/$2 -name "*.po") \
+            $(find ../../../langtool/locale/$2 -name "*.po") \
             ../../locale/$2/lenmus_$2.po \
             ../../locale/$2/wxmidi_$2.po \
             ../../locale/en/study-guide.htm
@@ -40,10 +41,10 @@ function PotPack()
     rm ../../x_langpack/pack_$1_xx.zip
     
     zip -j ../../x_langpack/pack_$1_xx.zip \
-        ../../langtool/locale/src/GeneralExercises/GeneralExercises.pot \
-        ../../langtool/locale/src/L1_MusicReading/L1_MusicReading.pot \
-        ../../langtool/locale/src/L2_MusicReading/L2_MusicReading.pot \
-        ../../langtool/locale/src/TheoryHarmony/TheoryHarmony.pot \
+        ../../../langtool/locale/src/GeneralExercises/GeneralExercises.pot \
+        ../../../langtool/locale/src/L1_MusicReading/L1_MusicReading.pot \
+        ../../../langtool/locale/src/L2_MusicReading/L2_MusicReading.pot \
+        ../../../langtool/locale/src/TheoryHarmony/TheoryHarmony.pot \
         ../../locale/lenmus.pot \
         ../../locale/wxmidi.pot \
         ../../locale/en/study-guide.htm
@@ -65,16 +66,10 @@ then
     exit $E_NOARGS
 fi
 
-# check pack version format
-#if [ ?????????? ]
-#then
-#    echo "Bad pack-version format: only digits and points. i.e.: 5.2"
-#    exit $E_BADARGS
-#fi
-
-if [ -z "$2" ]  # all languages
+if [ -z "$2" ]  #if second param not specified, pack all languages
 then
     LanguagePack $1 de
+    LanguagePack $1 el
     LanguagePack $1 es
     LanguagePack $1 eu
     LanguagePack $1 fr
@@ -85,7 +80,7 @@ then
     LanguagePack $1 zh_CN
     PotPack $1
 else
-    if [ $2 == "xx" ]
+    if [ $2 == "xx" ]	
     then
         PotPack $1
     else

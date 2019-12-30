@@ -5,9 +5,11 @@
 Purpose: create a language pack, that is, a ZIP archive with all .pot files to translate.
 This script MUST BE RUN from <root>/langtool/scripts/i18n/ folder, in source tree
 
-usage: ./langpacks 5.2            (for all languages)
-       ./langpacks 5.2 gl_ES      (for one language)
-
+usage: cd scripts/i18n/
+	   ./langpacks 5.2            (to create packages for all languages)
+       ./langpacks 5.2 gl_ES      (to create package for gl_ES language)
+       ./langpacks 5.2 xx		  (to create pot package for new languages)
+#
 
 
 ## mem-update
