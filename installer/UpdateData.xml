@@ -2,11 +2,11 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>5.5</version>
-    <package>LenMus Phonascus 5.5</package>
+    <version>5.5.0</version>
+    <package>LenMus Phonascus 5.5.0</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-This is a maintenance release to add the Greek translation and
+This is a maintenance release to add the Greek translation,
 some few small improvements, and to fix bugs. Main changes:
 - The translation to the Greek language has been added.
 - Cadences generator have been re-coded to remove bugs.

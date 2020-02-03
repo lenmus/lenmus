@@ -1,19 +1,20 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.5
+[Since last version] 5.5.0
 =============================
 
 * NONE
 
 
-Version [5.5] (January 8th, 2020)
+Version [5.5.0] (February 7th, 2020)
 ===============================================================================
 
 This is a maintenance release to add the translation to the Greek language and some few
 small improvements, and to fix bugs. The main changes are:
 
-* The translation to the Greek language has been added. Thanks to Avgeris Tsironis (Αυγέρης Τσιρώνης).
+* The translation to the Greek language has been added. Thanks to
+  Avgeris Tsironis (Αυγέρης Τσιρώνης).
 * The cadences generator have been re-coded to remove bugs in Cadences exercises.
 * Updates the MS Windows installer for Windows 10 x64.
 * Improves metronome by adding a metronome settings window and allowing to select
@@ -26,6 +27,7 @@ small improvements, and to fix bugs. The main changes are:
 * Includes the latest Lomse library with improvements, mainly in MusicXML import and
   music notation support.
 * Links for features not yet fully operational have been disabled.
+* Fix error in figure in Theory and Harmony eBook.
 
 
 Version [5.4.2] (July 26th, 2016)
@@ -635,8 +637,8 @@ Version 1.0 (Jan/04):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.5...HEAD
-[5.5]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...Release_5.5
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...HEAD
+[5.5.0]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...Release_5.5.0
 [5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...Release_5.4.2
 [5.4.1]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.1
 

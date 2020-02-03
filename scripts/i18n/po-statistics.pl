@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ##------------------------------------------------------------------------------------
-## Copyright (C) 2009-20012 LenMus proyect
+## Copyright (C) 2009-20020 LenMus proyect
 ##
 ## This script creates the website page to show the status of each po file.
 ## I took the idea from an script written by Naba Kumar Singh
@@ -24,13 +24,13 @@
 ## the project at cecilios@users.sourceforge.net
 ##
 # Usage
-#   cd /datos/USR/lm/projects/lenmus/trunk/scripts/web
+#   cd /datos/cecilio/lm/projects/lenmus/trunk/scripts/web
 #   ./po-statistics.pl
 ##------------------------------------------------------------------------------------
 
     # List of supported laguages and their names
     %languages = (
-        ##"el_GR" => "Greek",
+        "el" => "Greek",
         "de" => "German",
         "es" => "Spanish",
         "eu" => "Basque",
@@ -44,15 +44,16 @@
 
     # status of each language
     %lang_status = (
-        "de" => "maintained",
+        "el" => "maintained",
+        "de" => "unknown",
         "es" => "maintained",
-        "eu" => "maintained",
+        "eu" => "unknown",
         "fr" => "unknown",
         "gl_ES" => "unknown",
         "it" => "unknown",
         "nl" => "unknown",
         "tr" => "unmaintained",
-        "zh_CN" => "maintained",
+        "zh_CN" => "unknown",
     );
 
 
@@ -69,8 +70,7 @@
     print "\n";
 
     # html page to create, for translation status
-    #my $out_file = "../../../../,,/,,/WebSite/mws/content/lenmus/phonascus/html/phonascus_en/translation_status.htm";
-    my $out_file = "/datos/USR/WebSite/mws/content/lenmus/phonascus/html/phonascus_en/translation_status.htm";
+    my $out_file = "/datos/cecilio/WebSite/mws/content/lenmus/phonascus/html/phonascus_en/translation_status.htm";
     open (HTMLFILE, ">$out_file")
     or print STDERR "Can't open $out_file to write.\n";
 
@@ -98,7 +98,7 @@
         }
 
         # eBook po files
-        my @po_files = glob("../../langtool/locale/$langcode/*.po");
+        my @po_files = glob("../../../langtool/locale/$langcode/*.po");
         foreach my $poFile (@po_files)
         {
             if ($poFile =~ /(\w+)\_$langcode\.po/)

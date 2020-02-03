@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# Avgeris Tsironis <avgeristsironis@gmail.com>, 2019.
+# Avgeris Tsironis <avgeristsironis@gmail.com>, 2019, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-28 13:03+0100\n"
-"PO-Revision-Date: 2019-12-29 18:09+0100\n"
+"PO-Revision-Date: 2020-02-02 19:50+0100\n"
 "Language-Team: Ελληνικά <avgeristsironis@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1472,7 +1472,7 @@ msgstr "Ρεb Μείζονα / Σιb ελάσσονα"
 #: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:187
 #: ../xrc/xrc_strings.cpp:336 ../xrc/xrc_strings.cpp:393
 msgid "Deceptive"
-msgstr "Απροσδόκιτη"
+msgstr "Απροσδόκητη"
 
 #: ../src/globals/lenmus_actions.cpp:854
 msgid "Decrement note/rest dots"
@@ -3381,7 +3381,7 @@ msgstr "Κλειδί κρουστών"
 #: ../src/auxmusic/lenmus_cadence.cpp:1410
 #: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:169
 msgid "Perfect"
-msgstr "Καθαρό"
+msgstr "Αυθεντική"
 
 #: ../xrc/xrc_strings.cpp:9
 msgid "Perfect 4th"
@@ -3416,7 +3416,7 @@ msgstr "Πιάνο"
 #: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:175
 #: ../xrc/xrc_strings.cpp:319 ../xrc/xrc_strings.cpp:391
 msgid "Plagal"
-msgstr "Πλαάγια"
+msgstr "Πλάγια"
 
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1045

@@ -342,7 +342,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
 string IdfyCadencesCtrol::get_initial_msge()
 {
     wxString sText = _("Click on 'New problem' to start");
-    sText += "\n\n";
+    sText += ". ";
     if (m_pConstrains->GetKeyDisplayMode() == 0)
         sText += _("An A4 note will be played before the cadence begins.");
     else
