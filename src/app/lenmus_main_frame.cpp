@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -523,7 +523,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pPrintData(NULL)
     , m_pPageSetupData(NULL)
     , m_fileHistory(9, wxID_FILE1)      //max files, id of first file)
-    , m_caretTimer(this, k_id_caret_timer)
+//    , m_caretTimer(this, k_id_caret_timer)
     , m_nblinkTime(500)     //milliseconds
 {
     create_menu();
@@ -566,13 +566,13 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     m_pPageSetupData->SetMarginBottomRight(wxPoint(0, 0));
 
     //start timer for carets
-    m_caretTimer.Start(m_nblinkTime, wxTIMER_CONTINUOUS);
+//    m_caretTimer.Start(m_nblinkTime, wxTIMER_CONTINUOUS);
 }
 
 //---------------------------------------------------------------------------------------
 MainFrame::~MainFrame()
 {
-    m_caretTimer.Stop();
+//    m_caretTimer.Stop();
 
     //ensure no score is being playedback
     ScorePlayer* pPlayer = m_appScope.get_score_player();
