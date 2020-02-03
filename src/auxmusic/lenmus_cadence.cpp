@@ -32,7 +32,7 @@
 using namespace lomse;
 
 //set to 1 for tracing cadence generation
-#define TRACE_CADENCE  1        //0=no trace, 1=main trace, 2=also details
+#define TRACE_CADENCE  2        //0=no trace, 1=main trace, 2=also details
 #if (LENMUS_COMPILER_MSVC == 1)     //VC++ 2003 does not support variadic macros
     #if (TRACE_CADENCE > 0)
         #define TraceCadence    wxLogMessage
@@ -720,7 +720,7 @@ void Cadence::shuffle_set(NoteSet* pNoteSet, int numNotes)
     RandomGenerator::shuffle(numNotes, idx);
     #if (TRACE_CADENCE == 2)
         for (int i=0; i < numNotes; ++i)
-            TraceCadence("idx = %d", *idx[i]);
+            TraceCadence("idx = %d", *(idx+i));
     #endif
 
     FPitch* fp = new FPitch[numNotes];
