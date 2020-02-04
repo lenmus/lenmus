@@ -2478,7 +2478,9 @@ void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
         m_pMetronomeDlg = new DlgMetronome(m_appScope, this, m_pMtr);
 
     m_pMetronomeDlg->load_current_values();
-    m_pMetronomeDlg->Show();
+    m_pMetronomeDlg->ShowModal();
+
+    update_metronome_beat();
 }
 
 
@@ -3766,12 +3768,6 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
 			event.Enable(true);
 			event.Check(m_pMtr->is_running());
             m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
-            int beatType = m_pMtr->get_beat_type();
-            if (beatType == k_beat_implied)
-                m_pBeatNoteChoice->SetSelection(0);     //TS
-            else
-                update_metronome_beat();
-            m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
 			break;
         }
 
@@ -3802,27 +3798,33 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
 //---------------------------------------------------------------------------------------
 void MainFrame::update_metronome_beat()
 {
-    TimeUnits duration = m_pMtr->get_beat_duration();
-    int sel;
-    if (is_equal_time(duration, TimeUnits(k_duration_whole)))
-        sel = 1;
-    else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
-        sel = 2;
-    else if(is_equal_time(duration, TimeUnits(k_duration_half)))
-        sel = 3;
-    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
-        sel = 4;
-    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
-        sel = 5;
-    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
-        sel = 6;
-    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
-        sel = 7;
-    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
-        sel = 8;
+    int beatType = m_pMtr->get_beat_type();
+    if (beatType == k_beat_implied)
+        m_pBeatNoteChoice->SetSelection(0);     //TS
     else
-        sel = 5;    //quarter;
-    m_pBeatNoteChoice->SetSelection(sel);
+    {
+        TimeUnits duration = m_pMtr->get_beat_duration();
+        int sel;
+        if (is_equal_time(duration, TimeUnits(k_duration_whole)))
+            sel = 1;
+        else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
+            sel = 2;
+        else if(is_equal_time(duration, TimeUnits(k_duration_half)))
+            sel = 3;
+        else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
+            sel = 4;
+        else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
+            sel = 5;
+        else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
+            sel = 6;
+        else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+            sel = 7;
+        else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+            sel = 8;
+        else
+            sel = 5;    //quarter;
+        m_pBeatNoteChoice->SetSelection(sel);
+    }
 }
 
 //---------------------------------------------------------------------------------------

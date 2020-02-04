@@ -3,6 +3,6 @@
         BackgroundColor="#FF6000"
         ShowNameOnSquare150x150Logo="off"
         ForegroundText="light"
-        Square150x150Logo="res\icons\logo-150x150.png"
-        Square70x70Logo="res\icons\logo-70x70.png"/>
+        Square150x150Logo="icons\logo-150x150.png"
+        Square70x70Logo="icons\logo-70x70.png"/>
 </Application>
