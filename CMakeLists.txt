@@ -861,6 +861,11 @@ message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 install(TARGETS ${LENMUS}
 		RUNTIME DESTINATION ${INSTALL_DIR} )
 
+if(WIN32)
+	# customization XML file for tile icons
+	install(FILES ${LENMUS_ROOT_DIR}/installer/msw/lenmus.visualelementsmanifest.xml DESTINATION ${INSTALL_DIR} )
+endif(WIN32)
+
 # 1. non-modificable data, which must be shared among users on the computer (SHARED_DIR):
 # ------------------------------------------------------------------------------
 
