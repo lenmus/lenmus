@@ -903,7 +903,7 @@ void ContentBoxCtrol::OnLeftDown(wxMouseEvent& event)
 
     SetFocus();
 
-    int item = HitTest(event.GetPosition());
+    int item = wxVarScrollHelperBase::VirtualHitTest(event.GetPosition().y);
 
     if ( item != wxNOT_FOUND )
     {
