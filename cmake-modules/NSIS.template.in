@@ -112,8 +112,8 @@
   ;show and accept licence
     !insertmacro MUI_PAGE_LICENSE $(license)
 
-  ;choose installation directory
-    !insertmacro MUI_PAGE_DIRECTORY
+;  ;choose installation directory
+;    !insertmacro MUI_PAGE_DIRECTORY
 
 ;  ;select optional components
 ;    !define MUI_COMPONENTSPAGE_TEXT_COMPLIST $(MSG_OptionalComponents)
@@ -135,8 +135,8 @@
 
 
 ;MUI: uninstall Pages
-  ;ask for confirmation to uninstall
-  !insertmacro MUI_UNPAGE_CONFIRM
+;  ;ask for confirmation to uninstall
+;  !insertmacro MUI_UNPAGE_CONFIRM
   
   ;proceed to uninstall
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -189,7 +189,8 @@
 
 ;Start installation
 Function .onInit
-
+    SetRegView 64
+    
     ;Check if the user is running multiple instances of the installer
     System::Call 'kernel32::CreateMutexA(i 0, i 0, t "LenMusMutex") i .r1 ?e'
     Pop $R0
@@ -275,14 +276,15 @@ Section  "-" "MainSection"
      Push "$INSTDIR\bin\config_ini.txt"         ;file to write to 
      Call WriteToFile
 
-
+  ;Write key to specify that LenMus is DPI aware
+    WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$INSTDIR\bin\${LENMUS_EXE}" "~ HIGHDPIAWARE"
 
   ;create entries in Start Menu folder
   ;-----------------------------------------------------------------------------------
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\${LENMUS_EXE}" "" "$INSTDIR\res\icons\lenmus.ico" 0
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
+;;    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
   !insertmacro MUI_STARTMENU_WRITE_END
 
     ;write uninstaller
@@ -377,7 +379,8 @@ SectionEnd
 Function un.onInit
   ;first of all, show installer language selection page if language not set
     !insertmacro MUI_LANGDLL_DISPLAY
-
+    
+    SetRegView 64
 FunctionEnd
 
 /*

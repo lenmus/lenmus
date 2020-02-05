@@ -982,7 +982,6 @@ CompareScoresCtrol::CompareScoresCtrol(long dynId, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 CompareScoresCtrol::~CompareScoresCtrol()
 {
-    m_fPlayingProblem = false;
     stop_sounds();
     delete_scores();
 }
@@ -1164,6 +1163,8 @@ void CompareScoresCtrol::delete_scores()
 //---------------------------------------------------------------------------------------
 void CompareScoresCtrol::stop_sounds()
 {
+    m_fPlayingProblem = false;
+    m_oPauseTimer.Stop();
     m_pPlayer->stop();
 }
 
