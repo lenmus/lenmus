@@ -23,6 +23,8 @@
 #include "lenmus_utilities.h"
 #include "lenmus_metronome.h"
 #include "lenmus_art_provider.h"
+#include "lenmus_main_frame.h"
+
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -636,6 +638,7 @@ void DlgMetronome::set_beat_options()
         beatType = k_beat_implied;
 
     m_pMtr->set_beat_type(beatType, duration);
+    (static_cast<MainFrame*>(GetParent()))->update_metronome_beat();
 }
 
 //---------------------------------------------------------------------------------------

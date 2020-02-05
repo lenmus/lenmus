@@ -2478,9 +2478,7 @@ void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
         m_pMetronomeDlg = new DlgMetronome(m_appScope, this, m_pMtr);
 
     m_pMetronomeDlg->load_current_values();
-    m_pMetronomeDlg->ShowModal();
-
-    update_metronome_beat();
+    m_pMetronomeDlg->Show();
 }
 
 

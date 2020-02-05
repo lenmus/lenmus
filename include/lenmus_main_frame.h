@@ -181,6 +181,7 @@ public:
     void open_file();
     void quit();
     void update_spacing_params(float force, float alpha, float dmin);
+    void update_metronome_beat();
 
     //panels
     void add_new_panel(wxWindow* window, const wxString& caption,
@@ -205,7 +206,6 @@ protected:
     void create_metronome();
     void load_global_options();
     void load_metronome_beat_notes(wxSize nSize);
-    void update_metronome_beat();
 
     void create_menu();
     void set_lomse_callbacks();
