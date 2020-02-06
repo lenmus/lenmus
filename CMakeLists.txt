@@ -864,8 +864,8 @@ install(TARGETS ${LENMUS}
 if(WIN32)
 	# customization XML file for tile icons and icons
 	install(FILES ${LENMUS_ROOT_DIR}/installer/msw/lenmus.visualelementsmanifest.xml DESTINATION ${INSTALL_DIR} )
-	install(FILES ${LENMUS_ROOT_DIR}/res/icons/logo-150x150.png DESTINATION ${INSTALL_DIR}/icons )
-	install(FILES ${LENMUS_ROOT_DIR}/res/icons/logo-70x70.png DESTINATION ${INSTALL_DIR}/icons )
+	install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-150x150.png DESTINATION ${INSTALL_DIR}/icons )
+	install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-70x70.png DESTINATION ${INSTALL_DIR}/icons )
 endif(WIN32)
 
 # 1. non-modificable data, which must be shared among users on the computer (SHARED_DIR):
