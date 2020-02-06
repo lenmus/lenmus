@@ -538,12 +538,12 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
-    #if (LENMUS_PLATFORM_WIN32 == 1)
-        //macro wxICON creates an icon using an icon resource on Windows.
-        SetIcon(wxICON(app_icon));
-	#else
+ //   #if (LENMUS_PLATFORM_WIN32 == 1)
+ //       //macro wxICON creates an icon using an icon resource on Windows.
+ //       SetIcon(wxICON(app_icon));
+	//#else
 		SetIcon(wxArtProvider::GetIcon("app_icon", wxART_OTHER));
-	#endif
+//	#endif
 
 //	//acceleration keys table
 //    wxAcceleratorEntry entries[1];
