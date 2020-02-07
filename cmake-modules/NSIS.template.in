@@ -221,7 +221,7 @@ Function .onInit
     File /oname=$PLUGINSDIR\BannerLeft-144.bmp ${LENMUS_NSIS_RESOURCES}\BannerLeft-144.bmp
     File /oname=$PLUGINSDIR\BannerLeft-192.bmp ${LENMUS_NSIS_RESOURCES}\BannerLeft-192.bmp
    
-    ;use 64 bits part
+    ;enable access to 64-bit portion of registry
     SetRegView 64
     
     ;Check if the user is running multiple instances of the installer
