@@ -118,19 +118,19 @@ bool MidiWizard::ShowToolTips()
 }
 
 //---------------------------------------------------------------------------------------
-wxBitmap MidiWizard::GetBitmapResource( const wxString& name )
+wxBitmap MidiWizard::GetBitmapResource( const wxString& WXUNUSED(name))
 {
     return wxNullBitmap;
 }
 
 //---------------------------------------------------------------------------------------
-wxIcon MidiWizard::GetIconResource( const wxString& name )
+wxIcon MidiWizard::GetIconResource( const wxString& WXUNUSED(name))
 {
     return wxNullIcon;
 }
 
 //---------------------------------------------------------------------------------------
-void MidiWizard::OnWizardFinished( wxWizardEvent& event )
+void MidiWizard::OnWizardFinished( wxWizardEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
     pMidi->SetConfigured(true);
@@ -138,7 +138,7 @@ void MidiWizard::OnWizardFinished( wxWizardEvent& event )
 }
 
 //---------------------------------------------------------------------------------------
-void MidiWizard::OnWizardCancel( wxWizardEvent& event )
+void MidiWizard::OnWizardCancel( wxWizardEvent& WXUNUSED(event))
 {
     // restore old configuration if any
 
@@ -298,13 +298,13 @@ bool WizardDevicesPage::ShowToolTips()
 }
 
 //---------------------------------------------------------------------------------------
-wxBitmap WizardDevicesPage::GetBitmapResource( const wxString& name )
+wxBitmap WizardDevicesPage::GetBitmapResource( const wxString& WXUNUSED(name))
 {
     return wxNullBitmap;
 }
 
 //---------------------------------------------------------------------------------------
-wxIcon WizardDevicesPage::GetIconResource( const wxString& name )
+wxIcon WizardDevicesPage::GetIconResource( const wxString& WXUNUSED(name))
 {
     return wxNullIcon;
 }
@@ -458,14 +458,14 @@ bool WizardInstrumentsPage::ShowToolTips()
 }
 
 //---------------------------------------------------------------------------------------
-wxBitmap WizardInstrumentsPage::GetBitmapResource( const wxString& name )
+wxBitmap WizardInstrumentsPage::GetBitmapResource( const wxString& WXUNUSED(name))
 {
     // Bitmap retrieval
     return wxNullBitmap;
 }
 
 //---------------------------------------------------------------------------------------
-wxIcon WizardInstrumentsPage::GetIconResource( const wxString& name )
+wxIcon WizardInstrumentsPage::GetIconResource( const wxString& WXUNUSED(name))
 {
     // Icon retrieval
     return wxNullIcon;
@@ -498,7 +498,7 @@ void WizardInstrumentsPage::DoProgramChange()
 }
 
 //---------------------------------------------------------------------------------------
-void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
+void WizardInstrumentsPage::OnComboSection( wxCommandEvent& WXUNUSED(event))
 {
     // A new section selected. Reload Instruments combo with the instruments in the
     //selected section
@@ -511,14 +511,14 @@ void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
 }
 
 //---------------------------------------------------------------------------------------
-void WizardInstrumentsPage::OnComboInstrument( wxCommandEvent& event )
+void WizardInstrumentsPage::OnComboInstrument( wxCommandEvent& WXUNUSED(event))
 {
     // A new instrument selected. Change Midi program
     DoProgramChange();
 }
 
 //---------------------------------------------------------------------------------------
-void WizardInstrumentsPage::OnButtonTestSoundClick( wxCommandEvent& event )
+void WizardInstrumentsPage::OnButtonTestSoundClick( wxCommandEvent& WXUNUSED(event))
 {
     //play a scale
     MidiServer* pMidi = m_appScope.get_midi_server();
@@ -652,21 +652,21 @@ bool WizardMetronomePage::ShowToolTips()
 }
 
 //---------------------------------------------------------------------------------------
-wxBitmap WizardMetronomePage::GetBitmapResource( const wxString& name )
+wxBitmap WizardMetronomePage::GetBitmapResource( const wxString& WXUNUSED(name))
 {
     // Get bitmap resources
     return wxNullBitmap;
 }
 
 //---------------------------------------------------------------------------------------
-wxIcon WizardMetronomePage::GetIconResource( const wxString& name )
+wxIcon WizardMetronomePage::GetIconResource( const wxString& WXUNUSED(name))
 {
     // Icon retrieval
     return wxNullIcon;
 }
 
 //---------------------------------------------------------------------------------------
-void WizardMetronomePage::OnComboMtrInstr1Selected( wxCommandEvent& event )
+void WizardMetronomePage::OnComboMtrInstr1Selected( wxCommandEvent& WXUNUSED(event))
 {
     //Change metronome sound, tone1, to the one selected in combo Instr1
     int nTone1 = m_pMtrInstr1Combo->GetSelection() + 35;
@@ -675,7 +675,7 @@ void WizardMetronomePage::OnComboMtrInstr1Selected( wxCommandEvent& event )
 }
 
 //---------------------------------------------------------------------------------------
-void WizardMetronomePage::OnComboMtrInstr2Selected( wxCommandEvent& event )
+void WizardMetronomePage::OnComboMtrInstr2Selected( wxCommandEvent& WXUNUSED(event))
 {
     //Change metronome sound, tone2, to the one selected in combo Instr2
     int nTone2 = m_pMtrInstr2Combo->GetSelection() + 35;
@@ -684,7 +684,7 @@ void WizardMetronomePage::OnComboMtrInstr2Selected( wxCommandEvent& event )
 }
 
 //---------------------------------------------------------------------------------------
-void WizardMetronomePage::OnButtonClick( wxCommandEvent& event )
+void WizardMetronomePage::OnButtonClick( wxCommandEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
     wxMidiOutDevice* pMidiOut = pMidi->get_out_device();

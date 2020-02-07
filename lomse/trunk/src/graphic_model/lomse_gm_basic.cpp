@@ -38,6 +38,7 @@
 #include "lomse_control.h"
 #include "lomse_box_system.h"
 #include "lomse_logger.h"
+#include "lomse_gm_measures_table.h"
 
 #include <cstdlib>      //abs
 #include <iomanip>
@@ -61,7 +62,7 @@ GmoObj::GmoObj(int objtype, ImoObj* pCreatorImo)
     : m_objtype(objtype)
     , m_origin(0.0f, 0.0f)
     , m_size(0.0f, 0.0f)
-    , m_flags(k_dirty)
+    , m_flags(k_dirty | k_add_to_vprofile)
     , m_pCreatorImo(pCreatorImo)
     , m_pParentBox(nullptr)
 {
@@ -188,6 +189,7 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_button]            = "button         ";
         m_typeToName[k_shape_clef]              = "clef           ";
         m_typeToName[k_shape_coda_segno]        = "coda-segno     ";
+        m_typeToName[k_shape_debug]             = "shape-debug    ";
         m_typeToName[k_shape_dot]               = "dot            ";
         m_typeToName[k_shape_dynamics_mark]     = "dynamics-mark  ";
         m_typeToName[k_shape_fermata]           = "fermata        ";
@@ -200,7 +202,10 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_metronome_glyph]   = "metronome-glyph";
         m_typeToName[k_shape_metronome_mark]    = "metronome-mark ";
         m_typeToName[k_shape_note]              = "note           ";
+        m_typeToName[k_shape_chord_base_note]   = "base-note      ";
         m_typeToName[k_shape_notehead]          = "notehead       ";
+        m_typeToName[k_shape_octave_shift]      = "octave-shift   ";
+        m_typeToName[k_shape_octave_glyph]      = "octave-glyph   ";
         m_typeToName[k_shape_ornament]          = "ornament       ";
         m_typeToName[k_shape_rectangle]         = "rectangle      ";
         m_typeToName[k_shape_rest]              = "rest           ";
@@ -219,6 +224,7 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_tuplet]            = "tuplet         ";
         m_typeToName[k_shape_volta_bracket]     = "volta-bracket  ";
         m_typeToName[k_shape_word]              = "word           ";
+        m_typeToName[k_shape_wedge]             = "wedge          ";
 
         m_fNamesLoaded = true;
     }
@@ -606,7 +612,7 @@ void GmoBox::shift_origin_and_content(const USize& shift)
 //---------------------------------------------------------------------------------------
 void GmoBox::dump_boxes_shapes(ostream& outStream, int level)
 {
-    GmoObj::dump(outStream, level);
+    dump(outStream, level);
 
     dump_shapes(outStream, ++level);
 
@@ -1071,6 +1077,19 @@ void GmoBoxLink::notify_event(SpEventInfo pEvent)
 //=======================================================================================
 // ScoreStub implementation
 //=======================================================================================
+ScoreStub::ScoreStub(ImoScore* pScore)
+    : m_scoreId(pScore->get_id())
+{
+    m_measures = LOMSE_NEW GmMeasuresTable(pScore);
+}
+
+//---------------------------------------------------------------------------------------
+ScoreStub::~ScoreStub()
+{
+    delete m_measures;
+}
+
+//---------------------------------------------------------------------------------------
 GmoBoxScorePage* ScoreStub::get_page_for(TimeUnits timepos)
 {
     //find page with end time greater or equal than requested time

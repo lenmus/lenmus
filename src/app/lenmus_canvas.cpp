@@ -180,7 +180,7 @@ void ContentWindow::close_active_canvas()
 }
 
 //---------------------------------------------------------------------------------------
-void ContentWindow::on_window_closing(wxAuiNotebookEvent& event)
+void ContentWindow::on_window_closing(wxAuiNotebookEvent& WXUNUSED(event))
 {
     Canvas* pCanvas = get_active_canvas();
     if (pCanvas)

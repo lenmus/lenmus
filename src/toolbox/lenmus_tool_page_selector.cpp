@@ -55,7 +55,7 @@ PageSelector::PageSelector()
 
 //---------------------------------------------------------------------------------------
 PageSelector::PageSelector(wxWindow *parent, wxWindowID id,
-                                 const wxString& value,
+                                 const wxString& WXUNUSED(value),
                                  const wxPoint& pos,
                                  const wxSize& size,
                                  long style)
@@ -123,7 +123,7 @@ void PageSelector::add_separator()
 }
 
 //---------------------------------------------------------------------------------------
-void PageSelector::on_button_click(wxCommandEvent& event)
+void PageSelector::on_button_click(wxCommandEvent& WXUNUSED(event))
 {
     PopupMenu(m_pMenu, 10, 2);
 }
@@ -147,7 +147,7 @@ void PageSelector::selector_visible(bool fVisible)
 }
 
 //---------------------------------------------------------------------------------------
-void PageSelector::on_paint_event(wxPaintEvent& event)
+void PageSelector::on_paint_event(wxPaintEvent& WXUNUSED(event))
 {
     wxPaintDC dc(this);
 

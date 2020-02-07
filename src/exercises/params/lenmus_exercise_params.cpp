@@ -166,7 +166,7 @@ float EBookCtrolParams::get_float_value(const string& value, float rDefault)
 void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
 {
     //keys        Keyword "all", "allMajor", "allMinor" or a list of allowed
-    //            key signatures, i.e.: "C,c,As,Bf". Default: "all"
+    //            key signatures, i.e.: "C,c,A+,B-". Default: "all"
 
     bool fError = false;
 
@@ -193,6 +193,10 @@ void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
 
     else
     {
+        //disable all key signatures
+        for (int i=0; i <= k_max_key; i++)
+            pKeys->SetValid((EKeySignature)i, false);
+
         //loop to get all keys
         int iColon;
         wxString sKey;
@@ -223,7 +227,7 @@ void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
     }
 
     if (fError)
-        error_invalid_param("chords", value, "list of key signatures or keywords 'all', 'allMajor', 'allMinor'.");
+        error_invalid_param("keys", value, "list of key signatures or keywords 'all', 'allMajor', 'allMinor'.");
 }
 
 //---------------------------------------------------------------------------------------
@@ -293,7 +297,7 @@ void EBookCtrolParams::parse_scales(const string& value, bool* pfValidScales)
     //              non-tonal: WT (Whole Tones), Ch (Chromatic)
     //
     //
-    //            Default: "MN, mN, mH, mM"
+    //            Default: "MN,mN,mH,mM"
 
     bool fError = false;
 

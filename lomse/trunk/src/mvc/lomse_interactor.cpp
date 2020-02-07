@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -48,6 +48,7 @@
 #include "lomse_logger.h"
 #include "lomse_handler.h"
 #include "lomse_visual_effect.h"
+#include "lomse_fragment_mark.h"
 #include "lomse_score_utilities.h"
 #include "lomse_shape_staff.h"
 #include "lomse_score_algorithms.h"
@@ -2076,20 +2077,60 @@ string Interactor::dump_selection()
     return m_pSelections->dump_selection();
 }
 
+//---------------------------------------------------------------------------------------
+FragmentMark* Interactor::add_fragment_mark_at_note_rest(ImoId scoreId,
+                                                               TimeUnits timepos)
+{
+    FragmentMark* pMark = nullptr;
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (pGView)
+    {
+        pMark = pGView->add_fragment_mark_at(scoreId, timepos, false);
+        request_window_update();
+    }
+    return pMark;
+}
 
-////=======================================================================================
-//// EditInteractor implementation
-////=======================================================================================
-//EditInteractor::EditInteractor(LibraryScope& libraryScope, Document* pDoc, View* pView,
-//                               DocCommandExecuter* pExec)
-//    : Interactor(libraryScope, pDoc, pView, pExec)
-//{
-//}
-//
-////---------------------------------------------------------------------------------------
-//EditInteractor::~EditInteractor()
-//{
-//}
+//---------------------------------------------------------------------------------------
+FragmentMark* Interactor::add_fragment_mark_at_barline(ImoId scoreId,
+                                                               TimeUnits timepos)
+{
+    FragmentMark* pMark = nullptr;
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (pGView)
+    {
+        pMark = pGView->add_fragment_mark_at(scoreId, timepos, true);
+        request_window_update();
+    }
+    return pMark;
+}
+
+//---------------------------------------------------------------------------------------
+FragmentMark* Interactor::add_fragment_mark_at_staffobj(ImoStaffObj* pSO)
+{
+    FragmentMark* pMark = nullptr;
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (!pGView)
+        return nullptr;
+
+    if (SpDocument spDoc = m_wpDoc.lock())
+    {
+        if (!pSO)
+            return nullptr;
+
+        pMark = pGView->add_fragment_mark_at_staffobj(pSO);
+        request_window_update();
+    }
+
+    return pMark;
+}
+
+//---------------------------------------------------------------------------------------
+void Interactor::remove_mark(ApplicationMark* mark)
+{
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    pGView->remove_mark(mark);
+}
 
 
 

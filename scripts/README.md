@@ -42,4 +42,4 @@ Purpose: Update LenMus date & version information in the following places:
 - debian/changelog
 
 This script MUST BE RUN from folder <root>/scripts/
-usage: ./update-version.sh <major> <minor> <path>
+usage: ./update-version.sh <major> <minor> <patch>

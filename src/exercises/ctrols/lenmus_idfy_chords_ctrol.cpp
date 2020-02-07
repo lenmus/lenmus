@@ -45,7 +45,7 @@ namespace lenmus
 // Implementation of IdfyChordCtrol
 //=======================================================================================
 
-static string m_sButtonLabel[ect_Max];
+static string m_sButtonLabel[ect_MaxInExercises];
 
 //---------------------------------------------------------------------------------------
 IdfyChordCtrol::IdfyChordCtrol(long dynId, ApplicationScope& appScope,
@@ -334,7 +334,7 @@ wxString IdfyChordCtrol::set_new_problem()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyChordCtrol::prepare_score(EClef nClef, EChordType nType, ImoScore** pScore)
+wxString IdfyChordCtrol::prepare_score(EClef WXUNUSED(nClef), EChordType nType, ImoScore** pScore)
 {
     //create the chord
     Chord oChord(m_fpRootNote, nType, m_nInversion, m_nKey);

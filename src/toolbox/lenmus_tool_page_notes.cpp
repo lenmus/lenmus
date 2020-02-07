@@ -437,7 +437,7 @@ void GrpNoteDuration::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteDuration::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpNoteDuration::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
@@ -574,14 +574,15 @@ void GrpOctave::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpOctave::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpOctave::synchronize_with_cursor(bool WXUNUSED(fEnable),
+                                        DocCursor* WXUNUSED(pCursor))
 {
     EnableGroup(true);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpOctave::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+void GrpOctave::synchronize_with_selection(bool WXUNUSED(fEnable),
+                                           SelectionSet* WXUNUSED(pSelection))
 {
     EnableGroup(true);
 }
@@ -643,14 +644,15 @@ void GrpVoice::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpVoice::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpVoice::synchronize_with_cursor(bool WXUNUSED(fEnable),
+                                       DocCursor* WXUNUSED(pCursor))
 {
     EnableGroup(true);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpVoice::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+void GrpVoice::synchronize_with_selection(bool WXUNUSED(fEnable),
+                                          SelectionSet* WXUNUSED(pSelection))
 {
     EnableGroup(true);
 }
@@ -821,7 +823,7 @@ void GrpNoteAcc::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteAcc::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpNoteAcc::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
@@ -942,7 +944,7 @@ void GrpNoteDots::update_tools_info(ToolsInfo* pInfo)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteDots::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpNoteDots::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
@@ -1003,7 +1005,7 @@ wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
-GrpNoteModifiers::GrpNoteModifiers(ToolPage* pParent, wxBoxSizer* pMainSizer)
+GrpNoteModifiers::GrpNoteModifiers(ToolPage* pParent, wxBoxSizer* WXUNUSED(pMainSizer))
         : ToolGroup(pParent, k_group_type_options, pParent->GetColors())
         , m_nSelectedToolID(k_tool_none)
 {
@@ -1123,13 +1125,13 @@ void GrpNoteModifiers::EnableTool(EToolID nToolID, bool fEnabled)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteModifiers::update_tools_info(ToolsInfo* pInfo)
+void GrpNoteModifiers::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 {
     //Nothing to do. This is an 'action tools' group
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteModifiers::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpNoteModifiers::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
@@ -1209,7 +1211,7 @@ wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
-GrpBeams::GrpBeams(ToolPage* pParent, wxBoxSizer* pMainSizer)
+GrpBeams::GrpBeams(ToolPage* pParent, wxBoxSizer* WXUNUSED(pMainSizer))
         : ToolGroup(pParent, k_group_type_options, pParent->GetColors())
         , m_nSelectedToolID(k_tool_none)
 {
@@ -1326,7 +1328,7 @@ void GrpBeams::EnableTool(EToolID nToolID, bool fEnabled)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBeams::update_tools_info(ToolsInfo* pInfo)
+void GrpBeams::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 {
     //Nothing to do. This is an 'action tools' group
 }

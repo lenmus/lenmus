@@ -226,7 +226,7 @@ void ToolPage::add_group(ToolGroup* pGroup)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolPage::OnPaintEvent(wxPaintEvent & event)
+void ToolPage::OnPaintEvent(wxPaintEvent & WXUNUSED(event))
 {
 #if 0
     wxPaintDC dc(this);

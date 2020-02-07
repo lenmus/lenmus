@@ -104,8 +104,8 @@ void OtherOptionsPanel::CreateControls()
 	pMainSizer->Add( pOptionsSizer, 0, wxEXPAND|wxALL, 5 );
 
 
-#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     m_pChkExperimental = nullptr;
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     if (!m_appScope.is_release_behaviour())
     {
         m_pChkExperimental = LENMUS_NEW wxCheckBox( this, wxID_ANY,

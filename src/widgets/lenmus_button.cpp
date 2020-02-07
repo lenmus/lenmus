@@ -89,7 +89,7 @@ BitmapButton::BitmapButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitm
 }
 
 //---------------------------------------------------------------------------------------
-void BitmapButton::Create(const wxPoint& pos, const wxSize& size)
+void BitmapButton::Create(const wxPoint& WXUNUSED(pos), const wxSize& size)
 {
     //if(size == wxDefaultSize) {
 	   //m_btSize.x = 32;
@@ -235,7 +235,7 @@ BitmapButton::~BitmapButton()
 //}
 
 //---------------------------------------------------------------------------------------
-void BitmapButton::OnPaint(wxPaintEvent & event)
+void BitmapButton::OnPaint(wxPaintEvent & WXUNUSED(event))
 {
 	if (m_bitmaps[m_state].IsOk())
     {
@@ -253,7 +253,7 @@ void BitmapButton::OnPaint(wxPaintEvent & event)
 }
 
 //---------------------------------------------------------------------------------------
-void BitmapButton::OnEraseBackground(wxEraseEvent &event)
+void BitmapButton::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 {
 //#ifdef __WIN32__
 //    Redraw();

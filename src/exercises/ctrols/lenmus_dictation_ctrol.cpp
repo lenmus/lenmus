@@ -306,28 +306,28 @@ void DictationCtrol::display_no_error_message()
 }
 
 //---------------------------------------------------------------------------------------
-void DictationCtrol::on_play_fragment_1(void* pThis, SpEventInfo pEvent)
+void DictationCtrol::on_play_fragment_1(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<DictationCtrol*>(pThis))->process_event(
                                     DictationCtrol::k_click_play_or_stop_fragment_1);
 }
 
 //---------------------------------------------------------------------------------------
-void DictationCtrol::on_play_fragment_2(void* pThis, SpEventInfo pEvent)
+void DictationCtrol::on_play_fragment_2(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<DictationCtrol*>(pThis))->process_event(
                                     DictationCtrol::k_click_play_or_stop_fragment_2);
 }
 
 //---------------------------------------------------------------------------------------
-void DictationCtrol::on_play_fragment_3(void* pThis, SpEventInfo pEvent)
+void DictationCtrol::on_play_fragment_3(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<DictationCtrol*>(pThis))->process_event(
                                     DictationCtrol::k_click_play_or_stop_fragment_3);
 }
 
 //---------------------------------------------------------------------------------------
-void DictationCtrol::on_play_fragment_4(void* pThis, SpEventInfo pEvent)
+void DictationCtrol::on_play_fragment_4(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     (static_cast<DictationCtrol*>(pThis))->process_event(
                                     DictationCtrol::k_click_play_or_stop_fragment_4);

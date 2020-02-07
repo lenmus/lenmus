@@ -5,7 +5,7 @@
 #
 # This script MUST BE RUN from <root>/scripts/ folder
 #
-# usage: ./update-version.sh <major> <minor> <path>
+# usage: ./update-version.sh <major> <minor> <patch>
 #------------------------------------------------------------------------------
 
 

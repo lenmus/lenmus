@@ -166,7 +166,7 @@ wxString TextEditor::get_text()
 }
 
 //---------------------------------------------------------------------------------------
-void TextEditor::load_paragraph(Document* pDoc, ImoParagraph* pImo)
+void TextEditor::load_paragraph(Document* WXUNUSED(pDoc), ImoParagraph* WXUNUSED(pImo))
 {
     //TODO
     load_text("TODO: Se supone que esto es el contenido del párrafo seleccionado");

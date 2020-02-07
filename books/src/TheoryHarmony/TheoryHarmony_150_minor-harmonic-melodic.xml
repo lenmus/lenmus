@@ -481,7 +481,7 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
                  (n f4 w v1)
                  (n g4 w v1)
                  (n a4 w v1)
-                 (n +b4 w v1)
+                 (n =b4 w v1)
                  (n +c5 w v1)
                  (n d5 w v1)
                  (n =c5 w v1)

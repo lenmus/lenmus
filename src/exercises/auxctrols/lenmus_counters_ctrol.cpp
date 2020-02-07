@@ -92,7 +92,7 @@ void CountersCtrol::add_mode_label(GmoBoxControl* pWrapper, UPoint pos)
 }
 
 //---------------------------------------------------------------------------------------
-void CountersCtrol::on_change_mode_requested(void* pThis, SpEventInfo pEvent)
+void CountersCtrol::on_change_mode_requested(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     static_cast<CountersCtrol*>(pThis)->change_mode_requested();
 }
@@ -185,7 +185,7 @@ void QuizCounters::load_images()
 }
 
 //---------------------------------------------------------------------------------------
-GmoBoxControl* QuizCounters::layout(LibraryScope& libraryScope, UPoint pos)
+GmoBoxControl* QuizCounters::layout(LibraryScope& WXUNUSED(libraryScope), UPoint pos)
 {
     UPoint cursor(pos);
 
@@ -306,12 +306,12 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
 }
 
 //---------------------------------------------------------------------------------------
-void QuizCounters::on_draw(Drawer* pDrawer, RenderOptions& opt)
+void QuizCounters::on_draw(Drawer* WXUNUSED(pDrawer), RenderOptions& WXUNUSED(opt))
 {
 }
 
 //---------------------------------------------------------------------------------------
-void QuizCounters::handle_event(SpEventInfo pEvent)
+void QuizCounters::handle_event(SpEventInfo WXUNUSED(pEvent))
 {
 }
 
@@ -324,7 +324,7 @@ void QuizCounters::UpdateDisplay()
 }
 
 //---------------------------------------------------------------------------------------
-void QuizCounters::on_reset_counters(void* pThis, SpEventInfo pEvent)
+void QuizCounters::on_reset_counters(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     static_cast<QuizCounters*>(pThis)->reset_counters();
 }
@@ -420,7 +420,7 @@ USize LeitnerCounters::measure()
 }
 
 //---------------------------------------------------------------------------------------
-GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
+GmoBoxControl* LeitnerCounters::layout(LibraryScope& WXUNUSED(libraryScope), UPoint pos)
 {
     UPoint cursor(pos);
 
@@ -560,12 +560,12 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerCounters::on_draw(Drawer* pDrawer, RenderOptions& opt)
+void LeitnerCounters::on_draw(Drawer* WXUNUSED(pDrawer), RenderOptions& WXUNUSED(opt))
 {
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerCounters::handle_event(SpEventInfo pEvent)
+void LeitnerCounters::handle_event(SpEventInfo WXUNUSED(pEvent))
 {
 }
 
@@ -599,7 +599,7 @@ void LeitnerCounters::UpdateDisplay()
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerCounters::on_explain_progress(void* pThis, SpEventInfo pEvent)
+void LeitnerCounters::on_explain_progress(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     static_cast<LeitnerCounters*>(pThis)->explain_progress();
 }
@@ -669,7 +669,7 @@ void PractiseCounters::load_images()
 }
 
 //---------------------------------------------------------------------------------------
-GmoBoxControl* PractiseCounters::layout(LibraryScope& libraryScope, UPoint pos)
+GmoBoxControl* PractiseCounters::layout(LibraryScope& WXUNUSED(libraryScope), UPoint pos)
 {
     UPoint cursor(pos);
 
@@ -767,17 +767,17 @@ void PractiseCounters::create_counters(GmoBox* m_pMainBox, UPoint pos)
 }
 
 //---------------------------------------------------------------------------------------
-void PractiseCounters::on_draw(Drawer* pDrawer, RenderOptions& opt)
+void PractiseCounters::on_draw(Drawer* WXUNUSED(pDrawer), RenderOptions& WXUNUSED(opt))
 {
 }
 
 //---------------------------------------------------------------------------------------
-void PractiseCounters::handle_event(SpEventInfo pEvent)
+void PractiseCounters::handle_event(SpEventInfo WXUNUSED(pEvent))
 {
 }
 
 //---------------------------------------------------------------------------------------
-void PractiseCounters::on_reset_counters(void* pThis, SpEventInfo pEvent)
+void PractiseCounters::on_reset_counters(void* pThis, SpEventInfo WXUNUSED(pEvent))
 {
     static_cast<PractiseCounters*>(pThis)->reset_counters();
 }

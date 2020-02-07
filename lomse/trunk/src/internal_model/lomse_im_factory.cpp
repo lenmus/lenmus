@@ -95,6 +95,8 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_multicolumn:         pObj = LOMSE_NEW ImoMultiColumn(pDoc);    break;
         case k_imo_music_data:          pObj = LOMSE_NEW ImoMusicData();          break;
         case k_imo_note:                pObj = LOMSE_NEW ImoNote();               break;
+        case k_imo_octave_shift:        pObj = LOMSE_NEW ImoOctaveShift();        break;
+        case k_imo_octave_shift_dto:    pObj = LOMSE_NEW ImoOctaveShiftDto();     break;
         case k_imo_option:              pObj = LOMSE_NEW ImoOptionInfo();         break;
         case k_imo_options:             pObj = LOMSE_NEW ImoOptions();            break;
         case k_imo_ornament:            pObj = LOMSE_NEW ImoOrnament();           break;
@@ -138,6 +140,8 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_tuplet_dto:          pObj = LOMSE_NEW ImoTupletDto();          break;
         case k_imo_volta_bracket:       pObj = LOMSE_NEW ImoVoltaBracket();       break;
         case k_imo_volta_bracket_dto:   pObj = LOMSE_NEW ImoVoltaBracketDto();    break;
+        case k_imo_wedge:               pObj = LOMSE_NEW ImoWedge();              break;
+        case k_imo_wedge_dto:           pObj = LOMSE_NEW ImoWedgeDto();           break;
         default:
         {
             LOMSE_LOG_ERROR("[ImFactory::inject] invalid type.");

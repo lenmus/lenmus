@@ -233,13 +233,13 @@ ScoreWizard::~ScoreWizard()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreWizard::OnWizardFinished( wxWizardEvent& event )
+void ScoreWizard::OnWizardFinished(wxWizardEvent& WXUNUSED(event))
 {
     PrepareScore();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreWizard::OnWizardCancel( wxWizardEvent& event )
+void ScoreWizard::OnWizardCancel(wxWizardEvent& WXUNUSED(event))
 {
     m_score.clear();
 }
@@ -421,7 +421,7 @@ void ScoreWizardLayout::CreateControls()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreWizardLayout::OnEnsembleSelected(wxCommandEvent& event)
+void ScoreWizardLayout::OnEnsembleSelected(wxCommandEvent& WXUNUSED(event))
 {
     m_nSelTemplate = m_pLstEnsemble->GetSelection();
 
@@ -504,7 +504,7 @@ ScoreWizardKeyPage::ScoreWizardKeyPage(wxWizard* parent, ApplicationScope* pAppS
 }
 
 //---------------------------------------------------------------------------------------
-bool ScoreWizardKeyPage::Create(wxWizard* parent)
+bool ScoreWizardKeyPage::Create(wxWizard* WXUNUSED(parent))
 {
     //To avoid having to translate again key signature names, we are going to load them
     //by using global function get_key_signature_name()
@@ -643,7 +643,7 @@ void ScoreWizardKeyPage::OnKeyType(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreWizardKeyPage::OnComboKey(wxCommandEvent& event)
+void ScoreWizardKeyPage::OnComboKey(wxCommandEvent& WXUNUSED(event))
 {
     //update preview
 
@@ -716,7 +716,7 @@ ScoreWizardTimePage::ScoreWizardTimePage(wxWizard* parent)
 }
 
 //---------------------------------------------------------------------------------------
-bool ScoreWizardTimePage::Create(wxWizard* parent)
+bool ScoreWizardTimePage::Create(wxWizard* WXUNUSED(parent))
 {
     // page creation
     CreateControls();

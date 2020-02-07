@@ -277,7 +277,7 @@ Interactor* DocumentFrame::get_interactor()
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentFrame::display_document(const string& filename, int viewType)
+void DocumentFrame::display_document(const string& filename, int WXUNUSED(viewType))
 {
     wxFileName document( to_wx_string(filename) );
     bool fIsBook = (document.GetExt().Upper() == "LMB");

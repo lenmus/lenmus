@@ -10,8 +10,6 @@
 # See documentation on how to write CMake scripts at
 # http://www.cmake.org/Wiki/CMake:How_To_Find_Libraries
 
-#include(LibFindMacros)
-
 find_path(ZLIB_INCLUDE_DIR
     NAMES
         zlib.h
@@ -21,7 +19,7 @@ find_path(ZLIB_INCLUDE_DIR
         /sw/include
         /opt/local/include
         /usr/freeware/include
-        $ENV{ZLib++_DIR}/include					#Windows
+        $ENV{ZLib_DIR}/include					    #Windows
         "C:/Program Files (x86)/zlib/include"		#Windows
         "C:/Program Files/zlib/include"				#Windows
 )
@@ -34,7 +32,7 @@ find_library(ZLIB_LIBRARY
         /usr/local/lib
         /sw
         /usr/freeware
-        $ENV{ZLib++_DIR}/include			    #Windows
+        $ENV{ZLib_DIR}/include			        #Windows
         "C:/Program Files (x86)/zlib/bin"		#Windows
         "C:/Program Files (x86)/zlib/lib"		#Windows
         "C:/Program Files/zlib/bin"		        #Windows

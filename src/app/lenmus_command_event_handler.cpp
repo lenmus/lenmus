@@ -88,20 +88,22 @@ void CommandEventHandler::process_key_event(wxKeyEvent& event)
     m_keyFlags = event.GetModifiers();
 
     check_commands_for_current_toolbox_context();
-    if (!event_processed())
-        check_always_valid_edition_commands();
+    if (event_processed())
+        return;
+
+    check_always_valid_edition_commands();
 
 #if (LENMUS_DEBUG_BUILD == 1)
-    if (!event_processed())
-    {
-        Shortcut s(event.GetModifiers(), event.GetKeyCode());
-        wxString name = s.to_string();
-        wxString msg = wxString::Format(
-            "[CommandEventHandler::process_key_event] Key not processed. keyCmd=%d - %s",
-            m_keyCmd, name.wx_str());
-        wxMessageBox(msg);
+    if (event_processed())
+        return;
+
+    Shortcut s(event.GetModifiers(), event.GetKeyCode());
+    wxString name = s.to_string();
+    wxString msg = wxString::Format(
+        "[CommandEventHandler::process_key_event] Key not processed. keyCmd=%d - %s",
+        m_keyCmd, name.wx_str());
+    wxMessageBox(msg);
 //        LogKeyEvent("Key Press", event, nTool);
-    }
 #endif
 }
 
@@ -825,7 +827,9 @@ void CommandEventHandler::check_always_valid_edition_commands()
                         measure = 0;
                     else if (m_keyCmd == k_cmd_cursor_to_last_measure)
                         measure = 9999999;
-                    else;
+                    else
+                    {
+                    }
                     m_pController->exec_lomse_command(
                         LENMUS_NEW CmdCursor(measure, -1, -1), k_no_show_busy);
                     m_fEventProcessed = true;

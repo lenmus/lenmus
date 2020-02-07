@@ -126,7 +126,7 @@ void EarIntervalsCtrol::initialize_strings()
 }
 
 //---------------------------------------------------------------------------------------
-void EarIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+void EarIntervalsCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacing))
 {
     //create up to 25 buttons for the answers: five rows, five buttons per row
     //Buttons are created disabled and no visible

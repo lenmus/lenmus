@@ -184,7 +184,7 @@ void BookContentBox::OnContentsLinkClicked(wxHtmlLinkEvent& event)
 // Overrides
 // ============================================================================
 
-void BookContentBox::DoHandleItemClick(int item, int flags)
+void BookContentBox::DoHandleItemClick(int item, int WXUNUSED(flags))
 {
     // the item should become the current one only if it is a final node
     int nItem = LocateTreeItem(item);
@@ -224,27 +224,27 @@ void BookContentBox::EnsureVisible(const long& nTree)
 
 }
 
-wxTreeItemData* BookContentBox::GetItemData(const long& item) const
+wxTreeItemData* BookContentBox::GetItemData(const long& WXUNUSED(item)) const
 {
     //Returns the tree item data associated with the item.
     return (wxTreeItemData*)NULL;
 }
 
-void BookContentBox::SelectItem(const long& item, bool select)
+void BookContentBox::SelectItem(const long& item, bool WXUNUSED(select))
 {
     //Selects the given item. In multiple selection controls, can be also used
     //to deselect a currently selected item if the value of select is false.
     SetSelection(item);
 }
 
-void BookContentBox::SetItemBold(const long& item, bool bold)
+void BookContentBox::SetItemBold(const long& WXUNUSED(item), bool WXUNUSED(bold))
 {
     //Makes item appear in bold font if bold parameter is true or resets it to
     //the normal state.
 }
 
-void BookContentBox::SetItemImage(const long& item, int image,
-                                     wxTreeItemIcon which)
+void BookContentBox::SetItemImage(const long& WXUNUSED(item), int WXUNUSED(image),
+                                     wxTreeItemIcon WXUNUSED(which))
 {
     //Sets the specified item image. See GetItemImage for the description of
     //the which parameter.

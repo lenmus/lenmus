@@ -377,7 +377,7 @@ void ShortcutsOptPanel::Apply()
 }
 
 //---------------------------------------------------------------------------------------
-void ShortcutsOptPanel::on_button_reset_all(wxCommandEvent& event)
+void ShortcutsOptPanel::on_button_reset_all(wxCommandEvent& WXUNUSED(event))
 {
     //TODO
 //    KeyTranslator* table = m_appScope.get_key_translator();
@@ -388,13 +388,13 @@ void ShortcutsOptPanel::on_button_reset_all(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ShortcutsOptPanel::on_category_selected(wxCommandEvent& event)
+void ShortcutsOptPanel::on_category_selected(wxCommandEvent& WXUNUSED(event))
 {
     load_current_settings();
 }
 
 //---------------------------------------------------------------------------------------
-void ShortcutsOptPanel::on_button_clear(wxCommandEvent& event)
+void ShortcutsOptPanel::on_button_clear(wxCommandEvent& WXUNUSED(event))
 {
 //    KeyTranslator* table = m_appScope.get_key_translator();
 //    wxGridCellCoordsArray cells = m_pGrid->GetSelectedCells();
@@ -413,7 +413,7 @@ void ShortcutsOptPanel::on_button_clear(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ShortcutsOptPanel::on_button_define(wxCommandEvent& event)
+void ShortcutsOptPanel::on_button_define(wxCommandEvent& WXUNUSED(event))
 {
 
 }

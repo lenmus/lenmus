@@ -111,7 +111,7 @@ InternetOptPanel::InternetOptPanel(wxWindow* parent, ApplicationScope& appScope)
     if (sLastCheckDate == "") {
         sLastCheckDate = _("Never");
     }
-    m_pTxtLastCheck->SetLabel(sLastCheckDate);
+    m_pTxtLastCheckDate->SetLabel(sLastCheckDate);
 
     //proxy settings
     bool fUseProxy;
@@ -157,7 +157,7 @@ void InternetOptPanel::create_controls()
 	wxBoxSizer* pTitleSizer;
 	pTitleSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblTitle = LENMUS_NEW wxStaticText( m_pTitlePanel, wxID_ANY, "Internet connection options", wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	m_pLblTitle = LENMUS_NEW wxStaticText( m_pTitlePanel, wxID_ANY, _("Internet connection options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pLblTitle->Wrap( -1 );
 	m_pLblTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
@@ -178,7 +178,7 @@ void InternetOptPanel::create_controls()
 	pContentSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
 	wxStaticBoxSizer* pBoxUpdates;
-	pBoxUpdates = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, "Software updates" ), wxVERTICAL );
+	pBoxUpdates = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, _("Software updates") ), wxVERTICAL );
 
 	wxBoxSizer* pSizerCheckFreq;
 	pSizerCheckFreq = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
@@ -186,7 +186,7 @@ void InternetOptPanel::create_controls()
 
 	pSizerCheckFreq->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pTxtCheckFreq = LENMUS_NEW wxStaticText( this, wxID_ANY, "Check for updates", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtCheckFreq = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Check for updates"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtCheckFreq->Wrap( -1 );
 	pSizerCheckFreq->Add( m_pTxtCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -201,11 +201,11 @@ void InternetOptPanel::create_controls()
 
 	pSizerLastCheck->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pTxtLastCheck = LENMUS_NEW wxStaticText( this, wxID_ANY, "Last successful check:", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtLastCheck = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Last successful check:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtLastCheck->Wrap( -1 );
 	pSizerLastCheck->Add( m_pTxtLastCheck, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pTxtLastCheckDate = LENMUS_NEW wxStaticText( this, wxID_ANY, "dd/mm/aaaa", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtLastCheckDate = LENMUS_NEW wxStaticText( this, wxID_ANY, "dd/mm/yyyy", wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtLastCheckDate->Wrap( -1 );
 	pSizerLastCheck->Add( m_pTxtLastCheckDate, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
@@ -213,12 +213,12 @@ void InternetOptPanel::create_controls()
 
 	pContentSizer->Add( pBoxUpdates, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkUseProxy = LENMUS_NEW wxCheckBox( this, ID_CHK_USE_PROXY, "Use a proxy server to connect to Internet", wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkUseProxy = LENMUS_NEW wxCheckBox( this, ID_CHK_USE_PROXY, _("Use a proxy server to connect to Internet"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	pContentSizer->Add( m_pChkUseProxy, 0, wxEXPAND|wxALL, 5 );
 
-	m_pBoxProxySettings = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, "Proxy settings" ), wxVERTICAL );
+	m_pBoxProxySettings = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, _("Proxy settings") ), wxVERTICAL );
 
-	m_pBoxServerSettings = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, "Server settings" ), wxVERTICAL );
+	m_pBoxServerSettings = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, _("Server settings") ), wxVERTICAL );
 
 	wxBoxSizer* pSizerProxy;
 	pSizerProxy = LENMUS_NEW wxBoxSizer( wxVERTICAL );
@@ -226,7 +226,7 @@ void InternetOptPanel::create_controls()
 	wxBoxSizer* pSizerServerSettings;
 	pSizerServerSettings = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblHostname = LENMUS_NEW wxStaticText( this, wxID_ANY, "Host:", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblHostname = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Host:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblHostname->Wrap( -1 );
 	pSizerServerSettings->Add( m_pLblHostname, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -236,7 +236,7 @@ void InternetOptPanel::create_controls()
 
 	pSizerServerSettings->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pLblPortNumber = LENMUS_NEW wxStaticText( this, wxID_ANY, "Port number:", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblPortNumber = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Port number:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPortNumber->Wrap( -1 );
 	pSizerServerSettings->Add( m_pLblPortNumber, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -255,7 +255,7 @@ void InternetOptPanel::create_controls()
 	m_pLblSpacer1->Wrap( -1 );
 	pSizerServerSettingsError->Add( m_pLblSpacer1, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
-	m_pLblServerSettingsError = LENMUS_NEW wxStaticText( this, wxID_ANY, "Please enter data for both, host name and port number", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblServerSettingsError = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Please enter data for both, host name and port number"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblServerSettingsError->Wrap( -1 );
 	m_pLblServerSettingsError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
@@ -267,15 +267,15 @@ void InternetOptPanel::create_controls()
 
 	m_pBoxProxySettings->Add( m_pBoxServerSettings, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkProxyAuthentication = LENMUS_NEW wxCheckBox( this, ID_CHK_PROXY_AUTHENTICATION, "Proxy server requires authentication", wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkProxyAuthentication = LENMUS_NEW wxCheckBox( this, ID_CHK_PROXY_AUTHENTICATION, _("Proxy server requires authentication"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	m_pBoxProxySettings->Add( m_pChkProxyAuthentication, 0, wxEXPAND|wxALL, 5 );
 
-	m_pBoxProxyAuthentication = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, "Authentication" ), wxVERTICAL );
+	m_pBoxProxyAuthentication = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, _("Authentication") ), wxVERTICAL );
 
 	wxBoxSizer* pSizerUsername;
 	pSizerUsername = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblUsername = LENMUS_NEW wxStaticText( this, wxID_ANY, "Username:", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblUsername = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Username:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblUsername->Wrap( -1 );
 	pSizerUsername->Add( m_pLblUsername, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -285,7 +285,7 @@ void InternetOptPanel::create_controls()
 
 	pSizerUsername->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pLblPassword = LENMUS_NEW wxStaticText( this, wxID_ANY, "Password:", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblPassword = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Password:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPassword->Wrap( -1 );
 	pSizerUsername->Add( m_pLblPassword, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -304,7 +304,7 @@ void InternetOptPanel::create_controls()
 	m_pSpacer2->Wrap( -1 );
 	pSizerErrorAuthentication->Add( m_pSpacer2, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
-	m_pLblAuthenticationError = LENMUS_NEW wxStaticText( this, wxID_ANY, "Please enter data for both, user name and password", wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblAuthenticationError = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Please enter data for both, user name and password"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblAuthenticationError->Wrap( -1 );
 	m_pLblAuthenticationError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 

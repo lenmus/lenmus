@@ -212,7 +212,7 @@ GeneralProperties::~GeneralProperties()
 }
 
 //---------------------------------------------------------------------------------------
-void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool fCurrentPage)
+void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool WXUNUSED(fCurrentPage))
 {
     list<ControlItem>::const_iterator it;
     for (it = m_controls.begin(); it != m_controls.end(); ++it)

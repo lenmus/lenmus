@@ -179,7 +179,7 @@ void ToolGroup::PostToolBoxEvent(EToolID nToolID, bool fSelected)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolGroup::OnPaintEvent(wxPaintEvent & evt)
+void ToolGroup::OnPaintEvent(wxPaintEvent & WXUNUSED(evt))
 {
     //called by the system when the panel needs to be redrawn. You can also trigger
     //this call by calling Refresh()/Update().
@@ -348,14 +348,14 @@ void ToolGroup::DoPaintNow()
 }
 
 //---------------------------------------------------------------------------------------
-void ToolGroup::OnMouseDown(wxMouseEvent& event)
+void ToolGroup::OnMouseDown(wxMouseEvent& WXUNUSED(event))
 {
     //m_fMousePressedDown = true;
     //DoPaintNow();
 }
 
 //---------------------------------------------------------------------------------------
-void ToolGroup::OnMouseReleased(wxMouseEvent& event)
+void ToolGroup::OnMouseReleased(wxMouseEvent& WXUNUSED(event))
 {
     //select tool group by clicking on it
     if (!m_fGuiControl && is_tool_selector_group() && this->IsEnabled())
@@ -363,7 +363,7 @@ void ToolGroup::OnMouseReleased(wxMouseEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolGroup::OnMouseLeftWindow(wxMouseEvent& event)
+void ToolGroup::OnMouseLeftWindow(wxMouseEvent& WXUNUSED(event))
 {
     //if (m_fMousePressedDown)
     //{
@@ -381,14 +381,14 @@ void ToolGroup::EnableForMouseMode(int nMode)
 }
 
 //---------------------------------------------------------------------------------------
-bool ToolGroup::process_key(wxKeyEvent& event)
+bool ToolGroup::process_key(wxKeyEvent& WXUNUSED(event))
 {
     //virtual. Default implementation
     return false;   //not processed
 }
 
 //---------------------------------------------------------------------------------------
-bool ToolGroup::process_command(int cmd)
+bool ToolGroup::process_command(int WXUNUSED(cmd))
 {
     //virtual. Default implementation
     return false;   //not processed
@@ -403,7 +403,8 @@ bool ToolGroup::process_command(int cmd)
 //=======================================================================================
 ToolButtonsGroup::ToolButtonsGroup(wxPanel* pParent, EGroupType nGroupType,
                                        int nNumButtons, bool fAllowNone,
-                                       wxBoxSizer* pMainSizer, int nFirstButtonEventID,
+                                       wxBoxSizer* WXUNUSED(pMainSizer),
+                                       int nFirstButtonEventID,
                                        EToolID nFirstButtonToolID,
                                        ToolboxTheme* pColours,
                                        int nValidMouseModes)
@@ -520,7 +521,7 @@ void ToolButtonsGroup::OnButton(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolButtonsGroup::OnButtonSelected(int nSelButton)
+void ToolButtonsGroup::OnButtonSelected(int WXUNUSED(nSelButton))
 {
     //Notify owner page about the tool change, unless it is the MouseGroup, In this
     //case post a tool change event directly to the active controller

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -35,6 +35,10 @@
 #include <lomse_logger.h>
 using namespace lomse;
 
+//std
+#include <algorithm>
+using namespace std;
+
 
 namespace lenmus
 {
@@ -67,23 +71,10 @@ void RandomGenerator::shuffle(int nNum, int* pIdx)
     //fill array pointed by pIdx ( int idx[nNum] ) with unique integers
     //in the range 0..nNum-1, arranged at random
 
-    int* from = new int[nNum];
     for (int i=0; i < nNum; ++i)
-        *(from + i) = i;
-    int jmax = nNum-1;
-    int k=0;
-    for (int i=0; i < nNum; ++i)
-    {
-        int j = random_number(0, jmax);
-        *(pIdx+k) = *(from + j);
-        ++k;
-        for (int i1=j+1; i1 <= jmax; ++i1)
-            *(from + i1-1) = *(from + i1);
-        --jmax;
-    }
-    *(pIdx+k) = *from;
+        *(pIdx + i) = i;
 
-	delete[] from;
+    random_shuffle(pIdx, pIdx+nNum-1);
 }
 
 //---------------------------------------------------------------------------------------
@@ -562,7 +553,7 @@ bool ProblemSpace::is_deck_loaded(long nDeckID)
 {
     //returns true if set is already loaded in this space
 
-    std::list<long>::iterator it = std::find(m_decks.begin(), m_decks.end(), m_nDeckID);
+    std::list<long>::iterator it = std::find(m_decks.begin(), m_decks.end(), nDeckID);
     return it != m_decks.end();
 }
 
@@ -1273,12 +1264,10 @@ void LeitnerManager::update_question_for_learning(int iQ, bool fSuccess, wxTimeS
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::update_question_for_practising(int iQ, bool fSuccess, wxTimeSpan tsResponse)
+void LeitnerManager::update_question_for_practising(int WXUNUSED(iQ), bool fSuccess,
+                                                    wxTimeSpan WXUNUSED(tsResponse))
 {
     //in practise mode no performance data is updated/saved. Only update displayed statistics
-
-    WXUNUSED(iQ);
-    WXUNUSED(tsResponse);
 
     if (fSuccess)
         m_nRight++;
@@ -1545,11 +1534,9 @@ int QuizManager::ChooseQuestion()
 }
 
 //---------------------------------------------------------------------------------------
-void QuizManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)
+void QuizManager::UpdateQuestion(int WXUNUSED(iQ), bool fSuccess,
+                                 wxTimeSpan WXUNUSED(tsResponse))
 {
-    WXUNUSED(iQ);
-    WXUNUSED(tsResponse);
-
     if (fSuccess)
         m_nRight[m_nCurrentTeam]++;
     else

@@ -67,11 +67,12 @@ class SelectionSet;
 class Control;
 class ScoreStub;
 class GraphicModel;
-
+class GmMeasuresTable;
 
 //---------------------------------------------------------------------------------------
 /** %ScoreStub is a helper class containing information related to graphical model for
     one score.
+
     As the graphic model is a general model, it has no specific information about the
     details for each score graphic model. Therefore, to store and manage tables and
     other information related to each score graphic model, this helper class
@@ -82,9 +83,11 @@ class ScoreStub
 protected:
     ImoId m_scoreId;
     vector<GmoBoxScorePage*> m_pages;
+    GmMeasuresTable* m_measures;
 
 public:
-    ScoreStub(ImoId id) : m_scoreId(id) {}
+    ScoreStub(ImoScore* pScore);
+    ~ScoreStub();
 
     inline void add_page(GmoBoxScorePage* pPage) { m_pages.push_back(pPage); }
     inline vector<GmoBoxScorePage*>& get_pages() { return m_pages; }
@@ -98,6 +101,9 @@ public:
         @param time The time position (absolute time units) for the requested page.
     */
     GmoBoxScorePage* get_page_for(TimeUnits time);
+
+    /** Returns the table of measures for this score */
+    inline GmMeasuresTable* get_measures_table() { return m_measures; }
 
 };
 
@@ -124,8 +130,11 @@ public:
         k_dirty             = 0x0002,   //dirty: modified since last "clear_dirty()": need to render it again
         k_children_dirty    = 0x0004,   //this is not dirty but some children are dirty
         k_hover             = 0x0008,   //mouse over
-        k_in_link           = 0x0010,   //is part of a link
-        k_has_edit_focus    = 0x0020,   //this box has the focus for edition
+        k_has_edit_focus    = 0x0010,   //this box has the focus for edition
+
+        //structural flags
+        k_in_link           = 0x0100,   //is part of a link
+        k_add_to_vprofile   = 0x0200,   //add to VProfile
     };
 
 
@@ -146,6 +155,12 @@ public:
     inline bool are_children_dirty() { return (m_flags & k_children_dirty) != 0; }
     void set_children_dirty(bool value);
 
+    //do not add to VProfile
+    inline bool add_to_vprofile() { return (m_flags & k_add_to_vprofile) != 0; }
+    void set_add_to_vprofile(bool value) {
+        value ? m_flags |= k_add_to_vprofile : m_flags &= ~k_add_to_vprofile;
+    }
+
 
     //clasification
     enum { k_box = 0,
@@ -157,17 +172,15 @@ public:
            k_shape,
                 k_shape_accidentals, k_shape_accidental_sign,
                 k_shape_articulation,
-                k_shape_barline,
-                k_shape_beam, k_shape_brace,
+                k_shape_barline, k_shape_beam, k_shape_brace,
                 k_shape_bracket, k_shape_button,
-                k_shape_clef,
-                k_shape_coda_segno,
-                k_shape_dot, k_shape_dynamics_mark,
+                k_shape_clef, k_shape_coda_segno,
+                k_shape_debug, k_shape_dot, k_shape_dynamics_mark,
                 k_shape_fermata, k_shape_flag, k_shape_image,
                 k_shape_invisible, k_shape_key_signature, k_shape_lyrics,
                 k_shape_metronome_glyph, k_shape_metronome_mark,
-                k_shape_line, k_shape_note, k_shape_notehead,
-                k_shape_ornament,
+                k_shape_line, k_shape_note, k_shape_chord_base_note, k_shape_notehead,
+                k_shape_octave_shift, k_shape_octave_glyph, k_shape_ornament,
                 k_shape_rectangle, k_shape_rest, k_shape_rest_glyph,
                 k_shape_slur, k_shape_squared_bracket,
                 k_shape_stem, k_shape_staff,
@@ -177,7 +190,7 @@ public:
                 k_shape_time_signature,
                 k_shape_tie,
                 k_shape_time_signature_glyph, k_shape_tuplet,
-                k_shape_volta_bracket, k_shape_word,
+                k_shape_volta_bracket, k_shape_wedge, k_shape_word,
             k_max
          };
 
@@ -218,6 +231,7 @@ public:
     inline bool is_shape_button() { return m_objtype == k_shape_button; }
     inline bool is_shape_clef() { return m_objtype == k_shape_clef; }
     inline bool is_shape_coda_segno() { return m_objtype == k_shape_coda_segno; }
+    inline bool is_shape_debug() { return m_objtype == k_shape_debug; }
     inline bool is_shape_dot() { return m_objtype == k_shape_dot; }
     inline bool is_shape_dynamics_mark() { return m_objtype == k_shape_dynamics_mark; }
     inline bool is_shape_fermata() { return m_objtype == k_shape_fermata; }
@@ -229,8 +243,12 @@ public:
     inline bool is_shape_lyrics() { return m_objtype == k_shape_lyrics; }
     inline bool is_shape_metronome_glyph() { return m_objtype == k_shape_metronome_glyph; }
     inline bool is_shape_metronome_mark() { return m_objtype == k_shape_metronome_mark; }
-    inline bool is_shape_note() { return m_objtype == k_shape_note; }
+    inline bool is_shape_note() { return m_objtype == k_shape_note
+                                      || m_objtype == k_shape_chord_base_note; }
+    inline bool is_shape_chord_base_note() { return m_objtype == k_shape_chord_base_note; }
     inline bool is_shape_notehead() { return m_objtype == k_shape_notehead; }
+    inline bool is_shape_octave_shift() { return m_objtype == k_shape_octave_shift; }
+    inline bool is_shape_octave_num() { return m_objtype == k_shape_octave_glyph; }
     inline bool is_shape_ornament() { return m_objtype == k_shape_ornament; }
     inline bool is_shape_rectangle() { return m_objtype == k_shape_rectangle; }
     inline bool is_shape_rest() { return m_objtype == k_shape_rest; }
@@ -247,6 +265,7 @@ public:
     inline bool is_shape_time_signature_glyph() { return m_objtype == k_shape_time_signature_glyph; }
     inline bool is_shape_tuplet() { return m_objtype == k_shape_tuplet; }
     inline bool is_shape_volta_bracket() { return m_objtype == k_shape_volta_bracket; }
+    inline bool is_shape_wedge() { return m_objtype == k_shape_wedge; }
     inline bool is_shape_word() { return m_objtype == k_shape_word; }
 
     //size
@@ -337,6 +356,7 @@ public:
     //methods related to position
     void set_origin_and_notify_observers(LUnits xLeft, LUnits yTop);
     virtual bool hit_test(LUnits x, LUnits y);
+    virtual void reposition_shape(LUnits yShift);
 
     //related shapes
     inline std::list<GmoShape*>* get_related_shapes() { return m_pRelatedShapes; }
@@ -366,6 +386,7 @@ public:
 
     //test and debug
     void dump(ostream& outStream, int level);
+    void set_color(Color color) { m_color = color; }
 
 protected:
     GmoShape(ImoObj* pCreatorImo, int objtype, ShapeId idx, Color color);

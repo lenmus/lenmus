@@ -90,7 +90,7 @@ void TheoIntervalsCtrol::get_ctrol_options_from_params()
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* TheoIntervalsCtrol::prepare_aux_score(int nButton)
+ImoScore* TheoIntervalsCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     // In theory interval exercises it is not allowed to play an interval
     return NULL;

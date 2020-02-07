@@ -55,21 +55,21 @@ namespace lenmus
 //
 //    Medievals modes         Mode    Gregorian modes
 //    ---------------------   ----    --------------------------
-//    Protus      auténtico   I       Dorico          Dorian (Re)
-//                plagal      II      Hipodórico
-//    Deuterus    auténtico   III     Frigio          Phrygian (Mi)
+//    Protus      autÃ©ntico   I       Dorico          Dorian (Re)
+//                plagal      II      HipodÃ³rico
+//    Deuterus    autÃ©ntico   III     Frigio          Phrygian (Mi)
 //                plagal      IV      Hipofrigio
-//    Tritus      auténtico   V       Lidio           Lydian (Fa)
+//    Tritus      autÃ©ntico   V       Lidio           Lydian (Fa)
 //                plagal      VI      Hipolidio
-//    Tetrardus   auténtico   VII     Mixolidio       Mixolydian (Sol)
+//    Tetrardus   autÃ©ntico   VII     Mixolidio       Mixolydian (Sol)
 //                plagal      VIII    Hipomixolidio
 //
 //    Modes introduced in 1547:
 //
-//                auténtico   IX      Eolio           Aeolian (La = minor natural)
+//                autÃ©ntico   IX      Eolio           Aeolian (La = minor natural)
 //                plagal      X       Hipoeolio
-//                auténtico   XI      Jónico          Ionian (Do = major natural)
-//                plagal      XII     Hipojónico
+//                autÃ©ntico   XI      JÃ³nico          Ionian (Do = major natural)
+//                plagal      XII     HipojÃ³nico
 //
 //    Later introduced modes (rarely used):
 //

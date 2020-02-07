@@ -93,7 +93,7 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
+void WelcomeWindow::CreateControls(wxFileHistory* WXUNUSED(pHistory))
 {
 #if (0)     //removed until editor ready
     int nRecentFiles = pHistory->GetCount();
@@ -268,14 +268,14 @@ WelcomeWindow::~WelcomeWindow()
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
+void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& WXUNUSED(event))
 {
     wxString sDoc = "release_notes.htm";
     ShowDocument(sDoc);
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& event)
+void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& WXUNUSED(event))
 {
 ////    wxString sDoc = "editor_quick_guide.htm";
 ////    ShowDocument(sDoc);
@@ -308,7 +308,7 @@ void WelcomeWindow::ShowDocument(wxString& sDocName)
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
+void WelcomeWindow::OnNewScore(wxHyperlinkEvent& WXUNUSED(event))
 {
     //TODO 5.0
 //    wxCommandEvent myEvent;     //It is not used. So I do not initialize it
@@ -317,7 +317,7 @@ void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::OnOpenEBooks(wxHyperlinkEvent& event)
+void WelcomeWindow::OnOpenEBooks(wxHyperlinkEvent& WXUNUSED(event))
 {
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_open_books);
     ::wxPostEvent(this, myEvent);
@@ -332,7 +332,7 @@ void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::OnInstructions(wxHyperlinkEvent& event)
+void WelcomeWindow::OnInstructions(wxHyperlinkEvent& WXUNUSED(event))
 {
     wxString sDoc = "study-guide.htm";
     ShowDocument(sDoc);

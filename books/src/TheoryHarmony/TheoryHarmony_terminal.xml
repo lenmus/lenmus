@@ -35,7 +35,7 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -44,11 +44,11 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
-            (text ''V'' (style "figured-bass-10") dx:-60 dy:200)
+            (chord (n g2 w p2 (text ''V'' (style "figured-bass-10") dx:-10 dy:100))
+				(n g3 w)(n d4 w p1)(n b4 w))
             (barline)
-            (chord (n c3 w p2)(n g3 w)(n e4 w p1)(n c5 w))
-            (text ''I'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n c3 w p2 (text ''I'' (style "figured-bass-10") dx:-10 dy:100))
+				(n g3 w)(n e4 w p1)(n c5 w))
             (barline end)
         )))
     </music>
@@ -58,7 +58,7 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -67,11 +67,11 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n g2 w p2)(n d4 w)(n f4 w p1)(n b4 w))
-            (text ''V7'' (style "figured-bass-10") dx:-65 dy:200)
+            (chord (n g2 w p2 (text ''V7'' (style "figured-bass-10") dx:-15 dy:100))
+				(n d4 w)(n f4 w p1)(n b4 w))
             (barline)
-            (chord (n c3 w p2)(n c4 w)(n e4 w p1)(n c5 w))
-            (text ''I'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n c3 w p2 (text ''I'' (style "figured-bass-10") dx:-10 dy:100))
+				(n c4 w)(n e4 w p1)(n c5 w))
             (barline end)
         )))
     </music>
@@ -124,7 +124,7 @@ In both cadence types, authentic and plagal, other chords playing the same harmo
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -133,11 +133,11 @@ In both cadence types, authentic and plagal, other chords playing the same harmo
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n f3 w p2)(n c4 w)(n f4 w p1)(n a4 w))
-            (text ''IV'' (style "figured-bass-10") dx:-65 dy:200)
+            (chord (n f3 w p2 (text ''IV'' (style "figured-bass-10") dx:-15 dy:100))
+				(n c4 w)(n f4 w p1)(n a4 w))
             (barline)
-            (chord (n c3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
-            (text ''I'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n c3 w p2 (text ''I'' (style "figured-bass-10") dx:-10 dy:100))
+				(n c4 w)(n e4 w p1)(n g4 w))
             (barline end)
         )))
     </music>
@@ -147,7 +147,7 @@ In both cadence types, authentic and plagal, other chords playing the same harmo
     <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)
+        (score (vers 1.6)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
@@ -156,12 +156,12 @@ In both cadence types, authentic and plagal, other chords playing the same harmo
             (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n f3 w p2)(n d4 w)(n f4 w p1)(n a4 w))
-            (text ''II'' (style "figured-bass-10") dx:-65 dy:200)
-            (text ''6'' (style "figured-bass-7") dx:-45 dy:185)
+            (chord (n f3 w p2 (text ''II'' (style "figured-bass-10") dx:-15 dy:100)
+				(text ''6'' (style "figured-bass-7") dx:5 dy:85))
+				(n d4 w)(n f4 w p1)(n a4 w))
             (barline)
-            (chord (n c3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
-            (text ''I'' (style "figured-bass-10") dx:-55 dy:200)
+            (chord (n c3 w p2 (text ''I'' (style "figured-bass-10") dx:-10 dy:100))
+				(n c4 w)(n e4 w p1)(n g4 w))
             (barline end)
         )))
     </music>

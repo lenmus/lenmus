@@ -36,8 +36,8 @@ class Paths
 {
 private:
     ApplicationScope& m_appScope;
-    //root (instalation path) for LenMus
-    wxFileName    m_root;
+    //root of source tree (when program being developed) or executable path (when program is installed)
+    wxFileName    m_installRoot;
 
     //path names
     wxString    m_sLocaleRoot;  //root path for locale (it is m_sLocale without the language subfolder)
@@ -64,15 +64,11 @@ public:
     ~Paths();
 
     //actions
-    void create_folders();
     void log_paths();
     string dump_paths();
 
-//    void LoadUserPreferences();
-//    void SaveUserPreferences();
-
     //Access to paths
-    wxString GetSrcRootPath() { return m_root.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR); }
+    wxString GetSrcRootPath() { return m_installRoot.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR); }
     wxString GetBinPath() { return m_sBin; }
     wxString GetXrcPath() { return m_sXrc; }
     wxString GetTemporaryPath() { return m_sTemp; }
@@ -94,9 +90,6 @@ public:
     wxString GetBooksPath() { return m_sBooks; }
 
     void SetLanguageCode(wxString sLangCode);
-
-//    // Set paths selecteble by user
-//    void SetScoresPath(wxString sPath) { m_sScores = sPath; }
 
 private:
 	void ClearTempFiles();

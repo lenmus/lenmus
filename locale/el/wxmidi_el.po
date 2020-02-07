@@ -1,0 +1,854 @@
+#
+# Avgeris Tsironis <avgeristsironis@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: wxMidi\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2020-02-02 19:50+0100\n"
+"Language-Team: Ελληνικά <avgeristsironis@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../src\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: Avgeris Tsironis <avgeristsironis@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: el\n"
+"X-Poedit-SearchPath-0: wxMidi\n"
+
+#: wxMidi/wxMidi.cpp:129 wxMidi/wxMidi.cpp:142
+msgid "Error: Device not properly created"
+msgstr "Σφάλμα: H συσκευή δεν έχει δημιουργηθεί σωστά"
+
+#: wxMidi/wxMidi.cpp:619
+msgid "PortMidi: `Host error'"
+msgstr "PortMidi: ' σφάλμα κεντρικού υπολογιστή '"
+
+#: wxMidi/wxMidi.cpp:621
+msgid "PortMidi: `Invalid device ID'"
+msgstr "PortMidi: ' μη έγκυρο αναγνωριστικό συσκευής '"
+
+#: wxMidi/wxMidi.cpp:623
+msgid "PortMidi: `Insufficient memory'"
+msgstr "PortMidi: ' ανεπαρκής μνήμη '"
+
+#: wxMidi/wxMidi.cpp:625
+msgid "PortMidi: 'Buffer too small'"
+msgstr "PortMidi: ' buffer πολύ μικρό '"
+
+#: wxMidi/wxMidi.cpp:627
+msgid "PortMidi: `Bad pointer'"
+msgstr "PortMidi: ' εσφαλμένος δείκτης '"
+
+#: wxMidi/wxMidi.cpp:629
+msgid "PortMidi: 'Internal PortMidi Error'"
+msgstr "PortMidi: ' εσωτερικό σφάλμα PortMidi '"
+
+#: wxMidi/wxMidi.cpp:631
+msgid "PortMidi: 'Buffer overflow'"
+msgstr "PortMidi: 'Υπερχείλιση Ρυθμιστή'"
+
+#: wxMidi/wxMidi.cpp:633
+msgid "PortMidi: 'Invalid MIDI message Data'"
+msgstr "PortMidi: 'Μη έγκυρα δεδομένα μηνυμάτων MIDI'"
+
+#: wxMidi/wxMidi.cpp:635
+msgid "PortMidi: 'Buffer is already as large as it can be'"
+msgstr "PortMidi: 'Ο Ρυθμιστής έχει το μέγιστο δυνατό μέγεθος'"
+
+#: wxMidi/wxMidi.cpp:639
+msgid "wxMidi: 'Already lisening!'"
+msgstr "wxMidi: 'Ακούγεται ήδη'"
+
+#: wxMidi/wxMidi.cpp:641
+msgid "wxMidi: 'Error while creating the thread object'"
+msgstr "wxMidi: 'Σφάλμα κατά τη δημιουργία'"
+
+#: wxMidi/wxMidi.cpp:643
+msgid "wxMidi: 'Error while starting the thread execution'"
+msgstr "wxMidi: 'Σφάλμα κατά την εκκίνηση εκτέλεσης του νήματος'"
+
+#: wxMidi/wxMidi.cpp:645
+msgid "wxMidi. 'Bad sysex msg: It does not start with 0xF0'"
+msgstr "wxMidi. 'Μήνυμα συντακτικού σφάλματος: Δεν ξεκινάει με 0xF0'"
+
+#: wxMidi/wxMidi.cpp:647
+msgid ""
+"wxMidi. 'Bad sysex msg: Length greater than 10000 or no final byte 0xF7'"
+msgstr ""
+"wxMidi. 'Μήνυμα συντακτικού σφάλματος: Μέγεθος μεγαλύτερο από 10000 ή δεν "
+"υπάρχει τελικό byte 0xF7'"
+
+#: wxMidi/wxMidi.cpp:649
+msgid "wxMidi. 'There are no MIDI messages pending to be read'"
+msgstr "wxMidi. 'Δεν υπάρχουν εκκρεμή μηνύματα MIDI προς ανάγνωση'"
+
+#: wxMidi/wxMidi.cpp:652
+msgid "wxMidi: 'Illegal error number'"
+msgstr "wxMidi: 'Μη επιτρεπτός αριθμός'"
+
+#: wxMidi/wxMidiDatabase.cpp:90
+msgid "Acoustic Grand Piano"
+msgstr "Ακουστικό Πιάνο (Grand)"
+
+#: wxMidi/wxMidiDatabase.cpp:91
+msgid "Bright Acoustic Piano"
+msgstr "Ακουστικό Πιάνο (Bright)"
+
+#: wxMidi/wxMidiDatabase.cpp:92
+msgid "Electric Grand Piano"
+msgstr "Ηλεκτρικό Πιάνο (Grand)"
+
+#: wxMidi/wxMidiDatabase.cpp:93
+msgid "Honky-tonk Piano"
+msgstr "Πιάνο Χόνκυ-τονκ"
+
+#: wxMidi/wxMidiDatabase.cpp:94
+msgid "Electric Piano 1"
+msgstr "Ηλεκτρικό Πιάνο 1"
+
+#: wxMidi/wxMidiDatabase.cpp:95
+msgid "Electric Piano 2"
+msgstr "Ηλεκτρικό Πιάνο 2"
+
+#: wxMidi/wxMidiDatabase.cpp:96
+msgid "Harpsichord"
+msgstr "Τσέμπαλο"
+
+#: wxMidi/wxMidiDatabase.cpp:97
+msgid "Clavinet"
+msgstr "Κλάβινετ"
+
+#: wxMidi/wxMidiDatabase.cpp:98
+msgid "Celesta"
+msgstr "Τσελέστα"
+
+#: wxMidi/wxMidiDatabase.cpp:99
+msgid "Glockenspiel"
+msgstr "Γκλοκενσπήελ"
+
+#: wxMidi/wxMidiDatabase.cpp:100
+msgid "Music Box"
+msgstr "Μουσικό Κουτί"
+
+#: wxMidi/wxMidiDatabase.cpp:101
+msgid "Vibraphone"
+msgstr "Βιμπράφωνο"
+
+#: wxMidi/wxMidiDatabase.cpp:102
+msgid "Marimba"
+msgstr "Μαρίμπα"
+
+#: wxMidi/wxMidiDatabase.cpp:103
+msgid "Xylophone"
+msgstr "Ξυλόφωνο"
+
+#: wxMidi/wxMidiDatabase.cpp:104
+msgid "Tubular Bells"
+msgstr "Καμπάνες ορχήστρας"
+
+#: wxMidi/wxMidiDatabase.cpp:105
+msgid "Dulcimer"
+msgstr "Ντούλτσιμερ"
+
+#: wxMidi/wxMidiDatabase.cpp:106
+msgid "Drawbar Organ"
+msgstr "Ηλεκτρικό όργανο (Drawbar)"
+
+#: wxMidi/wxMidiDatabase.cpp:107
+msgid "Percussive Organ"
+msgstr "Ηλεκτρικό Όργανο (Percussive)"
+
+#: wxMidi/wxMidiDatabase.cpp:108
+msgid "Rock Organ"
+msgstr "Ηλεκτρικό Όργανο (Rock)"
+
+#: wxMidi/wxMidiDatabase.cpp:109
+msgid "Church Organ"
+msgstr "Εκκλησιαστικό Όργανο"
+
+#: wxMidi/wxMidiDatabase.cpp:110
+msgid "Reed Organ"
+msgstr "Αερόφωνο Όργανο"
+
+#: wxMidi/wxMidiDatabase.cpp:111
+msgid "Accordion"
+msgstr "Ακορντεόν"
+
+#: wxMidi/wxMidiDatabase.cpp:112
+msgid "Harmonica"
+msgstr "Φυσαρμόνικα"
+
+#: wxMidi/wxMidiDatabase.cpp:113
+msgid "Tango Accordion"
+msgstr "Ακορντεόν Τανγκό"
+
+#: wxMidi/wxMidiDatabase.cpp:114
+msgid "Acoustic Guitar (nylon)"
+msgstr "Κλασική Κιθάρα"
+
+#: wxMidi/wxMidiDatabase.cpp:115
+msgid "Acoustic Guitar (steel)"
+msgstr "Ακουστική Κιθάρα"
+
+#: wxMidi/wxMidiDatabase.cpp:116
+msgid "Electric Guitar (jazz)"
+msgstr "Ηλεκτρική Κιθάρα (τζάζ)"
+
+#: wxMidi/wxMidiDatabase.cpp:117
+msgid "Electric Guitar (clean)"
+msgstr "Ηλεκτρική Κιθάρα (καθαρός ήχος)"
+
+#: wxMidi/wxMidiDatabase.cpp:118
+msgid "Electric Guitar (muted)"
+msgstr "Ηλεκτρική Κιθάρα (σίγαση)"
+
+#: wxMidi/wxMidiDatabase.cpp:119
+msgid "Overdriven Guitar"
+msgstr "Κιθάρα με υπεροδήγηση σήματος"
+
+#: wxMidi/wxMidiDatabase.cpp:120
+msgid "Distortion Guitar"
+msgstr "Κιθάρα με παραμόρφωση"
+
+#: wxMidi/wxMidiDatabase.cpp:121
+msgid "Guitar harmonics"
+msgstr "Αρμονικές Κιθάρας"
+
+#: wxMidi/wxMidiDatabase.cpp:122
+msgid "Acoustic Bass"
+msgstr "Ακουστικό Μπάσο"
+
+#: wxMidi/wxMidiDatabase.cpp:123
+msgid "Electric Bass (finger)"
+msgstr "Ηλεκτρικό Μπάσο (δάχτυλα)"
+
+#: wxMidi/wxMidiDatabase.cpp:124
+msgid "Electric Bass (pick)"
+msgstr "Ηλεκτρικό Μπάσο (πένα)"
+
+#: wxMidi/wxMidiDatabase.cpp:125
+msgid "Fretless Bass"
+msgstr "Άταστο Μπάσο"
+
+#: wxMidi/wxMidiDatabase.cpp:126
+msgid "Slap Bass 1"
+msgstr "Μπάσο Τεχνική Slap 1"
+
+#: wxMidi/wxMidiDatabase.cpp:127
+msgid "Slap Bass 2"
+msgstr "Μπάσο Τεχνική Slap 2"
+
+#: wxMidi/wxMidiDatabase.cpp:128
+msgid "Synth Bass 1"
+msgstr "Μπάσο Συνθετητή 1"
+
+#: wxMidi/wxMidiDatabase.cpp:129
+msgid "Synth Bass 2"
+msgstr "Μπάσο Συνθετητή 2"
+
+#: wxMidi/wxMidiDatabase.cpp:130
+msgid "Violin"
+msgstr "Βιολί"
+
+#: wxMidi/wxMidiDatabase.cpp:131
+msgid "Viola"
+msgstr "Βιόλα"
+
+#: wxMidi/wxMidiDatabase.cpp:132
+msgid "Cello"
+msgstr "Τσέλο"
+
+#: wxMidi/wxMidiDatabase.cpp:133
+msgid "Contrabass"
+msgstr "Κόντρα Μπάσο"
+
+#: wxMidi/wxMidiDatabase.cpp:134
+msgid "Tremolo Strings"
+msgstr "Τρέμολο εγχόρδων"
+
+#: wxMidi/wxMidiDatabase.cpp:135
+msgid "Pizzicato Strings"
+msgstr "Πιτσικάτο εγχόρδων"
+
+#: wxMidi/wxMidiDatabase.cpp:136
+msgid "Orchestral Harp"
+msgstr "Άρπα Ορχήστρας"
+
+#: wxMidi/wxMidiDatabase.cpp:137
+msgid "Timpani"
+msgstr "Τύμπανα"
+
+#: wxMidi/wxMidiDatabase.cpp:138
+msgid "String Ensemble 1"
+msgstr "Σύνολο Εγχόρδων 1"
+
+#: wxMidi/wxMidiDatabase.cpp:139
+msgid "String Ensemble 2"
+msgstr "Σύνολο Εγχόρδων 2"
+
+#: wxMidi/wxMidiDatabase.cpp:140
+msgid "SynthStrings 1"
+msgstr "Έγχορδα Συνθετητή 1"
+
+#: wxMidi/wxMidiDatabase.cpp:141
+msgid "SynthStrings 2"
+msgstr "Έγχορδα Συνθετητή 1"
+
+#: wxMidi/wxMidiDatabase.cpp:142
+msgid "Choir Aahs"
+msgstr "Χορωδία 'Ααα'"
+
+#: wxMidi/wxMidiDatabase.cpp:143
+msgid "Voice Oohs"
+msgstr "Βοκαλισμός 'Οοοο'"
+
+#: wxMidi/wxMidiDatabase.cpp:144
+msgid "Synth Voice"
+msgstr "Φωνή Συνθετητή"
+
+#: wxMidi/wxMidiDatabase.cpp:145
+msgid "Orchestra Hit"
+msgstr "Χτύπημα Ορχήστρας (orchestra hit)"
+
+#: wxMidi/wxMidiDatabase.cpp:146
+msgid "Trumpet"
+msgstr "Τρομπέτα"
+
+#: wxMidi/wxMidiDatabase.cpp:147
+msgid "Trombone"
+msgstr "Τρομπόνι"
+
+#: wxMidi/wxMidiDatabase.cpp:148
+msgid "Tuba"
+msgstr "Τούμπα"
+
+#: wxMidi/wxMidiDatabase.cpp:149
+msgid "Muted Trumpet"
+msgstr "Τρομπέτα με τάπα"
+
+#: wxMidi/wxMidiDatabase.cpp:150
+msgid "French Horn"
+msgstr "Γαλλικό Κόρνο"
+
+#: wxMidi/wxMidiDatabase.cpp:151
+msgid "Brass Section"
+msgstr "Σύνολο Χάλκινων Πνευστών"
+
+#: wxMidi/wxMidiDatabase.cpp:152
+msgid "SynthBrass 1"
+msgstr "Χάλκινα Πνευστά Συνθετητή 1"
+
+#: wxMidi/wxMidiDatabase.cpp:153
+msgid "SynthBrass 2"
+msgstr "Χάλκινα Πνευστά Συνθετητή 2"
+
+#: wxMidi/wxMidiDatabase.cpp:154
+msgid "Soprano Sax"
+msgstr "Σαξόφωνο Σοπράνο"
+
+#: wxMidi/wxMidiDatabase.cpp:155
+msgid "Alto Sax"
+msgstr "Σαξόφωνο Άλτο"
+
+#: wxMidi/wxMidiDatabase.cpp:156
+msgid "Tenor Sax"
+msgstr "Σαξόφωνο Τενόρο"
+
+#: wxMidi/wxMidiDatabase.cpp:157
+msgid "Baritone Sax"
+msgstr "Σαξόφωνο Βαρύτονο"
+
+#: wxMidi/wxMidiDatabase.cpp:158
+msgid "Oboe"
+msgstr "Όμποε"
+
+#: wxMidi/wxMidiDatabase.cpp:159
+msgid "English Horn"
+msgstr "Αγγλικό Κόρνο"
+
+#: wxMidi/wxMidiDatabase.cpp:160
+msgid "Bassoon"
+msgstr "Φαγκότο"
+
+#: wxMidi/wxMidiDatabase.cpp:161
+msgid "Clarinet"
+msgstr "Κλαρινέτο"
+
+#: wxMidi/wxMidiDatabase.cpp:162
+msgid "Piccolo"
+msgstr "Πίκολο"
+
+#: wxMidi/wxMidiDatabase.cpp:163
+msgid "Flute"
+msgstr "Φλάουτο"
+
+#: wxMidi/wxMidiDatabase.cpp:164
+msgid "Recorder"
+msgstr "Φλογέρα"
+
+#: wxMidi/wxMidiDatabase.cpp:165
+msgid "Pan Flute"
+msgstr "Αυλός του Πάνα"
+
+#: wxMidi/wxMidiDatabase.cpp:166
+msgid "Blown Bottle"
+msgstr "Φυσητό μπουκάλι"
+
+#: wxMidi/wxMidiDatabase.cpp:167
+msgid "Shakuhachi"
+msgstr "Σακουχάτσι"
+
+#: wxMidi/wxMidiDatabase.cpp:168
+msgid "Whistle"
+msgstr "Σφύριγμα"
+
+#: wxMidi/wxMidiDatabase.cpp:169
+msgid "Ocarina"
+msgstr "Οκαρίνα"
+
+#: wxMidi/wxMidiDatabase.cpp:170
+msgid "Lead 1 (square)"
+msgstr "Οδηγός (Lead) 1 (square)"
+
+#: wxMidi/wxMidiDatabase.cpp:171
+msgid "Lead 2 (sawtooth)"
+msgstr "Οδηγός (Lead) 2 (πριονωτό)"
+
+#: wxMidi/wxMidiDatabase.cpp:172
+msgid "Lead 3 (calliope)"
+msgstr "Οδηγός (Lead) 3 (calliope)"
+
+#: wxMidi/wxMidiDatabase.cpp:173
+msgid "Lead 4 (chiff)"
+msgstr "Οδηγός (Lead) 4 (chiff)"
+
+#: wxMidi/wxMidiDatabase.cpp:174
+msgid "Lead 5 (charang)"
+msgstr "Οδηγός (Lead) 5 (charang)"
+
+#: wxMidi/wxMidiDatabase.cpp:175
+msgid "Lead 6 (voice)"
+msgstr "Οδηγός (Lead) 6 (φωνή)"
+
+#: wxMidi/wxMidiDatabase.cpp:176
+msgid "Lead 7 (fifths)"
+msgstr "Οδηγός (Lead) 7 (πέμπτες)"
+
+#: wxMidi/wxMidiDatabase.cpp:177
+msgid "Lead 8 (bass + lead)"
+msgstr "Οδηγός (Lead) 8 (μπάσο + οδηγός)"
+
+#: wxMidi/wxMidiDatabase.cpp:178
+msgid "Pad 1 (new age)"
+msgstr "Παντ 1 (νιού έιτζ)"
+
+#: wxMidi/wxMidiDatabase.cpp:179
+msgid "Pad 2 (warm)"
+msgstr "Παντ 2 (ζεστό)"
+
+#: wxMidi/wxMidiDatabase.cpp:180
+msgid "Pad 3 (polysynth)"
+msgstr "Παντ 3 (πολυσυνθ.)"
+
+#: wxMidi/wxMidiDatabase.cpp:181
+msgid "Pad 4 (choir)"
+msgstr "Παντ 4 (χορωδία)"
+
+#: wxMidi/wxMidiDatabase.cpp:182
+msgid "Pad 5 (bowed)"
+msgstr "Παντ 5 (μπόουντ)"
+
+#: wxMidi/wxMidiDatabase.cpp:183
+msgid "Pad 6 (metallic)"
+msgstr "Παντ 6 (μεταλλικό)"
+
+#: wxMidi/wxMidiDatabase.cpp:184
+msgid "Pad 7 (halo)"
+msgstr "Παντ 7 (φωτοστέφανο)"
+
+#: wxMidi/wxMidiDatabase.cpp:185
+msgid "Pad 8 (sweep)"
+msgstr "Παντ 8 (σαρωτικό)"
+
+#: wxMidi/wxMidiDatabase.cpp:186
+msgid "FX 1 (rain)"
+msgstr "Εφέ 1 (βροχή)"
+
+#: wxMidi/wxMidiDatabase.cpp:187
+msgid "FX 2 (soundtrack)"
+msgstr "Εφέ 2 (σάουντρακ)"
+
+#: wxMidi/wxMidiDatabase.cpp:188
+msgid "FX 3 (crystal)"
+msgstr "Εφέ 2 (κρύσταλλο)"
+
+#: wxMidi/wxMidiDatabase.cpp:189
+msgid "FX 4 (atmosphere)"
+msgstr "Εφέ 4 (ατμόσφαιρα)"
+
+#: wxMidi/wxMidiDatabase.cpp:190
+msgid "FX 5 (brightness)"
+msgstr "Εφέ 5 (λάμψη)"
+
+#: wxMidi/wxMidiDatabase.cpp:191
+msgid "FX 6 (goblins)"
+msgstr "Εφέ 6 (καλικάντζαροι)"
+
+#: wxMidi/wxMidiDatabase.cpp:192
+msgid "FX 7 (echoes)"
+msgstr "Εφέ 7 (αντιχήσεις)"
+
+#: wxMidi/wxMidiDatabase.cpp:193
+msgid "FX 8 (sci-fi)"
+msgstr "Εφέ 8 (επ. φαντασ.)"
+
+#: wxMidi/wxMidiDatabase.cpp:194
+msgid "Sitar"
+msgstr "Σιτάρ"
+
+#: wxMidi/wxMidiDatabase.cpp:195
+msgid "Banjo"
+msgstr "Μπάντζο"
+
+#: wxMidi/wxMidiDatabase.cpp:196
+msgid "Shamisen"
+msgstr "Σάμισεν"
+
+#: wxMidi/wxMidiDatabase.cpp:197
+msgid "Koto"
+msgstr "Κότο"
+
+#: wxMidi/wxMidiDatabase.cpp:198
+msgid "Kalimba"
+msgstr "Καλίμπα"
+
+#: wxMidi/wxMidiDatabase.cpp:199
+msgid "Bag pipe"
+msgstr "Γκάιντα"
+
+#: wxMidi/wxMidiDatabase.cpp:200
+msgid "Fiddle"
+msgstr "Βιολί (Fiddle)"
+
+#: wxMidi/wxMidiDatabase.cpp:201
+msgid "Shanai"
+msgstr "Σανάι"
+
+#: wxMidi/wxMidiDatabase.cpp:202
+msgid "Tinkle Bell"
+msgstr "Κουδουνάκια"
+
+#: wxMidi/wxMidiDatabase.cpp:203
+msgid "Agogo"
+msgstr "Αγκόγκο"
+
+#: wxMidi/wxMidiDatabase.cpp:204
+msgid "Steel Drums"
+msgstr "Στιλ Ντραμς"
+
+#: wxMidi/wxMidiDatabase.cpp:205
+msgid "Woodblock"
+msgstr "Γούντμπλοκ"
+
+#: wxMidi/wxMidiDatabase.cpp:206
+msgid "Taiko Drum"
+msgstr "Τύμπανο Τάικο"
+
+#: wxMidi/wxMidiDatabase.cpp:207
+msgid "Melodic Tom"
+msgstr "Μελωδικό Τύμπανο"
+
+#: wxMidi/wxMidiDatabase.cpp:208
+msgid "Synth Drum"
+msgstr "Τύμπανο Συνθετητή"
+
+#: wxMidi/wxMidiDatabase.cpp:209
+msgid "Reverse Cymbal"
+msgstr "Ανεστραμμένο Κύμβαλο"
+
+#: wxMidi/wxMidiDatabase.cpp:210
+msgid "Guitar Fret Noise"
+msgstr "ΤάσταΚιθάρας"
+
+#: wxMidi/wxMidiDatabase.cpp:211
+msgid "Breath Noise"
+msgstr "Αναπνοή"
+
+#: wxMidi/wxMidiDatabase.cpp:212
+msgid "Seashore"
+msgstr "Παραλία"
+
+#: wxMidi/wxMidiDatabase.cpp:213
+msgid "Bird Tweet"
+msgstr "Τιτίβισμα πουλιών"
+
+#: wxMidi/wxMidiDatabase.cpp:214
+msgid "Telephone Ring"
+msgstr "Κτύπος Τηλεφώνου"
+
+#: wxMidi/wxMidiDatabase.cpp:215
+msgid "Helicopter"
+msgstr "Ελικόπτερο"
+
+#: wxMidi/wxMidiDatabase.cpp:216
+msgid "Applause"
+msgstr "Χειροκρότημα"
+
+#: wxMidi/wxMidiDatabase.cpp:217
+msgid "Gunshot"
+msgstr "Πυροβολισμός"
+
+#: wxMidi/wxMidiDatabase.cpp:354
+msgid "35-Acoustic Bass Drum"
+msgstr "35-Ακουστικό Μπάσο Τύμπανο"
+
+#: wxMidi/wxMidiDatabase.cpp:355
+msgid "36-Bass Drum 1"
+msgstr "36-Μπάσο Τύμπανο 1"
+
+#: wxMidi/wxMidiDatabase.cpp:356
+msgid "37-Side Stick"
+msgstr "37-Πλάγιος χτύπος (Side Stick)"
+
+#: wxMidi/wxMidiDatabase.cpp:357
+msgid "38-Acoustic Snare"
+msgstr "38-Ακουστικό Ταμπούρο"
+
+#: wxMidi/wxMidiDatabase.cpp:358
+msgid "39-Hand clap"
+msgstr "39-Παλαμάκια"
+
+#: wxMidi/wxMidiDatabase.cpp:359
+msgid "40-Electric Snare"
+msgstr "40-Ηλεκτρικό Ταμπούρο"
+
+#: wxMidi/wxMidiDatabase.cpp:360
+msgid "41_Low Floor Tom"
+msgstr "41_Χαμηλό Βαθύ Τομ"
+
+#: wxMidi/wxMidiDatabase.cpp:361
+msgid "42_Closed High-Hat"
+msgstr "42_Κλειστό Χάι-χατ"
+
+#: wxMidi/wxMidiDatabase.cpp:362
+msgid "43-High Floor Tom"
+msgstr "43-Ψηλό Βαθύ Τομ"
+
+#: wxMidi/wxMidiDatabase.cpp:363
+msgid "44-Pedal High-Hat"
+msgstr "44-Χάι Χατ με πεντάλ"
+
+#: wxMidi/wxMidiDatabase.cpp:364
+msgid "45-Low Tom"
+msgstr "45-Χαμηλό Τομ"
+
+#: wxMidi/wxMidiDatabase.cpp:365
+msgid "46-Open High-Hat"
+msgstr "46-Ανοικτό Χάι Χατ"
+
+#: wxMidi/wxMidiDatabase.cpp:366
+msgid "47-Low-Mid Tom"
+msgstr "47-Χαμηλο-μεσαίο Τομ"
+
+#: wxMidi/wxMidiDatabase.cpp:367
+msgid "48-High-Mid Tom"
+msgstr "48-Υψηλο-μεσαίο Τομ"
+
+#: wxMidi/wxMidiDatabase.cpp:368
+msgid "49-Crash Cymbal 1"
+msgstr "49-Κύμβαλο τύπου Crash 1"
+
+#: wxMidi/wxMidiDatabase.cpp:369
+msgid "50-High Tom"
+msgstr "50-Υψηλό Τομ"
+
+#: wxMidi/wxMidiDatabase.cpp:370
+msgid "51-Ride Cymbal 1"
+msgstr "51-Κύμβαλο τύπου Ride 1"
+
+#: wxMidi/wxMidiDatabase.cpp:371
+msgid "52-Chinese Cymbal"
+msgstr "52-κινέζικο Κύμβαλο"
+
+#: wxMidi/wxMidiDatabase.cpp:372
+msgid "53-Ride Bell"
+msgstr "53-Καμπανάκι"
+
+#: wxMidi/wxMidiDatabase.cpp:373
+msgid "54-Tambourine"
+msgstr "54-Ντέφι"
+
+#: wxMidi/wxMidiDatabase.cpp:374
+msgid "55-Splash Cymbal"
+msgstr "55-Κύμβαλο τύπου Splash"
+
+#: wxMidi/wxMidiDatabase.cpp:375
+msgid "56-Cowbell"
+msgstr "56-Κουδούνα"
+
+#: wxMidi/wxMidiDatabase.cpp:376
+msgid "57-Crash Cymbal 2"
+msgstr "57-Κύμβαλο τύπου Crash 2"
+
+#: wxMidi/wxMidiDatabase.cpp:377
+msgid "58-Vibraslap"
+msgstr "58-Βίμπρασλαπ"
+
+#: wxMidi/wxMidiDatabase.cpp:378
+msgid "59-Ride Cymbal 2"
+msgstr "59-Κύμβαλο τύπου Ride 2"
+
+#: wxMidi/wxMidiDatabase.cpp:379
+msgid "60-High Bongo"
+msgstr "60- Πρίμο Μπόνγκο"
+
+#: wxMidi/wxMidiDatabase.cpp:380
+msgid "61-Low Bongo"
+msgstr "61- Μπάσο Μπόνγκο"
+
+#: wxMidi/wxMidiDatabase.cpp:381
+msgid "62-Mute High Conga"
+msgstr "62- Πρίμο Κόνγκα με σίγαση"
+
+#: wxMidi/wxMidiDatabase.cpp:382
+msgid "63-Open High Conga"
+msgstr "63- Πρίμο Κόνγκα"
+
+#: wxMidi/wxMidiDatabase.cpp:383
+msgid "64-Low Conga"
+msgstr "64-Μπάσο Κόνγκα"
+
+#: wxMidi/wxMidiDatabase.cpp:384
+msgid "65-High Timbale"
+msgstr "65-Υψηλές Τυμπάλες"
+
+#: wxMidi/wxMidiDatabase.cpp:385
+msgid "66-Low Timbale"
+msgstr "66-Χαμηλές Τυμπάλες"
+
+#: wxMidi/wxMidiDatabase.cpp:386
+msgid "67-High Agogo"
+msgstr "67-Πρίμο Αγκόγκο"
+
+#: wxMidi/wxMidiDatabase.cpp:387
+msgid "68-Low Agogo"
+msgstr "68-Μπάσο Αγκόγκό"
+
+#: wxMidi/wxMidiDatabase.cpp:388
+msgid "69-Casaba"
+msgstr "Καμπάσα"
+
+#: wxMidi/wxMidiDatabase.cpp:389
+msgid "70-Maracas"
+msgstr "70-Μαράκες"
+
+#: wxMidi/wxMidiDatabase.cpp:390
+msgid "71-Short Whistle"
+msgstr "71-Σύντομο Σφύριγμα"
+
+#: wxMidi/wxMidiDatabase.cpp:391
+msgid "72-Long Whistle"
+msgstr "72-Σφύριγμα Διαρκείας"
+
+#: wxMidi/wxMidiDatabase.cpp:392
+msgid "73-Short Guiro"
+msgstr "73-Σύντομο Γκουίρο"
+
+#: wxMidi/wxMidiDatabase.cpp:393
+msgid "74-Long Guiro"
+msgstr "74-Γκουίρο Διαρκείας"
+
+#: wxMidi/wxMidiDatabase.cpp:394
+msgid "75-Claves"
+msgstr "75-Κλάβες"
+
+#: wxMidi/wxMidiDatabase.cpp:395
+msgid "76-High Wood Block"
+msgstr "76-Πρίμο Γουντ - Μπλοκ"
+
+#: wxMidi/wxMidiDatabase.cpp:396
+msgid "77-Low Wood Block"
+msgstr "77-Μπάσο Γούντ - Μπλοκ"
+
+#: wxMidi/wxMidiDatabase.cpp:397
+msgid "78-Mute Cuica"
+msgstr "78-Κουίκα με σίγαση"
+
+#: wxMidi/wxMidiDatabase.cpp:398
+msgid "79-Open Cuica"
+msgstr "79-Κουίκα"
+
+#: wxMidi/wxMidiDatabase.cpp:399
+msgid "80-Mute Triangle"
+msgstr "80-Τρίγωνο με σίγαση"
+
+#: wxMidi/wxMidiDatabase.cpp:400
+msgid "81-Open Triangle"
+msgstr "81-Τρίγωνο Ανοικτό"
+
+#: wxMidi/wxMidiDatabase.cpp:420
+msgid "Keyboards"
+msgstr "Πληκτροφόρα"
+
+#: wxMidi/wxMidiDatabase.cpp:432
+msgid "Chromatic percussion"
+msgstr "Χρωματικά Κρουστά"
+
+#: wxMidi/wxMidiDatabase.cpp:444
+msgid "Organs and harmonicas"
+msgstr "Όργανα και αερόφωνα"
+
+#: wxMidi/wxMidiDatabase.cpp:456
+msgid "Guitars"
+msgstr "Κιθάρες"
+
+#: wxMidi/wxMidiDatabase.cpp:468
+msgid "Basses"
+msgstr "Μπάσα"
+
+#: wxMidi/wxMidiDatabase.cpp:480
+msgid "Strings"
+msgstr "Έγχορδα"
+
+#: wxMidi/wxMidiDatabase.cpp:492
+msgid "Ensembles"
+msgstr "Σύνολα"
+
+#: wxMidi/wxMidiDatabase.cpp:504
+msgid "Brass"
+msgstr "Χάλκινα Πνευστά"
+
+#: wxMidi/wxMidiDatabase.cpp:516
+msgid "Reed"
+msgstr "Αυλός"
+
+#: wxMidi/wxMidiDatabase.cpp:528
+msgid "Pipe"
+msgstr "Σωλήνας"
+
+#: wxMidi/wxMidiDatabase.cpp:540
+msgid "Synth. lead"
+msgstr "Συνθετητής οδηγός (lead)"
+
+#: wxMidi/wxMidiDatabase.cpp:552
+msgid "Synth. pad"
+msgstr "Συνθετητής pad"
+
+#: wxMidi/wxMidiDatabase.cpp:564
+msgid "Synth. F/X"
+msgstr "Εφέ Συνθετητή"
+
+#: wxMidi/wxMidiDatabase.cpp:576
+msgid "Ethnic"
+msgstr "Έθνικ"
+
+#: wxMidi/wxMidiDatabase.cpp:588
+msgid "Percussive"
+msgstr "Κρουστά"
+
+#: wxMidi/wxMidiDatabase.cpp:600
+msgid "Sound F/X"
+msgstr "Ηχητικά Εφέ"

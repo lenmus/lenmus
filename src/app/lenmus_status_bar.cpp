@@ -69,8 +69,8 @@ wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
-StatusBar::StatusBar(wxFrame* pFrame, EStatusBarLayout nType, wxWindowID id)
-    : wxStatusBar(pFrame, wxID_ANY, wxST_SIZEGRIP)
+StatusBar::StatusBar(wxFrame* pFrame, EStatusBarLayout WXUNUSED(nType), wxWindowID id)
+    : wxStatusBar(pFrame, id, wxST_SIZEGRIP)
     , StatusReporter()
     , m_pFrame(pFrame)
     , m_nNumFields(lm_Field_NUM_FIELDS)

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -87,6 +87,8 @@ using namespace lomse;
 
 namespace lenmus
 {
+
+#define LENMUS_INCLUDE_EDITOR   0
 
 DEFINE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES)
 DEFINE_EVENT_TYPE(LM_EVT_OPEN_BOOK)
@@ -521,7 +523,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pPrintData(NULL)
     , m_pPageSetupData(NULL)
     , m_fileHistory(9, wxID_FILE1)      //max files, id of first file)
-    , m_caretTimer(this, k_id_caret_timer)
+//    , m_caretTimer(this, k_id_caret_timer)
     , m_nblinkTime(500)     //milliseconds
 {
     create_menu();
@@ -536,12 +538,12 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
-    #if (LENMUS_PLATFORM_WIN32 == 1)
-        //macro wxICON creates an icon using an icon resource on Windows.
-        SetIcon(wxICON(app_icon));
-	#else
+ //   #if (LENMUS_PLATFORM_WIN32 == 1)
+ //       //macro wxICON creates an icon using an icon resource on Windows.
+ //       SetIcon(wxICON(app_icon));
+	//#else
 		SetIcon(wxArtProvider::GetIcon("app_icon", wxART_OTHER));
-	#endif
+//	#endif
 
 //	//acceleration keys table
 //    wxAcceleratorEntry entries[1];
@@ -564,13 +566,13 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     m_pPageSetupData->SetMarginBottomRight(wxPoint(0, 0));
 
     //start timer for carets
-    m_caretTimer.Start(m_nblinkTime, wxTIMER_CONTINUOUS);
+//    m_caretTimer.Start(m_nblinkTime, wxTIMER_CONTINUOUS);
 }
 
 //---------------------------------------------------------------------------------------
 MainFrame::~MainFrame()
 {
-    m_caretTimer.Stop();
+//    m_caretTimer.Stop();
 
     //ensure no score is being playedback
     ScorePlayer* pPlayer = m_appScope.get_score_player();
@@ -707,9 +709,10 @@ void MainFrame::create_menu()
     // file menu --------------------------------------------------------------------------
 
     wxMenu* pMenuFile = LENMUS_NEW wxMenu;
-
+#if (LENMUS_INCLUDE_EDITOR)
     create_menu_item(pMenuFile, k_menu_file_new, k_cmd_file_new,
                      _("New"), "tool_new", wxITEM_NORMAL);
+#endif
     create_menu_item(pMenuFile, k_menu_file_open, k_cmd_file_open,
                      _("Open"), "tool_open", wxITEM_NORMAL, true /*dots*/);
     create_menu_item(pMenuFile, k_menu_file_reload, k_cmd_file_reload,
@@ -788,8 +791,10 @@ void MainFrame::create_menu()
     // edit menu -------------------------------------------------------------------
 
     m_editMenu = LENMUS_NEW wxMenu;
+    if (m_appScope.are_experimental_features_enabled())
     create_menu_item(m_editMenu, k_menu_edit_enable_edition, k_cmd_edit_enable_edition,
                 _("Enable edition"), "", wxITEM_CHECK);
+#if (LENMUS_INCLUDE_EDITOR)
     m_editMenu->AppendSeparator();
     create_menu_item(m_editMenu, k_menu_edit_undo, k_cmd_edit_undo,
                 _("Undo"), "tool_undo", wxITEM_NORMAL);
@@ -810,7 +815,7 @@ void MainFrame::create_menu()
     pItem->SetBitmap( wxArtProvider::GetBitmap("empty", wxART_TOOLBAR, nIconSize) );
     m_editMenu->Append(pItem);
         //end of insert submenu
-
+#endif
 
     // View menu -------------------------------------------------------------------
 
@@ -822,16 +827,20 @@ void MainFrame::create_menu()
     create_menu_item(pMenuView, k_menu_view_toc, _("Table of content"),
                 _("Hide/show the TOC for current book"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
+#if (LENMUS_INCLUDE_EDITOR)
     create_menu_item(pMenuView, k_menu_view_virtual_keyboard, _("Virtual keyboard"),
                 _("Hide/show virtual keyboard"));
     create_menu_item(pMenuView, k_menu_view_console, _("Command console"),
                 _("Show the commands console"), wxITEM_CHECK, "empty", " ...\tCtrl+M");
+#endif
     //create_menu_item(pMenuView, k_menu_view_rulers, _("Rulers"),
     //            _("Hide/show rulers"), wxITEM_CHECK);
     create_menu_item(pMenuView, k_menu_view_welcome_page, _("Welcome page"),
                 _("Hide/show welcome page"));
+#if (LENMUS_INCLUDE_EDITOR)
     create_menu_item(pMenuView, k_menu_view_voices_in_colours, _("Show voices in colors"),
                 _("Use a different colour for each voice"), wxITEM_CHECK);
+#endif
 
     //TODO: TO_REMOVE
     //create_menu_item(pMenuView, k_menu_view_counters, _("Counters panel"),
@@ -911,7 +920,7 @@ void MainFrame::create_menu()
     create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_table_rows, "Draw table row boxes");
     create_menu_item(pSubmenuDrawBox, k_menu_debug_remove_boxes, "Remove drawn boxes");
 
-    pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, "Draw box ...",
+    wxMenuItem* pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, "Draw box ...",
                     "Force to draw box rectangles", wxITEM_NORMAL, pSubmenuDrawBox);
     m_dbgMenu->Append(pItem);
 
@@ -1056,8 +1065,7 @@ void MainFrame::create_menu()
 
     pMenuBar->Append(pMenuZoom, _("Zoom"));
     pMenuBar->Append(pMenuOptions, _("Options"));
-    if (m_appScope.are_experimental_features_enabled())
-        pMenuBar->Append(pMenuTools, _("Tools"));
+    pMenuBar->Append(pMenuTools, _("Tools"));
     pMenuBar->Append(pMenuHelp, _("Help"));
 
         //
@@ -1220,7 +1228,7 @@ void MainFrame::open_file()
     if (lastUsedPath.empty())
     {
         Paths* pPaths = m_appScope.get_paths();
-        lastUsedPath = pPaths->GetScoresPath();
+        lastUsedPath = pPaths->GetSamplesPath();
     }
 
     // ask for the file to open/import
@@ -2136,7 +2144,7 @@ void MainFrame::on_tab_close(wxAuiManagerEvent& evt)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_active_canvas_changing(wxAuiNotebookEvent& event)
+void MainFrame::on_active_canvas_changing(wxAuiNotebookEvent& WXUNUSED(event))
 {
     //The active canvas is about to be changed. This event can be vetoed.
 
@@ -2442,6 +2450,7 @@ void MainFrame::on_open_help(wxCommandEvent& event)
 
         case k_menu_help_search:
             pHelp->display_section(3);      //search
+            break;
 
         default:
             pHelp->display_section(10000);  //index
@@ -2449,7 +2458,7 @@ void MainFrame::on_open_help(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_open_books(wxCommandEvent& event)
+void MainFrame::on_open_books(wxCommandEvent& WXUNUSED(event))
 {
     BooksDlg dlg(this, m_appScope);
     if (dlg.ShowModal() == wxID_OK)
@@ -2550,7 +2559,7 @@ void MainFrame::on_debug_draw_box(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_justify_systems(wxCommandEvent& event)
+void MainFrame::on_debug_justify_systems(wxCommandEvent& WXUNUSED(event))
 {
     bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_justify_systems);
     LomseDoorway& lib = m_appScope.get_lomse();
@@ -2602,7 +2611,7 @@ void MainFrame::on_debug_trace_lines_break(wxCommandEvent& UNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
+void MainFrame::on_debug_dump_column_tables(wxCommandEvent& WXUNUSED(event))
 {
     bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_dump_column_tables);
     LomseDoorway& lib = m_appScope.get_lomse();
@@ -2660,7 +2669,7 @@ void MainFrame::on_debug_show_debug_links(wxCommandEvent& event)
 //}
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_draw_shape_bounds(wxCommandEvent& event)
+void MainFrame::on_debug_draw_shape_bounds(wxCommandEvent& WXUNUSED(event))
 {
     bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_shape_bounds);
     LomseDoorway& lib = m_appScope.get_lomse();
@@ -2672,7 +2681,7 @@ void MainFrame::on_debug_draw_shape_bounds(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_draw_anchor_objects(wxCommandEvent& event)
+void MainFrame::on_debug_draw_anchor_objects(wxCommandEvent& WXUNUSED(event))
 {
     bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_anchor_objects);
     LomseDoorway& lib = m_appScope.get_lomse();
@@ -2684,7 +2693,7 @@ void MainFrame::on_debug_draw_anchor_objects(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_draw_anchor_lines(wxCommandEvent& event)
+void MainFrame::on_debug_draw_anchor_lines(wxCommandEvent& WXUNUSED(event))
 {
     bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_anchor_lines);
     LomseDoorway& lib = m_appScope.get_lomse();
@@ -2811,6 +2820,10 @@ void MainFrame::on_see_paths(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_test_api(wxCommandEvent& WXUNUSED(event))
 {
+//    load_file("/datos/cecilio/lm/projects/lomse/trunk/samples/greensleeves_v16.lms");
+//    load_file("/datos/cecilio/lm/projects/lomse/trunk/test-scores/00136-clef-follows-note-when-note-displaced.lms");
+    load_file("/datos/cecilio/lm/projects/lomse/trunk/test-scores/MusicXML/recordare/MozartTrio.musicxml");
+
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
         pCanvas->debug_do_api_test();
@@ -2949,7 +2962,7 @@ void MainFrame::on_zoom_out(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_zoom_fit_width(wxCommandEvent& event)
+void MainFrame::on_zoom_fit_width(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
@@ -2971,7 +2984,7 @@ void MainFrame::zoom_to(double scale)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_zoom_fit_full(wxCommandEvent& event)
+void MainFrame::on_zoom_fit_full(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
@@ -3023,7 +3036,7 @@ void MainFrame::on_update_UI_zoom(wxUpdateUIEvent &event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_zoom_other(wxCommandEvent& event)
+void MainFrame::on_zoom_other(wxCommandEvent& WXUNUSED(event))
 {
     Interactor* pInt = get_active_canvas_interactor();
     if (pInt)
@@ -3364,19 +3377,19 @@ void MainFrame::exec_command(const string& cmd)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_edit_undo(wxCommandEvent& event)
+void MainFrame::on_edit_undo(wxCommandEvent& WXUNUSED(event))
 {
     exec_command("undo");
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_edit_redo(wxCommandEvent& event)
+void MainFrame::on_edit_redo(wxCommandEvent& WXUNUSED(event))
 {
     exec_command("redo");
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_edit_cut(wxCommandEvent& event)
+void MainFrame::on_edit_cut(wxCommandEvent& WXUNUSED(event))
 {
     //TODO
 //    //When invoked, current active child frame must be an lmEditFrame
@@ -3389,7 +3402,7 @@ void MainFrame::on_edit_cut(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_edit_copy(wxCommandEvent& event)
+void MainFrame::on_edit_copy(wxCommandEvent& WXUNUSED(event))
 {
     //TODO
 //    //When invoked, current active child frame must be an lmEditFrame
@@ -3402,7 +3415,7 @@ void MainFrame::on_edit_copy(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_edit_paste(wxCommandEvent& event)
+void MainFrame::on_edit_paste(wxCommandEvent& WXUNUSED(event))
 {
     //TODO
 //    //When invoked, current active child frame must be an lmEditFrame
@@ -3565,7 +3578,7 @@ void MainFrame::set_edition_gui_mode(DocumentWindow* pWnd, int mode)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_file_close(wxCommandEvent& event)
+void MainFrame::on_file_close(wxCommandEvent& WXUNUSED(event))
 {
     close_active_document_window();
 }
@@ -3595,7 +3608,7 @@ bool MainFrame::close_active_document_window()
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_file_save(wxCommandEvent& event)
+void MainFrame::on_file_save(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
@@ -3603,7 +3616,7 @@ void MainFrame::on_file_save(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_file_save_as(wxCommandEvent& event)
+void MainFrame::on_file_save_as(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas == NULL)
@@ -3626,7 +3639,7 @@ void MainFrame::on_file_save_as(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_file_convert(wxCommandEvent& event)
+void MainFrame::on_file_convert(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas == NULL)
@@ -3753,12 +3766,6 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
 			event.Enable(true);
 			event.Check(m_pMtr->is_running());
             m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
-            int beatType = m_pMtr->get_beat_type();
-            if (beatType == k_beat_implied)
-                m_pBeatNoteChoice->SetSelection(0);     //TS
-            else
-                update_metronome_beat();
-            m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
 			break;
         }
 
@@ -3770,6 +3777,7 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
         }
         case k_menu_play_cursor_start:
             event.Enable(false);        //for now, disabled
+            break;
 
         case k_menu_play_stop:
         case k_menu_play_pause:
@@ -3788,27 +3796,33 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
 //---------------------------------------------------------------------------------------
 void MainFrame::update_metronome_beat()
 {
-    TimeUnits duration = m_pMtr->get_beat_duration();
-    int sel;
-    if (is_equal_time(duration, TimeUnits(k_duration_whole)))
-        sel = 1;
-    else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
-        sel = 2;
-    else if(is_equal_time(duration, TimeUnits(k_duration_half)))
-        sel = 3;
-    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
-        sel = 4;
-    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
-        sel = 5;
-    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
-        sel = 6;
-    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
-        sel = 7;
-    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
-        sel = 8;
+    int beatType = m_pMtr->get_beat_type();
+    if (beatType == k_beat_implied)
+        m_pBeatNoteChoice->SetSelection(0);     //TS
     else
-        sel = 5;    //quarter;
-    m_pBeatNoteChoice->SetSelection(sel);
+    {
+        TimeUnits duration = m_pMtr->get_beat_duration();
+        int sel;
+        if (is_equal_time(duration, TimeUnits(k_duration_whole)))
+            sel = 1;
+        else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
+            sel = 2;
+        else if(is_equal_time(duration, TimeUnits(k_duration_half)))
+            sel = 3;
+        else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
+            sel = 4;
+        else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
+            sel = 5;
+        else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
+            sel = 6;
+        else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+            sel = 7;
+        else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+            sel = 8;
+        else
+            sel = 5;    //quarter;
+        m_pBeatNoteChoice->SetSelection(sel);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -3854,9 +3868,10 @@ void MainFrame::on_all_sounds_off(wxCommandEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
     if (!pMidi) return;
-    wxMidiOutDevice* pMidiOut = pMidi->get_out_device();
-    if (!pMidiOut) return;
-    pMidiOut->AllSoundsOff();
+    pMidi->all_sounds_off();
+//    wxMidiOutDevice* pMidiOut = pMidi->get_out_device();
+//    if (!pMidiOut) return;
+//    pMidiOut->AllSoundsOff();
 }
 
 //---------------------------------------------------------------------------------------
@@ -3922,7 +3937,7 @@ void MainFrame::on_options(wxCommandEvent& WXUNUSED(event))
 //    get_active_score()->OnInstrProperties(-1, pController);    //-1 = select instrument
 //}
 
-void MainFrame::on_metronome_timer(wxTimerEvent& event)
+void MainFrame::on_metronome_timer(wxTimerEvent& WXUNUSED(event))
 {
     //A metronome click has been produced, and this event is generated so that we
     //can flash the metronome LED or do any other desired visual effect.
@@ -4102,7 +4117,7 @@ bool MainFrame::is_welcome_page_displayed()
 //}
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_key_press(wxKeyEvent& event)
+void MainFrame::on_key_press(wxKeyEvent& WXUNUSED(event))
 {
     //AWARE: All key events aree handled by the DocumentWindow. So no key events
     //       should arrive here

@@ -5,7 +5,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2019 Cecilio Salmeron
+;    Copyright (c) 2002-2020 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -23,6 +23,7 @@
 ;
 ;==============================================================================================
 
+
 ;perform a CRC on the installer before allowing an install to make sure the installer
 ;is not corrupted
   CRCCheck on
@@ -35,7 +36,10 @@
 
 ;use the new XP controls style when running on Windows XP
   XPStyle on
-
+  
+;declare installer as "DPI aware" so that it is not scaled by Windows
+  ManifestDPIAware true 
+    
 ;set Execution Level to Admin
   RequestExecutionLevel admin
 
@@ -54,7 +58,8 @@
 ;some helper defines and variables
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus.exe"                                   ;name of exec. e.g.: "lenmus_5.4.1.exe" 
+  !define LENMUS_EXE "lenmus.exe"                                   ;name of exec. e.g.: "lenmus_5.4.1.exe"
+  !define LENMUS_START_NAME "LenMus ${APP_VERSION}"               ;name in Windows Start Menu. e.g. "LenMus 5.5.0"
   !define LENMUS_NSIS_RESOURCES "${LENMUS_ROOT}\installer\msw"
   !define LENMUS_NSIS_LOCALE "${LENMUS_ROOT}\installer\msw\locale"
 
@@ -82,20 +87,23 @@
   
 ;support to remove files and subdirs in one step
   !include ${LENMUS_NSIS_RESOURCES}\RemoveFilesAndSubDirs.nsh
-  
 
+;other includes:
+  !include "x64.nsh"            ;support for x64 helpers
+  !include nsDialogs.nsh        ;support for changing MUI images
 
 ;configuration settings for the MUI interface: options, icons, bitmaps, colors, etc.
   ;show a warning when the user cancels the install
     !define MUI_ABORTWARNING
   ;icons to associate to the resulting installer and uninstaller
-    !define MUI_ICON "${LENMUS_NSIS_RESOURCES}\win-install.ico"
+    !define MUI_ICON "${LENMUS_NSIS_RESOURCES}\lenmus.ico"
     !define MUI_UNICON "${LENMUS_NSIS_RESOURCES}\win-uninstall.ico"
 
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "${LENMUS_NSIS_RESOURCES}\BannerTop.bmp"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "${LENMUS_NSIS_RESOURCES}\BannerLeft.bmp"
+;!define MUI_HEADERIMAGE_BITMAP "${LENMUS_NSIS_RESOURCES}\BannerTop-96.bmp"
+;!define MUI_WELCOMEFINISHPAGE_BITMAP "${LENMUS_NSIS_RESOURCES}\BannerLeft-96.bmp"
 !define MUI_COMPONENTSPAGE_SMALLDESC        ;descriptions at bottom
+      
 
 ;vars to create links on "Start Menu" folder
   Var MUI_TEMP
@@ -106,37 +114,40 @@
 
 
 ;MUI: install pages to show
+  ;first of all determine DPI
+    !define MUI_PAGE_CUSTOMFUNCTION_SHOW DetermineDpi
   ;welcome page
     !insertmacro MUI_PAGE_WELCOME
 
   ;show and accept licence
     !insertmacro MUI_PAGE_LICENSE $(license)
 
-  ;choose installation directory
-    !insertmacro MUI_PAGE_DIRECTORY
+;  ;choose installation directory
+;    !insertmacro MUI_PAGE_DIRECTORY
 
-  ;select optional components
-    !define MUI_COMPONENTSPAGE_TEXT_COMPLIST $(MSG_OptionalComponents)
-    !insertmacro MUI_PAGE_COMPONENTS
+;  ;select optional components
+;    !define MUI_COMPONENTSPAGE_TEXT_COMPLIST $(MSG_OptionalComponents)
+;    !insertmacro MUI_PAGE_COMPONENTS
 
-  ;ask about creating links on Start Menu
-    !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
-    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\${REGISTRY_DATA}"
-    !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "StartMenuFolder"
-    !define MUI_STARTMENUPAGE_DEFAULTFOLDER $(SM_PRODUCT_GROUP)
-    !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+;  ;ask about creating links on Start Menu
+;    !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
+;    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\${REGISTRY_DATA}"
+;    !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "StartMenuFolder"
+;    !define MUI_STARTMENUPAGE_DEFAULTFOLDER $(SM_PRODUCT_GROUP)
+;    !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
   ;instalation page
     !insertmacro MUI_PAGE_INSTFILES
 
   ;finish page: run installed program?
     !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\${LENMUS_EXE}"
+    !define MUI_PAGE_CUSTOMFUNCTION_SHOW DetermineDpi
     !insertmacro MUI_PAGE_FINISH
 
 
 ;MUI: uninstall Pages
-  ;ask for confirmation to uninstall
-  !insertmacro MUI_UNPAGE_CONFIRM
+;  ;ask for confirmation to uninstall
+;  !insertmacro MUI_UNPAGE_CONFIRM
   
   ;proceed to uninstall
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -189,7 +200,30 @@
 
 ;Start installation
 Function .onInit
+;	${If} ${RunningX64}
+;        Goto RunX64
+;    ${Else}
+;      MessageBox MB_OK|MB_ICONEXCLAMATION $(MSG_Not_x64)
+;      Abort "$(MSG_ABORT)"
+;    ${EndIf}
 
+;RunX64:
+    ;extract bitmaps as they can not be used directly from installer
+    InitPluginsDir
+    
+    File /oname=$PLUGINSDIR\BannerTop-96.bmp ${LENMUS_NSIS_RESOURCES}\BannerTop-96.bmp
+    File /oname=$PLUGINSDIR\BannerTop-120.bmp ${LENMUS_NSIS_RESOURCES}\BannerTop-120.bmp
+    File /oname=$PLUGINSDIR\BannerTop-144.bmp ${LENMUS_NSIS_RESOURCES}\BannerTop-144.bmp
+    File /oname=$PLUGINSDIR\BannerTop-192.bmp ${LENMUS_NSIS_RESOURCES}\BannerTop-192.bmp
+
+    File /oname=$PLUGINSDIR\BannerLeft-96.bmp ${LENMUS_NSIS_RESOURCES}\BannerLeft-96.bmp
+    File /oname=$PLUGINSDIR\BannerLeft-120.bmp ${LENMUS_NSIS_RESOURCES}\BannerLeft-120.bmp
+    File /oname=$PLUGINSDIR\BannerLeft-144.bmp ${LENMUS_NSIS_RESOURCES}\BannerLeft-144.bmp
+    File /oname=$PLUGINSDIR\BannerLeft-192.bmp ${LENMUS_NSIS_RESOURCES}\BannerLeft-192.bmp
+   
+    ;enable access to 64-bit portion of registry
+    SetRegView 64
+    
     ;Check if the user is running multiple instances of the installer
     System::Call 'kernel32::CreateMutexA(i 0, i 0, t "LenMusMutex") i .r1 ?e'
     Pop $R0
@@ -199,6 +233,35 @@ Function .onInit
 
     ;Show installer language selection page
     !insertmacro MUI_LANGDLL_DISPLAY
+    
+FunctionEnd
+
+;------------
+;function to determine bitmaps dpi to use (in $0)
+;------------
+Function DetermineDpi
+    System::Call USER32::GetDpiForSystem()i.r0 
+    ${If} $0 <= 0 
+        System::Call USER32::GetDC(i0)i.r1 
+        System::Call GDI32::GetDeviceCaps(ir1,i88)i.r0 
+        System::Call USER32::ReleaseDC(i0,ir1) 
+    ${EndIf} 
+
+    ${If} $0 > 144
+        StrCpy $0 192
+    ${ElseIf} $0 > 120
+        StrCpy $0 144
+    ${ElseIf} $0 > 96
+        StrCpy $0 120
+    ${Else}
+        StrCpy $0 96
+    ${EndIf} 
+
+    ${NSD_SetImage} $mui.WelcomePage.Image $PLUGINSDIR\BannerLeft-$0.bmp $mui.WelcomePage.Image.Bitmap
+    ${NSD_SetImage} $mui.FinishPage.Image $PLUGINSDIR\BannerLeft-$0.bmp $mui.FinishPage.Image.Bitmap
+    SetBrandingImage /IMGID=1046 "$PLUGINSDIR\BannerTop-$0.bmp"
+    
+;    MessageBox MB_OK 'DPI is "$0"'
     
 FunctionEnd
 
@@ -230,15 +293,15 @@ Section  "-" "MainSection"
   ; vars initialization
   StrCpy "$STEP" "Nil" 
 
-  ;If a previous version exits delete old installed files, but no scores nor templates
+  ;If a previous version exits delete old installed files
   ;-----------------------------------------------------------------------------------
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\bin"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\books"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\docs"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\samples"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\share"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\templates"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
 
 
@@ -275,15 +338,18 @@ Section  "-" "MainSection"
      Push "$INSTDIR\bin\config_ini.txt"         ;file to write to 
      Call WriteToFile
 
-
+  ;Write key to specify that LenMus is DPI aware
+    WriteRegStr HKLM "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$INSTDIR\bin\${LENMUS_EXE}" "~ HIGHDPIAWARE"
 
   ;create entries in Start Menu folder
   ;-----------------------------------------------------------------------------------
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+;  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\${LENMUS_EXE}"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
-  !insertmacro MUI_STARTMENU_WRITE_END
+;    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$BMP_DPI.lnk" "$INSTDIR\bin\${LENMUS_EXE}" "" "$INSTDIR\res\icons\lenmus.ico" 0
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${LENMUS_START_NAME}.lnk" "$INSTDIR\bin\${LENMUS_EXE}" "" "$INSTDIR\res\icons\lenmus.ico" 0
+;   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\${LENMUS_EXE}" "" "$INSTDIR\res\icons\lenmus.ico" 0;
+;    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
+;  !insertmacro MUI_STARTMENU_WRITE_END
 
     ;write uninstaller
     WriteUninstaller "$INSTDIR\bin\${UNINSTALLER_NAME}"
@@ -321,7 +387,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\${LENMUS_EXE}"
+     CreateShortCut "$DESKTOP\LenMus ${APP_VERSION}.lnk" "$INSTDIR\bin\${LENMUS_EXE}" "" "$INSTDIR\res\icons\lenmus.ico" 0
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 
@@ -377,7 +443,8 @@ SectionEnd
 Function un.onInit
   ;first of all, show installer language selection page if language not set
     !insertmacro MUI_LANGDLL_DISPLAY
-
+    
+    SetRegView 64
 FunctionEnd
 
 /*

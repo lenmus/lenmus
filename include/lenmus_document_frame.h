@@ -126,7 +126,7 @@ protected:
 
     //overrides
     //This overrides is to prevent unsplit when double click on splitter
-    void OnDoubleClickSash(int x, int y) {}
+    void OnDoubleClickSash(int WXUNUSED(x), int WXUNUSED(y)) {}
 
 private:
 

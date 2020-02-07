@@ -69,25 +69,7 @@ docs/html/images/linux.gif
 docs/html/images/winXP.jpg
 docs/txt/sourceforge-news.txt
 
-#langtool related
-langtool/CMakeLists.txt
-langtool/bin/
-langtool/build/
-langtool/building.txt
-langtool/langtool_config.h.cmake
-langtool/layout/
-langtool/locale/compendium_xx.po
-langtool/locale/el/
-langtool/locale/eu/allbooks_eu.po
-langtool/locale/kk/
-langtool/locale/ru/
-langtool/locale/src/
-langtool/locale/xx/
-langtool/src/
-langtool/xrc/
-
 #supported languages
-locale/el/
 locale/en/books/L1_Dictation.lmb
 locale/en/books/L3_MusicReading.lmb
 locale/en/books/TestingNewExercises.lmb

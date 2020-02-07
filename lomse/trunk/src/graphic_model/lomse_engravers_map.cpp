@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -27,45 +27,53 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#include "lomse_noterest_engraver.h"
+#include "lomse_engravers_map.h"
 
+#include "lomse_engraver.h"
 #include "lomse_internal_model.h"
-#include "lomse_im_note.h"
-#include "lomse_gm_basic.h"
-#include "lomse_engraving_options.h"
-#include "lomse_glyphs.h"
-#include "lomse_shape_note.h"
-#include "lomse_shape_beam.h"
-#include "lomse_shape_tuplet.h"
-#include "lomse_box_slice_instr.h"
-#include "lomse_font_storage.h"
-#include "lomse_shapes.h"
-#include "lomse_pitch.h"
-#include "lomse_score_meter.h"
-#include "lomse_beam_engraver.h"
-#include "lomse_chord_engraver.h"
-#include "lomse_tuplet_engraver.h"
-#include "lomse_shapes_storage.h"
-#include "lomse_accidentals_engraver.h"
 
-using namespace std;
 
 namespace lomse
 {
 
 //=======================================================================================
-// NoterestEngraver implementation
+// EngraversMap implementation
 //=======================================================================================
-NoterestEngraver::NoterestEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                           ShapesStorage* pShapesStorage, int iInstr, int iStaff)
-    : Engraver(libraryScope, pScoreMeter, iInstr, iStaff)
-    , m_pShapesStorage(pShapesStorage)
-    , m_pNoteRest(nullptr)
-    , m_pNoteRestShape(nullptr)
-    , m_pStartBeamShape(nullptr)
-    , m_pEndBeamShape(nullptr)
+Engraver* EngraversMap::get_engraver(ImoObj* pImo)
 {
+    map<ImoObj*, Engraver*>::const_iterator it = m_engravers.find(pImo);
+    if (it !=  m_engravers.end())
+        return it->second;
+    else
+        return nullptr;
 }
+
+//---------------------------------------------------------------------------------------
+Engraver* EngraversMap::get_engraver(const string& tag)
+{
+    map<string, Engraver*>::const_iterator it = m_engravers2.find(tag);
+    if (it !=  m_engravers2.end())
+        return it->second;
+    else
+        return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
+void EngraversMap::delete_engravers()
+{
+	std::map<ImoObj*, Engraver*>::const_iterator it;
+    for (it = m_engravers.begin(); it != m_engravers.end(); ++it)
+    {
+        delete it->second;
+    }
+
+	std::map<string, Engraver*>::const_iterator it2;
+    for (it2 = m_engravers2.begin(); it2 != m_engravers2.end(); ++it2)
+    {
+        delete it2->second;
+    }
+}
+
 
 
 }  //namespace lomse

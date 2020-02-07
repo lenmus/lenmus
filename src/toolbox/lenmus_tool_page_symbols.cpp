@@ -184,20 +184,20 @@ void GrpSymbols::create_controls_in_group(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpSymbols::update_tools_info(ToolsInfo* pInfo)
+void GrpSymbols::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 {
     //TODO: define ToolsInfo options and update them
 }
 
 //---------------------------------------------------------------------------------------
-void GrpSymbols::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpSymbols::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
 }
 
 //---------------------------------------------------------------------------------------
-void GrpSymbols::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+void GrpSymbols::synchronize_with_selection(bool fEnable, SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(fEnable);
@@ -262,13 +262,13 @@ void GrpHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpHarmony::update_tools_info(ToolsInfo* pInfo)
+void GrpHarmony::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 {
     //TODO: define ToolsInfo options and update them
 }
 
 //---------------------------------------------------------------------------------------
-void GrpHarmony::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+void GrpHarmony::synchronize_with_cursor(bool fEnable, DocCursor* WXUNUSED(pCursor))
 {
     //TODO
     EnableGroup(fEnable);
@@ -276,7 +276,7 @@ void GrpHarmony::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
 
 //---------------------------------------------------------------------------------------
 void GrpHarmony::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
+                                            SelectionSet* WXUNUSED(pSelection))
 {
     //TODO
     EnableGroup(fEnable);

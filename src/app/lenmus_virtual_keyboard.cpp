@@ -85,7 +85,7 @@ void VirtualKeyboard::create_buttons()
 }
 
 //---------------------------------------------------------------------------------------
-wxBitmap VirtualKeyboard::create_bitmap(int i)
+wxBitmap VirtualKeyboard::create_bitmap(int WXUNUSED(i))
 {
 //    return generate_bitmap_for_clef_ctrol(m_appScope, m_tClefs[i].sClefName,
 //                                          m_tClefs[i].nClefType);
@@ -93,7 +93,7 @@ wxBitmap VirtualKeyboard::create_bitmap(int i)
 }
 
 //---------------------------------------------------------------------------------------
-void VirtualKeyboard::on_button(wxCommandEvent& event)
+void VirtualKeyboard::on_button(wxCommandEvent& WXUNUSED(event))
 {
 //    int i = event.GetId() - k_id_button;
 //    m_index = m_tClefs[i].nClefType;
@@ -101,7 +101,7 @@ void VirtualKeyboard::on_button(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void VirtualKeyboard::on_key_down(wxKeyEvent& event)
+void VirtualKeyboard::on_key_down(wxKeyEvent& WXUNUSED(event))
 {
 //    int ch = event.GetKeyCode();
 //    if (ch == WXK_ESCAPE)

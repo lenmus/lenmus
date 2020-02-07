@@ -310,7 +310,7 @@ ease to learn and extend, it has a helpful community, and also has the possibili
 to use it in commercial products without licencing.") +
         "</p><p>" +
         _("And, of course, this program uses the LenMus <b>Lomse</b> free library \
-to render the eBooks and the scores. See http://www.lenmus.org/en/lomse/lomse") +
+to render the eBooks and the scores. See https://github.com/lenmus/lomse") +
         "</p></body></html>";
 
         m_pHtmlWindow->SetPage(sContent);
@@ -383,7 +383,7 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
         //
     "<tr><td colspan='3'><b>" +
         _("Music advice:") + "</b></td></tr>"
-    "<tr><td colspan='3'><b>" +
+    "<tr><td colspan='3'>" +
     "  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>"
@@ -422,11 +422,9 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("German") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         "<td>Undine Peters</td></tr>"
-#if (0)     //Greek language not ready
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("Greek") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
-        "<td>Dimitris Regginos</td></tr>"
-#endif
+        L"<td>Avgeris Tsironis (Αυγέρης Τσιρώνης)</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("Italian") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         "<td>Mauro Giubileo</td></tr>"
@@ -450,8 +448,8 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "  <tr><td>&nbsp;</td><td colspan='2'>Mar&iacute;a Jes&uacute;s Mart&iacute;nez Pascua</td></tr>"
     "</table><p>&nbsp;</p><p>" +
 _("If you would like to help developing this program or join the project to help in any \
-other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and \
-leave a message in the 'contact' page. Thank you and welcome.") +
+other way, you are indeed welcome; please, visit LenMus at GitHub (https://github.com/lenmus/lenmus) \
+and leave a message by opening a new issue. Thank you and welcome.") +
     "</p></body></html>";
 
     m_pHtmlWindow->SetPage(sContent);
