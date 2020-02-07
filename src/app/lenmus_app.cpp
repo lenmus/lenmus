@@ -551,7 +551,7 @@ void TheApp::OnInitCmdLine(wxCmdLineParser& parser)
 
     static const wxCmdLineEntryDesc cmdLineDesc[] =
     {
-        { wxCMD_LINE_SWITCH, "h", "help", _("Show this help message"),
+        { wxCMD_LINE_SWITCH, "h", "help", "Show this help message",
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
         { wxCMD_LINE_SWITCH, "t", "test",  "Run unit tests",
             wxCMD_LINE_VAL_NONE },
