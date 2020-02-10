@@ -3867,19 +3867,17 @@ void MainFrame::run_midi_wizard()
 void MainFrame::on_all_sounds_off(wxCommandEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
-    if (!pMidi) return;
-    pMidi->all_sounds_off();
-//    wxMidiOutDevice* pMidiOut = pMidi->get_out_device();
-//    if (!pMidiOut) return;
-//    pMidiOut->AllSoundsOff();
+    Synthesizer* pSynth = pMidi->get_current_synth();
+    if (pSynth)
+        pSynth->all_sounds_off();
 }
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_sound_test(wxCommandEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
-    if (!pMidi) return;
-    pMidi->TestOut();
+    if (pMidi)
+        pMidi->TestOut();
 }
 
 //---------------------------------------------------------------------------------------

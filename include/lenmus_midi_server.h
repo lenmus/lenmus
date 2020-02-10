@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -9,7 +9,7 @@
 //    This program is distributed in the hope that it will be useful, but WITHOUT ANY
 //    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-//
+//18
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
 //
@@ -32,19 +32,52 @@
 #include <lomse_logger.h>
 using namespace lomse;
 
+//other
+#include <fluidsynth.h>
+
+
+#define Synthesizer lomse::MidiServerBase
+
 
 namespace lenmus
 {
 
+/** -------------------------------------------------------------------------------------
+    An internal Synthesizer using the FluidSynth library
+*/
+class FluidSynthesizer : public Synthesizer
+{
+protected:
+    ApplicationScope&       m_appScope;
+    MidiServer*             m_pMidiServer;
+    fluid_settings_t*       m_pSettings;
+    fluid_synth_t*          m_pSynth;
+    fluid_audio_driver_t*   m_pDriver;
+    int                     m_sfontId;
+
+public:
+    FluidSynthesizer(ApplicationScope& appScope, MidiServer* parent);
+    ~FluidSynthesizer();
+
+    //mandatory overrides from MidiServerBase
+    void program_change(int channel, int instr) override;
+    void voice_change(int channel, int instr) override;
+    void note_on(int channel, int pitch, int volume) override;
+    void note_off(int channel, int pitch, int volume) override;
+    void all_sounds_off() override;
+};
+
 //---------------------------------------------------------------------------------------
-//stores current MIDI configuration and interfaces with the MIDI API
-class MidiServer : public lomse::MidiServerBase
+//stores current MIDI configuration and interfaces with the MIDI synthesizer
+class MidiServer
 {
 protected:
     ApplicationScope& m_appScope;
     wxMidiSystem*  m_pMidiSystem;       //MIDI system
     wxMidiInDevice* m_pMidiIn;          //in device object
     wxMidiOutDevice*  m_pMidiOut;       //out device object
+
+    FluidSynthesizer*    m_pFluidSynth;     //synthesizer using FluidSynth
 
     //MIDI configuration information
     int		m_nInDevId;
@@ -76,9 +109,9 @@ public:
     void SetMetronomeTones(int nTone1, int nTone2);
 
     //services
-    //wxMidiSystem*  m_pMidiSystem;       //MIDI system
     inline wxMidiInDevice* get_in_device() { return m_pMidiIn; }
     inline wxMidiOutDevice* get_out_device() { return m_pMidiOut; }
+    inline Synthesizer* get_current_synth() { return m_pFluidSynth; }
 
     //Has user defined the MIDI configuration?
     bool is_configured() { return m_fMidiSet; }
@@ -107,32 +140,6 @@ public:
 	//default instrument
     int DefaultVoiceChannel() { return m_nDefaultVoiceChannel; }
     int DefaultVoiceInstr() { return m_nDefaultVoiceInstr; }
-
-    //mandatory overrides from MidiServerBase
-    virtual void program_change(int channel, int instr) {
-        m_pMidiOut->ProgramChange(channel, instr);
-    }
-    virtual void voice_change(int channel, int instr) {
-        VoiceChange(channel, instr);
-    }
-    virtual void note_on(int channel, int pitch, int volume) {
-        LOMSE_LOG_TRACE(Logger::k_score_player,
-                        "Note On: channel %d, pitch %d, volume %d",
-                        channel, pitch, volume);
-        m_pMidiOut->NoteOn(channel, pitch, volume);
-    }
-    virtual void note_off(int channel, int pitch, int volume) {
-        LOMSE_LOG_TRACE(Logger::k_score_player,
-                        "Note Off: channel %d, pitch %d, voulme %d",
-                        channel, pitch, volume);
-        m_pMidiOut->NoteOff(channel, pitch, volume);
-    }
-    virtual void all_sounds_off() {
-        LOMSE_LOG_TRACE(Logger::k_score_player, "All sounds off");
-        m_pMidiOut->AllSoundsOff();
-    }
-
-
 
 protected:
     void LoadUserPreferences();

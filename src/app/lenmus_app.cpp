@@ -516,9 +516,9 @@ void TheApp::configure_midi()
     pMidi->SetUpCurrentConfig();
 
     //set sound for metronome
-    wxMidiOutDevice* pMidiOut = pMidi->get_out_device();
-    if (pMidiOut)
-        pMidiOut->ProgramChange(pMidi->MtrChannel(), pMidi->MtrInstr());
+    Synthesizer* pSynth = pMidi->get_current_synth();
+    if (pSynth)
+        pSynth->program_change(pMidi->MtrChannel(), pMidi->MtrInstr());
 }
 
 //---------------------------------------------------------------------------------------

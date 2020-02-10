@@ -687,20 +687,21 @@ void WizardMetronomePage::OnComboMtrInstr2Selected( wxCommandEvent& WXUNUSED(eve
 void WizardMetronomePage::OnButtonClick( wxCommandEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
-    wxMidiOutDevice* pMidiOut = pMidi->get_out_device();
-    if (!pMidiOut) return;
+    Synthesizer* pSynth = pMidi->get_current_synth();
+    if (!pSynth)
+        return;
 
     //two measures, 3/4 time signature
     for (int i=0; i < 2; i++) {
         //firts beat
-        pMidiOut->NoteOn(pMidi->MtrChannel(), pMidi->MtrTone1(), 127);
+        pSynth->note_on(pMidi->MtrChannel(), pMidi->MtrTone1(), 127);
         ::wxMilliSleep(500);    // wait 500ms
-        pMidiOut->NoteOff(pMidi->MtrChannel(), pMidi->MtrTone1(), 127);
+        pSynth->note_off(pMidi->MtrChannel(), pMidi->MtrTone1(), 127);
         // two more beats
         for (int j=0; j < 2; j++) {
-            pMidiOut->NoteOn(pMidi->MtrChannel(), pMidi->MtrTone2(), 127);
+            pSynth->note_on(pMidi->MtrChannel(), pMidi->MtrTone2(), 127);
             ::wxMilliSleep(500);    // wait 500ms
-            pMidiOut->NoteOff(pMidi->MtrChannel(), pMidi->MtrTone2(), 127);
+            pSynth->note_off(pMidi->MtrChannel(), pMidi->MtrTone2(), 127);
         }
     }
 }

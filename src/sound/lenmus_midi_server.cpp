@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -29,16 +29,111 @@ namespace lenmus
 {
 
 //=======================================================================================
+// FluidSynthesizer implementation
+//=======================================================================================
+FluidSynthesizer::FluidSynthesizer(ApplicationScope& appScope, MidiServer* parent)
+    : m_appScope(appScope)
+    , m_pMidiServer(parent)
+    , m_pSettings(nullptr)
+    , m_pSynth(nullptr)
+    , m_pDriver(nullptr)
+{
+    //create and configure the FluidSynth settings
+    m_pSettings = new_fluid_settings();
+    if (m_pSettings == nullptr)
+    {
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth settings");
+    }
+ 	fluid_settings_setstr(m_pSettings, "audio.driver", "alsa");
+
+    //create the FluidSynth synthesizer
+    m_pSynth = new_fluid_synth(m_pSettings);
+    if (m_pSynth == nullptr)
+    {
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth synthesizer");
+    }
+
+    //create the FluidSynth audio driver
+    m_pDriver = new_fluid_audio_driver(m_pSettings, m_pSynth);
+    if (m_pDriver == nullptr)
+    {
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth audio driver");
+    }
+
+    //load the SoundFont
+    m_sfontId = fluid_synth_sfload(m_pSynth, "/usr/share/sounds/sf2/FluidR3_GM.sf2", 1);
+    if(m_sfontId == FLUID_FAILED)
+    {
+        LOMSE_LOG_ERROR("Loading the SoundFont failed!");
+    }
+}
+
+//---------------------------------------------------------------------------------------
+FluidSynthesizer::~FluidSynthesizer()
+{
+    if (m_pDriver)
+        delete_fluid_audio_driver(m_pDriver);
+    if (m_pSynth)
+        delete_fluid_synth(m_pSynth);
+    if (m_pSettings)
+        delete_fluid_settings(m_pSettings);
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::program_change(int channel, int instr)
+{
+    //m_pMidiOut->ProgramChange(channel, instr);
+    fluid_synth_program_change (m_pSynth, channel, instr);
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::voice_change(int channel, int instr)
+{
+    m_pMidiServer->VoiceChange(channel, instr);
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::note_on(int channel, int pitch, int volume)
+{
+    LOMSE_LOG_TRACE(Logger::k_score_player,
+                    "Note On: channel %d, pitch %d, volume %d",
+                    channel, pitch, volume);
+    //m_pMidiOut->NoteOn(channel, pitch, volume);
+    fluid_synth_noteon(m_pSynth, channel, pitch, volume);
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::note_off(int channel, int pitch, int WXUNUSED(volume))
+{
+    //m_pMidiOut->NoteOff(channel, pitch, volume);
+    fluid_synth_noteoff(m_pSynth, channel, pitch);
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::all_sounds_off()
+{
+    LOMSE_LOG_TRACE(Logger::k_score_player, "All sounds off");
+    //m_pMidiOut->AllSoundsOff();
+    for (int channel=0; channel < 16; ++channel)
+        fluid_synth_all_sounds_off(m_pSynth, channel);
+}
+
+
+//=======================================================================================
 // MidiServer implementation
 //=======================================================================================
 MidiServer::MidiServer(ApplicationScope& appScope)
     : m_appScope(appScope)
-    , m_pMidiSystem(NULL)
-    , m_pMidiIn(NULL)
-    , m_pMidiOut(NULL)
+    , m_pMidiSystem(nullptr)
+    , m_pMidiIn(nullptr)
+    , m_pMidiOut(nullptr)
+    , m_pFluidSynth(nullptr)
 {
     m_pMidiSystem = wxMidiSystem::GetInstance();
     LoadUserPreferences();
+
+    m_pFluidSynth = LENMUS_NEW FluidSynthesizer(m_appScope, this);
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -52,6 +147,7 @@ MidiServer::~MidiServer()
     delete m_pMidiIn;
     delete m_pMidiOut;
     delete m_pMidiSystem;
+    delete m_pFluidSynth;
 }
 
 //---------------------------------------------------------------------------------------
@@ -133,7 +229,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
          {
             nErr = m_pMidiOut->Close();
             delete m_pMidiOut;
-            m_pMidiOut = NULL;
+            m_pMidiOut = nullptr;
             //TODO better error reporting
             if (nErr)
             {
@@ -152,7 +248,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
             try
             {
                 m_pMidiOut = LENMUS_NEW wxMidiOutDevice(m_nOutDevId);
-                nErr = m_pMidiOut->Open(0, NULL);        // 0 latency, no driver user info
+                nErr = m_pMidiOut->Open(0, nullptr);        // 0 latency, no driver user info
             }
             catch(...)      //handle all exceptions
             {
@@ -184,7 +280,7 @@ void MidiServer::SetInDevice(int nInDevId)
          {
             nErr = m_pMidiIn->Close();
             delete m_pMidiIn;
-            m_pMidiIn = NULL;
+            m_pMidiIn = nullptr;
             //TODO better error reporting
             if (nErr)
             {
@@ -202,7 +298,7 @@ void MidiServer::SetInDevice(int nInDevId)
         {
             m_pMidiIn = LENMUS_NEW wxMidiInDevice(m_nInDevId);
             // open input device
-            nErr = m_pMidiIn->Open(NULL);        // 0 latency, no driver user info
+            nErr = m_pMidiIn->Open(nullptr);        // 0 latency, no driver user info
             //TODO better error reporting
             if (nErr)
             {
@@ -233,18 +329,21 @@ void MidiServer::VoiceChange(int nChannel, int nInstrument)
     m_nVoiceChannel = nChannel;
     m_nVoiceInstr = nInstrument;
 
-    //program new voices
-    if (m_pMidiOut)
-    {
-        wxMidiError nErr = m_pMidiOut->ProgramChange(m_nVoiceChannel, m_nVoiceInstr);
-        //TODO error reporting eLocalError
-        if (nErr)
-        {
-            wxMessageBox( wxString::Format(
-				"Error %d in ProgramChange:\n%s"
-                , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
-        }
-    }
+    if (m_pFluidSynth)
+        m_pFluidSynth->program_change(m_nVoiceChannel, m_nVoiceInstr);
+
+//    //program new voices
+//    if (m_pMidiOut)
+//    {
+//        wxMidiError nErr = m_pMidiOut->ProgramChange(m_nVoiceChannel, m_nVoiceInstr);
+//        //TODO error reporting eLocalError
+//        if (nErr)
+//        {
+//            wxMessageBox( wxString::Format(
+//				"Error %d in ProgramChange:\n%s"
+//                , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
+//        }
+//    }
 
     m_fMidiOK = true;
 }

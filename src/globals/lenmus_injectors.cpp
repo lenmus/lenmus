@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -271,7 +271,7 @@ ScorePlayer* ApplicationScope::get_score_player()
     if (!m_pPlayer)
     {
         MidiServer* pMidi = get_midi_server();
-        m_pPlayer = m_lomse.create_score_player(pMidi);
+        m_pPlayer = m_lomse.create_score_player(pMidi->get_current_synth());
         m_pPlayer->post_tracking_events(true);
     }
     return m_pPlayer;
