@@ -23,8 +23,7 @@ matrix:
             - libportmidi-dev
             - libsqlite3-0
             - libsqlite3-dev
-			- libfluidsynth
-
+			- libfluidsynth-dev
 
 script:
   - export CC=$COMPILER
