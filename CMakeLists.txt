@@ -370,6 +370,18 @@ ELSE(PortMidi_FOUND)
     message(STATUS "PortMidi_DIR = $ENV{PortMidi_DIR}")
 ENDIF(PortMidi_FOUND)
 
+#Check for FluidSynth
+find_package(FluidSynth REQUIRED)
+IF(FLUIDSYNTH_FOUND)
+    include_directories( ${FLUIDSYNTH_INCLUDE_DIR} )
+    link_libraries( ${FLUIDSYNTH_LIBRARIES} )
+    message(STATUS "FLUIDSYNTH_INCLUDE_DIR => " ${FLUIDSYNTH_INCLUDE_DIR} )
+    message(STATUS "FLUIDSYNTH_LIBRARIES => " ${FLUIDSYNTH_LIBRARIES} )
+ELSE(FLUIDSYNTH_FOUND)
+    message(SEND_ERROR "FluidSynth not found")
+    message(STATUS "FLUIDSYNTH_DIR = $ENV{FLUIDSYNTH_DIR}")
+ENDIF(FLUIDSYNTH_FOUND)
+
 # Check for Lomse (only if not building from Lomse sources)
 if (LENMUS_USE_LOMSE_SOURCES)
     include_directories(
