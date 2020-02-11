@@ -3877,7 +3877,7 @@ void MainFrame::on_sound_test(wxCommandEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
     if (pMidi)
-        pMidi->TestOut();
+        pMidi->do_sound_test();
 }
 
 //---------------------------------------------------------------------------------------

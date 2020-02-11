@@ -353,7 +353,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef WXUNUSED(nClef), EScaleType nType,
     (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     (*pScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+    // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( k_clef_G2 );

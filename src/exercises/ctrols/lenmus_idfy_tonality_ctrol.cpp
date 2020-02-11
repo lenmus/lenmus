@@ -392,7 +392,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClef WXUNUSED(nClef), EKeySignature n
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     (*pProblemScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+    // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     ImoSystemInfo* pInfo = (*pProblemScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_staff();                       //add second staff: five lines, standard size

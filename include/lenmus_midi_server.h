@@ -36,11 +36,31 @@ using namespace lomse;
 #include <fluidsynth.h>
 
 
-#define Synthesizer lomse::MidiServerBase
-
-
 namespace lenmus
 {
+
+/** -------------------------------------------------------------------------------------
+    An abstract class from which all MidiServers must derive
+*/
+class Synthesizer : public lomse::MidiServerBase
+{
+protected:
+    ApplicationScope&       m_appScope;
+    MidiServer*             m_pMidiServer;
+
+public:
+    Synthesizer(ApplicationScope& appScope, MidiServer* parent)
+        : m_appScope(appScope)
+        , m_pMidiServer(parent)
+    {
+    }
+    ~Synthesizer() {}
+
+    //virtual methods
+    virtual void save_user_preferences() {}
+    virtual void load_user_preferences() {}
+
+};
 
 /** -------------------------------------------------------------------------------------
     An internal Synthesizer using the FluidSynth library
@@ -48,8 +68,6 @@ namespace lenmus
 class FluidSynthesizer : public Synthesizer
 {
 protected:
-    ApplicationScope&       m_appScope;
-    MidiServer*             m_pMidiServer;
     fluid_settings_t*       m_pSettings;
     fluid_synth_t*          m_pSynth;
     fluid_audio_driver_t*   m_pDriver;
@@ -67,82 +85,126 @@ public:
     void all_sounds_off() override;
 };
 
+/** -------------------------------------------------------------------------------------
+    An interface with any external Synthesizer. It uses wxMidi and the portmidi library
+*/
+class ExternalSynthesizer : public Synthesizer
+{
+protected:
+    wxMidiSystem*       m_pMidiSystem;      //MIDI system
+    wxMidiInDevice*     m_pMidiIn;          //in device object
+    wxMidiOutDevice*    m_pMidiOut;         //out device object
+
+    //MIDI in configuration
+    int		m_nInDevId;
+
+    //MIDI out configuration
+    int		m_nOutDevId;
+
+    bool    m_fMidiSet;     //the synthesizer has been configured
+    bool    m_fMidiOK;
+
+
+public:
+    ExternalSynthesizer(ApplicationScope& appScope, MidiServer* parent);
+    ~ExternalSynthesizer();
+
+
+    inline wxMidiInDevice* get_in_device() { return m_pMidiIn; }
+    inline wxMidiOutDevice* get_out_device() { return m_pMidiOut; }
+
+    //setup
+    void SetUpCurrentConfig();
+    void SetUpMidiOut(int nOutDevId, int nChannel, int nInstrument);
+    void SetOutDevice(int nOutDevId);
+    void SetInDevice(int nInDevId);
+    inline void set_configured(bool value) { m_fMidiSet = value; }
+
+    //Has user defined the MIDI configuration?
+    inline bool is_configured() { return m_fMidiSet; }
+
+    //Is MIDI operative?
+    inline bool is_operative() { return m_fMidiOK; }
+
+    //access to methods in midi system
+    int CountDevices();
+
+    //Access to MIDI configuration information
+    inline int InDevId() { return m_nInDevId; }
+    inline int OutDevId() { return m_nOutDevId; }
+
+    //mandatory overrides from MidiServerBase
+    void program_change(int channel, int instr) override;
+    void voice_change(int channel, int instr) override;
+    void note_on(int channel, int pitch, int volume) override;
+    void note_off(int channel, int pitch, int volume) override;
+    void all_sounds_off() override;
+
+    //other
+    void save_user_preferences() override;
+    void load_user_preferences() override;
+
+};
+
 //---------------------------------------------------------------------------------------
-//stores current MIDI configuration and interfaces with the MIDI synthesizer
+//stores current MIDI configuration and manages the MIDI synthesizers
 class MidiServer
 {
 protected:
     ApplicationScope& m_appScope;
-    wxMidiSystem*  m_pMidiSystem;       //MIDI system
-    wxMidiInDevice* m_pMidiIn;          //in device object
-    wxMidiOutDevice*  m_pMidiOut;       //out device object
+    FluidSynthesizer*       m_pFluidSynth;     //synthesizer using FluidSynth
+    ExternalSynthesizer*    m_pExtSynth;       //external synthesizer
 
-    FluidSynthesizer*    m_pFluidSynth;     //synthesizer using FluidSynth
+    bool    m_fMidiConfigured;     //the selected synthesizer has been configured
 
-    //MIDI configuration information
-    int		m_nInDevId;
-    int		m_nOutDevId;
-
+    //current channel and instrument for playing music exercises
     int		m_nVoiceChannel;
     int		m_nVoiceInstr;
+
+    //default channel and instrument for playing music exercises
 	int		m_nDefaultVoiceChannel;
 	int		m_nDefaultVoiceInstr;
 
+    //settings for metronome sounds
     int		m_nMtrChannel;
     int		m_nMtrInstr;
     int		m_nMtrTone1;
     int		m_nMtrTone2;
 
-    bool    m_fMidiSet;
-    bool    m_fMidiOK;
-
 public:
     MidiServer(ApplicationScope& appScope);
     ~MidiServer();
 
-    //set up configuration
-    void SetUpMidiOut(int nOutDevId, int nChannel, int nInstrument);
-    void SetOutDevice(int nOutDevId);
-    void SetInDevice(int nInDevId);
-    void SetUpCurrentConfig();
-    void VoiceChange(int nChannel, int nInstrument);
-    void SetMetronomeTones(int nTone1, int nTone2);
+    void configure();
+    inline bool is_configured() { return m_fMidiConfigured; }
 
     //services
-    inline wxMidiInDevice* get_in_device() { return m_pMidiIn; }
-    inline wxMidiOutDevice* get_out_device() { return m_pMidiOut; }
-    inline Synthesizer* get_current_synth() { return m_pFluidSynth; }
+    Synthesizer* get_current_synth();
+    inline ExternalSynthesizer* get_external_synth() { return m_pExtSynth; }
+    inline FluidSynthesizer* get_fluid_synth() { return m_pFluidSynth; }
+    void save_user_preferences();
+    void do_sound_test();
 
-    //Has user defined the MIDI configuration?
-    bool is_configured() { return m_fMidiSet; }
+    //user configuration
+    void set_metronome_tones(int nTone1, int nTone2);
 
-    //Is MIDI operative?
-    bool is_operative() { return m_fMidiOK; }
+    //Access to user configuration information
+    inline int get_voice_channel() { return m_nVoiceChannel; }
+    inline int get_voice_instr() { return m_nVoiceInstr; }
+    inline int MtrChannel() { return m_nMtrChannel; }
+    inline int MtrInstr() { return m_nMtrInstr; }
+    inline int MtrTone1() { return m_nMtrTone1; }
+    inline int MtrTone2() { return m_nMtrTone2; }
 
-    //Access to MIDI configuration information
-    int InDevId() { return m_nInDevId; }
-    int OutDevId() { return m_nOutDevId; }
-    int VoiceChannel() { return m_nVoiceChannel; }
-    int VoiceInstr() { return m_nVoiceInstr; }
-    int MtrChannel() { return m_nMtrChannel; }
-    int MtrInstr() { return m_nMtrInstr; }
-    int MtrTone1() { return m_nMtrTone1; }
-    int MtrTone2() { return m_nMtrTone2; }
+	//default instrument for playing music exercises
+    inline int get_default_voice_channel() { return m_nDefaultVoiceChannel; }
+    inline int get_default_voice_instr() { return m_nDefaultVoiceInstr; }
 
-    //other
-    void SetConfigured(bool value) { m_fMidiSet = value; }
-    void SaveUserPreferences();
-    void TestOut();
-
-    //access to methods in midi system
-    int CountDevices();
-
-	//default instrument
-    int DefaultVoiceChannel() { return m_nDefaultVoiceChannel; }
-    int DefaultVoiceInstr() { return m_nDefaultVoiceInstr; }
+    void VoiceChange(int nChannel, int nInstrument);
 
 protected:
-    void LoadUserPreferences();
+    void load_user_preferences();
+
 };
 
 

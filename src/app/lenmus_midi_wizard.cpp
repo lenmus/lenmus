@@ -62,10 +62,12 @@ bool MidiWizard::Create( wxWindow* parent, wxWindowID id, const wxPoint& pos )
 
     //save current Midi configuration to restore it if the wizard is cancelled
     MidiServer* pMidi = m_appScope.get_midi_server();
-    m_nOldInDevId = pMidi->InDevId();
-    m_nOldOutDevId = pMidi->OutDevId();
-    m_nOldVoiceInstr = pMidi->VoiceInstr();
-    m_nOldVoiceChannel = pMidi->VoiceChannel();
+    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
+    m_nOldInDevId = pExtSynth->InDevId();
+    m_nOldOutDevId = pExtSynth->OutDevId();
+
+    m_nOldVoiceInstr = pMidi->get_voice_instr();
+    m_nOldVoiceChannel = pMidi->get_voice_channel();
     m_nOldMtrInstr = pMidi->MtrInstr();
     m_nOldMtrChannel = pMidi->MtrChannel();
     m_nOldMtrTone1 = pMidi->MtrTone1();
@@ -133,8 +135,9 @@ wxIcon MidiWizard::GetIconResource( const wxString& WXUNUSED(name))
 void MidiWizard::OnWizardFinished( wxWizardEvent& WXUNUSED(event))
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->SetConfigured(true);
-    pMidi->SaveUserPreferences();
+    ExternalSynthesizer* pSynth = pMidi->get_external_synth();
+    pSynth->set_configured(true);
+    pSynth->save_user_preferences();
 }
 
 //---------------------------------------------------------------------------------------
@@ -143,18 +146,20 @@ void MidiWizard::OnWizardCancel( wxWizardEvent& WXUNUSED(event))
     // restore old configuration if any
 
     MidiServer* pMidi = m_appScope.get_midi_server();
-    if (pMidi->is_configured())
+    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
+    if (pExtSynth && pExtSynth->is_configured())
     {
         //devices
-        pMidi->SetInDevice(m_nOldInDevId);
-        pMidi->SetOutDevice(m_nOldOutDevId);
+        MidiServer* pMidi = m_appScope.get_midi_server();
+        pExtSynth->SetInDevice(m_nOldInDevId);
+        pExtSynth->SetOutDevice(m_nOldOutDevId);
 
         //voice instruments
         pMidi->VoiceChange(m_nOldVoiceChannel, m_nOldVoiceInstr);
 
         //metronome configuration
         pMidi->VoiceChange(m_nOldMtrChannel, m_nOldMtrInstr);
-        pMidi->SetMetronomeTones(m_nOldMtrTone1, m_nOldMtrTone2);
+        pMidi->set_metronome_tones(m_nOldMtrTone1, m_nOldMtrTone2);
     }
 }
 
@@ -189,10 +194,11 @@ bool WizardDevicesPage::Create( wxWizard* parent )
 
     // populate combo boxes with available Midi devices
     MidiServer* pMidi = m_appScope.get_midi_server();
+    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
     //int nInput=0;
     int nItem, nOutput=0;
-    int nNumDevices = pMidi->CountDevices();
-    int nOutDevId = pMidi->OutDevId();
+    int nNumDevices = pExtSynth->CountDevices();
+    int nOutDevId = pExtSynth->OutDevId();
     int iSelOut = 0;
 //    //TODO: Un-comment when ready to use MIDI input
 //    int nInDevId = pMidi->InDevId();
@@ -325,7 +331,8 @@ bool WizardDevicesPage::TransferDataFromWindow()
         int nOutDevId = (int)(size_t) m_pOutCombo->GetClientData(nIndex);
     #endif
     MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->SetOutDevice(nOutDevId);
+    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
+    pExtSynth->SetOutDevice(nOutDevId);
 
     //open input device
     int nInDevId = -1;
@@ -334,7 +341,7 @@ bool WizardDevicesPage::TransferDataFromWindow()
     //    nIndex = m_pInCombo->GetSelection();
     //    nInDevId = (int) m_pInCombo->GetClientData(nIndex);
     //}
-    pMidi->SetInDevice(nInDevId);
+    pExtSynth->SetInDevice(nInDevId);
 
     return true;
 
@@ -380,11 +387,11 @@ bool WizardInstrumentsPage::Create( wxWizard* parent )
     }
     //Set selection according to current user prefs
     MidiServer* pMidi = m_appScope.get_midi_server();
-    m_pVoiceChannelCombo->SetSelection( pMidi->VoiceChannel() );
+    m_pVoiceChannelCombo->SetSelection( pMidi->get_voice_channel() );
 
     //populate sections and instruments combos
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
-    int nInstr = pMidi->VoiceInstr();
+    int nInstr = pMidi->get_voice_instr();
     int nSect = pMidiGM->PopulateWithSections((wxControlWithItems*)m_pSectCombo, nInstr );
     pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr);
 
@@ -522,7 +529,7 @@ void WizardInstrumentsPage::OnButtonTestSoundClick( wxCommandEvent& WXUNUSED(eve
 {
     //play a scale
     MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->TestOut();
+    pMidi->do_sound_test();
 }
 
 
@@ -671,7 +678,7 @@ void WizardMetronomePage::OnComboMtrInstr1Selected( wxCommandEvent& WXUNUSED(eve
     //Change metronome sound, tone1, to the one selected in combo Instr1
     int nTone1 = m_pMtrInstr1Combo->GetSelection() + 35;
     MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->SetMetronomeTones(nTone1, pMidi->MtrTone2());
+    pMidi->set_metronome_tones(nTone1, pMidi->MtrTone2());
 }
 
 //---------------------------------------------------------------------------------------
@@ -680,7 +687,7 @@ void WizardMetronomePage::OnComboMtrInstr2Selected( wxCommandEvent& WXUNUSED(eve
     //Change metronome sound, tone2, to the one selected in combo Instr2
     int nTone2 = m_pMtrInstr2Combo->GetSelection() + 35;
     MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->SetMetronomeTones(pMidi->MtrTone1(), nTone2);
+    pMidi->set_metronome_tones(pMidi->MtrTone1(), nTone2);
 }
 
 //---------------------------------------------------------------------------------------

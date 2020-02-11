@@ -252,8 +252,8 @@ namespace lenmus
 //
 //        m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //        ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (
-//                                    g_pMidi->DefaultVoiceChannel(),
-//						            g_pMidi->DefaultVoiceInstr(), "");
+//                                    g_pMidi->get_default_voice_channel(),
+//						            g_pMidi->get_default_voice_instr(), "");
 //
 //        pVStaff = pInstr->GetVStaff();
 //        pInstr->add_staff();               //add second staff: five lines, standard size

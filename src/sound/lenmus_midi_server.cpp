@@ -32,8 +32,7 @@ namespace lenmus
 // FluidSynthesizer implementation
 //=======================================================================================
 FluidSynthesizer::FluidSynthesizer(ApplicationScope& appScope, MidiServer* parent)
-    : m_appScope(appScope)
-    , m_pMidiServer(parent)
+    : Synthesizer(appScope, parent)
     , m_pSettings(nullptr)
     , m_pSynth(nullptr)
     , m_pDriver(nullptr)
@@ -82,7 +81,6 @@ FluidSynthesizer::~FluidSynthesizer()
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::program_change(int channel, int instr)
 {
-    //m_pMidiOut->ProgramChange(channel, instr);
     fluid_synth_program_change (m_pSynth, channel, instr);
 }
 
@@ -95,49 +93,37 @@ void FluidSynthesizer::voice_change(int channel, int instr)
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::note_on(int channel, int pitch, int volume)
 {
-    LOMSE_LOG_TRACE(Logger::k_score_player,
-                    "Note On: channel %d, pitch %d, volume %d",
-                    channel, pitch, volume);
-    //m_pMidiOut->NoteOn(channel, pitch, volume);
     fluid_synth_noteon(m_pSynth, channel, pitch, volume);
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::note_off(int channel, int pitch, int WXUNUSED(volume))
 {
-    //m_pMidiOut->NoteOff(channel, pitch, volume);
     fluid_synth_noteoff(m_pSynth, channel, pitch);
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::all_sounds_off()
 {
-    LOMSE_LOG_TRACE(Logger::k_score_player, "All sounds off");
-    //m_pMidiOut->AllSoundsOff();
     for (int channel=0; channel < 16; ++channel)
         fluid_synth_all_sounds_off(m_pSynth, channel);
 }
 
 
 //=======================================================================================
-// MidiServer implementation
+// ExternalSynthesizer implementation
 //=======================================================================================
-MidiServer::MidiServer(ApplicationScope& appScope)
-    : m_appScope(appScope)
+ExternalSynthesizer::ExternalSynthesizer(ApplicationScope& appScope, MidiServer* parent)
+    : Synthesizer(appScope, parent)
     , m_pMidiSystem(nullptr)
     , m_pMidiIn(nullptr)
     , m_pMidiOut(nullptr)
-    , m_pFluidSynth(nullptr)
 {
     m_pMidiSystem = wxMidiSystem::GetInstance();
-    LoadUserPreferences();
-
-    m_pFluidSynth = LENMUS_NEW FluidSynthesizer(m_appScope, this);
-
 }
 
 //---------------------------------------------------------------------------------------
-MidiServer::~MidiServer()
+ExternalSynthesizer::~ExternalSynthesizer()
 {
     if (m_pMidiIn)
         m_pMidiIn->Close();
@@ -147,77 +133,40 @@ MidiServer::~MidiServer()
     delete m_pMidiIn;
     delete m_pMidiOut;
     delete m_pMidiSystem;
-    delete m_pFluidSynth;
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::LoadUserPreferences()
+void ExternalSynthesizer::program_change(int channel, int instr)
 {
-    //load settings form user congiguration data or default values
-
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-
-    pPrefs->Read("/Midi/IsSet", &m_fMidiSet, false );
-
-    m_nOutDevId = (int)pPrefs->Read("/Midi/OutDevice", (long)0);            // 0 based. So this is device 1
-    m_nVoiceChannel = (int)pPrefs->Read("/Midi/VoiceChannel", (long)0);    // 0 based. So this is channel 1
-    m_nVoiceInstr = (int)pPrefs->Read("/Midi/VoiceInstr", (long)0);        // 0 based. So this is instrument 1 (grand piano)
-
-    m_nMtrChannel = (int)pPrefs->Read("/Midi/MtrChannel", 9);        // 0 based. So this is channel 10
-    m_nMtrInstr = (int)pPrefs->Read("/Midi/MtrInstr", (long)0);    // 0 based. So this is instrument 1 (grand piano)
-    m_nMtrTone1 = (int)pPrefs->Read("/Midi/MtrTone1", 76L);        // 76-High Wood Block
-    m_nMtrTone2 = (int)pPrefs->Read("/Midi/MtrTone2", 77L);        // 77-Low Wood Block
-
-    m_nInDevId = (int)pPrefs->Read("/Midi/InDevice", (long)0);    // 0 based. So this is device 1
-
-	m_nDefaultVoiceChannel = m_nVoiceChannel;
-	m_nDefaultVoiceInstr = m_nVoiceInstr;
-
-    //sanity checks in case configuration file is corrupted
-    if (m_nVoiceChannel < 0 || m_nVoiceChannel > 15) m_nVoiceChannel = 0;
-    if (m_nVoiceInstr < 0 || m_nVoiceInstr > 255) m_nVoiceInstr = 0;
-    if (m_nMtrChannel < 0 || m_nMtrChannel > 15) m_nMtrChannel = 9;
-    if (m_nMtrInstr < 0 || m_nMtrInstr > 255) m_nMtrInstr = 0;
-    if (m_nMtrTone1 < 0 || m_nMtrTone1 > 255) m_nMtrTone1 = 60;
-    if (m_nMtrTone2 < 0 || m_nMtrTone2 > 255) m_nMtrTone2 = 61;
+    m_pMidiOut->ProgramChange(channel, instr);
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::SaveUserPreferences()
+void ExternalSynthesizer::voice_change(int channel, int instr)
 {
-    //save settings in user congiguration data
-
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-
-    pPrefs->Write("/Midi/IsSet", m_fMidiSet );
-    pPrefs->Write("/Midi/InDevice", (long)m_nInDevId );
-    pPrefs->Write("/Midi/OutDevice", (long)m_nOutDevId );
-    pPrefs->Write("/Midi/VoiceChannel", (long)m_nVoiceChannel );
-    pPrefs->Write("/Midi/VoiceInstr", (long)m_nVoiceInstr );
-    pPrefs->Write("/Midi/MtrChannel", (long)m_nMtrChannel );
-    pPrefs->Write("/Midi/MtrInstr", (long)m_nMtrInstr );
-    pPrefs->Write("/Midi/MtrTone1", (long)m_nMtrTone1 );
-    pPrefs->Write("/Midi/MtrTone2", (long)m_nMtrTone2 );
-
-	m_nDefaultVoiceChannel = m_nVoiceChannel;
-	m_nDefaultVoiceInstr = m_nVoiceInstr;
-
-	pPrefs->Flush();
+    m_pMidiServer->VoiceChange(channel, instr);
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::SetUpCurrentConfig()
+void ExternalSynthesizer::note_on(int channel, int pitch, int volume)
 {
-    //int nInDev = m_nInDevId;    //save current Id
-    m_nInDevId = -1;            //mark as 'not set yet'
-
-    int nOutDev = m_nOutDevId;    //save current Id
-    m_nOutDevId = -1;            //mark as 'not set yet'
-    SetUpMidiOut(nOutDev, m_nVoiceChannel, m_nVoiceInstr);
+    m_pMidiOut->NoteOn(channel, pitch, volume);
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::SetOutDevice(int nOutDevId)
+void ExternalSynthesizer::note_off(int channel, int pitch, int volume)
+{
+    m_pMidiOut->NoteOff(channel, pitch, volume);
+}
+
+//---------------------------------------------------------------------------------------
+void ExternalSynthesizer::all_sounds_off()
+{
+    m_pMidiOut->AllSoundsOff();
+}
+
+//---------------------------------------------------------------------------------------
+void ExternalSynthesizer::SetOutDevice(int nOutDevId)
 {
     wxMidiError nErr;
 
@@ -268,7 +217,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::SetInDevice(int nInDevId)
+void ExternalSynthesizer::SetInDevice(int nInDevId)
 {
     wxMidiError nErr;
 
@@ -313,13 +262,119 @@ void MidiServer::SetInDevice(int nInDevId)
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::SetUpMidiOut(int nOutDevId, int nChannel, int nInstrument)
+int ExternalSynthesizer::CountDevices()
 {
-    //open the new out device
-    SetOutDevice(nOutDevId);
+    return m_pMidiSystem->CountDevices();
+}
+
+//---------------------------------------------------------------------------------------
+void ExternalSynthesizer::SetUpCurrentConfig()
+{
+    //int nInDev = m_nInDevId;    //save current Id
+    m_nInDevId = -1;            //mark as 'not set yet'
+
+    int nOutDev = m_nOutDevId;    //save current Id
+    m_nOutDevId = -1;            //mark as 'not set yet'
+
+    SetOutDevice(nOutDev);
 
     //program new voices
-    VoiceChange(nChannel, nInstrument);
+    program_change(m_pMidiServer->get_voice_channel(), m_pMidiServer->get_voice_instr());
+
+    m_fMidiOK = true;
+}
+
+//---------------------------------------------------------------------------------------
+void ExternalSynthesizer::load_user_preferences()
+{
+    //load settings form user congiguration data or default values
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    pPrefs->Read("/Midi/IsSet", &m_fMidiSet, false );
+
+    m_nOutDevId = (int)pPrefs->Read("/Midi/OutDevice", (long)0);            // 0 based. So this is device 1
+    m_nInDevId = (int)pPrefs->Read("/Midi/InDevice", (long)0);    // 0 based. So this is device 1
+
+}
+
+//---------------------------------------------------------------------------------------
+void ExternalSynthesizer::save_user_preferences()
+{
+    //save settings in user congiguration data
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    pPrefs->Write("/Midi/IsSet", m_fMidiSet );
+    pPrefs->Write("/Midi/InDevice", (long)m_nInDevId );
+    pPrefs->Write("/Midi/OutDevice", (long)m_nOutDevId );
+
+	pPrefs->Flush();
+}
+
+
+//=======================================================================================
+// MidiServer implementation
+//=======================================================================================
+MidiServer::MidiServer(ApplicationScope& appScope)
+    : m_appScope(appScope)
+    , m_pFluidSynth(nullptr)
+    , m_pExtSynth(nullptr)
+    , m_fMidiConfigured(false)
+    , m_nVoiceChannel(0)            //channel 1 for music
+    , m_nVoiceInstr(0)              //instr 1 (grand piano)
+	, m_nDefaultVoiceChannel(0)     //channel 1
+	, m_nDefaultVoiceInstr(0)       //instr 1 (grand piano)
+    , m_nMtrChannel(9)              //channel 10 for metronome;
+    , m_nMtrInstr(0)                //instrument 1
+    , m_nMtrTone1(76L)              // 76-High Wood Block)
+    , m_nMtrTone2(77L)              // 77-Low Wood Block
+{
+    load_user_preferences();
+
+    m_pFluidSynth = LENMUS_NEW FluidSynthesizer(m_appScope, this);
+    m_pExtSynth = LENMUS_NEW ExternalSynthesizer(m_appScope, this);
+    configure();
+}
+
+//---------------------------------------------------------------------------------------
+MidiServer::~MidiServer()
+{
+    delete m_pFluidSynth;
+    delete m_pExtSynth;
+}
+
+//---------------------------------------------------------------------------------------
+void MidiServer::configure()
+{
+//    if (m_pExtSynth)
+//    //if MIDI not set, force to run the MIDI wizard
+//    if (!m_pExtSynth->is_configured())
+//        m_frame->run_midi_wizard();
+//
+//    //Set up MIDI devices
+//    m_pExtSynth->SetUpCurrentConfig();
+//
+//    //set sound for metronome
+//    Synthesizer* pSynth = pMidi->get_current_synth();
+//    if (pSynth)
+//        pSynth->program_change(pMidi->MtrChannel(), pMidi->MtrInstr());
+
+    m_fMidiConfigured = true;
+}
+
+//---------------------------------------------------------------------------------------
+Synthesizer* MidiServer::get_current_synth()
+{
+    return m_pExtSynth;
+    //return m_pFluidSynth;
+}
+
+//---------------------------------------------------------------------------------------
+void MidiServer::set_metronome_tones(int nTone1, int nTone2)
+{
+    m_nMtrTone1 = nTone1;
+    m_nMtrTone2 = nTone2;
 }
 
 //---------------------------------------------------------------------------------------
@@ -329,36 +384,17 @@ void MidiServer::VoiceChange(int nChannel, int nInstrument)
     m_nVoiceChannel = nChannel;
     m_nVoiceInstr = nInstrument;
 
-    if (m_pFluidSynth)
-        m_pFluidSynth->program_change(m_nVoiceChannel, m_nVoiceInstr);
-
-//    //program new voices
-//    if (m_pMidiOut)
-//    {
-//        wxMidiError nErr = m_pMidiOut->ProgramChange(m_nVoiceChannel, m_nVoiceInstr);
-//        //TODO error reporting eLocalError
-//        if (nErr)
-//        {
-//            wxMessageBox( wxString::Format(
-//				"Error %d in ProgramChange:\n%s"
-//                , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
-//        }
-//    }
-
-    m_fMidiOK = true;
+    Synthesizer* pSynth = get_current_synth();
+    if (pSynth)
+        pSynth->program_change(m_nVoiceChannel, m_nVoiceInstr);
 }
 
 //---------------------------------------------------------------------------------------
-void MidiServer::SetMetronomeTones(int nTone1, int nTone2)
+void MidiServer::do_sound_test()
 {
-    m_nMtrTone1 = nTone1;
-    m_nMtrTone2 = nTone2;
-}
-
-//---------------------------------------------------------------------------------------
-void MidiServer::TestOut()
-{
-    if (!m_pMidiOut) return;
+    Synthesizer* pSynth = get_current_synth();
+    if (!pSynth)
+        return;
 
     //Play a scale
     int scale[] = { 60, 62, 64, 65, 67, 69, 71, 72 };
@@ -366,16 +402,69 @@ void MidiServer::TestOut()
 
     for (int i = 0; i < SCALE_SIZE; i++)
     {
-        m_pMidiOut->NoteOn(m_nVoiceChannel, scale[i], 100);
+        pSynth->note_on(m_nVoiceChannel, scale[i], 100);
         ::wxMilliSleep(200);    // wait 200ms
-        m_pMidiOut->NoteOff(m_nVoiceChannel, scale[i], 100);
+        pSynth->note_off(m_nVoiceChannel, scale[i], 100);
     }
 }
 
 //---------------------------------------------------------------------------------------
-int MidiServer::CountDevices()
+void MidiServer::load_user_preferences()
 {
-    return m_pMidiSystem->CountDevices();
+    //load settings form user congiguration data or default values
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    m_nVoiceInstr = (int)pPrefs->Read("/Midi/get_voice_instr", (long)0);        // 0 based. So this is instrument 1 (grand piano)
+
+    m_nMtrChannel = (int)pPrefs->Read("/Midi/MtrChannel", 9);        // 0 based. So this is channel 10
+    m_nMtrInstr = (int)pPrefs->Read("/Midi/MtrInstr", (long)0);    // 0 based. So this is instrument 1 (grand piano)
+    m_nMtrTone1 = (int)pPrefs->Read("/Midi/MtrTone1", 76L);        // 76-High Wood Block
+    m_nMtrTone2 = (int)pPrefs->Read("/Midi/MtrTone2", 77L);        // 77-Low Wood Block
+
+	m_nDefaultVoiceChannel = m_nVoiceChannel;
+	m_nDefaultVoiceInstr = m_nVoiceInstr;
+
+    //sanity checks in case configuration file is corrupted
+    if (m_nVoiceChannel < 0 || m_nVoiceChannel > 15) m_nVoiceChannel = 0;
+    if (m_nVoiceInstr < 0 || m_nVoiceInstr > 255) m_nVoiceInstr = 0;
+    if (m_nMtrChannel < 0 || m_nMtrChannel > 15) m_nMtrChannel = 9;
+    if (m_nMtrInstr < 0 || m_nMtrInstr > 255) m_nMtrInstr = 0;
+    if (m_nMtrTone1 < 0 || m_nMtrTone1 > 255) m_nMtrTone1 = 60;
+    if (m_nMtrTone2 < 0 || m_nMtrTone2 > 255) m_nMtrTone2 = 61;
+
+
+    //asks synthesizers to load user preferences
+    if (m_pFluidSynth)
+        m_pFluidSynth->load_user_preferences();
+    if (m_pExtSynth)
+        m_pExtSynth->load_user_preferences();
+}
+
+//---------------------------------------------------------------------------------------
+void MidiServer::save_user_preferences()
+{
+    //save settings in user congiguration data
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    pPrefs->Write("/Midi/get_voice_channel", (long)m_nVoiceChannel );
+    pPrefs->Write("/Midi/get_voice_instr", (long)m_nVoiceInstr );
+    pPrefs->Write("/Midi/MtrChannel", (long)m_nMtrChannel );
+    pPrefs->Write("/Midi/MtrInstr", (long)m_nMtrInstr );
+    pPrefs->Write("/Midi/MtrTone1", (long)m_nMtrTone1 );
+    pPrefs->Write("/Midi/MtrTone2", (long)m_nMtrTone2 );
+
+	m_nDefaultVoiceChannel = m_nVoiceChannel;
+	m_nDefaultVoiceInstr = m_nVoiceInstr;
+
+	pPrefs->Flush();
+
+    //asks synthesizers to save user preferences
+    if (m_pFluidSynth)
+        m_pFluidSynth->save_user_preferences();
+    if (m_pExtSynth)
+        m_pExtSynth->save_user_preferences();
 }
 
 

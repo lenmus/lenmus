@@ -417,7 +417,7 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     (*pProblemScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+    // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
@@ -452,7 +452,7 @@ void IdfyNotesCtrol::play_a4()
     delete m_pAuxScore;
     m_pAuxScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = m_pAuxScore->add_instrument();
-        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+        // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     pInstr->add_clef( k_clef_G2 );
     pInstr->add_key_signature( k_key_C );
     pInstr->add_time_signature(2 ,4);
@@ -530,7 +530,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+    // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
