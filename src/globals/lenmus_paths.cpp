@@ -124,6 +124,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //          + /templates                		+ \templates
     //          + /test-scores              		+ \test-scores
     //          + /samples							+ \samples
+    //          + /sounds							+ \sounds
 	//          + AUTHORS							+ AUTHORS
 	//          + LICENSE							+ LICENSE
 	//		    + ...								+ ...

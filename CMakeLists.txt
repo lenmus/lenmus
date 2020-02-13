@@ -620,6 +620,7 @@ set(OPTIONS_FILES
     ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_playback_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_shortcuts_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_sound_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
 )
 

@@ -59,6 +59,7 @@ public:
     //virtual methods
     virtual void save_user_preferences() {}
     virtual void load_user_preferences() {}
+    virtual void configure() = 0;
 
 };
 
@@ -77,12 +78,17 @@ public:
     FluidSynthesizer(ApplicationScope& appScope, MidiServer* parent);
     ~FluidSynthesizer();
 
+    void configure() override;
+
     //mandatory overrides from MidiServerBase
     void program_change(int channel, int instr) override;
     void voice_change(int channel, int instr) override;
     void note_on(int channel, int pitch, int volume) override;
     void note_off(int channel, int pitch, int volume) override;
     void all_sounds_off() override;
+
+protected:
+    void load_soundfont();
 };
 
 /** -------------------------------------------------------------------------------------
@@ -114,7 +120,8 @@ public:
     inline wxMidiOutDevice* get_out_device() { return m_pMidiOut; }
 
     //setup
-    void SetUpCurrentConfig();
+    void configure() override;
+
     void SetUpMidiOut(int nOutDevId, int nChannel, int nInstrument);
     void SetOutDevice(int nOutDevId);
     void SetInDevice(int nInDevId);
@@ -156,6 +163,7 @@ protected:
     ExternalSynthesizer*    m_pExtSynth;       //external synthesizer
 
     bool    m_fMidiConfigured;     //the selected synthesizer has been configured
+    bool    m_fUseInternalSynth;
 
     //current channel and instrument for playing music exercises
     int		m_nVoiceChannel;
@@ -175,7 +183,7 @@ public:
     MidiServer(ApplicationScope& appScope);
     ~MidiServer();
 
-    void configure();
+    void configure_synthesizers();
     inline bool is_configured() { return m_fMidiConfigured; }
 
     //services
@@ -184,9 +192,15 @@ public:
     inline FluidSynthesizer* get_fluid_synth() { return m_pFluidSynth; }
     void save_user_preferences();
     void do_sound_test();
+    inline bool is_using_internal_synth() { return m_fUseInternalSynth; }
+    inline void use_internal_synth(bool value) { m_fUseInternalSynth = value; }
 
     //user configuration
+    void set_metronome_program(int nChannel, int nInstrument);
     void set_metronome_tones(int nTone1, int nTone2);
+
+    //change current channel and instr for music
+    void VoiceChange(int nChannel, int nInstrument);
 
     //Access to user configuration information
     inline int get_voice_channel() { return m_nVoiceChannel; }
@@ -199,8 +213,6 @@ public:
 	//default instrument for playing music exercises
     inline int get_default_voice_channel() { return m_nDefaultVoiceChannel; }
     inline int get_default_voice_instr() { return m_nDefaultVoiceInstr; }
-
-    void VoiceChange(int nChannel, int nInstrument);
 
 protected:
     void load_user_preferences();

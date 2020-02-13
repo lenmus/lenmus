@@ -42,6 +42,7 @@
 #include "lenmus_playback_opt_panel.h"
 #include "lenmus_shortcuts_opt_panel.h"
 #include "lenmus_toolbar_opt_panel.h"
+#include "lenmus_sound_opt_panel.h"
 //TO_ADD: add here the LENMUS_NEW panel include file
 
 
@@ -64,6 +65,7 @@ enum
 {
     eIconRoot = 0,        //AWARE: first one must be 0. The others consecutive.
     eIconLanguages,
+    eIconSound,
     eIconColors,
     eIconToolbars,
     eIconInternet,
@@ -79,6 +81,7 @@ enum
 static wxString sImageID[] = {
     "tool_options",
     "opt_language",
+    "opt_sound",
     "opt_colors",
     "opt_tools",
     "opt_internet",
@@ -108,7 +111,7 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
     : wxDialog(parent, ID_DIALOG, _("Configuration options"),
-               wxDefaultPosition, wxSize(750, 570),
+               wxDefaultPosition, wxSize(900, 650),
                wxCAPTION | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCLOSE_BOX )
     , m_appScope(appScope)
     , m_pSplitWindow(nullptr)
@@ -159,6 +162,11 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
                     eIconLanguages, eIconLanguages,
                     LENMUS_NEW TreeItemData((long)eOptLanguage) );
 
+    // Sound options
+    wxTreeItemId soundId = m_pTreeCtrl->AppendItem(rootId, _("Sound"),
+                    eIconSound, eIconSound,
+                    LENMUS_NEW TreeItemData((long)eOptSound) );
+
     // Colors options
     //wxTreeItemId colorsId = m_pTreeCtrl->AppendItem(rootId, _("Colors"),
     //                eIconColors, eIconColors,
@@ -200,6 +208,9 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
     {
         case eOptLanguage:
             itemId = languageId;
+            break;
+        case eOptSound:
+            itemId = soundId;
             break;
         //case eOptColors:
         //    itemId = colorsId;
@@ -322,6 +333,8 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
     {
         case eOptLanguage:
             return LENMUS_NEW LangOptionsPanel(m_pSplitWindow, m_appScope);
+        case eOptSound:
+            return LENMUS_NEW SoundOptionsPanel(m_pSplitWindow, m_appScope);
         case eOptColors:
             return LENMUS_NEW ColorsOptPanel(m_pSplitWindow, m_appScope);
         case eOptToolbars:
