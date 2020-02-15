@@ -91,4 +91,23 @@
 #define LENMUS_COMPILER_GCC        @LENMUS_COMPILER_GCC@
 
 
+//---------------------------------------------------------------------------------------
+// Parameters to configure the internal audio synthesizer (FluidSynth)
+//
+// LENMUS_AUDIO_DRIVER
+//      The audio driver to use: alsa (Linux), dsound (Windows), coreaudio (Mac OS X)
+// LENMUS_ALSA_DEVICE 
+//      The ALSA audio device to use, such as: "hw:0", "plughw:1", etc.
+// LENMUS_DSOUND_DEVICE 
+//      The DirectSound (Windows) device to use.
+// LENMUS_COREAUDIO_DEVICE 
+//      The CoreAudio device to use.
+//
+//---------------------------------------------------------------------------------------
+#define LENMUS_AUDIO_DRIVER         @LENMUS_AUDIO_DRIVER@
+#define LENMUS_ALSA_DEVICE          @LENMUS_ALSA_DEVICE@
+#define LENMUS_DSOUND_DEVICE        @LENMUS_DSOUND_DEVICE@
+#define LENMUS_COREAUDIO_DEVICE     @LENMUS_COREAUDIO_DEVICE@
+
+
 #endif  // __LENMUS_CONFIG_H__

@@ -22,6 +22,7 @@
 #include "lenmus_sound_opt_panel.h"
 #include "lenmus_injectors.h"
 #include "lenmus_midi_server.h"
+#include "lenmus_paths.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -38,6 +39,7 @@ namespace lenmus
 //=======================================================================================
 SoundOptionsPanel::SoundOptionsPanel(wxWindow* parent, ApplicationScope& appScope)
     : OptionsPanel(parent, appScope)
+    , m_fSettingsChanged(false)
 {
     create_controls();
     initialize_controls();
@@ -46,6 +48,8 @@ SoundOptionsPanel::SoundOptionsPanel(wxWindow* parent, ApplicationScope& appScop
 //---------------------------------------------------------------------------------------
 SoundOptionsPanel::~SoundOptionsPanel()
 {
+    if (m_fSettingsChanged)
+        restore_old_settings();
 }
 
 //---------------------------------------------------------------------------------------
@@ -60,7 +64,7 @@ void SoundOptionsPanel::create_controls()
 
 	m_pTxtTitle = LENMUS_NEW wxStaticText( m_pHeaderPanel, wxID_ANY, _("Sound configuration"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTxtTitle->Wrap( -1 );
-	m_pTxtTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
+	m_pTxtTitle->SetFont( wxFont(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL, 5 );
 
@@ -97,14 +101,14 @@ void SoundOptionsPanel::create_controls()
 
     //--------
 	m_pTabs = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_pPanelIntSynth = new OptExternalSynthPanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( m_pPanelIntSynth, _("Internal synth"), false );
-	m_pPanelExtSynth = new OptInternalSynthPanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( m_pPanelExtSynth, _("External synth"), false );
-	m_pPanelInstrument = new OptInstrumentsPanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( m_pPanelInstrument, _("Config. Instrument"), false );
-	m_pPanelMetronome = new OptMetronomePanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( m_pPanelMetronome, _("Config. Metronome"), false );
+	OptInternalSynthPanel* pPanelIntSynth = new OptInternalSynthPanel(m_appScope, m_pTabs);
+	m_pTabs->AddPage( pPanelIntSynth, _("Internal synth"), false );
+	OptExternalSynthPanel* pPanelExtSynth = new OptExternalSynthPanel(m_appScope, m_pTabs);
+	m_pTabs->AddPage( pPanelExtSynth, _("External synth"), false );
+	OptInstrumentsPanel* pPanelInstrument = new OptInstrumentsPanel(m_appScope, m_pTabs);
+	m_pTabs->AddPage( pPanelInstrument, _("Config. Instrument"), false );
+	OptMetronomePanel* pPanelMetronome = new OptMetronomePanel(m_appScope, m_pTabs);
+	m_pTabs->AddPage( pPanelMetronome, _("Config. Metronome"), false );
 
 	pMainSizer->Add( m_pTabs, 1, wxEXPAND | wxALL, 5 );
 
@@ -126,8 +130,8 @@ void SoundOptionsPanel::initialize_controls()
 
    //Select current settings
     MidiServer* pMidi = m_appScope.get_midi_server();
-    bool fUseInternalSynth = pMidi->is_using_internal_synth();
-    m_pRadSynthesizer->SetSelection(fUseInternalSynth ? 1 : 0);
+    m_fOldUseInternalSynth = pMidi->is_using_internal_synth();
+    m_pRadSynthesizer->SetSelection(m_fOldUseInternalSynth ? 1 : 0);
 }
 
 //---------------------------------------------------------------------------------------
@@ -136,6 +140,8 @@ void SoundOptionsPanel::on_new_synthesizer(wxCommandEvent& WXUNUSED(event))
     MidiServer* pMidi = m_appScope.get_midi_server();
     bool value = m_pRadSynthesizer->GetSelection() == 1;
     pMidi->use_internal_synth(value);
+
+    m_fSettingsChanged = true;
 }
 
 //---------------------------------------------------------------------------------------
@@ -152,13 +158,18 @@ void SoundOptionsPanel::on_reset_to_defaults(wxCommandEvent& WXUNUSED(event))
     pMidi->use_internal_synth(true);        //use internal synthesizer
     pMidi->VoiceChange(0, 0);               //channel 1, instr 1 (grand piano)
     pMidi->set_metronome_program(9, 0);     //channel 10, instrument 1
-    pMidi->set_metronome_tones(76L, 77L);   //76-High Wood Block, 77-Low Wood Block
+    pMidi->set_metronome_tones(76, 77);     //76-High Wood Block, 77-Low Wood Block
     initialize_controls();
 
-	m_pPanelIntSynth->initialize_controls();
-	m_pPanelExtSynth->initialize_controls();
-	m_pPanelInstrument->initialize_controls();
-	m_pPanelMetronome->initialize_controls();
+    size_t maxPage = m_pTabs->GetPageCount();
+    for(size_t i=0; i < maxPage; ++i)
+    {
+        OptionsTab* pPage = static_cast<OptionsTab*>(m_pTabs->GetPage(i));
+        pPage->initialize_controls();
+        pPage->save_current_settings();
+    }
+
+	m_fSettingsChanged = false;
 }
 
 //---------------------------------------------------------------------------------------
@@ -171,84 +182,40 @@ bool SoundOptionsPanel::Verify()
 void SoundOptionsPanel::Apply()
 {
     MidiServer* pMidi = m_appScope.get_midi_server();
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
 
-    bool value = m_pRadSynthesizer->GetSelection() == 1;
-    pMidi->use_internal_synth(value);
-    pPrefs->Write("/Midi/UseInternalSynth", value);
+    m_fOldUseInternalSynth = m_pRadSynthesizer->GetSelection() == 1;
+    pMidi->use_internal_synth(m_fOldUseInternalSynth);
+
+    size_t maxPage = m_pTabs->GetPageCount();
+    for(size_t i=0; i < maxPage; ++i)
+    {
+        OptionsTab* pPage = static_cast<OptionsTab*>(m_pTabs->GetPage(i));
+        pPage->apply_settings();
+    }
+
+	m_fSettingsChanged = false;
 }
 
+//---------------------------------------------------------------------------------------
+void SoundOptionsPanel::restore_old_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    pMidi->use_internal_synth(m_fOldUseInternalSynth);
 
-////=======================================================================================
-////  MidiWizard implementation
-////=======================================================================================
-////---------------------------------------------------------------------------------------
-//bool MidiWizard::Create( wxWindow* parent, wxWindowID id, const wxPoint& pos )
-//{
-//    // member initialisation
-//    m_pMtrChannelCombo = nullptr;
-//
-//    // creation
-//    SetExtraStyle(GetExtraStyle()|wxWIZARD_EX_HELPBUTTON);
-//    wxBitmap wizardBitmap(wxNullBitmap);
-//    SoundOptionsPanel::Create( parent, id, _("MIDI configuration wizard"), wizardBitmap, pos );
-//    CreateControls();
-//
-//    //save current Midi configuration to restore it if the wizard is cancelled
-//    MidiServer* pMidi = m_appScope.get_midi_server();
-//    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
-//    m_nOldInDevId = pExtSynth->InDevId();
-//    m_nOldOutDevId = pExtSynth->OutDevId();
-//
-//    m_nOldVoiceInstr = pMidi->get_voice_instr();
-//    m_nOldVoiceChannel = pMidi->get_voice_channel();
-//    m_nOldMtrInstr = pMidi->MtrInstr();
-//    m_nOldMtrChannel = pMidi->MtrChannel();
-//    m_nOldMtrTone1 = pMidi->MtrTone1();
-//    m_nOldMtrTone2 = pMidi->MtrTone2();
-//
-//    return true;
-//}
-//
-////---------------------------------------------------------------------------------------
-//void MidiWizard::OnWizardFinished( wxWizardEvent& WXUNUSED(event))
-//{
-//    MidiServer* pMidi = m_appScope.get_midi_server();
-//    ExternalSynthesizer* pSynth = pMidi->get_external_synth();
-//    pSynth->set_configured(true);
-//    pSynth->save_user_preferences();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void MidiWizard::OnWizardCancel( wxWizardEvent& WXUNUSED(event))
-//{
-//    // restore old configuration if any
-//
-//    MidiServer* pMidi = m_appScope.get_midi_server();
-//    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
-//    if (pExtSynth && pExtSynth->is_configured())
-//    {
-//        //devices
-//        MidiServer* pMidi = m_appScope.get_midi_server();
-//        pExtSynth->SetInDevice(m_nOldInDevId);
-//        pExtSynth->SetOutDevice(m_nOldOutDevId);
-//
-//        //voice instruments
-//        pMidi->VoiceChange(m_nOldVoiceChannel, m_nOldVoiceInstr);
-//
-//        //metronome configuration
-//        pMidi->VoiceChange(m_nOldMtrChannel, m_nOldMtrInstr);
-//        pMidi->set_metronome_tones(m_nOldMtrTone1, m_nOldMtrTone2);
-//    }
-//}
+    size_t maxPage = m_pTabs->GetPageCount();
+    for(size_t i=0; i < maxPage; ++i)
+    {
+        OptionsTab* pPage = static_cast<OptionsTab*>(m_pTabs->GetPage(i));
+        pPage->restore_old_settings();
+    }
+}
 
 
 //=======================================================================================
 //  OptInternalSynthPanel implementation
 //=======================================================================================
 OptInternalSynthPanel::OptInternalSynthPanel(ApplicationScope& appScope, wxWindow* parent)
-	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
-    , m_appScope(appScope)
+	: OptionsTab(appScope, parent)
 {
     create_controls();
     initialize_controls();
@@ -257,11 +224,132 @@ OptInternalSynthPanel::OptInternalSynthPanel(ApplicationScope& appScope, wxWindo
 //---------------------------------------------------------------------------------------
 void OptInternalSynthPanel::create_controls()
 {
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* pTitleSpacer;
+	pTitleSpacer = new wxBoxSizer( wxHORIZONTAL );
+
+
+	pTitleSpacer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_pTitleText = new wxStaticText( this, wxID_ANY, _("SoundFont to use"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_pTitleText->Wrap( -1 );
+	m_pTitleText->SetFont( wxFont( 14, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Arial" ) );
+
+	pTitleSpacer->Add( m_pTitleText, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+
+	pTitleSpacer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	pMainSizer->Add( pTitleSpacer, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+
+	m_pHelpText1 = new wxStaticText( this, wxID_ANY, _("A Soundfont (.sf2/.sf3) is a collection of sample-based instrument sounds. The internal synthesizer needs a SoundFont to generate the sounds."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pHelpText1->Wrap( -1 );
+	pMainSizer->Add( m_pHelpText1, 1, wxALL, 5 );
+
+	wxBoxSizer* pSoundFontTextSizer;
+	pSoundFontTextSizer = new wxBoxSizer( wxVERTICAL );
+
+	pSoundfontText = new wxStaticText( this, wxID_ANY, _("Soundfont to use:"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	pSoundfontText->Wrap( -1 );
+	pSoundFontTextSizer->Add( pSoundfontText, 0, wxLEFT|wxRIGHT|wxTOP, 5 );
+
+	wxBoxSizer* pEntryFieldsSizer;
+	pEntryFieldsSizer = new wxBoxSizer( wxHORIZONTAL );
+
+	m_pTxtSoundfont = new wxTextCtrl( this, wxID_ANY, _("FluidR3_GM.sf2"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	pEntryFieldsSizer->Add( m_pTxtSoundfont, 1, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxLEFT, 5 );
+
+
+	pSoundFontTextSizer->Add( pEntryFieldsSizer, 0, wxEXPAND, 5 );
+
+
+	pMainSizer->Add( pSoundFontTextSizer, 1, wxRIGHT|wxEXPAND, 5 );
+
+	m_pButtonChange = new wxButton( this, wxID_ANY, _("Change"), wxDefaultPosition, wxDefaultSize, 0 );
+	pMainSizer->Add( m_pButtonChange, 0, wxALIGN_RIGHT|wxBOTTOM|wxRIGHT, 5 );
+
+
+	pMainSizer->Add( 0, 0, 4, wxEXPAND, 5 );
+
+
+	this->SetSizer( pMainSizer );
+	this->Layout();
+
+	// Connect Events
+	m_pButtonChange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInternalSynthPanel::on_button_change ), NULL, this );
+}
+
+OptInternalSynthPanel::~OptInternalSynthPanel()
+{
+	// Disconnect Events
+	m_pButtonChange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInternalSynthPanel::on_button_change ), NULL, this );
 }
 
 //---------------------------------------------------------------------------------------
 void OptInternalSynthPanel::initialize_controls()
 {
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    FluidSynthesizer* pSynth = pMidi->get_internal_synth();
+
+    m_pTxtSoundfont->SetValue( to_wx_string(pSynth->get_soundfont()) );
+
+	m_fSettingsChanged = false;
+}
+
+//---------------------------------------------------------------------------------------
+void OptInternalSynthPanel::change_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    FluidSynthesizer* pSynth = pMidi->get_internal_synth();
+
+    pSynth->load_soundfont( to_std_string(m_pTxtSoundfont->GetValue()) );
+}
+
+//---------------------------------------------------------------------------------------
+void OptInternalSynthPanel::restore_old_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    FluidSynthesizer* pSynth = pMidi->get_internal_synth();
+
+    pSynth->load_soundfont(m_OldSoundfont);
+}
+
+//---------------------------------------------------------------------------------------
+void OptInternalSynthPanel::save_current_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    FluidSynthesizer* pSynth = pMidi->get_internal_synth();
+
+    m_OldSoundfont = pSynth->get_soundfont();
+}
+
+//---------------------------------------------------------------------------------------
+void OptInternalSynthPanel::on_button_change(wxCommandEvent& event)
+{
+    Paths* pPaths = m_appScope.get_paths();
+    wxString soundsPath = pPaths->GetSoundsPath();
+
+    // ask for the file to open/import
+    wxString sFilter = "All supported SoundFonts|*.sf2;*.sf3";
+
+    wxString sFile = ::wxFileSelector(_("Choose the SoundFont to load"),
+                                      soundsPath,   //default path
+                                      "",        //default filename
+                                      "",        //default_extension
+                                      sFilter,
+                                      wxFD_OPEN,      //flags
+                                      this);
+
+    if (!sFile.empty())
+    {
+        m_pTxtSoundfont->SetValue( sFile );
+        on_change_settings(event);
+    }
+
+    event.Skip();
 }
 
 
@@ -269,30 +357,32 @@ void OptInternalSynthPanel::initialize_controls()
 //  OptExternalSynthPanel implementation
 //=======================================================================================
 OptExternalSynthPanel::OptExternalSynthPanel(ApplicationScope& appScope, wxWindow* parent)
-	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
-    , m_appScope(appScope)
+	: OptionsTab(appScope, parent)
+    , m_nOldOutDevId(-1)
+    , m_nOldInDevId(-1)
     , m_pOutCombo(nullptr)
     , m_pInCombo(nullptr)
 {
     create_controls();
     initialize_controls();
+    save_current_settings();
 }
 
 //---------------------------------------------------------------------------------------
 void OptExternalSynthPanel::create_controls()
 {
-    wxBoxSizer* itemBoxSizer3 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
-    SetSizer(itemBoxSizer3);
+    wxBoxSizer* pMainSizer = LENMUS_NEW wxBoxSizer(wxVERTICAL);
+    SetSizer(pMainSizer);
 
     wxBoxSizer* itemBoxSizer4 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer3->Add(itemBoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+    pMainSizer->Add(itemBoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     wxStaticText* itemStaticText5 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Midi devices to use"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticText5->SetFont(wxFont(14, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Arial"));
     itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer6 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
-    itemBoxSizer3->Add(itemBoxSizer6, 1, wxGROW|wxALL, 5);
+    pMainSizer->Add(itemBoxSizer6, 1, wxGROW|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer7 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer6->Add(itemBoxSizer7, 1, wxGROW|wxALL, 5);
@@ -327,8 +417,7 @@ void OptExternalSynthPanel::create_controls()
 
 
 	// Connect Events
-	m_pOutCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptExternalSynthPanel::on_out_device_selected ),
-	                     NULL, this );
+	m_pOutCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -340,10 +429,10 @@ void OptExternalSynthPanel::initialize_controls()
     //int nInput=0;
     int nItem, nOutput=0;
     int nNumDevices = pExtSynth->CountDevices();
-    int nOutDevId = pExtSynth->OutDevId();
+    int nOldOutDevId = pExtSynth->OutDevId();
     int iSelOut = 0;
 //    //TODO: Un-comment when ready to use MIDI input
-//    int nInDevId = pMidi->InDevId();
+//    int nOldInDevId = pMidi->InDevId();
 //    int iSelIn = 0;
     for (int i = 0; i < nNumDevices; i++)
     {
@@ -355,7 +444,7 @@ void OptExternalSynthPanel::initialize_controls()
             nItem = m_pOutCombo->Append(name);
             m_pOutCombo->SetClientData(nItem, (void*)(size_t)i);
             //wxLogMessage("[OptExternalSynthPanel::Create] nItem=%d, i=%d", nItem, i);
-            if (nOutDevId == i)
+            if (nOldOutDevId == i)
                 iSelOut = nItem;
         }
 		////TODO: Un-comment when ready to use MIDI input
@@ -363,7 +452,7 @@ void OptExternalSynthPanel::initialize_controls()
         //    nInput++;
         //    nItem = m_pInCombo->Append( pMidiDev->DeviceName() );
         //    m_pInCombo->SetClientData(nItem, (void *)i);
-        //    if (nInDevId == i)
+        //    if (nOldInDevId == i)
         //        iSelIn = nItem;
         //}
         delete pMidiDev;
@@ -386,13 +475,13 @@ void OptExternalSynthPanel::initialize_controls()
     //    iSelIn = 0;
     //}
     //m_pInCombo->SetSelection(iSelIn);
+
+	m_fSettingsChanged = false;
 }
 
 //---------------------------------------------------------------------------------------
-void OptExternalSynthPanel::on_out_device_selected( wxCommandEvent& WXUNUSED(event))
+void OptExternalSynthPanel::change_settings()
 {
-    // A new section selected. Save data and open temporary Midi Devices
-
     //get number of Midi device to use for output
     int nIndex = m_pOutCombo->GetSelection();
     #if defined(__ia64__) || defined(__amd64__)
@@ -405,16 +494,46 @@ void OptExternalSynthPanel::on_out_device_selected( wxCommandEvent& WXUNUSED(eve
     #endif
     MidiServer* pMidi = m_appScope.get_midi_server();
     ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
-    pExtSynth->SetOutDevice(nOutDevId);
+    if (pExtSynth)
+    {
+        pExtSynth->SetOutDevice(nOutDevId);
 
-    //open input device
-    int nInDevId = -1;
-	//TODO: Un-comment when ready to use MIDI input
-    //if (m_pInCombo->GetStringSelection() != _("None") ) {
-    //    nIndex = m_pInCombo->GetSelection();
-    //    nInDevId = (int) m_pInCombo->GetClientData(nIndex);
-    //}
-    pExtSynth->SetInDevice(nInDevId);
+        //open input device
+        int nInDevId = -1;
+        //TODO: Un-comment when ready to use MIDI input
+        //if (m_pInCombo->GetStringSelection() != _("None") ) {
+        //    nIndex = m_pInCombo->GetSelection();
+        //    nInDevId = (int) m_pInCombo->GetClientData(nIndex);
+        //}
+        pExtSynth->SetInDevice(nInDevId);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void OptExternalSynthPanel::save_current_settings()
+{
+    m_nOldOutDevId = -1;
+    m_nOldInDevId = -1;
+
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
+    if (pExtSynth)
+    {
+        m_nOldOutDevId = pExtSynth->OutDevId();
+//        m_nOldInDevId = pExtSynth->InDevId();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void OptExternalSynthPanel::restore_old_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    ExternalSynthesizer* pExtSynth = pMidi->get_external_synth();
+    if (pExtSynth)
+    {
+        pExtSynth->SetInDevice(m_nOldInDevId);
+        pExtSynth->SetOutDevice(m_nOldOutDevId);
+    }
 }
 
 
@@ -423,14 +542,16 @@ void OptExternalSynthPanel::on_out_device_selected( wxCommandEvent& WXUNUSED(eve
 // OptInstrumentsPanel implementation
 //=======================================================================================
 OptInstrumentsPanel::OptInstrumentsPanel(ApplicationScope& appScope, wxWindow* parent)
-	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
-    , m_appScope(appScope)
+	: OptionsTab(appScope, parent)
+    , m_nOldVoiceInstr(0)
+    , m_nOldVoiceChannel(0)
     , m_pVoiceChannelCombo(nullptr)
     , m_pSectCombo(nullptr)
     , m_pInstrCombo(nullptr)
 {
     create_controls();
     initialize_controls();
+    save_current_settings();
 }
 
 //---------------------------------------------------------------------------------------
@@ -488,10 +609,14 @@ void OptInstrumentsPanel::create_controls()
     m_pInstrCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_INSTRUMENT, "", wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pInstrCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
+    wxButton* pButtonTest = LENMUS_NEW wxButton( this, ID_BUTTON, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
+    itemBoxSizer25->Add(pButtonTest, 0, wxALIGN_LEFT|wxALL, 5);
+
 	// Connect Events
-	m_pVoiceChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptInstrumentsPanel::on_combo_channel ), NULL, this );
-	m_pSectCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptInstrumentsPanel::on_combo_section ), NULL, this );
-	m_pInstrCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptInstrumentsPanel::on_combo_instrument ), NULL, this );
+	m_pVoiceChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
+	m_pSectCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
+	m_pInstrCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
+	pButtonTest->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInstrumentsPanel::on_test_sound ), NULL, this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -511,50 +636,48 @@ void OptInstrumentsPanel::initialize_controls()
     int nInstr = pMidi->get_voice_instr();
     int nSect = pMidiGM->PopulateWithSections((wxControlWithItems*)m_pSectCombo, nInstr );
     pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr);
+
+	m_fSettingsChanged = false;
 }
 
 //---------------------------------------------------------------------------------------
-void OptInstrumentsPanel::DoProgramChange()
+void OptInstrumentsPanel::change_settings()
 {
-    //Change Midi instrument to the one selected in combo Instruments
-
-    int nInstr = m_pInstrCombo->GetSelection();
-    int nSect = m_pSectCombo->GetSelection();
-    wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
-    int nVoiceInstr = pMidiGM->GetInstrFromSection(nSect, nInstr);
-    int nVoiceChannel = m_pVoiceChannelCombo->GetSelection();
     MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->VoiceChange(nVoiceChannel, nVoiceInstr);
-}
-
-//---------------------------------------------------------------------------------------
-void OptInstrumentsPanel::on_combo_channel(wxCommandEvent& WXUNUSED(event))
-{
-    //A new channel has been selected
 
     int nChannel = m_pVoiceChannelCombo->GetSelection();
-    MidiServer* pMidi = m_appScope.get_midi_server();
-    int nInstr = pMidi->get_voice_instr();
-    pMidi->VoiceChange(nChannel, nInstr);
-}
-
-//---------------------------------------------------------------------------------------
-void OptInstrumentsPanel::on_combo_section(wxCommandEvent& WXUNUSED(event))
-{
-    // A new section selected. Reload Instruments combo with the instruments in the
-    //selected section
 
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nSect = m_pSectCombo->GetSelection();
+    int nInstr = m_pInstrCombo->GetSelection();
     pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect);
-    DoProgramChange();
+    m_pInstrCombo->SetSelection(nInstr);
+
+    int nVoiceInstr = pMidiGM->GetInstrFromSection(nSect, nInstr);
+
+    pMidi->VoiceChange(nChannel, nVoiceInstr);
 }
 
 //---------------------------------------------------------------------------------------
-void OptInstrumentsPanel::on_combo_instrument( wxCommandEvent& WXUNUSED(event))
+void OptInstrumentsPanel::save_current_settings()
 {
-    // A new instrument selected. Change Midi program
-    DoProgramChange();
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    m_nOldVoiceInstr = pMidi->get_voice_instr();
+    m_nOldVoiceChannel = pMidi->get_voice_channel();
+}
+
+//---------------------------------------------------------------------------------------
+void OptInstrumentsPanel::restore_old_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    pMidi->VoiceChange(m_nOldVoiceChannel, m_nOldVoiceInstr);
+}
+
+//---------------------------------------------------------------------------------------
+void OptInstrumentsPanel::on_test_sound( wxCommandEvent& WXUNUSED(event))
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    pMidi->do_sound_test();
 }
 
 
@@ -562,14 +685,18 @@ void OptInstrumentsPanel::on_combo_instrument( wxCommandEvent& WXUNUSED(event))
 // OptMetronomePanel implementation
 //=======================================================================================
 OptMetronomePanel::OptMetronomePanel(ApplicationScope& appScope, wxWindow* parent)
-	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
-    , m_appScope(appScope)
+	: OptionsTab(appScope, parent)
+    , m_nOldMtrInstr(0)
+    , m_nOldMtrChannel(9)
+    , m_nOldMtrTone1(76)
+    , m_nOldMtrTone2(77)
     , m_pMtrChannelCombo(nullptr)
     , m_pMtrInstr1Combo(nullptr)
     , m_pMtrInstr2Combo(nullptr)
 {
     create_controls();
     initialize_controls();
+    save_current_settings();
 }
 
 //---------------------------------------------------------------------------------------
@@ -631,9 +758,9 @@ void OptMetronomePanel::create_controls()
     itemBoxSizer43->Add(pButtonTest, 0, wxALIGN_LEFT|wxALL, 5);
 
 	// Connect Events
-	m_pMtrChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptMetronomePanel::on_combo_channel ), NULL, this );
-	m_pMtrInstr1Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptMetronomePanel::OnComboMtrInstr1Selected ), NULL, this );
-	m_pMtrInstr2Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptMetronomePanel::OnComboMtrInstr2Selected ), NULL, this );
+	m_pMtrChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
+	m_pMtrInstr1Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
+	m_pMtrInstr2Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
 	pButtonTest->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptMetronomePanel::on_test_sound ), NULL, this );
 }
 
@@ -656,35 +783,8 @@ void OptMetronomePanel::initialize_controls()
     int nTone2 = pMidi->MtrTone2();
     pMidiGM->PopulateWithPercusionInstr((wxControlWithItems*)m_pMtrInstr1Combo, nTone1);
     pMidiGM->PopulateWithPercusionInstr((wxControlWithItems*)m_pMtrInstr2Combo, nTone2);
-}
 
-//---------------------------------------------------------------------------------------
-void OptMetronomePanel::on_combo_channel(wxCommandEvent& WXUNUSED(event))
-{
-    //A new channel has been selected
-
-    int nChannel = m_pMtrChannelCombo->GetSelection();
-    MidiServer* pMidi = m_appScope.get_midi_server();
-    int nInstr = pMidi->MtrInstr();
-    pMidi->set_metronome_program(nChannel, nInstr);
-}
-
-//---------------------------------------------------------------------------------------
-void OptMetronomePanel::OnComboMtrInstr1Selected( wxCommandEvent& WXUNUSED(event))
-{
-    //Change metronome sound, tone1, to the one selected in combo Instr1
-    int nTone1 = m_pMtrInstr1Combo->GetSelection() + 35;
-    MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->set_metronome_tones(nTone1, pMidi->MtrTone2());
-}
-
-//---------------------------------------------------------------------------------------
-void OptMetronomePanel::OnComboMtrInstr2Selected( wxCommandEvent& WXUNUSED(event))
-{
-    //Change metronome sound, tone2, to the one selected in combo Instr2
-    int nTone2 = m_pMtrInstr2Combo->GetSelection() + 35;
-    MidiServer* pMidi = m_appScope.get_midi_server();
-    pMidi->set_metronome_tones(pMidi->MtrTone1(), nTone2);
+	m_fSettingsChanged = false;
 }
 
 //---------------------------------------------------------------------------------------
@@ -696,18 +796,55 @@ void OptMetronomePanel::on_test_sound( wxCommandEvent& WXUNUSED(event))
         return;
 
     //two measures, 3/4 time signature
+    int channel = pMidi->MtrChannel();
+    int instr = pMidi->MtrInstr();
+    pSynth->program_change(channel, instr);
     for (int i=0; i < 2; i++) {
         //firts beat
-        pSynth->note_on(pMidi->MtrChannel(), pMidi->MtrTone1(), 127);
+        pSynth->note_on(channel, pMidi->MtrTone1(), 127);
         ::wxMilliSleep(500);    // wait 500ms
-        pSynth->note_off(pMidi->MtrChannel(), pMidi->MtrTone1(), 127);
+        pSynth->note_off(channel, pMidi->MtrTone1(), 127);
         // two more beats
         for (int j=0; j < 2; j++) {
-            pSynth->note_on(pMidi->MtrChannel(), pMidi->MtrTone2(), 127);
+            pSynth->note_on(channel, pMidi->MtrTone2(), 127);
             ::wxMilliSleep(500);    // wait 500ms
-            pSynth->note_off(pMidi->MtrChannel(), pMidi->MtrTone2(), 127);
+            pSynth->note_off(channel, pMidi->MtrTone2(), 127);
         }
     }
+}
+
+//---------------------------------------------------------------------------------------
+void OptMetronomePanel::change_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+
+    int nChannel = m_pMtrChannelCombo->GetSelection();
+    int nInstr = pMidi->MtrInstr();
+    pMidi->set_metronome_program(nChannel, nInstr);
+
+    int nTone1 = m_pMtrInstr1Combo->GetSelection() + 35;
+    pMidi->set_metronome_tones(nTone1, pMidi->MtrTone2());
+
+    int nTone2 = m_pMtrInstr2Combo->GetSelection() + 35;
+    pMidi->set_metronome_tones(pMidi->MtrTone1(), nTone2);
+}
+
+//---------------------------------------------------------------------------------------
+void OptMetronomePanel::save_current_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    m_nOldMtrInstr = pMidi->MtrInstr();
+    m_nOldMtrChannel = pMidi->MtrChannel();
+    m_nOldMtrTone1 = pMidi->MtrTone1();
+    m_nOldMtrTone2 = pMidi->MtrTone2();
+}
+
+//---------------------------------------------------------------------------------------
+void OptMetronomePanel::restore_old_settings()
+{
+    MidiServer* pMidi = m_appScope.get_midi_server();
+    pMidi->set_metronome_program(m_nOldMtrChannel, m_nOldMtrInstr);
+    pMidi->set_metronome_tones(m_nOldMtrTone1, m_nOldMtrTone2);
 }
 
 

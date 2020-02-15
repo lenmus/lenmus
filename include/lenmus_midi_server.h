@@ -69,16 +69,20 @@ public:
 class FluidSynthesizer : public Synthesizer
 {
 protected:
+    bool                    m_fValid;       //Synthesizer initialized
     fluid_settings_t*       m_pSettings;
     fluid_synth_t*          m_pSynth;
     fluid_audio_driver_t*   m_pDriver;
     int                     m_sfontId;
+    string                  m_soundfont;
 
 public:
     FluidSynthesizer(ApplicationScope& appScope, MidiServer* parent);
     ~FluidSynthesizer();
 
     void configure() override;
+    bool load_soundfont(const string& path);
+    inline const string& get_soundfont() { return m_soundfont; }
 
     //mandatory overrides from MidiServerBase
     void program_change(int channel, int instr) override;
@@ -87,8 +91,13 @@ public:
     void note_off(int channel, int pitch, int volume) override;
     void all_sounds_off() override;
 
+    //other
+    void save_user_preferences() override;
+    void load_user_preferences() override;
+
 protected:
     void load_soundfont();
+    void delete_all();
 };
 
 /** -------------------------------------------------------------------------------------
@@ -189,7 +198,7 @@ public:
     //services
     Synthesizer* get_current_synth();
     inline ExternalSynthesizer* get_external_synth() { return m_pExtSynth; }
-    inline FluidSynthesizer* get_fluid_synth() { return m_pFluidSynth; }
+    inline FluidSynthesizer* get_internal_synth() { return m_pFluidSynth; }
     void save_user_preferences();
     void do_sound_test();
     inline bool is_using_internal_synth() { return m_fUseInternalSynth; }

@@ -42,6 +42,8 @@
 #include <wx/notebook.h>
 #include <wx/sizer.h>
 
+#include <wx/statline.h>
+
 
 namespace lenmus
 {
@@ -70,16 +72,13 @@ class ApplicationScope;
 #define ID_BUTTON 10013
 
 
-//forward declarations
-class OptExternalSynthPanel;
-class OptInternalSynthPanel;
-class OptInstrumentsPanel;
-class OptMetronomePanel;
-
-
 //---------------------------------------------------------------------------------------
 class SoundOptionsPanel : public OptionsPanel
 {
+protected:
+    bool m_fSettingsChanged;        //user changed a setting and Apply button not yet clicked
+    bool m_fOldUseInternalSynth;    //to save current value and restore it if settings cancelled
+
 public:
     SoundOptionsPanel(wxWindow* parent, ApplicationScope& appScope);
     ~SoundOptionsPanel();
@@ -89,6 +88,7 @@ public:
 private:
     void create_controls();
     void initialize_controls();
+    void restore_old_settings();
 
     //event handlers
 	void on_new_synthesizer(wxCommandEvent& event);
@@ -111,13 +111,6 @@ private:
     wxButton*       m_pResetDefaultsButton;
     wxNotebook*     m_pTabs;
 
-    OptExternalSynthPanel* m_pPanelIntSynth;
-    OptInternalSynthPanel* m_pPanelExtSynth;
-    OptInstrumentsPanel* m_pPanelInstrument;
-    OptMetronomePanel* m_pPanelMetronome;
-
-
-	//other
 
     //old Midi configuration
     int        m_nOldInDevId;
@@ -131,74 +124,78 @@ private:
 };
 
 //---------------------------------------------------------------------------------------
-class OptExternalSynthPanel: public wxPanel
+class OptInternalSynthPanel: public OptionsTab
 {
 protected:
-    ApplicationScope& m_appScope;
-    wxComboBox* m_pOutCombo;
-    wxComboBox* m_pInCombo;
+    string m_OldSoundfont;
+
+public:
+    OptInternalSynthPanel(ApplicationScope& appScope, wxWindow* parent);
+    virtual ~OptInternalSynthPanel();
+
+    void initialize_controls();
+    void change_settings() override;
+    void restore_old_settings() override;
+
+    //event handlers
+    void on_button_change(wxCommandEvent& event);
+
+protected:
+    void create_controls();
+    void save_current_settings() override;
+
+    wxStaticText* m_pTitleText;
+    wxStaticText* m_pHelpText1;
+    wxStaticText* pSoundfontText;
+    wxTextCtrl* m_pTxtSoundfont;
+    wxButton* m_pButtonChange;
+
+};
+
+//---------------------------------------------------------------------------------------
+class OptExternalSynthPanel: public OptionsTab
+{
+protected:
+    int m_nOldOutDevId;
+    int m_nOldInDevId;
 
 public:
     OptExternalSynthPanel(ApplicationScope& appScope, wxWindow* parent);
     ~OptExternalSynthPanel() {}
 
     void initialize_controls();
+    void change_settings() override;
+    void restore_old_settings() override;
 
 protected:
     void create_controls();
+    void save_current_settings() override;
 
-    //event handlers
-    void on_out_device_selected(wxCommandEvent& event);
-
+    wxComboBox* m_pOutCombo;
+    wxComboBox* m_pInCombo;
 };
 
 //---------------------------------------------------------------------------------------
-class OptInternalSynthPanel: public wxPanel
+class OptInstrumentsPanel: public OptionsTab
 {
 protected:
-    ApplicationScope& m_appScope;
-
-public:
-    OptInternalSynthPanel(ApplicationScope& appScope, wxWindow* parent);
-    ~OptInternalSynthPanel() {}
-
-    void initialize_controls();
-
-protected:
-    void create_controls();
-
-//    //event handlers
-//    void on_combo_channel(wxCommandEvent& event);
-//    void OnComboMtrInstr1Selected( wxCommandEvent& event );
-//    void OnComboMtrInstr2Selected( wxCommandEvent& event );
-//    void on_test_sound(wxCommandEvent& event);
-//
-//    wxComboBox* m_pMtrChannelCombo;
-//    wxComboBox* m_pMtrInstr1Combo;
-//    wxComboBox* m_pMtrInstr2Combo;
-};
-
-//---------------------------------------------------------------------------------------
-class OptInstrumentsPanel: public wxPanel
-{
-protected:
-    ApplicationScope& m_appScope;
+    int m_nOldVoiceInstr;
+    int m_nOldVoiceChannel;
 
 public:
     OptInstrumentsPanel(ApplicationScope& appScope, wxWindow* parent);
     ~OptInstrumentsPanel() {}
 
     void initialize_controls();
+    void change_settings() override;
+    void restore_old_settings() override;
 
 protected:
     void create_controls();
+    void save_current_settings() override;
 
     //event handlers
-    void on_combo_channel(wxCommandEvent& event);
-    void on_combo_section(wxCommandEvent& event);
-    void on_combo_instrument(wxCommandEvent& event);
-
-    void DoProgramChange();
+    void on_test_sound(wxCommandEvent& event);
 
     wxComboBox* m_pVoiceChannelCombo;
     wxComboBox* m_pSectCombo;
@@ -206,24 +203,27 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-class OptMetronomePanel: public wxPanel
+class OptMetronomePanel: public OptionsTab
 {
 protected:
-    ApplicationScope& m_appScope;
+    int m_nOldMtrInstr;
+    int m_nOldMtrChannel;
+    int m_nOldMtrTone1;
+    int m_nOldMtrTone2;
 
 public:
     OptMetronomePanel(ApplicationScope& appScope, wxWindow* parent);
     ~OptMetronomePanel() {}
 
     void initialize_controls();
+    void change_settings() override;
+    void restore_old_settings() override;
 
 protected:
     void create_controls();
+    void save_current_settings() override;
 
     //event handlers
-    void on_combo_channel(wxCommandEvent& event);
-    void OnComboMtrInstr1Selected( wxCommandEvent& event );
-    void OnComboMtrInstr2Selected( wxCommandEvent& event );
     void on_test_sound(wxCommandEvent& event);
 
     wxComboBox* m_pMtrChannelCombo;

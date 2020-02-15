@@ -328,7 +328,14 @@ void ApplicationScope::create_logger()
     wxString sLogFile = get_paths()->GetLogPath() + sUserId + "-lenmus-log.txt";
 	wxLog *lmLogger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), "w") );
 	wxLog::SetActiveTarget(lmLogger);
-	wxLogMessage("[ApplicationScope::create_logger] Log messages derived to file.");
+	wxLogMessage("[ApplicationScope::create_logger] INFO: Log messages derived to file.");
+	//test----------
+	const string file(__FILE__);
+	int line(__LINE__);
+	const string prettyFunction(__PRETTY_FUNCTION__);
+	wxLogMessage("%s, %d, %s INFO: Log messages derived to file.", file, line, prettyFunction);
+	//--------------
+
     LOMSE_LOG_INFO("lenmus log file = [%s]", sLogFile.ToStdString().c_str() );
 }
 

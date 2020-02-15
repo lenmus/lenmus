@@ -212,6 +212,19 @@ message(STATUS "LENMUS_DEBUG_BUILD set to ${LENMUS_DEBUG_BUILD}")
 set( LENMUS_TEST_SCORES_PATH     "\"${LENMUS_ROOT_DIR}/scores/samples/test_set/\"" )
 set( LENMUS_SOURCE_ROOT          "\"${LENMUS_ROOT_DIR}/\"" )
 
+# Audio driver and device to use
+if(UNIX AND NOT APPLE)
+    set(LENMUS_AUDIO_DRIVER "alsa")
+    set(LENMUS_ALSA_DEVICE "default")
+elseif(WIN32)
+    set(LENMUS_AUDIO_DRIVER "dsound")
+    set(LENMUS_DSOUND_DEVICE "default")
+elseif(APPLE)
+    set(LENMUS_AUDIO_DRIVER "coreaudio")
+    set(LENMUS_COREAUDIO_DEVICE "default")
+endif()
+message("LenMus audio driver: ${LENMUS_AUDIO_DRIVER}")
+
 # determine system arquitecture
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(SYSTEM_ARCHITECTURE "x64")

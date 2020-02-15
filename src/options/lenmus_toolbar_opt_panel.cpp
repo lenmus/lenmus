@@ -89,7 +89,7 @@ void ToolbarsOptPanel::create_controls()
 
 	m_pLblTitle = LENMUS_NEW wxStaticText( m_pMainPanel, wxID_ANY, _("Preferences for toolbars"), wxDefaultPosition, wxSize( -1,-1 ), wxALIGN_LEFT );
 	m_pLblTitle->Wrap( -1 );
-	m_pLblTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
+	m_pLblTitle->SetFont( wxFont(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pTitleSizer->Add( m_pLblTitle, 0, wxALIGN_TOP|wxALL, 5 );
 

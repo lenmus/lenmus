@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -49,16 +49,8 @@ namespace lenmus
 
 
 //---------------------------------------------------------------------------------------
-// A few constants for an attempt at semi-uniformity
-#define PREFS_FONT_SIZE     8
-
-// these are spacing guidelines: ie. radio buttons should have a 5 pixel
-// border on each side
-#define RADIO_BUTTON_BORDER    5
-#define TOP_LEVEL_BORDER       5
-#define GENERIC_CONTROL_BORDER 5
-
-//---------------------------------------------------------------------------------------
+/** Abstract class from which all options dialogs must derive
+*/
 class OptionsPanel : public wxPanel
 {
 protected:
@@ -79,6 +71,48 @@ public:
     virtual ~OptionsPanel() {}
     virtual bool Verify() = 0;
     virtual void Apply() = 0;
+
+};
+
+//---------------------------------------------------------------------------------------
+/** Abstract class from which all panels in a notebook in an OptionsPanel must derive
+*/
+class OptionsTab : public wxPanel
+{
+protected:
+    ApplicationScope& m_appScope;
+    bool    m_fSettingsChanged;         //settings changed but not yet applied
+
+public:
+    OptionsTab(ApplicationScope& appScope, wxWindow* parent)
+        : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
+        , m_appScope(appScope)
+        , m_fSettingsChanged(false)
+    {
+    }
+    virtual ~OptionsTab() {}
+
+    void on_change_settings(wxCommandEvent& WXUNUSED(event))
+    {
+        change_settings();
+        m_fSettingsChanged = true;
+    }
+    virtual void initialize_controls() = 0;
+    virtual void change_settings() = 0;
+    virtual void restore_old_settings() = 0;
+    virtual void apply_settings()
+    {
+        change_settings();
+        save_current_settings();
+        m_fSettingsChanged = false;
+    }
+    virtual void cancel_settings()
+    {
+        if (m_fSettingsChanged)
+            restore_old_settings();
+        m_fSettingsChanged = false;
+    }
+    virtual void save_current_settings() = 0;
 
 };
 

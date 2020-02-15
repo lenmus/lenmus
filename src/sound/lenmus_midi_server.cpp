@@ -21,6 +21,7 @@
 #include "lenmus_midi_server.h"
 
 //lenmus
+#include "lenmus_config.h"
 #include "lenmus_paths.h"
 
 //wxWidgets
@@ -36,42 +37,21 @@ namespace lenmus
 //=======================================================================================
 FluidSynthesizer::FluidSynthesizer(ApplicationScope& appScope, MidiServer* parent)
     : Synthesizer(appScope, parent)
+    , m_fValid(false)
     , m_pSettings(nullptr)
     , m_pSynth(nullptr)
     , m_pDriver(nullptr)
 {
-    //create and configure the FluidSynth settings
-    m_pSettings = new_fluid_settings();
-    if (m_pSettings == nullptr)
-    {
-        LOMSE_LOG_ERROR("Failed to create the FluidSynth settings");
-    }
- 	fluid_settings_setstr(m_pSettings, "audio.driver", "alsa");
-
-    //create the FluidSynth synthesizer
-    m_pSynth = new_fluid_synth(m_pSettings);
-    if (m_pSynth == nullptr)
-    {
-        LOMSE_LOG_ERROR("Failed to create the FluidSynth synthesizer");
-    }
-
-    //create the FluidSynth audio driver
-    m_pDriver = new_fluid_audio_driver(m_pSettings, m_pSynth);
-    if (m_pDriver == nullptr)
-    {
-        LOMSE_LOG_ERROR("Failed to create the FluidSynth audio driver");
-    }
-
-    //load the SoundFont
-    m_sfontId = fluid_synth_sfload(m_pSynth, "/usr/share/sounds/sf2/FluidR3_GM.sf2", 1);
-    if(m_sfontId == FLUID_FAILED)
-    {
-        LOMSE_LOG_ERROR("Loading the SoundFont failed!");
-    }
 }
 
 //---------------------------------------------------------------------------------------
 FluidSynthesizer::~FluidSynthesizer()
+{
+    delete_all();
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::delete_all()
 {
     if (m_pDriver)
         delete_fluid_audio_driver(m_pDriver);
@@ -79,56 +59,144 @@ FluidSynthesizer::~FluidSynthesizer()
         delete_fluid_synth(m_pSynth);
     if (m_pSettings)
         delete_fluid_settings(m_pSettings);
+
+    m_pSettings = nullptr;
+    m_pSynth = nullptr;
+    m_pDriver = nullptr;
+
+    m_fValid = false;
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::program_change(int channel, int instr)
 {
-    fluid_synth_program_change (m_pSynth, channel, instr);
+    if (m_fValid)
+        fluid_synth_program_change (m_pSynth, channel, instr);
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::voice_change(int channel, int instr)
 {
-    m_pMidiServer->VoiceChange(channel, instr);
+    if (m_fValid)
+        m_pMidiServer->VoiceChange(channel, instr);
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::note_on(int channel, int pitch, int volume)
 {
-    fluid_synth_noteon(m_pSynth, channel, pitch, volume);
+    if (m_fValid)
+        fluid_synth_noteon(m_pSynth, channel, pitch, volume);
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::note_off(int channel, int pitch, int WXUNUSED(volume))
 {
-    fluid_synth_noteoff(m_pSynth, channel, pitch);
+    if (m_fValid)
+        fluid_synth_noteoff(m_pSynth, channel, pitch);
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::all_sounds_off()
 {
-    for (int channel=0; channel < 16; ++channel)
-        fluid_synth_all_sounds_off(m_pSynth, channel);
+    if (m_fValid)
+    {
+        for (int channel=0; channel < 16; ++channel)
+            fluid_synth_all_sounds_off(m_pSynth, channel);
+    }
 }
 
 //---------------------------------------------------------------------------------------
-void FluidSynthesizer::load_soundfont()
+bool FluidSynthesizer::load_soundfont(const string& path)
 {
-    Paths* pPaths = m_appScope.get_paths();
-    wxString path = pPaths->GetSoundsPath();
+    //return true if error
+    m_soundfont = path;
 
-    //load the SoundFont
     m_sfontId = fluid_synth_sfload(m_pSynth, path.c_str(), 1);
     if(m_sfontId == FLUID_FAILED)
     {
-        LOMSE_LOG_ERROR("SoundFont load failed. path=%s", to_std_string(path).c_str());
+        wxLogMessage("ERROR: SoundFont load failed. path=%s", to_std_string(path).c_str());
+        return true;
     }
+    return false;
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::configure()
 {
+    delete_all();
+    m_fValid = true;        //assume there will be no errors
+
+    //create and configure the FluidSynth settings
+    m_pSettings = new_fluid_settings();
+    if (m_pSettings == nullptr)
+    {
+        wxLogMessage("ERROR: Failed to create the FluidSynth settings");
+        m_fValid = false;
+        return;
+    }
+ 	fluid_settings_setstr(m_pSettings, "audio.driver", LENMUS_AUDIO_DRIVER);
+ 	wxLogMessage("INFO: Using '%s' audio driver", LENMUS_AUDIO_DRIVER);
+
+    if (strcmp(LENMUS_AUDIO_DRIVER, "alsa") == 0 && strcmp(LENMUS_ALSA_DEVICE, "default") != 0)
+     	fluid_settings_setstr(m_pSettings, "audio.alsa.device", LENMUS_ALSA_DEVICE);
+
+    else if (strcmp(LENMUS_AUDIO_DRIVER, "dsound") == 0 && strcmp(LENMUS_DSOUND_DEVICE, "default") != 0)
+     	fluid_settings_setstr(m_pSettings, "audio.dsound.device", LENMUS_DSOUND_DEVICE);
+
+    else if (strcmp(LENMUS_AUDIO_DRIVER, "coreaudio") == 0 && strcmp(LENMUS_COREAUDIO_DEVICE, "default") != 0)
+     	fluid_settings_setstr(m_pSettings, "audio.coreaudio.device", LENMUS_COREAUDIO_DEVICE);
+
+
+    //create the FluidSynth synthesizer
+    m_pSynth = new_fluid_synth(m_pSettings);
+    if (m_pSynth == nullptr)
+    {
+        wxLogMessage("ERROR: Failed to create the FluidSynth synthesizer");
+        m_fValid = false;
+        return;
+    }
+
+    //create the FluidSynth audio driver
+    m_pDriver = new_fluid_audio_driver(m_pSettings, m_pSynth);
+    if (m_pDriver == nullptr)
+    {
+        wxLogMessage("ERROR: Failed to create the FluidSynth audio driver");
+        m_fValid = false;
+        return;
+    }
+
+    //load the SoundFont
+    m_fValid = !load_soundfont(m_soundfont);
+//    //m_sfontId = fluid_synth_sfload(m_pSynth, "/usr/share/sounds/sf2/FluidR3_GM.sf2", 1);
+//    m_sfontId = fluid_synth_sfload(m_pSynth, "/datos/cecilio/lm/projects/lenmus/lenmus/res/sounds/GeneralUser GS 1.471/GeneralUser GS v1.471.sf2", 1);
+//    //m_sfontId = fluid_synth_sfload(m_pSynth, "/datos/cecilio/lm/projects/lenmus/lenmus/res/sounds/VintageDreamsWaves-v2.sf2", 1);
+//    if(m_sfontId == FLUID_FAILED)
+//    {
+//        wxLogMessage("ERROR: Loading the SoundFont failed!");
+//        m_fValid = false;
+//        return;
+//    }
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::load_user_preferences()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    wxString soundfont("/datos/cecilio/lm/projects/lenmus/lenmus/res/sounds/FluidR3_GM.sf2");
+    wxString file;
+    pPrefs->Read("/Midi/SoundFont", &file, soundfont);
+
+    m_soundfont = to_std_string(file);
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::save_user_preferences()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    pPrefs->Write("/Midi/SoundFont", to_wx_string(m_soundfont) );
+	pPrefs->Flush();
 }
 
 
@@ -353,18 +421,20 @@ MidiServer::MidiServer(ApplicationScope& appScope)
 	, m_nDefaultVoiceInstr(0)       //instr 1 (grand piano)
     , m_nMtrChannel(9)              //channel 10 for metronome;
     , m_nMtrInstr(0)                //instrument 1
-    , m_nMtrTone1(76L)              // 76-High Wood Block)
-    , m_nMtrTone2(77L)              // 77-Low Wood Block
+    , m_nMtrTone1(76)              // 76-High Wood Block)
+    , m_nMtrTone2(77)              // 77-Low Wood Block
 {
-    load_user_preferences();
     m_pFluidSynth = LENMUS_NEW FluidSynthesizer(m_appScope, this);
     m_pExtSynth = LENMUS_NEW ExternalSynthesizer(m_appScope, this);
+    load_user_preferences();
     configure_synthesizers();
 }
 
 //---------------------------------------------------------------------------------------
 MidiServer::~MidiServer()
 {
+    save_user_preferences();
+
     delete m_pFluidSynth;
     delete m_pExtSynth;
 }
@@ -427,6 +497,7 @@ void MidiServer::do_sound_test()
     int scale[] = { 60, 62, 64, 65, 67, 69, 71, 72 };
     #define SCALE_SIZE 8
 
+    pSynth->program_change(m_nVoiceChannel, m_nVoiceInstr);
     for (int i = 0; i < SCALE_SIZE; i++)
     {
         pSynth->note_on(m_nVoiceChannel, scale[i], 100);
