@@ -292,6 +292,50 @@ include_directories(
 
 
 
+##########################################################################################
+# SoundFonts
+# The internal synthesizer needs a soundfont. But soundfont files can get pretty big. In
+# fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
+# for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
+#
+# As a bypass, if the soundfont is not yet in the LenMus sources tree, the next
+# step tries to download a copy from available sources in Internet
+##########################################################################################
+
+message("Checking for FluidR3 soundfont")
+
+set(SOUNDFONT_URL "https://github.com/urish/cinto/raw/master/media/FluidR3%20GM.sf2")
+set(SOUNDFONT_FILE "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2")
+
+if (NOT EXISTS "${SOUNDFONT_FILE}")
+    message(STATUS "FluidR3 soundfont not found in LenMus source tree. Downloading it ...")
+    file(DOWNLOAD 
+            "${SOUNDFONT_URL}" 
+            "${SOUNDFONT_FILE}"
+            SHOW_PROGRESS
+            EXPECTED_HASH MD5=4a198aca9c76bf81db5e0c9e873291f0
+            STATUS status
+            LOG log
+        )
+
+    list(GET status 0 status_code)
+    list(GET status 1 status_string)
+    
+    if(NOT status_code EQUAL 0)
+        message(FATAL_ERROR "Error downloading FluidR3%20GM.sf2. Status_code: ${status_code}
+            status_string: ${status_string}
+            log: ${log}
+            ")
+    endif()
+    message(STATUS "FluidR3 soundfont downloaded")
+else()
+    message(STATUS "FluidR3 soundfont already in LenMus source tree")
+endif()
+
+if (NOT EXISTS "${SOUNDFONT_FILE}")
+    message(FATAL_ERROR "FluidR3 soundfont not found in LenMus source tree")
+endif()
+
 
 ##########################################################################
 #

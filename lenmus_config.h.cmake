@@ -104,10 +104,10 @@
 //      The CoreAudio device to use.
 //
 //---------------------------------------------------------------------------------------
-#define LENMUS_AUDIO_DRIVER         @LENMUS_AUDIO_DRIVER@
-#define LENMUS_ALSA_DEVICE          @LENMUS_ALSA_DEVICE@
-#define LENMUS_DSOUND_DEVICE        @LENMUS_DSOUND_DEVICE@
-#define LENMUS_COREAUDIO_DEVICE     @LENMUS_COREAUDIO_DEVICE@
+#define LENMUS_AUDIO_DRIVER         "@LENMUS_AUDIO_DRIVER@"
+#define LENMUS_ALSA_DEVICE          "@LENMUS_ALSA_DEVICE@"
+#define LENMUS_DSOUND_DEVICE        "@LENMUS_DSOUND_DEVICE@"
+#define LENMUS_COREAUDIO_DEVICE     "@LENMUS_COREAUDIO_DEVICE@"
 
 
 #endif  // __LENMUS_CONFIG_H__
