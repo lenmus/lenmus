@@ -135,7 +135,7 @@ int ApplicationScope::get_version_major() { return LENMUS_VERSION_MAJOR; }
 int ApplicationScope::get_version_minor() { return LENMUS_VERSION_MINOR; }
 
 //---------------------------------------------------------------------------------------
-int ApplicationScope::get_version_patch() { return LENMUS_VERSION_PATCH; }
+wxString ApplicationScope::get_version_patch() { return wxString( LENMUS_VERSION_PATCH ); }
 
 //---------------------------------------------------------------------------------------
 wxString ApplicationScope::get_version_string()

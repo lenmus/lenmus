@@ -169,7 +169,7 @@ public:
     inline wxString& get_vendor_name() { return m_sVendorName; }
     static int get_version_major();
     static int get_version_minor();
-    static int get_version_patch();
+    static wxString get_version_patch();
     wxString get_version_string();
     wxString get_long_version_string();
     wxString get_app_full_name();

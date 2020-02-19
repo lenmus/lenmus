@@ -6,7 +6,7 @@
 # following variables:
 #    LENMUS_VERSION_MAJOR   e.g.: 5 )
 #    LENMUS_VERSION_MINOR   e.g.: 4 )
-#    LENMUS_VERSION_PATCH   e.g.: 2 )
+#    LENMUS_VERSION_PATCH   e.g.: "2" )
 #    LENMUS_PACKAGE_VERSION e.g.: "5.4.2"
 #    LENMUS_VERSION         Same value than LENMUS_PACKAGE_VERSION  e.g.: 5.4.2
 #    LENMUS_VERSION_BUILD   LenMus Git version (e.g.: "fa23b7f4" or "fa23b7f4-dirty")
@@ -17,7 +17,7 @@
 
 set( LENMUS_VERSION_MAJOR 5 )
 set( LENMUS_VERSION_MINOR 5 )
-set( LENMUS_VERSION_PATCH 0 )
+set( LENMUS_VERSION_PATCH "1-alpha" )  #MUST BE string, e.g.: "3", "3-beta", "0"
 
 # build version string for installer name
 set( LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )

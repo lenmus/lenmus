@@ -323,7 +323,7 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
     wxString sLomseVersion = to_wx_string( LibraryScope::get_version_long_string() );
     wxSQLite3Database* pDB = m_appScope.get_database();
     wxString sSQLiteVersion = pDB->GetVersion();
-    wxString sLenmusNumbers = wxString::Format("[%d.%d.%d]",
+    wxString sLenmusNumbers = wxString::Format("[%d.%d.%s]",
                                            m_appScope.get_version_major(),
                                            m_appScope.get_version_minor(),
                                            m_appScope.get_version_patch()
