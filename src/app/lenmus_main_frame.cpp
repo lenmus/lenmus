@@ -28,7 +28,6 @@
 #include "lenmus_document_frame.h"
 #include "lenmus_canvas.h"
 #include "lenmus_art_provider.h"
-#include "lenmus_midi_wizard.h"
 #include "lenmus_midi_server.h"
 #include "lenmus_welcome_window.h"
 #include "lenmus_dlg_debug.h"
@@ -241,7 +240,6 @@ enum
     k_menu_zoom_other,
 
     // Menu Sound
-    k_menu_sound_midi_wizard,
     k_menu_sound_test,
     k_menu_sound_off,
 
@@ -379,7 +377,6 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_id_combo_zoom, MainFrame::on_update_UI_zoom)
 
     //Sound menu/toolbar
-    EVT_MENU      (k_menu_sound_midi_wizard, MainFrame::on_run_midi_wizard)
     EVT_MENU      (k_menu_sound_test, MainFrame::on_sound_test)
     EVT_MENU      (k_menu_sound_off, MainFrame::on_all_sounds_off)
     EVT_MENU      (k_menu_play_start, MainFrame::on_play_start)
@@ -986,10 +983,6 @@ void MainFrame::create_menu()
     create_menu_item(pMenuSound, k_menu_metronome, _("Metronome on"),
                     _("Turn metronome on/off"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
-
-    create_menu_item(pMenuSound, k_menu_sound_midi_wizard, _("Run Midi wizard"),
-                    _("MIDI configuration wizard"), wxITEM_NORMAL, "tool_midi_wizard");
-	pMenuSound->AppendSeparator();
 
     create_menu_item(pMenuSound, k_menu_sound_test, _("Test sound"),
                     _("play an scale to test sound"), wxITEM_NORMAL, "tool_test_sound");
@@ -3849,19 +3842,6 @@ void MainFrame::on_update_UI_help(wxUpdateUIEvent& event)
 //    if(pChild)
 //		pChild->SetFocus();
 //}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_run_midi_wizard(wxCommandEvent& WXUNUSED(event))
-{
-    run_midi_wizard();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::run_midi_wizard()
-{
-    MidiWizard oWizard(m_appScope, this);
-    oWizard.Run();
-}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_all_sounds_off(wxCommandEvent& WXUNUSED(event))

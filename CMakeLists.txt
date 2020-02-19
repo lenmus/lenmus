@@ -580,7 +580,6 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_events.cpp
     ${SRC_DIR}/app/lenmus_help_system.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
-    ${SRC_DIR}/app/lenmus_midi_wizard.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
     ${SRC_DIR}/app/lenmus_score_wizard.cpp
     ${SRC_DIR}/app/lenmus_splash_frame.cpp
