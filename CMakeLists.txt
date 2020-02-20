@@ -212,6 +212,19 @@ message(STATUS "LENMUS_DEBUG_BUILD set to ${LENMUS_DEBUG_BUILD}")
 set( LENMUS_TEST_SCORES_PATH     "\"${LENMUS_ROOT_DIR}/scores/samples/test_set/\"" )
 set( LENMUS_SOURCE_ROOT          "\"${LENMUS_ROOT_DIR}/\"" )
 
+# Audio driver and device to use
+if(UNIX AND NOT APPLE)
+    set(LENMUS_AUDIO_DRIVER "alsa")
+    set(LENMUS_ALSA_DEVICE "default")
+elseif(WIN32)
+    set(LENMUS_AUDIO_DRIVER "dsound")
+    set(LENMUS_DSOUND_DEVICE "default")
+elseif(APPLE)
+    set(LENMUS_AUDIO_DRIVER "coreaudio")
+    set(LENMUS_COREAUDIO_DEVICE "default")
+endif()
+message("LenMus audio driver: ${LENMUS_AUDIO_DRIVER}")
+
 # determine system arquitecture
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(SYSTEM_ARCHITECTURE "x64")
@@ -279,6 +292,50 @@ include_directories(
 
 
 
+##########################################################################################
+# SoundFonts
+# The internal synthesizer needs a soundfont. But soundfont files can get pretty big. In
+# fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
+# for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
+#
+# As a bypass, I have included the soundfont as a downloadable file in release 5.5.0.
+# The following command lines check if the soundfont is in the local LenMus source tree
+# and, if not, download it from the asset file in release 5.5.0
+##########################################################################################
+
+message("Checking for FluidR3 soundfont")
+
+set(SOUNDFONT_FILE "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2")
+
+if (NOT EXISTS "${SOUNDFONT_FILE}")
+    message(STATUS "FluidR3 soundfont not found in LenMus source tree. Downloading it ...")
+    file(DOWNLOAD 
+        "https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2"
+        "${SOUNDFONT_FILE}"
+        SHOW_PROGRESS
+        EXPECTED_HASH MD5=af289497caf8c76d97fdc67ec8409f05
+        STATUS status
+        LOG log
+    )
+
+    list(GET status 0 status_code)
+    list(GET status 1 status_string)
+    
+    if(NOT status_code EQUAL 0)
+        message(FATAL_ERROR "Error downloading FluidR3%20GM.sf2. Status_code: ${status_code}
+            status_string: ${status_string}
+            log: ${log}
+            ")
+    endif()
+    message(STATUS "FluidR3 soundfont downloaded.")
+
+else()
+    message(STATUS "FluidR3 soundfont already in LenMus source tree")
+endif()
+
+if (NOT EXISTS "${SOUNDFONT_FILE}")
+    message(FATAL_ERROR "FluidR3 soundfont not found in LenMus source tree")
+endif()
 
 ##########################################################################
 #
@@ -369,6 +426,18 @@ ELSE(PortMidi_FOUND)
     message(SEND_ERROR "PortMidi not found")
     message(STATUS "PortMidi_DIR = $ENV{PortMidi_DIR}")
 ENDIF(PortMidi_FOUND)
+
+#Check for FluidSynth
+find_package(FluidSynth REQUIRED)
+IF(FLUIDSYNTH_FOUND)
+    include_directories( ${FLUIDSYNTH_INCLUDE_DIR} )
+    link_libraries( ${FLUIDSYNTH_LIBRARIES} )
+    message(STATUS "FLUIDSYNTH_INCLUDE_DIR => " ${FLUIDSYNTH_INCLUDE_DIR} )
+    message(STATUS "FLUIDSYNTH_LIBRARIES => " ${FLUIDSYNTH_LIBRARIES} )
+ELSE(FLUIDSYNTH_FOUND)
+    message(SEND_ERROR "FluidSynth not found")
+    message(STATUS "FLUIDSYNTH_DIR = $ENV{FLUIDSYNTH_DIR}")
+ENDIF(FLUIDSYNTH_FOUND)
 
 # Check for Lomse (only if not building from Lomse sources)
 if (LENMUS_USE_LOMSE_SOURCES)
@@ -511,7 +580,6 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_events.cpp
     ${SRC_DIR}/app/lenmus_help_system.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
-    ${SRC_DIR}/app/lenmus_midi_wizard.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
     ${SRC_DIR}/app/lenmus_score_wizard.cpp
     ${SRC_DIR}/app/lenmus_splash_frame.cpp
@@ -608,6 +676,7 @@ set(OPTIONS_FILES
     ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_playback_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_shortcuts_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_sound_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
 )
 

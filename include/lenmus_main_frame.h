@@ -169,7 +169,6 @@ public:
     virtual ~MainFrame();
 
     void create_controls();
-    void run_midi_wizard();
     void show_welcome_window();
 
     //callbacks
@@ -376,7 +375,6 @@ protected:
     void on_update_UI_sound(wxUpdateUIEvent& event);
     void on_sound_test(wxCommandEvent& WXUNUSED(event));
     void on_all_sounds_off(wxCommandEvent& WXUNUSED(event));
-    void on_run_midi_wizard(wxCommandEvent& WXUNUSED(event));
     void on_play_start(wxCommandEvent& WXUNUSED(event));
     void on_play_stop(wxCommandEvent& WXUNUSED(event));
     void on_play_pause(wxCommandEvent& WXUNUSED(event));

@@ -169,7 +169,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     {
         m_pScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
         ImoInstrument* pInstr = m_pScore[i]->add_instrument();
-            // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+            // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
         ImoSystemInfo* pInfo = m_pScore[i]->get_first_system_info();
         pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
         pInstr->add_clef( nClef );
@@ -187,7 +187,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     m_pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     m_pSolutionScore->set_long_option("Render.SpacingMethod", k_spacing_fixed);
     ImoInstrument* pInstr = m_pSolutionScore->add_instrument();
-    //    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
+    //    // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     ImoSystemInfo* pInfo = m_pSolutionScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(80) );     // 8 lines
     pInstr->add_clef( nClef );

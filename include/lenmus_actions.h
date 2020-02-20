@@ -200,7 +200,6 @@ enum EAppActions
     k_cmd_select_to_end_of_system,
 
     //sound options
-    k_cmd_sound_midi_wizard,
     k_cmd_sound_test,
     k_cmd_sound_off,
 

@@ -1408,8 +1408,8 @@ void OneScoreCtrol::on_debug_show_midi_events()
 //    m_nNowPlaying = -1;
 //
 //    //default channels and instruments
-//    m_nChannel[0] = m_nChannel[1] = g_pMidi->DefaultVoiceChannel();
-//    m_nInstr[0] = m_nInstr[1] = g_pMidi->DefaultVoiceInstr();
+//    m_nChannel[0] = m_nChannel[1] = g_pMidi->get_default_voice_channel();
+//    m_nInstr[0] = m_nInstr[1] = g_pMidi->get_default_voice_instr();
 //
 //}
 //

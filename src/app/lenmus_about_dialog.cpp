@@ -221,7 +221,7 @@ void AboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         "<center>"
         "<h3>" + _("License") + "</h3></center><p>"
         "LenMus " + m_sVersionNumber + " " +
-        "Copyright &copy; 2010-2016 Cecilio Salmer&oacute;n." +
+        "Copyright &copy; 2010-2020 Cecilio Salmer&oacute;n." +
         "</p><p>" +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -323,7 +323,7 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
     wxString sLomseVersion = to_wx_string( LibraryScope::get_version_long_string() );
     wxSQLite3Database* pDB = m_appScope.get_database();
     wxString sSQLiteVersion = pDB->GetVersion();
-    wxString sLenmusNumbers = wxString::Format("[%d.%d.%d]",
+    wxString sLenmusNumbers = wxString::Format("[%d.%d.%s]",
                                            m_appScope.get_version_major(),
                                            m_appScope.get_version_minor(),
                                            m_appScope.get_version_patch()

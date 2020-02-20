@@ -116,7 +116,6 @@ private:
     void show_welcome_window();
 //    void RecoverScoreIfPreviousCrash();
     void check_for_updates();
-    void configure_midi();
 //    void CreateDocumentManager();
 //    void CreateDocumentTemplates();
     void initialize_xrc_resources();

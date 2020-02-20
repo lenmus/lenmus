@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -135,7 +135,7 @@ int ApplicationScope::get_version_major() { return LENMUS_VERSION_MAJOR; }
 int ApplicationScope::get_version_minor() { return LENMUS_VERSION_MINOR; }
 
 //---------------------------------------------------------------------------------------
-int ApplicationScope::get_version_patch() { return LENMUS_VERSION_PATCH; }
+wxString ApplicationScope::get_version_patch() { return wxString( LENMUS_VERSION_PATCH ); }
 
 //---------------------------------------------------------------------------------------
 wxString ApplicationScope::get_version_string()
@@ -271,7 +271,7 @@ ScorePlayer* ApplicationScope::get_score_player()
     if (!m_pPlayer)
     {
         MidiServer* pMidi = get_midi_server();
-        m_pPlayer = m_lomse.create_score_player(pMidi);
+        m_pPlayer = m_lomse.create_score_player(pMidi->get_current_synth());
         m_pPlayer->post_tracking_events(true);
     }
     return m_pPlayer;
@@ -328,7 +328,14 @@ void ApplicationScope::create_logger()
     wxString sLogFile = get_paths()->GetLogPath() + sUserId + "-lenmus-log.txt";
 	wxLog *lmLogger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), "w") );
 	wxLog::SetActiveTarget(lmLogger);
-	wxLogMessage("[ApplicationScope::create_logger] Log messages derived to file.");
+	wxLogMessage("[ApplicationScope::create_logger] INFO: Log messages derived to file.");
+	//test----------
+	const string file(__FILE__);
+	int line(__LINE__);
+	const string prettyFunction(__PRETTY_FUNCTION__);
+	wxLogMessage("%s, %d, %s INFO: Log messages derived to file.", file, line, prettyFunction);
+	//--------------
+
     LOMSE_LOG_INFO("lenmus log file = [%s]", sLogFile.ToStdString().c_str() );
 }
 

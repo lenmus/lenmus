@@ -91,8 +91,8 @@ void GlobalMetronome::OnTimerEvent()
 //---------------------------------------------------------------------------------------
 void GlobalMetronome::DoClick(bool fFirstBeatOfBar)
 {
-    wxMidiOutDevice* pMidiOut = m_pMidiServer->get_out_device();
-    if (pMidiOut)
+    Synthesizer* pSynth = m_pMidiServer->get_current_synth();
+    if (pSynth)
     {
         ClickOff();
         ClickOn(fFirstBeatOfBar);
@@ -108,17 +108,17 @@ void GlobalMetronome::ClickOn(bool fFirstBeatOfBar)
 
     //generate metronome click
     m_nSound = (fFirstBeatOfBar ? m_pMidiServer->MtrTone1() : m_pMidiServer->MtrTone2() );
-    wxMidiOutDevice* pMidiOut = m_pMidiServer->get_out_device();
-    if (pMidiOut)
-        pMidiOut->NoteOn(m_pMidiServer->MtrChannel(), m_nSound, 127);
+    Synthesizer* pSynth = m_pMidiServer->get_current_synth();
+    if (pSynth)
+        pSynth->note_on(m_pMidiServer->MtrChannel(), m_nSound, 127);
 }
 
 //---------------------------------------------------------------------------------------
 void GlobalMetronome::ClickOff()
 {
-    wxMidiOutDevice* pMidiOut = m_pMidiServer->get_out_device();
-    if (pMidiOut && m_nSound >= 0)
-        pMidiOut->NoteOff(m_pMidiServer->MtrChannel(), m_nSound, 127);
+    Synthesizer* pSynth = m_pMidiServer->get_current_synth();
+    if (pSynth && m_nSound >= 0)
+        pSynth->note_off(m_pMidiServer->MtrChannel(), m_nSound, 127);
     m_nSound = -1;
 
     //TODO: Switch off metronome LED

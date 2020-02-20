@@ -82,7 +82,7 @@ void LangOptionsPanel::create_controls()
 
 	m_pTitle = LENMUS_NEW wxStaticText( m_pTitlePannel, wxID_ANY, _("Language preferences"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTitle->Wrap( -1 );
-	m_pTitle->SetFont( wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
+	m_pTitle->SetFont( wxFont(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma" ) );
 
 	pTitleSizer->Add( m_pTitle, 0, wxALIGN_TOP|wxALL, 5 );
 

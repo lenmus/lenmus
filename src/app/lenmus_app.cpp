@@ -128,8 +128,6 @@ bool TheApp::OnInit()
 //    RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
 
-    configure_midi();
-
     check_for_updates();
 //    #if (LENMUS_DEBUG_BUILD == 1)
 //        m_frame->RunUnitTests();
@@ -501,24 +499,6 @@ void TheApp::check_for_updates()
             wxPostEvent(m_frame, event);
         }
     }
-}
-
-//---------------------------------------------------------------------------------------
-void TheApp::configure_midi()
-{
-    MidiServer* pMidi = m_appScope.get_midi_server();
-
-    //if MIDI not set, force to run the MIDI wizard
-    if (!pMidi->is_configured())
-        m_frame->run_midi_wizard();
-
-    //Set up MIDI devices
-    pMidi->SetUpCurrentConfig();
-
-    //set sound for metronome
-    wxMidiOutDevice* pMidiOut = pMidi->get_out_device();
-    if (pMidiOut)
-        pMidiOut->ProgramChange(pMidi->MtrChannel(), pMidi->MtrInstr());
 }
 
 //---------------------------------------------------------------------------------------

@@ -48,7 +48,7 @@ committed.
 
 ## Do you have questions about the project?
 
-Feel free to ask any question in the [lenmus forum](https://sourceforge.net/p/lenmus/discussion/). I always answer the posts.
+Feel free to ask any question in the [lenmus issues tracker](https://github.com/lenmus/lenmus/issues).
 
 
 ## More info
