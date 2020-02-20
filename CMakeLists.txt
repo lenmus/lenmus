@@ -298,25 +298,25 @@ include_directories(
 # fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
 # for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
 #
-# As a bypass, if the soundfont is not yet in the LenMus sources tree, the next
-# step tries to download a copy from available sources in Internet
+# As a bypass, I have included the soundfont as a downloadable file in release 5.5.0.
+# The following command lines check if the soundfont is in the local LenMus source tree
+# and, if not, download it from the asset file in release 5.5.0
 ##########################################################################################
 
 message("Checking for FluidR3 soundfont")
 
-set(SOUNDFONT_URL "https://github.com/urish/cinto/raw/master/media/FluidR3%20GM.sf2")
 set(SOUNDFONT_FILE "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2")
 
 if (NOT EXISTS "${SOUNDFONT_FILE}")
     message(STATUS "FluidR3 soundfont not found in LenMus source tree. Downloading it ...")
     file(DOWNLOAD 
-            "${SOUNDFONT_URL}" 
-            "${SOUNDFONT_FILE}"
-            SHOW_PROGRESS
-            EXPECTED_HASH MD5=4a198aca9c76bf81db5e0c9e873291f0
-            STATUS status
-            LOG log
-        )
+        "https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2"
+        "${SOUNDFONT_FILE}"
+        SHOW_PROGRESS
+        EXPECTED_HASH MD5=af289497caf8c76d97fdc67ec8409f05
+        STATUS status
+        LOG log
+    )
 
     list(GET status 0 status_code)
     list(GET status 1 status_string)
@@ -327,7 +327,8 @@ if (NOT EXISTS "${SOUNDFONT_FILE}")
             log: ${log}
             ")
     endif()
-    message(STATUS "FluidR3 soundfont downloaded")
+    message(STATUS "FluidR3 soundfont downloaded.")
+
 else()
     message(STATUS "FluidR3 soundfont already in LenMus source tree")
 endif()
@@ -335,7 +336,6 @@ endif()
 if (NOT EXISTS "${SOUNDFONT_FILE}")
     message(FATAL_ERROR "FluidR3 soundfont not found in LenMus source tree")
 endif()
-
 
 ##########################################################################
 #
