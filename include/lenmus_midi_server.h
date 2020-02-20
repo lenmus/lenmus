@@ -94,6 +94,7 @@ public:
     //other
     void save_user_preferences() override;
     void load_user_preferences() override;
+    void reset_to_defaults();
 
 protected:
     void load_soundfont();

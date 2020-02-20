@@ -102,13 +102,13 @@ void SoundOptionsPanel::create_controls()
     //--------
 	m_pTabs = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	OptInternalSynthPanel* pPanelIntSynth = new OptInternalSynthPanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( pPanelIntSynth, _("Internal synth"), false );
+	m_pTabs->AddPage( pPanelIntSynth, _("Internal synth."), false );
 	OptExternalSynthPanel* pPanelExtSynth = new OptExternalSynthPanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( pPanelExtSynth, _("External synth"), false );
+	m_pTabs->AddPage( pPanelExtSynth, _("External synth."), false );
 	OptInstrumentsPanel* pPanelInstrument = new OptInstrumentsPanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( pPanelInstrument, _("Config. Instrument"), false );
+	m_pTabs->AddPage( pPanelInstrument, _("Instrument sound"), false );
 	OptMetronomePanel* pPanelMetronome = new OptMetronomePanel(m_appScope, m_pTabs);
-	m_pTabs->AddPage( pPanelMetronome, _("Config. Metronome"), false );
+	m_pTabs->AddPage( pPanelMetronome, _("Metronome sound"), false );
 
 	pMainSizer->Add( m_pTabs, 1, wxEXPAND | wxALL, 5 );
 
@@ -159,8 +159,11 @@ void SoundOptionsPanel::on_reset_to_defaults(wxCommandEvent& WXUNUSED(event))
     pMidi->VoiceChange(0, 0);               //channel 1, instr 1 (grand piano)
     pMidi->set_metronome_program(9, 0);     //channel 10, instrument 1
     pMidi->set_metronome_tones(76, 77);     //76-High Wood Block, 77-Low Wood Block
-    initialize_controls();
+    FluidSynthesizer* pSynth = pMidi->get_internal_synth();
+    if (pSynth)
+        pSynth->reset_to_defaults();
 
+    initialize_controls();
     size_t maxPage = m_pTabs->GetPageCount();
     for(size_t i=0; i < maxPage; ++i)
     {

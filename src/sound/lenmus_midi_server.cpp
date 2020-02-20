@@ -167,23 +167,16 @@ void FluidSynthesizer::configure()
 
     //load the SoundFont
     m_fValid = !load_soundfont(m_soundfont);
-//    //m_sfontId = fluid_synth_sfload(m_pSynth, "/usr/share/sounds/sf2/FluidR3_GM.sf2", 1);
-//    m_sfontId = fluid_synth_sfload(m_pSynth, "/datos/cecilio/lm/projects/lenmus/lenmus/res/sounds/GeneralUser GS 1.471/GeneralUser GS v1.471.sf2", 1);
-//    //m_sfontId = fluid_synth_sfload(m_pSynth, "/datos/cecilio/lm/projects/lenmus/lenmus/res/sounds/VintageDreamsWaves-v2.sf2", 1);
-//    if(m_sfontId == FLUID_FAILED)
-//    {
-//        wxLogMessage("ERROR: Loading the SoundFont failed!");
-//        m_fValid = false;
-//        return;
-//    }
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::load_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
+    Paths* pPaths = m_appScope.get_paths();
+    wxString soundsPath = pPaths->GetSoundsPath();
 
-    wxString soundfont("/datos/cecilio/lm/projects/lenmus/lenmus/res/sounds/FluidR3_GM.sf2");
+    wxString soundfont(soundsPath + "/FluidR3_GM.sf2");
     wxString file;
     pPrefs->Read("/Midi/SoundFont", &file, soundfont);
 
@@ -197,6 +190,18 @@ void FluidSynthesizer::save_user_preferences()
 
     pPrefs->Write("/Midi/SoundFont", to_wx_string(m_soundfont) );
 	pPrefs->Flush();
+}
+
+//---------------------------------------------------------------------------------------
+void FluidSynthesizer::reset_to_defaults()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+    Paths* pPaths = m_appScope.get_paths();
+    wxString soundsPath = pPaths->GetSoundsPath();
+
+    wxString soundfont(soundsPath + "/FluidR3_GM.sf2");
+    m_soundfont = to_std_string(soundfont);
+    m_fValid = !load_soundfont(m_soundfont);
 }
 
 
