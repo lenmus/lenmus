@@ -168,6 +168,11 @@ void WelcomeWindow::CreateControls(wxFileHistory* WXUNUSED(pHistory))
 
 	pLearnLinksSizer->Add( m_pLinkNewInLenmus, 0, wxRIGHT|wxLEFT, 5 );
 
+	m_pLinkReportError = LENMUS_NEW wxHyperlinkCtrl( this, wxID_ANY, _("Report an error or make suggestions"), "https://github.com/lenmus/lenmus/issues", wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkReportError->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+
+	pLearnLinksSizer->Add( m_pLinkReportError, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
 	m_pLinkVisitWebsite = LENMUS_NEW wxHyperlinkCtrl( this, wxID_ANY, _("Visit LenMus website"), "http://www.lenmus.org", wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkVisitWebsite->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
