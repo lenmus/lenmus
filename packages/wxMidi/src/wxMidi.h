@@ -1155,7 +1155,6 @@ private:
     };
 	int			m_nSectInstr[NUM_SECTIONS][NUM_INSTRS];		//instruments in each section
 	int			m_nNumInstrInSection[NUM_SECTIONS];			//points to last instrument in section
-	wxString	m_sSectName[NUM_SECTIONS];					//section names
 
 	static wxMidiDatabaseGM*	m_pInstance;	//the only instance of this class
 

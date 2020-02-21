@@ -66,8 +66,145 @@ which use different synthesis techniques may sound quite different.
 */
 
 //instruments table
-static bool m_fStringsInitialized = false;
-static wxString m_sInstrName[128];
+static wxString m_sInstrName[128] = {
+      "Acoustic Grand Piano"
+    , "Bright Acoustic Piano"
+    , "Electric Grand Piano"
+    , "Honky-tonk Piano"
+    , "Electric Piano 1"
+    , "Electric Piano 2"
+    , "Harpsichord"
+    , "Clavinet"
+    , "Celesta"
+    , "Glockenspiel"
+    , "Music Box"
+    , "Vibraphone"
+    , "Marimba"
+    , "Xylophone"
+    , "Tubular Bells"
+    , "Dulcimer"
+    , "Drawbar Organ"
+    , "Percussive Organ"
+    , "Rock Organ"
+    , "Church Organ"
+    , "Reed Organ"
+    , "Accordion"
+    , "Harmonica"
+    , "Tango Accordion"
+    , "Acoustic Guitar (nylon)"
+    , "Acoustic Guitar (steel)"
+    , "Electric Guitar (jazz)"
+    , "Electric Guitar (clean)"
+    , "Electric Guitar (muted)"
+    , "Overdriven Guitar"
+    , "Distortion Guitar"
+    , "Guitar harmonics"
+    , "Acoustic Bass"
+    , "Electric Bass (finger)"
+    , "Electric Bass (pick)"
+    , "Fretless Bass"
+    , "Slap Bass 1"
+    , "Slap Bass 2"
+    , "Synth Bass 1"
+    , "Synth Bass 2"
+    , "Violin"
+    , "Viola"
+    , "Cello"
+    , "Contrabass"
+    , "Tremolo Strings"
+    , "Pizzicato Strings"
+    , "Orchestral Harp"
+    , "Timpani"
+    , "String Ensemble 1"
+    , "String Ensemble 2"
+    , "SynthStrings 1"
+    , "SynthStrings 2"
+    , "Choir Aahs"
+    , "Voice Oohs"
+    , "Synth Voice"
+    , "Orchestra Hit"
+    , "Trumpet"
+    , "Trombone"
+    , "Tuba"
+    , "Muted Trumpet"
+    , "French Horn"
+    , "Brass Section"
+    , "SynthBrass 1"
+    , "SynthBrass 2"
+    , "Soprano Sax"
+    , "Alto Sax"
+    , "Tenor Sax"
+    , "Baritone Sax"
+    , "Oboe"
+    , "English Horn"
+    , "Bassoon"
+    , "Clarinet"
+    , "Piccolo"
+    , "Flute"
+    , "Recorder"
+    , "Pan Flute"
+    , "Blown Bottle"
+    , "Shakuhachi"
+    , "Whistle"
+    , "Ocarina"
+    , "Lead 1 (square)"
+    , "Lead 2 (sawtooth)"
+    , "Lead 3 (calliope)"
+    , "Lead 4 (chiff)"
+    , "Lead 5 (charang)"
+    , "Lead 6 (voice)"
+    , "Lead 7 (fifths)"
+    , "Lead 8 (bass + lead)"
+    , "Pad 1 (new age)"
+    , "Pad 2 (warm)"
+    , "Pad 3 (polysynth)"
+    , "Pad 4 (choir)"
+    , "Pad 5 (bowed)"
+    , "Pad 6 (metallic)"
+    , "Pad 7 (halo)"
+    , "Pad 8 (sweep)"
+    , "FX 1 (rain)"
+    , "FX 2 (soundtrack)"
+    , "FX 3 (crystal)"
+    , "FX 4 (atmosphere)"
+    , "FX 5 (brightness)"
+    , "FX 6 (goblins)"
+    , "FX 7 (echoes)"
+    , "FX 8 (sci-fi)"
+    , "Sitar"
+    , "Banjo"
+    , "Shamisen"
+    , "Koto"
+    , "Kalimba"
+    , "Bag pipe"
+    , "Fiddle"
+    , "Shanai"
+    , "Tinkle Bell"
+    , "Agogo"
+    , "Steel Drums"
+    , "Woodblock"
+    , "Taiko Drum"
+    , "Melodic Tom"
+    , "Synth Drum"
+    , "Reverse Cymbal"
+    , "Guitar Fret Noise"
+    , "Breath Noise"
+    , "Seashore"
+    , "Bird Tweet"
+    , "Telephone Ring"
+    , "Helicopter"
+    , "Applause"
+    , "Gunshot"
+};
+
+//section names
+static wxString	m_sSectName[] = {
+	"Keyboards",    "Chromatic percussion", "Organs and harmonicas",    "Guitars",
+	"Basses",       "Strings",              "Ensembles",                "Brass",
+	"Reed",         "Pipe",                 "Synth. lead",              "Synth. pad",
+	"Synth. F/X",   "Ethnic",               "Percussive",               "Sound F/X"
+};
+
 
 //initialize the only instance
 wxMidiDatabaseGM* wxMidiDatabaseGM::m_pInstance = (wxMidiDatabaseGM*)NULL;
@@ -78,142 +215,6 @@ wxMidiDatabaseGM* wxMidiDatabaseGM::m_pInstance = (wxMidiDatabaseGM*)NULL;
 
 wxMidiDatabaseGM::wxMidiDatabaseGM()
 {
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    if (!m_fStringsInitialized) {
-	    //instrument names
-	    m_sInstrName[0] = _("Acoustic Grand Piano");
-	    m_sInstrName[1] = _("Bright Acoustic Piano");
-	    m_sInstrName[2] = _("Electric Grand Piano");
-	    m_sInstrName[3] = _("Honky-tonk Piano");
-	    m_sInstrName[4] = _("Electric Piano 1");
-	    m_sInstrName[5] = _("Electric Piano 2");
-	    m_sInstrName[6] = _("Harpsichord");
-	    m_sInstrName[7] = _("Clavinet");
-	    m_sInstrName[8] = _("Celesta");
-	    m_sInstrName[9] = _("Glockenspiel");
-	    m_sInstrName[10] = _("Music Box");
-	    m_sInstrName[11] = _("Vibraphone");
-	    m_sInstrName[12] = _("Marimba");
-	    m_sInstrName[13] = _("Xylophone");
-	    m_sInstrName[14] = _("Tubular Bells");
-	    m_sInstrName[15] = _("Dulcimer");
-	    m_sInstrName[16] = _("Drawbar Organ");
-	    m_sInstrName[17] = _("Percussive Organ");
-	    m_sInstrName[18] = _("Rock Organ");
-	    m_sInstrName[19] = _("Church Organ");
-	    m_sInstrName[20] = _("Reed Organ");
-	    m_sInstrName[21] = _("Accordion");
-	    m_sInstrName[22] = _("Harmonica");
-	    m_sInstrName[23] = _("Tango Accordion");
-	    m_sInstrName[24] = _("Acoustic Guitar (nylon)");
-	    m_sInstrName[25] = _("Acoustic Guitar (steel)");
-	    m_sInstrName[26] = _("Electric Guitar (jazz)");
-	    m_sInstrName[27] = _("Electric Guitar (clean)");
-	    m_sInstrName[28] = _("Electric Guitar (muted)");
-	    m_sInstrName[29] = _("Overdriven Guitar");
-	    m_sInstrName[30] = _("Distortion Guitar");
-	    m_sInstrName[31] = _("Guitar harmonics");
-	    m_sInstrName[32] = _("Acoustic Bass");
-	    m_sInstrName[33] = _("Electric Bass (finger)");
-	    m_sInstrName[34] = _("Electric Bass (pick)");
-	    m_sInstrName[35] = _("Fretless Bass");
-	    m_sInstrName[36] = _("Slap Bass 1");
-	    m_sInstrName[37] = _("Slap Bass 2");
-	    m_sInstrName[38] = _("Synth Bass 1");
-	    m_sInstrName[39] = _("Synth Bass 2");
-	    m_sInstrName[40] = _("Violin");
-	    m_sInstrName[41] = _("Viola");
-	    m_sInstrName[42] = _("Cello");
-	    m_sInstrName[43] = _("Contrabass");
-	    m_sInstrName[44] = _("Tremolo Strings");
-	    m_sInstrName[45] = _("Pizzicato Strings");
-	    m_sInstrName[46] = _("Orchestral Harp");
-	    m_sInstrName[47] = _("Timpani");
-	    m_sInstrName[48] = _("String Ensemble 1");
-	    m_sInstrName[49] = _("String Ensemble 2");
-	    m_sInstrName[50] = _("SynthStrings 1");
-	    m_sInstrName[51] = _("SynthStrings 2");
-	    m_sInstrName[52] = _("Choir Aahs");
-	    m_sInstrName[53] = _("Voice Oohs");
-	    m_sInstrName[54] = _("Synth Voice");
-	    m_sInstrName[55] = _("Orchestra Hit");
-	    m_sInstrName[56] = _("Trumpet");
-	    m_sInstrName[57] = _("Trombone");
-	    m_sInstrName[58] = _("Tuba");
-	    m_sInstrName[59] = _("Muted Trumpet");
-	    m_sInstrName[60] = _("French Horn");
-	    m_sInstrName[61] = _("Brass Section");
-	    m_sInstrName[62] = _("SynthBrass 1");
-	    m_sInstrName[63] = _("SynthBrass 2");
-	    m_sInstrName[64] = _("Soprano Sax");
-	    m_sInstrName[65] = _("Alto Sax");
-	    m_sInstrName[66] = _("Tenor Sax");
-	    m_sInstrName[67] = _("Baritone Sax");
-	    m_sInstrName[68] = _("Oboe");
-	    m_sInstrName[69] = _("English Horn");
-	    m_sInstrName[70] = _("Bassoon");
-	    m_sInstrName[71] = _("Clarinet");
-	    m_sInstrName[72] = _("Piccolo");
-	    m_sInstrName[73] = _("Flute");
-	    m_sInstrName[74] = _("Recorder");
-	    m_sInstrName[75] = _("Pan Flute");
-	    m_sInstrName[76] = _("Blown Bottle");
-	    m_sInstrName[77] = _("Shakuhachi");
-	    m_sInstrName[78] = _("Whistle");
-	    m_sInstrName[79] = _("Ocarina");
-	    m_sInstrName[80] = _("Lead 1 (square)");
-	    m_sInstrName[81] = _("Lead 2 (sawtooth)");
-	    m_sInstrName[82] = _("Lead 3 (calliope)");
-	    m_sInstrName[83] = _("Lead 4 (chiff)");
-	    m_sInstrName[84] = _("Lead 5 (charang)");
-	    m_sInstrName[85] = _("Lead 6 (voice)");
-	    m_sInstrName[86] = _("Lead 7 (fifths)");
-	    m_sInstrName[87] = _("Lead 8 (bass + lead)");
-	    m_sInstrName[88] = _("Pad 1 (new age)");
-	    m_sInstrName[89] = _("Pad 2 (warm)");
-	    m_sInstrName[90] = _("Pad 3 (polysynth)");
-	    m_sInstrName[91] = _("Pad 4 (choir)");
-	    m_sInstrName[92] = _("Pad 5 (bowed)");
-	    m_sInstrName[93] = _("Pad 6 (metallic)");
-	    m_sInstrName[94] = _("Pad 7 (halo)");
-	    m_sInstrName[95] = _("Pad 8 (sweep)");
-	    m_sInstrName[96] = _("FX 1 (rain)");
-	    m_sInstrName[97] = _("FX 2 (soundtrack)");
-	    m_sInstrName[98] = _("FX 3 (crystal)");
-	    m_sInstrName[99] = _("FX 4 (atmosphere)");
-	    m_sInstrName[100] = _("FX 5 (brightness)");
-	    m_sInstrName[101] = _("FX 6 (goblins)");
-	    m_sInstrName[102] = _("FX 7 (echoes)");
-	    m_sInstrName[103] = _("FX 8 (sci-fi)");
-	    m_sInstrName[104] = _("Sitar");
-	    m_sInstrName[105] = _("Banjo");
-	    m_sInstrName[106] = _("Shamisen");
-	    m_sInstrName[107] = _("Koto");
-	    m_sInstrName[108] = _("Kalimba");
-	    m_sInstrName[109] = _("Bag pipe");
-	    m_sInstrName[110] = _("Fiddle");
-	    m_sInstrName[111] = _("Shanai");
-	    m_sInstrName[112] = _("Tinkle Bell");
-	    m_sInstrName[113] = _("Agogo");
-	    m_sInstrName[114] = _("Steel Drums");
-	    m_sInstrName[115] = _("Woodblock");
-	    m_sInstrName[116] = _("Taiko Drum");
-	    m_sInstrName[117] = _("Melodic Tom");
-	    m_sInstrName[118] = _("Synth Drum");
-	    m_sInstrName[119] = _("Reverse Cymbal");
-	    m_sInstrName[120] = _("Guitar Fret Noise");
-	    m_sInstrName[121] = _("Breath Noise");
-	    m_sInstrName[122] = _("Seashore");
-	    m_sInstrName[123] = _("Bird Tweet");
-	    m_sInstrName[124] = _("Telephone Ring");
-	    m_sInstrName[125] = _("Helicopter");
-	    m_sInstrName[126] = _("Applause");
-	    m_sInstrName[127] = _("Gunshot");
-
-        m_fStringsInitialized = true;
-    }
-
 }
 
 wxMidiDatabaseGM::~wxMidiDatabaseGM()
@@ -237,13 +238,13 @@ int wxMidiDatabaseGM::GetNumSections()
 wxString wxMidiDatabaseGM::GetInstrumentName(int nInstr)
 {
 	wxASSERT(nInstr >=0 && nInstr < 128);
-	return m_sInstrName[nInstr];
+	return wxGetTranslation( m_sInstrName[nInstr] );
 }
 
 wxString wxMidiDatabaseGM::GetSectionName(int nSect)
 {
 	wxASSERT(nSect >=0 && nSect < NUM_SECTIONS);
-	return m_sSectName[nSect];
+	return wxGetTranslation( m_sSectName[nSect] );
 }
 
 int wxMidiDatabaseGM::GetNumInstrumentsInSection(int nSect)
@@ -279,7 +280,7 @@ void wxMidiDatabaseGM::PopulateWithInstruments(wxControlWithItems* pCtrol, int n
         {
 			nCurInstr = m_nSectInstr[nSection][i];
             wxString sName = (fAddNumber ? wxString::Format(_T("%d - "), nCurInstr) : _T(""));
-            sName += m_sInstrName[nCurInstr];
+            sName += wxGetTranslation( m_sInstrName[nCurInstr] );
             pCtrol->Append(sName);
 			if (nCurInstr == nInstr) iSel = i;
         }
@@ -302,7 +303,7 @@ void wxMidiDatabaseGM::PopulateWithAllInstruments(wxControlWithItems* pCtrol, in
 
 	//populate control
 	for (int i=0; i < 128; i++ ) {
-        pCtrol->Append( m_sInstrName[i] );
+        pCtrol->Append( wxGetTranslation(m_sInstrName[i]) );
     }
     pCtrol->SetStringSelection( pCtrol->GetString(iSel) );
 
@@ -321,9 +322,23 @@ int wxMidiDatabaseGM::PopulateWithSections(wxControlWithItems* pCtrol, int nSelI
 	*/
 
     //load section names
-	for (int i=0; i < NUM_SECTIONS; i++) {
-        pCtrol->Append( m_sSectName[i] );
-    }
+	pCtrol->Clear();
+    pCtrol->Append( _("Keyboards") );
+    pCtrol->Append( _("Chromatic percussion") );
+    pCtrol->Append( _("Organs and harmonicas") );
+    pCtrol->Append( _("Guitars") );
+    pCtrol->Append( _("Basses") );
+    pCtrol->Append( _("Strings") );
+    pCtrol->Append( _("Ensembles") );
+    pCtrol->Append( _("Brass") );
+    pCtrol->Append( _("Reed") );
+    pCtrol->Append( _("Pipe") );
+    pCtrol->Append( _("Synth. lead") );
+    pCtrol->Append( _("Synth. pad") );
+    pCtrol->Append( _("Synth. F/X") );
+    pCtrol->Append( _("Ethnic") );
+    pCtrol->Append( _("Percussive") );
+    pCtrol->Append( _("Sound F/X") );
 
     //Find section for instrument nSelInstr
     ;
@@ -415,7 +430,6 @@ void wxMidiDatabaseGM::Initialize()
 	// header file!!!
 
 	//section "Keyboards"
-	m_sSectName[0] = _("Keyboards");
     m_nSectInstr[0][0] = 0;				//0 - Acoustic Grand Piano
     m_nSectInstr[0][1] = 1;				//1 - Bright Acoustic Piano
     m_nSectInstr[0][2] = 2;				//2 - Electric Grand Piano
@@ -427,7 +441,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[0] = 8;		//number of instruments in this section
 
 	//section "Chromatic percussion"
-	m_sSectName[1] = _("Chromatic percussion");
 	m_nSectInstr[1][0] = 8; 			//8  - Celesta");			//"Celesta"
 	m_nSectInstr[1][1] = 9; 			//9  - Glockenspiel");		//"Glockenspiel"
 	m_nSectInstr[1][2] = 10;			//10 - Music Box");			//"Caja de música"
@@ -439,7 +452,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[1] = 8;		//number of instruments in this section
 
     //section "Organs and harmonicas"
-	m_sSectName[2] = _("Organs and harmonicas");
     m_nSectInstr[2][0] = 16;			//16 - Drawbar Organ");		//"Organo Hammond"
     m_nSectInstr[2][1] = 17;			//17 - Percussive Organ");	//"Organo de percusión"
     m_nSectInstr[2][2] = 18;			//18 - Rock Organ");			//"Organo de rock"
@@ -451,7 +463,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[2] = 8;		//number of instruments in this section
 
     //section "Guitars"
-	m_sSectName[3] = _("Guitars");
     m_nSectInstr[3][0] = 24;			//24 - Acoustic Guitar (nylon)");    //"Guitarra cuerdas de nylon"
 	m_nSectInstr[3][1] = 25;			//25 - Acoustic Guitar (steel)");    //"Guitarra cuerdas metálicas"
     m_nSectInstr[3][2] = 26;			//26 - Electric Guitar (jazz)");     //"Guitarra eléctrica de jazz"
@@ -463,7 +474,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[3] = 8;		//number of instruments in this section
 
     //section "Bass"
-	m_sSectName[4] = _("Basses");
     m_nSectInstr[4][0] = 32;			//32 - Acoustic Bass");				//"Bajo acústico"
     m_nSectInstr[4][1] = 33;			//33 - Electric Bass (finger)");     //"Bajo eléctrico (finger)"
     m_nSectInstr[4][2] = 34;			//34 - Electric Bass (pick)");	    //"Bajo eléctrico (pick)"
@@ -475,7 +485,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[4] = 8;		//number of instruments in this section
 
     //section "Strings"
-	m_sSectName[5] = _("Strings");
     m_nSectInstr[5][0] = 40;			//40 - Violin");				//"Violín"
     m_nSectInstr[5][1] = 41;			//41 - Viola");				//"Viola"
     m_nSectInstr[5][2] = 42;			//42 - Cello");				//"Violoncelo"
@@ -487,7 +496,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[5] = 8;		//number of instruments in this section
 
     //section "Ensembles"
-	m_sSectName[6] = _("Ensembles");
     m_nSectInstr[6][0] = 48;			//48 - String Ensemble 1");     //"Cuerdas"
     m_nSectInstr[6][1] = 49;			//49 - String Ensemble 2");     //"Slow Str."
     m_nSectInstr[6][2] = 50;			//50 - SynthStrings 1");     //"Syn Str. 1"
@@ -499,7 +507,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[6] = 8;		//number of instruments in this section
 
     //section "Brass"
-	m_sSectName[7] = _("Brass");
     m_nSectInstr[7][0] = 56;			//56 - Trumpet");     //"Trompeta"
     m_nSectInstr[7][1] = 57;			//57 - Trombone");     //"Trombón"
     m_nSectInstr[7][2] = 58;			//58 - Tuba");     //"Tuba"
@@ -511,7 +518,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[7] = 8;		//number of instruments in this section
 
     //section "Reed"
-	m_sSectName[8] = _("Reed");
     m_nSectInstr[8][0] = 64;			//64 - Soprano Sax");     //"Saxofón soprano"
     m_nSectInstr[8][1] = 65;			//65 - Alto Sax");     //"Saxofón contralto"
     m_nSectInstr[8][2] = 66;			//66 - Tenor Sax");     //"Saxofón tenor"
@@ -523,7 +529,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[8] = 8;		//number of instruments in this section
 
     //section "Pipe"
-	m_sSectName[9] = _("Pipe");
     m_nSectInstr[9][0] = 72;			//72 - Piccolo");     //"Falutín"
     m_nSectInstr[9][1] = 73;			//73 - Flute");     //"Flauta travesera"
     m_nSectInstr[9][2] = 74;			//74 - Recorder");     //"Flauta dulce"
@@ -535,7 +540,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[9] = 8;		//number of instruments in this section
 
     //section "Synth. lead"
-	m_sSectName[10] = _("Synth. lead");
     m_nSectInstr[10][0] = 80;			//80 - Lead 1 (square)");     //"Onda cuadrada"
     m_nSectInstr[10][1] = 81;			//81 - Lead 2 (sawtooth)");     //"Onda en diente de sierra"
     m_nSectInstr[10][2] = 82;			//82 - Lead 3 (calliope)");     //"Calliope"
@@ -547,7 +551,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[10] = 8;		//number of instruments in this section
 
     //section "Synth. pad"
-	m_sSectName[11] = _("Synth. pad");
     m_nSectInstr[11][0] = 88;			//88 - Pad 1 (new age)");     //"Fantasia"
     m_nSectInstr[11][1] = 89;			//89 - Pad 2 (warm)");     //"Warm Pad"
     m_nSectInstr[11][2] = 90;			//90 - Pad 3 (polysynth)");     //"PolySynth"
@@ -559,7 +562,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[11] = 8;		//number of instruments in this section
 
     //section "Synth. F/X"
-	m_sSectName[12] = _("Synth. F/X");
     m_nSectInstr[12][0] = 96;			//96 - FX 1 (rain)");     //"Ice Rain"
     m_nSectInstr[12][1] = 97;			//97 - FX 2 (soundtrack)");     //"Sound Track"
     m_nSectInstr[12][2] = 98;			//98 - FX 3 (crystal)");     //"Crystal"
@@ -571,7 +573,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[12] = 8;		//number of instruments in this section
 
     //section "Ethnic"
-	m_sSectName[13] = _("Ethnic");
     m_nSectInstr[13][0] = 104;			//104 - Sitar");    //"Sitar"
     m_nSectInstr[13][1] = 105;			//105 - Banjo");    //"Banjo"
     m_nSectInstr[13][2] = 106;			//106 - Shamisen");    //"Shamisen"
@@ -583,7 +584,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[13] = 8;		//number of instruments in this section
 
     //section "Percussive"
-	m_sSectName[14] = _("Percussive");
     m_nSectInstr[14][0] = 112;			//112 - Tinkle Bell");    //"Tinkle Bell"
     m_nSectInstr[14][1] = 113;			//113 - Agogo");    //"Agogo"
     m_nSectInstr[14][2] = 114;			//114 - Steel Drums");    //"Steel Drums"
@@ -595,7 +595,6 @@ void wxMidiDatabaseGM::Initialize()
 	m_nNumInstrInSection[14] = 8;		//number of instruments in this section
 
     //section "Sound F/X"
-	m_sSectName[15] = _("Sound F/X");
     m_nSectInstr[15][0] = 120;			//120 - Guitar Fret Noise");    //"Gt.FretNoise"
     m_nSectInstr[15][1] = 121;			//121 - Breath Noise");    //"Breath Noise"
     m_nSectInstr[15][2] = 122;			//122 - Seashore");    //"Seashore"
