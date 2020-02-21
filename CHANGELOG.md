@@ -4,7 +4,16 @@
 [Since last version] 5.5.0
 =============================
 
-* NONE
+* LenMus includes now a preconfigured internal MIDI synthesizer and, therefore, the user
+  no longer needs to install a MIDI synthesizer or configure the program to use it.
+* The MIDI assistant has been removed, since the user has nothing to configure after
+  installing LenMus. But, for greater flexibility, LenMus now includes a MIDI
+  configuration option, to allow you to configure the internal synthesizer (for example,
+  change SoundFont) or allow the use of an external MIDI synthesizer instead of the
+  internal one, in case the user prefers to use specialized hardware or other MIDI
+  synthesizers.
+* Fix bug preventing to translate the "Cancel" button.
+* Fix bug: MIDI instrument names not properly translated when changing the language.
 
 
 Version [5.5.0] (February 7th, 2020)
