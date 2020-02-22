@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2020/02/03 -->
+<!-- $Updated: 2020/02/22 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>LenMus release notes</title>
@@ -11,7 +11,30 @@
 
 <!-- =============================================================================== -->
 
-<h2>LenMus Phonascus 5.5 (February 7th, 2020)</h2>
+<h2>LenMus Phonascus 5.6.0 (March 1st, 2020)</h2>
+
+
+<p> The main objective of version 5.6.0 is to avoid problems with the sound when installing
+LenMus. In previous versions, the user had to configure a MIDI synthesizer and sometimes
+even install it, and this caused problems. This now has been solved:</p>
+<ul>
+	<li>LenMus includes now a preconfigured internal MIDI synthesizer and, therefore, the user
+        no longer needs to install a MIDI synthesizer or configure the program to use it.</li>
+	<li>The MIDI assistant has been removed, since the user has nothing to configure after
+        installing LenMus. But, for greater flexibility, LenMus now includes a MIDI
+        configuration option, to allow you to configure the internal synthesizer (for example,
+        change SoundFont) or allow the use of an external MIDI synthesizer instead of the
+        internal one, in case the user prefers to use specialized hardware or other MIDI
+        synthesizers.</li>
+    <li>Add link in welcome window to facilitate users to report errors and make suggestions</li>
+	<li>Fix bug preventing to translate the "Cancel" button.</li>
+	<li>Fix bug: MIDI instrument names not properly translated when changing the language.</li>
+</ul>
+
+
+<!-- =============================================================================== -->
+
+<h2>LenMus Phonascus 5.5.0 (February 7th, 2020)</h2>
 
 <p>This is a maintenance release to add the translation to the Greek language and some few
 small improvements, and to fix bugs. The main changes are:</p>
@@ -23,7 +46,7 @@ small improvements, and to fix bugs. The main changes are:</p>
 	<li>Improves metronome by adding a metronome settings window and allowing to select
         the beat note value.</li>
 	<li>Keyboard buttons Page Up/Down are now operative in eBooks.</li>
-    <li>More visual tracking options during playback.</li>
+    <li>More visual tracking options during playback.</li>@l
     <li>Fix to display the Study Guide in the selected language.</li>
 	<li>Fix bug in options for theo idfy/build interval and for cadences exercises, causing to ignore some selected options.</li>
     <li>Includes de latest Lomse library with improvements, mainly in MusicXML import and music notation support.</li>

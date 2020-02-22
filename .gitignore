@@ -83,6 +83,7 @@ locale/it/images/
 locale/kk/
 locale/messages.po
 locale/ru/
+locale/messages.pot
 
 #lomse
 lomse/trunk/cmake-example-GetGitRevisionDescription.cmake
@@ -108,7 +109,9 @@ res/icons/drawing.svg
 res/icons/total_marks.png
 res/icons/wrong_answers.png
 res/icons/wrong_answers.svg
+res/icons/favicon.ico
 res/sounds/midi-sample.mid
+res/sounds/FluidR3_GM.sf2
 res/fonts/
 
 #scores
