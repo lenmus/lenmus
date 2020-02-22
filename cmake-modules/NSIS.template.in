@@ -318,8 +318,7 @@ Section  "-" "MainSection"
       
      ;install required dlls
      SetOutPath "$INSTDIR\bin"
-     File "${LENMUS_NSIS_RESOURCES}\libpng16.dll"
-     File "${LENMUS_NSIS_RESOURCES}\zlib.dll"
+     File "${LENMUS_NSIS_RESOURCES}\*.dll"
 
       IfErrors +1 EndCopyFiles
         StrCmp $STEP "ErrorCopyingFiles" "Error_CopyFiles"
