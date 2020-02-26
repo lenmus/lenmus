@@ -1043,7 +1043,6 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
 		    PATTERN "*.jpg"
 		    PATTERN "*.css"
 		    #language catalogs
-		    PATTERN "*.po"
 		    PATTERN "*.mo"
 		    PATTERN "x_*" EXCLUDE
 		    PATTERN "z_*" EXCLUDE
@@ -1063,7 +1062,9 @@ install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
-        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+        FILES_MATCHING PATTERN "*.*" 
+                       PATTERN "x_*" EXCLUDE
+                       PATTERN "z_*" EXCLUDE )
 #install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${RES_DIR}
 #        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
 
@@ -1105,10 +1106,10 @@ endif()
 # 4. samples 
 # ------------------------------------------------------------------------------
 
-install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
-	    FILES_MATCHING PATTERN "*.lms"
-	    PATTERN "test_set" EXCLUDE
-)
+#install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
+#	    FILES_MATCHING PATTERN "*.lms"
+#	    PATTERN "test_set" EXCLUDE
+#)
 
 
 
@@ -1143,10 +1144,10 @@ if(UNIX)
 	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	if (LENMUS_USE_LOMSE_SOURCES)
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-		            libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
+		            libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
 	else()
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
-		        libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
+		        libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
 	endif()
     
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
