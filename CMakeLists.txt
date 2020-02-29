@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2019 LenMus project
+#  Copyright (c) 2002-2020 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -407,8 +407,8 @@ find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
     include_directories( ${SQLite3_INCLUDE_DIR} )
     link_libraries( ${SQLite3_LIBRARIES} )
-    message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
-    message(STATUS "SQLite3_INCLUDE_DIR => " ${SQLite3_INCLUDE_DIR})
+    message(STATUS "SQLite3 found: libraries= ${SQLite3_LIBRARIES}")
+    message(STATUS "SQLite3 found: include= ${SQLite3_INCLUDE_DIR}")
 ELSE(SQLite3_FOUND)
     message(SEND_ERROR "SQLite3 not found")
     message(STATUS "SQLite3_DIR = $ENV{SQLite3_DIR}")
@@ -420,20 +420,25 @@ find_package(PortMidi REQUIRED)
 IF(PortMidi_FOUND)
     include_directories( ${PortMidi_INCLUDE_DIRS} )
     link_libraries( ${PortMidi_LIBRARIES} )
-    message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
-    message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
+    message(STATUS "PortMidi found: include= ${PortMidi_INCLUDE_DIRS}" )
+    message(STATUS "PortMidi found: libraries= ${PortMidi_LIBRARIES}" )
 ELSE(PortMidi_FOUND)
     message(SEND_ERROR "PortMidi not found")
     message(STATUS "PortMidi_DIR = $ENV{PortMidi_DIR}")
 ENDIF(PortMidi_FOUND)
 
 #Check for FluidSynth
+#For me, in Windows, even using vcpkg, it's always been a nightmare to build. Bypass after trying for hours ... :-(
+if(WIN32)
+    set(FLUIDSYNTH_INCLUDE_DIR "$ENV{FluidSynth_DIR}/include")
+    set(FLUIDSYNTH_LIBRARIES "$ENV{FluidSynth_DIR}/lib/fluidsynth.lib")
+endif(WIN32)
 find_package(FluidSynth REQUIRED)
 IF(FLUIDSYNTH_FOUND)
     include_directories( ${FLUIDSYNTH_INCLUDE_DIR} )
     link_libraries( ${FLUIDSYNTH_LIBRARIES} )
-    message(STATUS "FLUIDSYNTH_INCLUDE_DIR => " ${FLUIDSYNTH_INCLUDE_DIR} )
-    message(STATUS "FLUIDSYNTH_LIBRARIES => " ${FLUIDSYNTH_LIBRARIES} )
+    message(STATUS "FluidSynth found: include= ${FLUIDSYNTH_INCLUDE_DIR}" )
+    message(STATUS "FluidSynth found: libraries= ${FLUIDSYNTH_LIBRARIES}" )
 ELSE(FLUIDSYNTH_FOUND)
     message(SEND_ERROR "FluidSynth not found")
     message(STATUS "FLUIDSYNTH_DIR = $ENV{FLUIDSYNTH_DIR}")
@@ -1038,7 +1043,6 @@ install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
 		    PATTERN "*.jpg"
 		    PATTERN "*.css"
 		    #language catalogs
-		    PATTERN "*.po"
 		    PATTERN "*.mo"
 		    PATTERN "x_*" EXCLUDE
 		    PATTERN "z_*" EXCLUDE
@@ -1058,7 +1062,9 @@ install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
         FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
-        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+        FILES_MATCHING PATTERN "*.*" 
+                       PATTERN "x_*" EXCLUDE
+                       PATTERN "z_*" EXCLUDE )
 #install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${RES_DIR}
 #        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
 
@@ -1100,10 +1106,10 @@ endif()
 # 4. samples 
 # ------------------------------------------------------------------------------
 
-install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
-	    FILES_MATCHING PATTERN "*.lms"
-	    PATTERN "test_set" EXCLUDE
-)
+#install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
+#	    FILES_MATCHING PATTERN "*.lms"
+#	    PATTERN "test_set" EXCLUDE
+#)
 
 
 
@@ -1138,10 +1144,10 @@ if(UNIX)
 	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	if (LENMUS_USE_LOMSE_SOURCES)
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-		            libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
+		            libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
 	else()
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
-		        libfreetype6, ${PNG_DEPENDENCY}, zlib1g (>= 1:1.2.1) ")
+		        libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
 	endif()
     
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )

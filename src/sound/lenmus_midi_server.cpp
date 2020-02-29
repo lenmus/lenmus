@@ -195,7 +195,6 @@ void FluidSynthesizer::save_user_preferences()
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::reset_to_defaults()
 {
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
     Paths* pPaths = m_appScope.get_paths();
     wxString soundsPath = pPaths->GetSoundsPath();
 

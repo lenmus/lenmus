@@ -1,10 +1,29 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.5.0
+[Since last version] 5.6.0
 =============================
 
-* NONE
+* None
+
+
+Version [5.6.0] (March 1st, 2020)
+==================================
+
+The main objective of version 5.6.0 is to avoid problems with the sound when installing
+LenMus. In previous versions, the user had to configure a MIDI synthesizer and sometimes
+even install it, and this caused problems. This now has been solved:
+
+* LenMus includes now a preconfigured internal MIDI synthesizer and, therefore, the user
+  no longer needs to install a MIDI synthesizer or configure the program to use it.
+* The MIDI assistant has been removed, since the user has nothing to configure after
+  installing LenMus. But, for greater flexibility, LenMus now includes a MIDI
+  configuration option, to allow you to configure the internal synthesizer (for example,
+  change SoundFont) or allow the use of an external MIDI synthesizer instead of the
+  internal one, in case the user prefers to use specialized hardware or other MIDI
+  synthesizers.
+* Fix bug preventing to translate the "Cancel" button.
+* Fix bug: MIDI instrument names not properly translated when changing the language.
 
 
 Version [5.5.0] (February 7th, 2020)
@@ -503,7 +522,7 @@ bug fixes:
         exercise while playing an exercise.
             
 
-Version 3.4 (5/Feb/07)
+Version 3.4 (5/Feb/2007)
 =======================================================================
 
 * A new eMusicBooks source format, based on XML and DocBook, has been
@@ -531,7 +550,7 @@ Version 3.4 (5/Feb/07)
   at 20.
 * Bug fixed: Some navigation buttons on eMusicBooks didn't work.
 
-Version 3.3 (10/Nov/06)
+Version 3.3 (10/Nov/2006)
 =======================================================================
 
 * A new exercise for aural training: identify scales.
@@ -562,7 +581,7 @@ Version 3.3 (10/Nov/06)
   to page size.
 
 
-Version 3.2 (26/Aug/06)
+Version 3.2 (26/Aug/2006)
 =======================================================================
 
 * New exercise for ear training: identify chords.
@@ -574,7 +593,7 @@ Version 3.2 (26/Aug/06)
 * Unicode build, to fully support internationalization.
 
 
-Version 3.1 (4/Aug/06)
+Version 3.1 (4/Aug/2006)
 =======================================================================
 
 * First release oriented to support score edition:
@@ -589,7 +608,7 @@ Version 3.1 (4/Aug/06)
   propagated along the measure.
 
 
-Version 3.0 (May/06)
+Version 3.0 (May/2006)
 =======================================================================
 
 * All eBooks are now available in English and Spanish.
@@ -611,7 +630,7 @@ In addition:
   2.0 technical constrains to improve.
 * Teaching material now written in Windows help format
 
-Version 2.0 (Oct/04):
+Version 2.0 (Oct/2004):
 =======================================================================
 
 * Polyphonic capabilities added.
@@ -627,7 +646,7 @@ Version 2.0 (Oct/04):
 * For more details click here.
 
 
-Version 1.0 (Jan/04):
+Version 1.0 (Jan/2004):
 =======================================================================
 
 * First release.
@@ -637,7 +656,8 @@ Version 1.0 (Jan/04):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...HEAD
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.6.0...HEAD
+[5.6.0]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...Release_5.6.0
 [5.5.0]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...Release_5.5.0
 [5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...Release_5.4.2
 [5.4.1]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.1

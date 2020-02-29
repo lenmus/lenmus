@@ -103,6 +103,7 @@ public:
     // event handler declarations
     void OnTreectrlItemSelected( wxTreeEvent& event );
     void OnButtonAcceptClick(wxCommandEvent& event);
+    void OnButtonCancelClick(wxCommandEvent& event);
 
 private:
     void CreateControls();

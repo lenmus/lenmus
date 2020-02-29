@@ -77,6 +77,7 @@ private:
 	wxStaticBitmap*     m_pLearnIcon;
 	wxHyperlinkCtrl*    m_pLinkNewInLenmus;
 	wxHyperlinkCtrl*    m_pLinkVisitWebsite;
+	wxHyperlinkCtrl*    m_pLinkReportError;
 	wxStaticText*       m_pPhonascusTitle;
 	wxStaticBitmap*     m_pPhonascusIcon;
 	wxHyperlinkCtrl*    m_pLinkInstructions;

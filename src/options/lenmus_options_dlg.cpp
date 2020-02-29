@@ -98,6 +98,7 @@ const long ID_SPLITTERWINDOW = wxNewId();
 const long ID_TREECTRL = wxNewId();
 const long ID_PANEL = wxNewId();
 const long ID_BUTTON_ACCEPT = wxNewId();
+const long ID_BUTTON_CANCEL = wxNewId();
 
 
 //---------------------------------------------------------------------------------------
@@ -105,6 +106,7 @@ const long ID_BUTTON_ACCEPT = wxNewId();
 wxBEGIN_EVENT_TABLE( OptionsDlg, wxDialog )
     EVT_TREE_SEL_CHANGING( ID_TREECTRL, OptionsDlg::OnTreectrlItemSelected )
     EVT_BUTTON( ID_BUTTON_ACCEPT, OptionsDlg::OnButtonAcceptClick )
+    EVT_BUTTON( ID_BUTTON_CANCEL, OptionsDlg::OnButtonCancelClick )
 wxEND_EVENT_TABLE()
 
 
@@ -271,7 +273,7 @@ void OptionsDlg::CreateControls()
     m_pBtnOK = LENMUS_NEW wxButton( this, ID_BUTTON_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnOK, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_pBtnCancel = LENMUS_NEW wxButton( this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pBtnCancel = LENMUS_NEW wxButton( this, ID_BUTTON_CANCEL , _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnCancel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 }
@@ -388,6 +390,12 @@ void OptionsDlg::OnButtonAcceptClick(wxCommandEvent& WXUNUSED(event))
     for(int i=0; i < eOptMaxValue; i++)
         m_cPanels[i]->Apply();
 
+    EndModal(0);
+}
+
+//---------------------------------------------------------------------------------------
+void OptionsDlg::OnButtonCancelClick(wxCommandEvent& WXUNUSED(event))
+{
     EndModal(0);
 }
 

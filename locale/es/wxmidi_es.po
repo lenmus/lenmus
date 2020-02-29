@@ -2,19 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxMidi\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-08-23 09:27+0100\n"
+"PO-Revision-Date: 2020-02-21 12:32+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team: LenMus org\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: English\n"
 "X-Poedit-Basepath: ../src\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: es_ES\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SearchPath-0: wxMidi\n"
 
-#: wxMidi/wxMidi.cpp:129
-#: wxMidi/wxMidi.cpp:142
+#: wxMidi/wxMidi.cpp:129 wxMidi/wxMidi.cpp:142
 msgid "Error: Device not properly created"
 msgstr "Error: El dispositivo no se ha creado adecuadamente."
 
@@ -845,4 +845,3 @@ msgstr "Perrcusivo"
 #: wxMidi/wxMidiDatabase.cpp:600
 msgid "Sound F/X"
 msgstr "Efectos especiales"
-

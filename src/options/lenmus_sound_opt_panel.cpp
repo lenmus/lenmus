@@ -248,21 +248,21 @@ void OptInternalSynthPanel::create_controls()
 
 	pMainSizer->Add( pTitleSpacer, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
-	m_pHelpText1 = new wxStaticText( this, wxID_ANY, _("A Soundfont (.sf2/.sf3) is a collection of sample-based instrument sounds. The internal synthesizer needs a SoundFont to generate the sounds."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pHelpText1 = new wxStaticText( this, wxID_ANY, _("A Soundfont is a file (.sf2/.sf3) with a collection of sample-based instrument sounds. The internal synthesizer needs a SoundFont to generate the sounds."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pHelpText1->Wrap( -1 );
 	pMainSizer->Add( m_pHelpText1, 1, wxALL, 5 );
 
 	wxBoxSizer* pSoundFontTextSizer;
 	pSoundFontTextSizer = new wxBoxSizer( wxVERTICAL );
 
-	pSoundfontText = new wxStaticText( this, wxID_ANY, _("Soundfont to use:"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	pSoundfontText = new wxStaticText( this, wxID_ANY, _("Soundfont to use"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	pSoundfontText->Wrap( -1 );
 	pSoundFontTextSizer->Add( pSoundfontText, 0, wxLEFT|wxRIGHT|wxTOP, 5 );
 
 	wxBoxSizer* pEntryFieldsSizer;
 	pEntryFieldsSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pTxtSoundfont = new wxTextCtrl( this, wxID_ANY, _("FluidR3_GM.sf2"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+	m_pTxtSoundfont = new wxTextCtrl( this, wxID_ANY, "FluidR3_GM.sf2", wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
 	pEntryFieldsSizer->Add( m_pTxtSoundfont, 1, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxLEFT, 5 );
 
 
