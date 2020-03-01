@@ -48,6 +48,18 @@
 # disabling this option:
 #   cmake -DLENMUS_ENABLE_UNIT_TESTS:BOOL=OFF ...
 #
+# The internal synthesizer needs a soundfont. But soundfont files can get pretty big. In
+# fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
+# for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
+# As a bypass, I have included the soundfont as a downloadable file in release 5.5.0
+# If you enable option LENMUS_DOWNLOAD_SOUNDFONT this cmake script will check if the
+# soundfont is in the local LenMus source tree and, if not, will download it from the
+# asset file in release 5.5.0. This option is OFF by default to prevent unnecessary 
+# downloads when building from Travis CI and to prevent failures when building release
+# packages for Ubuntu at Launchpad.net. For normal builds you should enable this option:
+#   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=ON ...
+#
+#
 #-------------------------------------------------------------------------------------
 # To add a new language to the NSIS installer:
 #   Search for ADD_LANG and modify CMakeList.txt in these points
@@ -126,6 +138,9 @@ OPTION(LENMUS_USE_LOMSE_SOURCES
 OPTION(LENMUS_ENABLE_UNIT_TESTS
 	"Include also unit tests in LenMus executable"
 	ON)
+OPTION(LENMUS_DOWNLOAD_SOUNDFONT
+    "Download FluidR3 soundfont if not present in source tree"
+	OFF)
 set(MAN_INSTALL_DIR "/usr/share/man" 
     CACHE STRING "Directory for installing man pages")
 
@@ -302,40 +317,43 @@ include_directories(
 # The following command lines check if the soundfont is in the local LenMus source tree
 # and, if not, download it from the asset file in release 5.5.0
 ##########################################################################################
+if (LENMUS_DOWNLOAD_SOUNDFONT)
+    message("Checking for FluidR3 soundfont")
 
-message("Checking for FluidR3 soundfont")
+    set(SOUNDFONT_FILE "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2")
 
-set(SOUNDFONT_FILE "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2")
+    if (NOT EXISTS "${SOUNDFONT_FILE}")
+        message(STATUS "FluidR3 soundfont not found in LenMus source tree. Downloading it ...")
+        file(DOWNLOAD 
+            "https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2"
+            "${SOUNDFONT_FILE}"
+            SHOW_PROGRESS
+            EXPECTED_HASH MD5=af289497caf8c76d97fdc67ec8409f05
+            STATUS status
+            LOG log
+        )
 
-if (NOT EXISTS "${SOUNDFONT_FILE}")
-    message(STATUS "FluidR3 soundfont not found in LenMus source tree. Downloading it ...")
-    file(DOWNLOAD 
-        "https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2"
-        "${SOUNDFONT_FILE}"
-        SHOW_PROGRESS
-        EXPECTED_HASH MD5=af289497caf8c76d97fdc67ec8409f05
-        STATUS status
-        LOG log
-    )
+        list(GET status 0 status_code)
+        list(GET status 1 status_string)
+        
+        if(NOT status_code EQUAL 0)
+            message(FATAL_ERROR "Error downloading FluidR3%20GM.sf2. Status_code: ${status_code}
+                status_string: ${status_string}
+                log: ${log}
+                ")
+        endif()
+        message(STATUS "FluidR3 soundfont downloaded.")
 
-    list(GET status 0 status_code)
-    list(GET status 1 status_string)
-    
-    if(NOT status_code EQUAL 0)
-        message(FATAL_ERROR "Error downloading FluidR3%20GM.sf2. Status_code: ${status_code}
-            status_string: ${status_string}
-            log: ${log}
-            ")
+    else()
+        message(STATUS "FluidR3 soundfont already in LenMus source tree")
     endif()
-    message(STATUS "FluidR3 soundfont downloaded.")
 
-else()
-    message(STATUS "FluidR3 soundfont already in LenMus source tree")
-endif()
-
-if (NOT EXISTS "${SOUNDFONT_FILE}")
-    message(FATAL_ERROR "FluidR3 soundfont not found in LenMus source tree")
-endif()
+    if (NOT EXISTS "${SOUNDFONT_FILE}")
+        message(FATAL_ERROR "FluidR3 soundfont not found in LenMus source tree")
+    endif()
+else(LENMUS_DOWNLOAD_SOUNDFONT)
+    message("LENMUS_DOWNLOAD_SOUNDFONT is OFF. Not checking for FluidR3 soundfont")
+endif(LENMUS_DOWNLOAD_SOUNDFONT)
 
 ##########################################################################
 #
