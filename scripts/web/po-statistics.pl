@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ##------------------------------------------------------------------------------------
-## Copyright (C) 2009-20012 LenMus proyect
+## Copyright (C) 2009-20020 LenMus proyect
 ##
 ## This script creates the website page to show the status of each po file.
 ## I took the idea from an script written by Naba Kumar Singh
@@ -30,8 +30,8 @@
 
     # List of supported laguages and their names
     %languages = (
-        ##"el_GR" => "Greek",
         "de" => "German",
+        "el" => "Greek",
         "es" => "Spanish",
         "eu" => "Basque",
         "fr" => "French",
@@ -44,15 +44,16 @@
 
     # status of each language
     %lang_status = (
-        "de" => "maintained",
+        "de" => "unknown",
+        "el" => "maintained",
         "es" => "maintained",
-        "eu" => "maintained",
+        "eu" => "unknown",
         "fr" => "unknown",
         "gl_ES" => "unknown",
         "it" => "unknown",
         "nl" => "unknown",
         "tr" => "unmaintained",
-        "zh_CN" => "maintained",
+        "zh_CN" => "unknown",
     );
 
 
@@ -98,7 +99,7 @@
         }
 
         # eBook po files
-        my @po_files = glob("../../langtool/locale/$langcode/*.po");
+        my @po_files = glob("../../../langtool/locale/$langcode/*.po");
         foreach my $poFile (@po_files)
         {
             if ($poFile =~ /(\w+)\_$langcode\.po/)
