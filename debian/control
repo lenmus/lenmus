@@ -6,18 +6,16 @@ Standards-Version: 3.9.3
 Homepage: http://www.lenmus.org/en/phonascus/intro
 Build-Depends: debhelper (>= 8.0.0)
  , cdbs
- , cmake (>= 2.8.0)
+ , cmake (>= 3.1)
  , pkg-config
  , libportmidi-dev
  , libsqlite3-dev (>=3.6.10)
  , libwxgtk3.0-dev (>= 3.0)
  , wx-common
  , libfreetype6-dev
- , zlib1g (>= 1:1.1.4)
- , libpng-dev
- , libboost-date-time-dev
- , libboost-thread-dev
- , libboost-system-dev
+ , libpng++-dev
+ , zlib1g (>= 1:1.2.1)
+ , libfluidsynth-dev
 
 Package: lenmus
 Architecture: any
