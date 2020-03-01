@@ -31,7 +31,7 @@ script:
   - export CXX=${CXX/clang/clang++}
   - $CXX --version
   - mkdir build && cd build
-  - cmake -G "Unix Makefiles" ..
+  - cmake -G "Unix Makefiles" -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=OFF ..
   - make
 
 

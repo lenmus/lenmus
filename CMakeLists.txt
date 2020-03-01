@@ -52,12 +52,10 @@
 # fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
 # for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
 # As a bypass, I have included the soundfont as a downloadable file in release 5.5.0
-# If you enable option LENMUS_DOWNLOAD_SOUNDFONT this cmake script will check if the
-# soundfont is in the local LenMus source tree and, if not, will download it from the
-# asset file in release 5.5.0. This option is OFF by default to prevent unnecessary 
-# downloads when building from Travis CI and to prevent failures when building release
-# packages for Ubuntu at Launchpad.net. For normal builds you should enable this option:
-#   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=ON ...
+# This cmake script will check if the soundfont is present in the local LenMus source 
+# tree and, if not, will download it from the asset file in release 5.5.0. To prevent
+# downloads in specific scenarios you can disable this option:
+#   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=OFF ...
 #
 #
 #-------------------------------------------------------------------------------------
@@ -140,7 +138,7 @@ OPTION(LENMUS_ENABLE_UNIT_TESTS
 	ON)
 OPTION(LENMUS_DOWNLOAD_SOUNDFONT
     "Download FluidR3 soundfont if not present in source tree"
-	OFF)
+	ON)
 set(MAN_INSTALL_DIR "/usr/share/man" 
     CACHE STRING "Directory for installing man pages")
 
