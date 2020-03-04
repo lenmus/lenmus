@@ -246,11 +246,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
                             , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
 
-    //6. Other files from system
-    wxFileName oSoundFonts;
-    oSoundFonts.AssignDir( LENMUS_SOUNDFONT_PATH );
-    oSoundFonts.Normalize();
-
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     //Windows Release version
     wxStandardPaths& stdPaths = wxStandardPaths::Get();

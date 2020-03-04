@@ -24,6 +24,7 @@ matrix:
             - libsqlite3-0
             - libsqlite3-dev
             - libfluidsynth-dev
+            - fluid-soundfont-gm
 
 script:
   - export CC=$COMPILER
@@ -31,7 +32,7 @@ script:
   - export CXX=${CXX/clang/clang++}
   - $CXX --version
   - mkdir build && cd build
-  - cmake -G "Unix Makefiles" -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=OFF ..
+  - cmake -G "Unix Makefiles" ..
   - make
 
 

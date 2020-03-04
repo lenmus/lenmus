@@ -34,8 +34,12 @@
 # a diferent makefile use option -G<desired-target>. For instance:
 #   cmake -G "CodeBlocks - Unix Makefiles" ...
 #
-# The default installation prefix is "/usr/local". You can change the install 
-# location by specifying option CMAKE_INSTALL_PREFIX:
+#
+# Installation folders
+# ~~~~~~~~~~~~~~~~~~~~~
+# The default installation prefix is "/usr/local" for Linux and
+# "C:/Program Files (x86)" or "C:/Program Files" for Windows. 
+# You can change the install location by running cmake like this:
 #   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix ...
 #
 # The default folder (in Linux) for installing man pages is
@@ -44,22 +48,55 @@
 # choose is "Unix Makefiles". If you would like to generate
 #   cmake -DMAN_INSTALL_DIR=/new/install/location/for/manpages ...
 #
+#
+# Packages to build (Only for Linux)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# In Linux, the installation is divided into several packages:
+# - lenmus: (main package) binaries and related files
+# - lenmus-fonts: fonts needed by lomse
+# - lenmus-common: common support files not bound to any particular
+#       release, architecture or language, such as icons, samples and templates.
+# - lenmus-i18n: the message catalogues for lenmus and related translated files
+# - lenmus-ebooks: the eBooks (all translations).
+# In addition, a boundle package containing all can be generated.
+#
+# If nothing specified in build options, only the main package (the package
+# containing the binaries) is built. To build any other packages you must 
+# enable the option for the desired package:
+#   cmake -DBUILD_PKG_<pkg>:BOOL=ON ...
+# Replace <pkg> by the desired package name:
+#   pkg = { MAIN | FONTS | COMMON | I18N | EBOOKS | BOUNDLE }
+# For instance, to build lenmus-i18n and lenmus-ebooks packages:
+#   cmake -DBUILD_PKG_I18N:BOOL=ON -DBUILD_PKG_EBOOKS:BOOL=ON ...
+# Including the option to build the boundle package will force to ignore
+# any other options to build other packages.
+#
+#
+# Unit Tests
+# ~~~~~~~~~~~~
 # By default unit tests are also build. You can reduce executable size by
 # disabling this option:
 #   cmake -DLENMUS_ENABLE_UNIT_TESTS:BOOL=OFF ...
 #
-# The internal synthesizer needs a soundfont. But soundfont files can get pretty big. In
-# fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
-# for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
-# As a bypass, I have included the soundfont as a downloadable file in release 5.5.0
-# This cmake script will check if the soundfont is present in the local LenMus source 
-# tree and, if not, will download it from the asset file in release 5.5.0. To prevent
-# downloads in specific scenarios you can disable this option:
-#   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=OFF ...
 #
+# SoundFont for the internal synthesizer
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# The internal synthesizer needs a soundfont. Therefore, it is a dependency
+# to have FluidR3_GM.sf2 soundfont installed in the system. In Linux this
+# is provided for specific packages such as the "fluid-soundfont-gm" package in
+# Debian and derivatives.
+#
+# If you would like that this cmake script will download the FluidR3_GM.sf2
+# sound font in case it is not found in the system, you can use the option:
+#   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=ON ...
 #
 #-------------------------------------------------------------------------------------
-# To add a new language to the NSIS installer:
+# Modifying this script
+# ==========================
+#
+# How to add a new language
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# To add a new translation:
 #   Search for ADD_LANG and modify CMakeList.txt in these points
 #   Check that the added language is supported by NSIS in NSIS/Contrib/Language files/
 #
@@ -138,7 +175,26 @@ OPTION(LENMUS_ENABLE_UNIT_TESTS
 	ON)
 OPTION(LENMUS_DOWNLOAD_SOUNDFONT
     "Download FluidR3 soundfont if not present in source tree"
-	ON)
+	OFF)
+OPTION(BUILD_PKG_MAIN
+    "Build package 'lenmus-main': Binaries and related files"
+    "OFF")
+OPTION(BUILD_PKG_FONTS
+    "Build package 'lenmus-fonts': Fonts needed for rendering music scores and eBooks"
+    "OFF")
+OPTION(BUILD_PKG_COMMON
+    "Build package 'lenmus-common': Common support files, such as icons"
+    "OFF")
+OPTION(BUILD_PKG_I18N
+    "Build package 'lenmus-i18n': Message catalogues and translated files (but not eBooks)"
+    "OFF")
+OPTION(BUILD_PKG_EBOOKS
+    "Build package 'lenmus-ebooks': eBooks (all translations)"
+    "OFF")
+OPTION(BUILD_PKG_BOUNDLE
+    "Build package 'lenmus-ebooks': eBooks (all translations)"
+    "OFF")
+
 set(MAN_INSTALL_DIR "/usr/share/man" 
     CACHE STRING "Directory for installing man pages")
 
@@ -249,14 +305,6 @@ message(STATUS "SYSTEM_ARCHITECTURE = ${SYSTEM_ARCHITECTURE}" )
 
 # installation folders
 # ------------------------------------------------------------------------------
-# You can change the install location by running cmake like this:
-#
-#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
-#
-# Defaults:
-#   Linux:      "/usr/local"
-#   Windows:    "C:/Program Files (x86)/lenmus" or "C:/Program Files/lenmus"
-# ------------------------------------------------------------------------------
 set(LENMUS_USE_SOURCE_TREE 0)
 
 #set install folder 
@@ -302,82 +350,39 @@ include_directories(
 )
 
 
-
-
-
-##########################################################################################
-# SoundFonts
-# The internal synthesizer needs a soundfont. But soundfont files can get pretty big. In
-# fact, FluidR3_GM.sf2 is 141 MB.  Unfortunately, GitHub places a strict limit of 100 MB
-# for each file in a repo so I cannot provide the soundfont as part of LenMus sources.
-#
-# As a bypass, I have included the soundfont as a downloadable file in release 5.5.0.
-# The following command lines check if the soundfont is in the local LenMus source tree
-# and, if not, download it from the asset file in release 5.5.0
-##########################################################################################
-message("Checking for FluidR3 soundfont")
-if (LENMUS_DOWNLOAD_SOUNDFONT)
-
-    set(SOUNDFONT_FILE "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2")
-
-    if (NOT EXISTS "${SOUNDFONT_FILE}")
-        message(STATUS "FluidR3 soundfont not found in LenMus source tree. Looking in other places ...")
-        find_path(FLUIDR3_PATH
-                  NAMES FluidR3_GM.sf2 "FluidR3 GM.sf2"
-                  PATHS
-                      /usr/share/sounds/sf2     # Ubuntu and possibly all Debian derivatives
-                      /usr/share/soundfonts     # Red Hat
-                      ${LENMUS_ROOT_DIR}/res/fluidR3
-                 )
-        if(FLUIDR3_PATH_NOTFOUND)
-            message(STATUS "FluidR3 soundfont not found. Downloading it ...")
-            file(DOWNLOAD 
-                "https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2"
-                "${SOUNDFONT_FILE}"
-                SHOW_PROGRESS
-                EXPECTED_HASH MD5=af289497caf8c76d97fdc67ec8409f05
-                STATUS status
-                LOG log
-            )
-
-            list(GET status 0 status_code)
-            list(GET status 1 status_string)
-            
-            if(NOT status_code EQUAL 0)
-                message(FATAL_ERROR "Error downloading FluidR3%20GM.sf2. Status_code: ${status_code}
-                    status_string: ${status_string}
-                    log: ${log}
-                    ")
-            endif()
-            message(STATUS "FluidR3 soundfont downloaded.")
-
-        else(FLUIDR3_PATH_NOTFOUND)
-            message(STATUS "FluidR3 found in ${FLUIDR3_PATH}. Copying to LenMus source tree")
-            string(COMPARE EQUAL "${FLUIDR3_PATH}" "${LENMUS_ROOT_DIR}/res/fluidR3" BUILDING_IN_LAUNCHPAD)
-            if(BUILDING_IN_LAUNCHPAD)
-                file(COPY "${FLUIDR3_PATH}/FluidR3 GM.sf2"
-                     DESTINATION ${LENMUS_ROOT_DIR}/res/sounds
-                    )
-                file(RENAME "${LENMUS_ROOT_DIR}/res/sounds/FluidR3 GM.sf2"
-                            "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2"
-                    )
-            else(BUILDING_IN_LAUNCHPAD)
-                file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
-                          DESTINATION ${LENMUS_ROOT_DIR}/res/sounds
-                    )
-            endif(BUILDING_IN_LAUNCHPAD)
-        endif(FLUIDR3_PATH_NOTFOUND)
-    else()
-        message(STATUS "FluidR3 soundfont already exists in LenMus source tree.")
+#determine packages to build
+#------------------------------------------------------------------------
+if( WIN32 )
+    #only boundle package is possible
+    set(BUILD_PKG_BOUNDLE 1)
+elseif( UNIX )
+    if((NOT BUILD_PKG_BOUNDLE)
+        AND (NOT BUILD_PKG_MAIN)
+        AND (NOT BUILD_PKG_FONTS)
+        AND (NOT BUILD_PKG_COMMON)
+        AND (NOT BUILD_PKG_I18N)
+        AND (NOT BUILD_PKG_EBOOKS)
+      )
+        #nothing requested. Build main package
+        set(BUILD_PKG_MAIN 1)
     endif()
+endif()
 
-    if (NOT EXISTS "${SOUNDFONT_FILE}")
-        message(FATAL_ERROR "FluidR3 soundfont not found in LenMus source tree")
-    endif()
+message("Packages to build:")
+message(STATUS "BUILD_PKG_MAIN = ${BUILD_PKG_MAIN}")
+message(STATUS "BUILD_PKG_FONTS = ${BUILD_PKG_FONTS}")
+message(STATUS "BUILD_PKG_COMMON = ${BUILD_PKG_COMMON}")
+message(STATUS "BUILD_PKG_I18N = ${BUILD_PKG_I18N}")
+message(STATUS "BUILD_PKG_EBOOKS = ${BUILD_PKG_EBOOKS}")
+message(STATUS "BUILD_PKG_BOUNDLE = ${BUILD_PKG_BOUNDLE}")
 
-else(LENMUS_DOWNLOAD_SOUNDFONT)
-    message(STATUS "No check performed. LENMUS_DOWNLOAD_SOUNDFONT is OFF")
-endif(LENMUS_DOWNLOAD_SOUNDFONT)
+if(BUILD_PKG_BOUNDLE OR BUILD_PKG_MAIN)
+    set(BUILD_PROGRAM 1)
+endif()
+
+
+
+if (BUILD_PROGRAM)
 
 ##########################################################################
 #
@@ -388,6 +393,51 @@ endif(LENMUS_DOWNLOAD_SOUNDFONT)
 
 message("Checking for LenMus dependencies:")
 
+# Check for FluidR3_GM.sf2 sound font required by internal synthesizer
+# package 'fluid-soundfont-gm'
+set (INSTALL_SOUNDFONT 0)
+find_path(FLUIDR3_PATH
+          NAMES FluidR3_GM.sf2 "FluidR3 GM.sf2"
+          PATHS
+              /usr/share/sounds/sf2     # Ubuntu and possibly all Debian derivatives
+              /usr/share/soundfonts     # Red Hat
+              ${LENMUS_ROOT_DIR}/res/sounds     #local builds
+              ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
+         )
+
+if(FLUIDR3_PATH_NOTFOUND)
+    if (LENMUS_DOWNLOAD_SOUNDFONT)
+        message(STATUS "FluidR3_GM.sf2 soundfont not found. Downloading it ...")
+        file(DOWNLOAD 
+            "https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2"
+            "${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2"
+            SHOW_PROGRESS
+            EXPECTED_HASH MD5=af289497caf8c76d97fdc67ec8409f05
+            STATUS status
+            LOG log
+        )
+
+        list(GET status 0 status_code)
+        list(GET status 1 status_string)
+        
+        if(NOT status_code EQUAL 0)
+            message(FATAL_ERROR "Error downloading FluidR3%20GM.sf2. Status_code: ${status_code}
+                status_string: ${status_string}
+                log: ${log}
+                ")
+        endif()
+        message(STATUS "FluidR3_GM.sf2 soundfont downloaded.")
+        set(LENMUS_SOUNDFONT_PATH "${LENMUS_ROOT_DIR}/res/sounds/")
+        set (INSTALL_SOUNDFONT 1)
+
+    else(LENMUS_DOWNLOAD_SOUNDFONT)
+        message(FATAL_ERROR "FluidR3_GM.sf2 soundfont not found. Aborting...")
+    endif(LENMUS_DOWNLOAD_SOUNDFONT)
+
+else()
+    set(LENMUS_SOUNDFONT_PATH ${FLUIDR3_PATH})
+    message(STATUS "FluidR3_GM.sf2 found in ${FLUIDR3_PATH}")
+endif()
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -771,7 +821,7 @@ if (${LENMUS_ENABLE_UNIT_TESTS})
     )
 endif()
 
-set(LENMUS_PACKAGES_FILES
+set(LENMUS_PACKAGESS_FILES
     ${PACKAGES_DIR}/wxMidi/src/wxMidi.cpp
     ${PACKAGES_DIR}/wxMidi/src/wxMidiDatabase.cpp
     ${PACKAGES_DIR}/wxSQLite3/src/wxsqlite3.cpp
@@ -792,7 +842,7 @@ set(ALL_LENMUS_SOURCES
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
     ${GLOBALS_FILES} ${OPTIONS_FILES} ${PROPERTIES_FILES}
     ${SOUND_FILES} ${TOOLBOX_FILES} ${XML_PARSER_FILES} ${TEST_FILES}
-    ${LENMUS_PACKAGES_FILES} ${UPDATER_FILES} ${WIDGETS_FILES}
+    ${LENMUS_PACKAGESS_FILES} ${UPDATER_FILES} ${WIDGETS_FILES}
 )
 
 # Add folders for Visual Studio and other IDEs supporting it
@@ -805,7 +855,7 @@ source_group( "options"         FILES ${OPTIONS_FILES} )
 source_group( "properties"      FILES ${PROPERTIES_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
-source_group( "packages"        FILES ${LENMUS_PACKAGES_FILES} )
+source_group( "packages"        FILES ${LENMUS_PACKAGESS_FILES} )
 source_group( "toolbox"         FILES ${TOOLBOX_FILES} )
 source_group( "updater"         FILES ${UPDATER_FILES} )
 source_group( "widgets"         FILES ${WIDGETS_FILES} )
@@ -915,6 +965,8 @@ else()
 endif()
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
 
+endif(BUILD_PROGRAM)
+
 
 #///////////////////////////////////////////////////////////////////////////////
 # Program installation
@@ -935,6 +987,20 @@ message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
 #       path to install shared files i.e.:
 #           '/usr/local/share/lenmus/5.3/'
 #           'C:\Program Files\lenmus'
+#
+#
+# In Linux, the installation is divided into several packages:
+# - main: binaries and related files
+# - fonts: fonts needed by lomse
+# - common: common support files not bound to any particular
+#       release, architecture or language, such as icons, samples and templates.
+# - i18n: the message catalogues for lenmus and related translated files
+# - ebooks: the eBooks (all translations).
+#
+#
+#
+#
+#
 #///////////////////////////////////////////////////////////////////////////////
 
 # set installation paths
@@ -972,51 +1038,127 @@ message(STATUS "TEMPLATES_DIR = ${TEMPLATES_DIR}")
 message(STATUS "XRC_DIR = ${XRC_DIR}")
 message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 
-# 0. LenMus program and other binary and related files (INSTALL_DIR)
+# Package: lenmus (component: main)
 # ------------------------------------------------------------------------------
+
+# bin. LenMus program and other binary and related files (INSTALL_DIR)
 install(TARGETS ${LENMUS}
-		RUNTIME DESTINATION ${INSTALL_DIR} )
-
-if(WIN32)
-	# customization XML file for tile icons and icons
-	install(FILES ${LENMUS_ROOT_DIR}/installer/msw/lenmus.visualelementsmanifest.xml DESTINATION ${INSTALL_DIR} )
-	install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-150x150.png DESTINATION ${INSTALL_DIR}/icons )
-	install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-70x70.png DESTINATION ${INSTALL_DIR}/icons )
-endif(WIN32)
-
-# 1. non-modificable data, which must be shared among users on the computer (SHARED_DIR):
-# ------------------------------------------------------------------------------
-
-# text files in root folder (license, etc.)
-install(
-    FILES
-        AUTHORS
-        CHANGELOG.md
-        INSTALL
-        LICENSE
-        NEWS
-        README.md
-        THANKS 
-    DESTINATION
-        ${DOCS_DIR}
+	    RUNTIME
+        DESTINATION ${INSTALL_DIR}
+        COMPONENT main
 )
 
-# locale
-    # ADD_LANG
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_de.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_el.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION ${LOCALE_LICENSES_DIR})
-install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION ${LOCALE_LICENSES_DIR})
+if(WIN32)
+    # customization XML file for tile icons and icons
+    install(FILES ${LENMUS_ROOT_DIR}/installer/msw/lenmus.visualelementsmanifest.xml DESTINATION ${INSTALL_DIR} )
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-150x150.png DESTINATION ${INSTALL_DIR}/icons )
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-70x70.png DESTINATION ${INSTALL_DIR}/icons )
+endif(WIN32)
 
+# xrc resources
+install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${XRC_DIR}
+        COMPONENT main
+        FILES_MATCHING
+            PATTERN "*.xrc"
+            PATTERN "x_*" EXCLUDE
+            PATTERN "z_*" EXCLUDE
+)
+
+# templates
+install(DIRECTORY ${LENMUS_ROOT_DIR}/templates
+        DESTINATION ${TEMPLATES_DIR}
+        COMPONENT main
+        FILES_MATCHING PATTERN "*.lms"
+)
+
+# text files in root folder (license, etc.) shared among all users (SHARED_DIR)
+install(FILES
+            AUTHORS
+            CHANGELOG.md
+            INSTALL
+            LICENSE
+            NEWS
+            README.md
+            THANKS 
+        DESTINATION ${DOCS_DIR}
+        COMPONENT main
+)
+install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt
+        DESTINATION ${DOCS_DIR} COMPONENT main )
+install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt
+        DESTINATION ${DOCS_DIR} COMPONENT main )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt
+        DESTINATION ${DOCS_DIR} COMPONENT main )
+
+# Install desktop entry
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
+        DESTINATION "/usr/share/applications"
+        COMPONENT main )
+# Install icon
+install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png
+        DESTINATION "/usr/share/pixmaps"
+        COMPONENT main )
+
+if(INSTALL_SOUNDFONT)
+    install(FILES ${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2
+            DESTINATION ${RES_DIR}/sounds
+            COMPONENT main )
+endif()
+
+
+# Package: lenmus-i18n
+# ------------------------------------------------------------------------------
+# locale folder. License translations
+    # ADD_LANG
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_de.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_el.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_es.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_eu.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_fr.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_gl_ES.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_it.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_nl.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_tr.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt
+        DESTINATION ${LOCALE_LICENSES_DIR} COMPONENT i18n )
+
+# locale folder. help files and language catalogs for all languages
+install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
+		DESTINATION ${LOCALE_DIR}
+        COMPONENT i18n 
+        FILES_MATCHING
+		    PATTERN "common/*.*"
+		    PATTERN "*.htm"
+		    #help
+            PATTERN "help*" EXCLUDE
+            PATTERN "images*" EXCLUDE
+		    #PATTERN "*.html"
+		    #PATTERN "*.js"
+		    #PATTERN "*.map"
+		    #PATTERN "*.inv"
+		    #PATTERN "*.png"
+		    #PATTERN "*.gif"
+		    #PATTERN "*.jpg"
+		    #PATTERN "*.css"
+		    #language catalogs
+		    PATTERN "*.mo"
+		    PATTERN "x_*" EXCLUDE
+		    PATTERN "z_*" EXCLUDE
+		    PATTERN "*~" EXCLUDE
+		    #exclude unsupported languages
+		        # ADD_LANG
+		    PATTERN "kk*" EXCLUDE
+		    PATTERN "ru*" EXCLUDE
+)
 
 #generate include files with translations for NSIS installer 
 if(WIN32)
@@ -1062,98 +1204,68 @@ if(WIN32)
 endif()
 
 
-# locale. Common folder
-#install(DIRECTORY ${LENMUS_ROOT_DIR}/locale/common  DESTINATION ${LOCALE_DIR}
-#        FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
-
-
-# locale. eBooks, help files and language catalogs for all languages
-install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
-		DESTINATION ${LOCALE_DIR}
-        FILES_MATCHING
-		    PATTERN "common/*.*"
-		    PATTERN "*.htm"
-		    #books 
-		    PATTERN "*.lmb"
-		    #help
-		    PATTERN "*.html"
-		    PATTERN "*.js"
-		    PATTERN "*.map"
-		    PATTERN "*.inv"
-		    PATTERN "*.png"
-		    PATTERN "*.gif"
-		    PATTERN "*.jpg"
-		    PATTERN "*.css"
-		    #language catalogs
-		    PATTERN "*.mo"
-		    PATTERN "x_*" EXCLUDE
-		    PATTERN "z_*" EXCLUDE
-		    PATTERN "*~" EXCLUDE
-		    #exclude unsupported languages
-		        # ADD_LANG
-		    PATTERN "kk/*.*" EXCLUDE
-		    PATTERN "ru/*.*" EXCLUDE
-		)
-
-    # resources
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${RES_DIR}
-        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${RES_DIR}
-        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_DIR}/desktop")
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
-        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
-install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
-        FILES_MATCHING PATTERN "*.*" 
-                       PATTERN "x_*" EXCLUDE
-                       PATTERN "z_*" EXCLUDE )
-#install(DIRECTORY ${LENMUS_ROOT_DIR}/res/keys   DESTINATION ${RES_DIR}
-#        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
-
-if (LENMUS_USE_LOMSE_SOURCES)
-    #install Lomse fonts
-    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
-            FILES_MATCHING PATTERN "*.ttf" 
-                           PATTERN "*.ttc"
-                           PATTERN "Bravura.otf" )
-endif(LENMUS_USE_LOMSE_SOURCES)
-
-     # xrc
-install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${XRC_DIR}
-        FILES_MATCHING PATTERN "*.xrc"   PATTERN "x_*" EXCLUDE)
-     
-     # templates
-install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${TEMPLATES_DIR}
-        FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
-
-
-# Do platform specific post target stuff
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	#if(DEFINED XDG_APPS_INSTALL_DIR)
-	#	set(DESKTOP_DESTINATION ${XDG_APPS_INSTALL_DIR} )
-	#else()
-	#	set(DESKTOP_DESTINATION "/usr/share/applications" )
-	#endif()
-	#install( FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop DESTINATION ${DESKTOP_DESTINATION} ) 
-	#message(STATUS "XDG_APPS_INSTALL_DIR = ${XDG_APPS_INSTALL_DIR}" ) 
-	#message(STATUS "DESKTOP_DESTINATION = ${DESKTOP_DESTINATION}" ) 
-
-    # Install desktop entry
-    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop DESTINATION "/usr/share/applications" )
-    # Install icon
-    install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png DESTINATION "/usr/share/pixmaps" )
-endif()
-
-
-# 4. samples 
+# Package: lenmus-ebooks
 # ------------------------------------------------------------------------------
 
+# locale folder. eBooks for all languages (English included)
+install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale/
+		DESTINATION ${LOCALE_DIR}
+        COMPONENT ebooks
+        FILES_MATCHING
+		    #books 
+		    PATTERN "*.lmb"
+		    #exclude unsupported languages
+		        # ADD_LANG
+		    PATTERN "x_*" EXCLUDE
+		    PATTERN "z_*" EXCLUDE
+		    PATTERN "kk*" EXCLUDE
+		    PATTERN "ru*" EXCLUDE
+)
+
+
+# Package: lenmus-common
+# ------------------------------------------------------------------------------
+
+# res folder. bitmaps, cursors, desktop, icons, sounds
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${RES_DIR}
+        COMPONENT common
+        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${RES_DIR}
+        COMPONENT common
+        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_DIR}/desktop"
+        COMPONENT common )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
+        COMPONENT common
+        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
+        COMPONENT common
+        FILES_MATCHING PATTERN "*.*" 
+                       PATTERN "*.sf2" EXCLUDE
+                       PATTERN "x_*" EXCLUDE
+                       PATTERN "z_*" EXCLUDE
+        )
+
+# samples 
 #install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
 #	    FILES_MATCHING PATTERN "*.lms"
 #	    PATTERN "test_set" EXCLUDE
+#       COMPONENT common )
 #)
 
 
+
+# Package: lenmus-fonts
+# ------------------------------------------------------------------------------
+if (LENMUS_USE_LOMSE_SOURCES)
+    #install Lomse fonts
+    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
+            COMPONENT fonts
+            FILES_MATCHING PATTERN "*.ttf" 
+                           PATTERN "*.ttc"
+                           PATTERN "Bravura.otf"
+     )
+endif(LENMUS_USE_LOMSE_SOURCES)
 
 
 
@@ -1161,42 +1273,195 @@ endif()
 # CPack section: installers generation
 #///////////////////////////////////////////////////////////////////////////////
 
+# define the components to package
+if (BUILD_PKG_BOUNDLE)
+    set(CPACK_COMPONENTS_ALL main i18n common fonts ebooks)
+    set(CPACK_MONOLITHIC_INSTALL 1)
+    set(CPACK_DEB_COMPONENT_INSTALL 0)
+else()
+    set(CPACK_MONOLITHIC_INSTALL 0)
+    set(CPACK_DEB_COMPONENT_INSTALL 1)
+    if(BUILD_PKG_MAIN)
+        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "main")
+    endif()
+    if(BUILD_PKG_FONTS)
+        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "fonts")
+    endif()
+    if(BUILD_PKG_COMMON)
+        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "common")
+    endif()
+    if(BUILD_PKG_I18N)
+        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "i18n")
+    endif()
+    if(BUILD_PKG_EBOOKS)
+        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "ebooks")
+    endif()
+endif()
+message("CPACK_COMPONENTS_ALL=${CPACK_COMPONENTS_ALL}")
+
+
+
 # Common settings for all installers
 set(CPACK_PACKAGE_VENDOR ${LENMUS_VENDOR_NAME})
-set(CPACK_PACKAGE_DESCRIPTION "A program for aural training and learning music theory")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 set(CPACK_PACKAGE_CONTACT "s.cecilio@gmail.com")
+set(CPACK_PACKAGE_DESCRIPTION "A program for aural training and to learn music theory")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+"Lenmus Phonascus is a totally free program for studying music theory that
+ allows you to focus on specific skills and exercises, on both theory and aural
+ training.
+ .
+ The different activities can be customized to meet your needs. Phonascus
+ allows you to work at your own pace, providing interactive feedback until
+ mastery of each concept is achieved.
+")
 
 if(UNIX)
-	# configure CPack for Debian package
+    #-------------------------------------------------------------------------------------
+	# configure CPack for Debian packages
+    #-------------------------------------------------------------------------------------
 	set(CPACK_GENERATOR "DEB")
-	set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
-	set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_PACKAGE_VERSION}")
-	set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION} )
-	set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${LENMUS_VENDOR_SITE}")
-	set(CPACK_DEBIAN_PACKAGE_SECTION "education")
+	set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron <s.cecilio@gmail.com>")
+    set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${LENMUS_VENDOR_SITE}")
     set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries
 
-	if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
-	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-	else()
-	  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
-	endif() 
-	 
-	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-	if (LENMUS_USE_LOMSE_SOURCES)
-		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-		            libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
-	else()
-		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
-		        libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
-	endif()
-    
-	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
-	message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
+    #auxiliary variable describing current available translations
+        # ADD_LANG
+    set(LENMUS_AVAILABLE_LOCALE
+" Currently available locales are:
+    de (German)                   gl_ES(Galician)
+    el (Greek)                    it (Italian)
+    en (English)                  nl (Dutch)
+    es (Spanish)                  tr (Turkish)
+    eu (Basque)                   zh_CN (Simplified Chinese)
+    fr (French)
+")
+
+    #boundle package
+    set(CPACK_DEBIAN_PACKAGE_NAME "lenmus-boundle")
+    set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
+    set(CPACK_DEBIAN_PACKAGE_SECTION "education") 
+    if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
+      set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+    else()
+      set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+    endif() 
+    string(CONCAT CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}"
+            "_${LENMUS_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
+    if (LENMUS_USE_LOMSE_SOURCES)
+	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0, fluid-soundfont-gm, "
+	            "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
+    else()
+	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0, "
+                "fluid-soundfont-gm, "
+	            "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
+    endif()
+    set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
+"A program for aural training and to learn music theory
+ This package provides the program and all lenmus packages required to run
+ the LenMus Phonascus program.
+ .
+ Lenmus Phonascus is a totally free program for studying music theory that
+ allows you to focus on specific skills and exercises, on both theory and aural
+ training. The  different activities can be customized to meet your needs. 
+ Phonascus allows you to work at your own pace, providing interactive feedback
+ until mastery of each concept is achieved.
+")
+
+    #main package
+    set(CPACK_DEBIAN_MAIN_PACKAGE_SECTION "education")
+    set(CPACK_DEBIAN_MAIN_PACKAGE_NAME "lenmus")
+    set(CPACK_DEBIAN_MAIN_PACKAGE_ARCHITECTURE ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
+    set(CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS})
+    string(APPEND CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS
+        "lenmus-fonts, lenmus-common, lenmus-i18n, lenmus-ebooks ")
+    string(CONCAT CPACK_DEBIAN_MAIN_FILE_NAME
+            "${CPACK_DEBIAN_MAIN_PACKAGE_NAME}"
+            "_${LENMUS_PACKAGE_VERSION}"
+            "_${CPACK_DEBIAN_MAIN_PACKAGE_ARCHITECTURE}.deb"
+          )
+    set(CPACK_COMPONENT_MAIN_DESCRIPTION
+"LenMus Phonascus (aural training and music theory) binaries and related files
+ This package provides the program and related files for the LenMus Phonascus
+ program, a program for aural training and to learn music theory.
+ .
+ Lenmus Phonascus is a totally free program for studying music theory that
+ allows you to focus on specific skills and exercises, on both theory and aural
+ training. The  different activities can be customized to meet your needs. 
+ Phonascus allows you to work at your own pace, providing interactive feedback
+ until mastery of each concept is achieved.
+")
+
+    #ebooks package
+    set(CPACK_DEBIAN_EBOOKS_PACKAGE_SECTION "education")
+    set(CPACK_DEBIAN_EBOOKS_PACKAGE_NAME "lenmus-ebooks")
+    set(CPACK_DEBIAN_EBOOKS_PACKAGE_ARCHITECTURE "all")
+    set(CPACK_DEBIAN_EBOOKS_PACKAGE_DEPENDS "")
+    string(CONCAT CPACK_DEBIAN_EBOOKS_FILE_NAME
+            "${CPACK_DEBIAN_EBOOKS_PACKAGE_NAME}"
+            "_${LENMUS_PACKAGE_VERSION}"
+            "_${CPACK_DEBIAN_EBOOKS_PACKAGE_ARCHITECTURE}.deb"
+          )
+        # ADD_LANG
+    set(CPACK_COMPONENT_EBOOKS_DESCRIPTION
+"LenMus Phonascus eBooks (all current translations)
+ This package provides the eBooks for the LenMus Phonascus program for aural
+ training and to learn music theory.
+ .
+${LENMUS_AVAILABLE_LOCALE}"
+)
+
+    #fonts package
+    set(CPACK_DEBIAN_FONTS_PACKAGE_SECTION "fonts")
+    set(CPACK_DEBIAN_FONTS_PACKAGE_NAME "lenmus-fonts")
+    set(CPACK_DEBIAN_FONTS_PACKAGE_ARCHITECTURE "all")
+    set(CPACK_DEBIAN_FONTS_PACKAGE_DEPENDS "")
+    string(CONCAT CPACK_DEBIAN_FONTS_FILE_NAME
+            "${CPACK_DEBIAN_FONTS_PACKAGE_NAME}"
+            "_${LENMUS_PACKAGE_VERSION}"
+            "_${CPACK_DEBIAN_FONTS_PACKAGE_ARCHITECTURE}.deb"
+          )
+    set(CPACK_COMPONENT_FONTS_DESCRIPTION
+"Fonts needed by lomse library to render music scores and documents"
+)
+
+    #common package
+    set(CPACK_DEBIAN_COMMON_PACKAGE_SECTION "education")
+    set(CPACK_DEBIAN_COMMON_PACKAGE_NAME "lenmus-common")
+    set(CPACK_DEBIAN_COMMON_PACKAGE_ARCHITECTURE "all")
+    set(CPACK_DEBIAN_COMMON_PACKAGE_DEPENDS "")
+    string(CONCAT CPACK_DEBIAN_COMMON_FILE_NAME
+            "${CPACK_DEBIAN_COMMON_PACKAGE_NAME}"
+            "_${LENMUS_PACKAGE_VERSION}"
+            "_${CPACK_DEBIAN_COMMON_PACKAGE_ARCHITECTURE}.deb"
+          )
+    set(CPACK_COMPONENT_COMMON_DESCRIPTION
+"LenMus Phonascus (aural training and music theory) shared files
+ This package provides the support files needed by the LenMus Phonascus program.
+ It includes bitmaps, cursors, desktop, icons and sounds, shared by all users.
+")
+
+    #i18n package
+    set(CPACK_DEBIAN_I18N_PACKAGE_SECTION "education")
+    set(CPACK_DEBIAN_I18N_PACKAGE_NAME "lenmus-i18n")
+    set(CPACK_DEBIAN_I18N_PACKAGE_ARCHITECTURE "all")
+    set(CPACK_DEBIAN_I18N_PACKAGE_DEPENDS "")
+    string(CONCAT CPACK_DEBIAN_I18N_FILE_NAME
+            "${CPACK_DEBIAN_I18N_PACKAGE_NAME}"
+            "_${LENMUS_PACKAGE_VERSION}"
+            "_${CPACK_DEBIAN_I18N_PACKAGE_ARCHITECTURE}.deb"
+          )
+        # ADD_LANG
+    set(CPACK_COMPONENT_I18N_DESCRIPTION
+"Message catalogues and translated files (but not eBooks) for all translations
+${LENMUS_AVAILABLE_LOCALE}"
+)
+
+
 
 elseif(WIN32)
+    #-------------------------------------------------------------------------------------
     # configure CPack for NSIS installer
+    #-------------------------------------------------------------------------------------
     # AWARE: Only variables starting with "CPACK_" are used to customize the installer.
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries

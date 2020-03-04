@@ -3,7 +3,10 @@
 # Building LenMus Phonascus
 # This script MUST BE RUN from <root>/scripts/ folder
 #
-# usage: ./build-lenmus.sh
+# usage:
+#   ./build-lenmus.sh [-p {main | fonts | common | i18n | ebooks}]*
+# Example:
+#   ./build-lenmus.sh -p fonts -p i18n
 #------------------------------------------------------------------------------
 
 
@@ -15,7 +18,56 @@ function DisplayHelp()
     echo ""
     echo "Options:"
     echo "    -h --help        Print this help text."
+    echo "    -p --packages    Selects the packages to generate."
+    echo "                     If option -p is not specified, it will generate"
+    echo "                     the 'main' package containing the binaries."
+    echo "                     Valid options: one or more values"
+    echo "                     { main | fonts | common | i18n | ebooks | boundle | all}* "
+    echo "                     If boundle package is requested all other"
+    echo "                     requested packages are ignored"
     echo ""
+}
+
+#------------------------------------------------------------------------------
+# Check value and save in array
+function SavePackage()
+{
+    #validate package
+    if [ "$1" != "main" -a      \
+         "$1" != "fonts" -a     \
+         "$1" != "common" -a    \
+         "$1" != "i18n" -a      \
+         "$1" != "ebooks" -a      \
+         "$1" != "all" -a      \
+         "$1" != "boundle" ]
+    then
+        echo "Invalid package name '$1'. Generation cancelled."
+        exit $E_NOARGS
+    fi
+
+    #save value
+    packages+=("$1")
+}
+
+#------------------------------------------------------------------------------
+# Avoid incompatible requests
+function SanitizePackages()
+{
+    if [ "${#packages[*]}" -eq "0" ]; then
+        return 0
+    else
+        for ix in ${!packages[*]}
+        do
+            if [ "${packages[$ix]}" == "boundle" ]; then
+                packages=("boundle")
+                return 0
+            fi
+            if [ "${packages[$ix]}" == "all" ]; then
+                packages=("main" "fonts" "common" "i18n" "ebooks")
+                return 0
+            fi
+        done
+    fi
 }
 
 
@@ -31,6 +83,7 @@ E_BUIL_ERROR=68
 enhanced="\e[7m"
 reset="\e[0m"
 
+declare -a packages=()   #declare empty array
 
 #get current directory and check we are running from <root>/scripts.
 #For this I just check that "src" folder exists
@@ -44,7 +97,7 @@ fi
 #parse command line parameters
 # See: https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
 #
-while [[ $# > 0 ]]
+while [[ $# -gt 0 ]]
 do
     key="$1"
 
@@ -53,13 +106,31 @@ do
         DisplayHelp
         exit 1
         ;;
+        -p|--packages)
+        SavePackage "$2"
+        shift       # past argument
+        shift       # past value
+        ;;
         *) # unknown option 
         DisplayHelp
         exit 1
         ;;
     esac
-    shift # past argument or value
 done
+
+#print message with packages to generate
+SanitizePackages
+num_packages=${#packages[*]}
+if [ "$num_packages" -eq "0" ]; then
+    echo "Packages to generate: lenmus main package"
+else
+    echo "Packages to generate: ${num_packages}"
+    for ix in ${!packages[*]}
+    do
+        printf "   %s\n" "lenmus-${packages[$ix]}"
+    done
+fi
+echo
 
 #path for building
 build_path="${root_path}/zz_build-area"
@@ -86,12 +157,23 @@ else
     echo ""
 fi
 
+#prepare package variables for cmake
+if [ "$num_packages" -eq "0" ]; then
+    package=""
+else
+    for ix in ${!packages[*]}
+    do
+        pkg="$(echo ${packages[$ix]} | tr '[a-z]' '[A-Z]')"
+        package+="-DBUILD_PKG_${pkg}:BOOL=ON "
+    done
+fi
+echo "package='${package}'"
+
 # create makefile
 cd "${build_path}"
 echo -e "${enhanced}Creating makefile${reset}"
-cmake -G "Unix Makefiles" ${sources}  || exit 1
+cmake -G "Unix Makefiles" ${package} ${sources}  || exit 1
 echo ""
-
 
 #build program
 num_jobs=`getconf _NPROCESSORS_ONLN`	#number of jobs to create (as many as the number of processors)
@@ -101,6 +183,12 @@ make -j$num_jobs || exit 1
 end_time=$(date -u +"%s")
 secs=$(($end_time-$start_time))
 echo "Build time: $(($secs / 60))m:$(($secs % 60))s"
+
+#prepare package:
+echo -e "${enhanced}Creating package${reset}"
+cd "${build_path}" || exit $E_BADPATH
+make package || exit 1
+echo "-- Done"
 
 exit $E_SUCCESS
 
