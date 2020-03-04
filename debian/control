@@ -16,11 +16,13 @@ Build-Depends: debhelper (>= 8.0.0)
  , libpng++-dev
  , zlib1g (>= 1:1.2.1)
  , libfluidsynth-dev
+ , fluid-soundfont-gm
+
 
 Package: lenmus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: program to learn music theory
+Description: A program for aural training and to learn music theory
  Phonascus is a totally free program for studying music theory that allows
  you to focus on specific skills and exercises, on both theory and aural 
  training. The different activities can be customized to meet your needs. 
@@ -29,8 +31,5 @@ Description: program to learn music theory
  .
  Phonascus aims to create, as a community, the best free program for 
  music students, to help them in their studies. Phonascus has no 
- commercial purpose.
- .
- You can find more information at 
- http://www.lenmus.org/en/phonascus/intro
+ commercial purposes.
 

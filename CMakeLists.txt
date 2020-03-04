@@ -1313,6 +1313,10 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
  The different activities can be customized to meet your needs. Phonascus
  allows you to work at your own pace, providing interactive feedback until
  mastery of each concept is achieved.
+ .
+ Phonascus aims to create, as a community, the best free program for 
+ music students, to help them in their studies. Phonascus has no 
+ commercial purposes.
 ")
 
 if(UNIX)
@@ -1362,9 +1366,15 @@ if(UNIX)
  .
  Lenmus Phonascus is a totally free program for studying music theory that
  allows you to focus on specific skills and exercises, on both theory and aural
- training. The  different activities can be customized to meet your needs. 
- Phonascus allows you to work at your own pace, providing interactive feedback
- until mastery of each concept is achieved.
+ training.
+ .
+ The different activities can be customized to meet your needs. Phonascus
+ allows you to work at your own pace, providing interactive feedback until
+ mastery of each concept is achieved.
+ .
+ Phonascus aims to create, as a community, the best free program for 
+ music students, to help them in their studies. Phonascus has no 
+ commercial purposes.
 ")
 
     #main package

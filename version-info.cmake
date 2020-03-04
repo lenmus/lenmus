@@ -13,11 +13,23 @@
 #    LENMUS_VERSION_LONG    e.g.: 5.4.2-fa23b7f4
 #    LENMUS_VERSION_GIT     e.g.: 'Release_5.4.2-46-g557537bc-dirty'
 #
+# Version numbering scheme:
+#    5.7.3a      alpha (unfinished version under development)
+#    5.7.3b      beta (finished version being tested)
+#    5.7.3rc     release candidate (finished version in preparation for release)
+#    5.7.3       final public release
+#
+# IMPORTANT:
+#   When changing version remeber to update/review debian/changelog file
+#   Debian/changelog file distribution value:
+#     alpha, beta    - UNRELEASED
+#     rc             - unstable / experimental
+#     public reelase - stable
 #-------------------------------------------------------------------------------------
 
 set( LENMUS_VERSION_MAJOR 5 )
 set( LENMUS_VERSION_MINOR 6 )
-set( LENMUS_VERSION_PATCH "1x" )  #MUST BE string, e.g.: "3", "3-beta", "0"
+set( LENMUS_VERSION_PATCH "1a" )  #MUST BE string, e.g.: "3", "3-beta", "0"
 
 # build version string for installer name
 set( LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )
