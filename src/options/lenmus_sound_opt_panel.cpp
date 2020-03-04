@@ -333,7 +333,7 @@ void OptInternalSynthPanel::save_current_settings()
 void OptInternalSynthPanel::on_button_change(wxCommandEvent& event)
 {
     Paths* pPaths = m_appScope.get_paths();
-    wxString soundsPath = pPaths->GetSoundsPath();
+    wxString soundsPath = pPaths->GetSoundFontsPath();
 
     // ask for the file to open/import
     wxString sFilter = "All supported SoundFonts|*.sf2;*.sf3";

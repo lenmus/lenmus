@@ -246,6 +246,11 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
                             , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
 
+    //6. Other files from system
+    wxFileName oSoundFonts;
+    oSoundFonts.AssignDir( LENMUS_SOUNDFONT_PATH );
+    oSoundFonts.Normalize();
+
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     //Windows Release version
     wxStandardPaths& stdPaths = wxStandardPaths::Get();
@@ -325,12 +330,20 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     }
 
 #endif
+
+    //6. Other files from system
+    wxFileName oSoundFonts;
+    oSoundFonts.AssignDir( LENMUS_SOUNDFONT_PATH );
+    oSoundFonts.Normalize();
+
+
     LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Config root = %s", oConfigHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("sHome = %s", sHome.ToStdString().c_str() );
     LOMSE_LOG_INFO("Data root = %s", oDataHome.GetFullPath().ToStdString().c_str() );
-    LOMSE_LOG_INFO("Logs root = %s\n", oLogsHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Logs root = %s", oLogsHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("SoundFonts = %s\n", oSoundFonts.GetFullPath().ToStdString().c_str() );
 
     //determine paths for subfolders
     wxFileName path;
@@ -396,6 +409,10 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+
+    // Group 6. Other folders
+    m_sSoundFonts = oSoundFonts.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -450,13 +467,15 @@ void Paths::log_paths()
     LOMSE_LOG_INFO("Templates = %s", GetTemplatesPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Config = %s", GetConfigPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Log = %s", GetLogPath().ToStdString().c_str() );
-    LOMSE_LOG_INFO("Fonts = %s\n", GetFontsPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Fonts = %s", GetFontsPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("SoundFonts = %s\n", GetSoundFontsPath().ToStdString().c_str() );
 
     wxLogMessage("Install root = %s", GetBinPath());
     wxLogMessage("Shared root = %s", GetFontsPath());
     wxLogMessage("Config root = %s", GetConfigPath());
     wxLogMessage("Data root = %s", GetScoresPath());
     wxLogMessage("Logs root = %s", GetLogPath());
+    wxLogMessage("Sound fonts = %s", GetSoundFontsPath());
 }
 
 //---------------------------------------------------------------------------------------

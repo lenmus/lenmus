@@ -55,6 +55,7 @@ private:
     wxString    m_sImages;      //path for resource images
     wxString    m_sCursors;     //path for resource cursors
     wxString    m_sSounds;      //path for wave sounds
+    wxString    m_sSoundFonts;  //path for default sound font FluidR3_GM.sf2
     wxString    m_sConfig;      //path for user configuration file
     wxString    m_sLogs;        //path for logs and dumps
     wxString    m_sFonts;       //path for resource fonts
@@ -75,6 +76,7 @@ public:
     wxString GetImagePath() { return m_sImages; }
     wxString GetCursorsPath() { return m_sCursors; }
     wxString GetSoundsPath() { return m_sSounds; }
+    wxString GetSoundFontsPath() { return m_sSoundFonts; }
     wxString GetLocaleRootPath() { return m_sLocaleRoot; }
     wxString GetScoresPath() { return m_sScores; }
     wxString GetTestScoresPath() { return m_sTestScores; }
