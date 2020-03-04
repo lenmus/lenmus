@@ -31,12 +31,6 @@ build_path="${root_path}/zz_build-area"
 
 echo -e "${enhanced}Local installation of LenMus program${reset}"
 
-#prepare package:
-echo -e "${enhanced}Creating package${reset}"
-cd "${build_path}" || exit $E_BADPATH
-make package || exit 1
-echo "-- Done"
-
 #find new package name
 app=`ls | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
 

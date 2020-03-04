@@ -174,9 +174,9 @@ void FluidSynthesizer::load_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     Paths* pPaths = m_appScope.get_paths();
-    wxString soundsPath = pPaths->GetSoundsPath();
+    wxString soundsPath = pPaths->GetSoundFontsPath();
 
-    wxString soundfont(soundsPath + "/FluidR3_GM.sf2");
+    wxString soundfont(soundsPath + "FluidR3_GM.sf2");
     wxString file;
     pPrefs->Read("/Midi/SoundFont", &file, soundfont);
 
@@ -196,9 +196,9 @@ void FluidSynthesizer::save_user_preferences()
 void FluidSynthesizer::reset_to_defaults()
 {
     Paths* pPaths = m_appScope.get_paths();
-    wxString soundsPath = pPaths->GetSoundsPath();
+    wxString soundsPath = pPaths->GetSoundFontsPath();
 
-    wxString soundfont(soundsPath + "/FluidR3_GM.sf2");
+    wxString soundfont(soundsPath + "FluidR3_GM.sf2");
     m_soundfont = to_std_string(soundfont);
     m_fValid = !load_soundfont(m_soundfont);
 }
