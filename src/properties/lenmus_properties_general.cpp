@@ -220,7 +220,7 @@ void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool WXUNUS
         //get current value
         wxString sValue;
         wxColour color;
-        int iValue;
+        int iValue = 0;
         ControlItem item = *it;
         switch (item.ctrlType)
         {
