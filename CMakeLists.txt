@@ -997,10 +997,6 @@ endif(BUILD_PROGRAM)
 # - i18n: the message catalogues for lenmus and related translated files
 # - ebooks: the eBooks (all translations).
 #
-#
-#
-#
-#
 #///////////////////////////////////////////////////////////////////////////////
 
 # set installation paths
@@ -1209,7 +1205,7 @@ endif()
 
 # locale folder. eBooks for all languages (English included)
 install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale/
-		DESTINATION ${LOCALE_DIR}
+		DESTINATION ${LOCALE_DIR}/locale
         COMPONENT ebooks
         FILES_MATCHING
 		    #books 
@@ -1411,7 +1407,6 @@ if(UNIX)
             "_${LENMUS_PACKAGE_VERSION}"
             "_${CPACK_DEBIAN_EBOOKS_PACKAGE_ARCHITECTURE}.deb"
           )
-        # ADD_LANG
     set(CPACK_COMPONENT_EBOOKS_DESCRIPTION
 "LenMus Phonascus eBooks (all current translations)
  This package provides the eBooks for the LenMus Phonascus program for aural
@@ -1460,7 +1455,6 @@ ${LENMUS_AVAILABLE_LOCALE}"
             "_${LENMUS_PACKAGE_VERSION}"
             "_${CPACK_DEBIAN_I18N_PACKAGE_ARCHITECTURE}.deb"
           )
-        # ADD_LANG
     set(CPACK_COMPONENT_I18N_DESCRIPTION
 "Message catalogues and translated files (but not eBooks) for all translations
 ${LENMUS_AVAILABLE_LOCALE}"
@@ -1472,7 +1466,7 @@ elseif(WIN32)
     #-------------------------------------------------------------------------------------
     # configure CPack for NSIS installer
     #-------------------------------------------------------------------------------------
-    # AWARE: Only variables starting with "CPACK_" are used to customize the installer.
+    # AWARE: Only variables starting with "CPACK_" can be used to customize the installer.
     set(CPACK_GENERATOR "NSIS")
     set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries
     set(CPACK_PACKAGE_NAME "lenmus")
