@@ -400,8 +400,9 @@ HelpSystem* ApplicationScope::get_help_controller()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::initialize_help(wxWindow* pParent)
 {
-    m_pHelp = LENMUS_NEW HelpSystem(pParent, *this);
-    m_pHelp->initialize();
+    //TODO: Un-comment when the Help system is again needed
+//    m_pHelp = LENMUS_NEW HelpSystem(pParent, *this);
+//    m_pHelp->initialize();
 }
 
 
