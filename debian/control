@@ -1,9 +1,9 @@
 Source: lenmus
-Section: sound
+Section: education
 Priority: optional
 Maintainer: Cecilio Salmeron <s.cecilio@gmail.com>
 Standards-Version: 3.9.3
-Homepage: http://www.lenmus.org/en/phonascus/intro
+Homepage: http://www.lenmus.org/
 Build-Depends: debhelper (>= 8.0.0)
  , cdbs
  , cmake (>= 3.1)
@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 8.0.0)
  , fluid-soundfont-gm
 
 
-Package: lenmus
+Package: lenmus-all
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: A program for aural training and to learn music theory

@@ -838,7 +838,7 @@ wxString IdfyIntervalsCtrol::prepare_scores()
         m_nRespIndex = lmIDX_TONE;
     else
     {
-        int iRow;
+        int iRow = 0;
         int iCol = m_fpIntv.get_number() - 2;
         switch (m_fpIntv.get_type())
         {

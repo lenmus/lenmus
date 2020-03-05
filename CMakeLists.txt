@@ -397,7 +397,7 @@ message("Checking for LenMus dependencies:")
 # package 'fluid-soundfont-gm'
 set (INSTALL_SOUNDFONT 0)
 find_path(FLUIDR3_PATH
-          NAMES FluidR3_GM.sf2 "FluidR3 GM.sf2"
+          NAMES FluidR3_GM.sf2
           PATHS
               /usr/share/sounds/sf2     # Ubuntu and possibly all Debian derivatives
               /usr/share/soundfonts     # Red Hat
@@ -434,10 +434,10 @@ if(FLUIDR3_PATH_NOTFOUND)
         message(FATAL_ERROR "FluidR3_GM.sf2 soundfont not found. Aborting...")
     endif(LENMUS_DOWNLOAD_SOUNDFONT)
 
-else()
+else(FLUIDR3_PATH_NOTFOUND)
     set(LENMUS_SOUNDFONT_PATH ${FLUIDR3_PATH})
     message(STATUS "FluidR3_GM.sf2 found in ${FLUIDR3_PATH}")
-endif()
+endif(FLUIDR3_PATH_NOTFOUND)
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -1341,7 +1341,7 @@ if(UNIX)
 ")
 
     #boundle package
-    set(CPACK_DEBIAN_PACKAGE_NAME "lenmus-boundle")
+    set(CPACK_DEBIAN_PACKAGE_NAME "lenmus-all")
     set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
     set(CPACK_DEBIAN_PACKAGE_SECTION "education") 
     if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
