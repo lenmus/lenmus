@@ -21,7 +21,7 @@ Build-Depends: debhelper (>= 8.0.0)
 
 Package: lenmus-all
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: fluid-soundfont-gm, ${shlibs:Depends}, ${misc:Depends}
 Description: A program for aural training and to learn music theory
  Phonascus is a totally free program for studying music theory that allows
  you to focus on specific skills and exercises, on both theory and aural 
