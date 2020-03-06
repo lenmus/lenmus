@@ -657,7 +657,7 @@ void TheApp::set_up_locale(wxString lang)
             "Please, verify that any required language codepages are installed in your system.",
             sLangName.wx_str()));
     }
-    else
+    else if (lang != "en")
     {
         wxString sPath = pPaths->GetLocaleRootPath();
         m_pLocale->AddCatalogLookupPathPrefix( sPath );
