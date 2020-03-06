@@ -1579,7 +1579,7 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 
 
     pRequest->set_font_fullname( path + fontfile );
-//    wxLogMessage("[MainFrame::get_font_filename] fontfile %s", fontfile.wx_str());
+    LOMSE_LOG_INFO("[MainFrame::get_font_filename] fontfile %s", fontfile.c_str());
 
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
