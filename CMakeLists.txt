@@ -176,6 +176,9 @@ OPTION(LENMUS_ENABLE_UNIT_TESTS
 OPTION(LENMUS_DOWNLOAD_SOUNDFONT
     "Download FluidR3 soundfont if not present in source tree"
 	OFF)
+OPTION(LENMUS_DOWNLOAD_BRAVURA_FONT
+    "Download Bravura.otf font if not present in source tree"
+	ON)
 OPTION(BUILD_PKG_MAIN
     "Build package 'lenmus-main': Binaries and related files"
     "OFF")
@@ -402,10 +405,10 @@ find_path(FLUIDR3_PATH
               /usr/share/sounds/sf2     # Ubuntu and possibly all Debian derivatives
               /usr/share/soundfonts     # Red Hat
               ${LENMUS_ROOT_DIR}/res/sounds     #local builds
-              ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
+#             ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
          )
 
-if(FLUIDR3_PATH_NOTFOUND)
+if("${FLUIDR3_PATH}" STREQUAL "FLUIDR3_PATH-NOTFOUND")
     if (LENMUS_DOWNLOAD_SOUNDFONT)
         message(STATUS "FluidR3_GM.sf2 soundfont not found. Downloading it ...")
         file(DOWNLOAD 
@@ -434,10 +437,96 @@ if(FLUIDR3_PATH_NOTFOUND)
         message(FATAL_ERROR "FluidR3_GM.sf2 soundfont not found. Aborting...")
     endif(LENMUS_DOWNLOAD_SOUNDFONT)
 
-else(FLUIDR3_PATH_NOTFOUND)
+else()
     set(LENMUS_SOUNDFONT_PATH ${FLUIDR3_PATH})
     message(STATUS "FluidR3_GM.sf2 found in ${FLUIDR3_PATH}")
-endif(FLUIDR3_PATH_NOTFOUND)
+endif()
+
+if (WIN32)
+    #For Unix LenMus can use installed fonts, so it is not necessary to package 
+    #the necessary fonts
+
+    #Check for Liberation sans fonts required by lomse
+    # package 'fonts-liberation'
+    set (INSTALL_LIBERATION_FONT 0)
+    find_path(LIBERATION_FONT_PATH
+              NAMES LiberationSans-Regular.ttf
+              PATHS
+                  /usr/share/fonts/truetype/liberation     # Ubuntu and possibly all Debian derivatives, Red Hat
+                  /usr/share/fonts/truetype/liberation2    # Ubuntu and possibly all Debian derivatives
+                  /usr/share/fonts/truetype                # ?
+                  ${LENMUS_ROOT_DIR}/res/fonts             # local builds
+             )
+    if("${LIBERATION_FONT_PATH}" STREQUAL "LIBERATION_FONT_PATH-NOTFOUND")
+        message(FATAL_ERROR "Liberation fonts not found. Aborting...")
+    else()
+        set(LENMUS_LIBERATION_FONT_PATH ${LIBERATION_FONT_PATH})
+        message(STATUS "Liberation fonts found in ${LIBERATION_FONT_PATH}")
+    endif()
+
+
+    #Check for Chinese fonts required by lomse
+    # package 'fonts-wqy-zenhei'
+    set (INSTALL_WQY_ZENHEI_FONT 0)
+    find_path(WQY_ZENHEI_FONT_PATH
+              NAMES wqy-microhei.ttc
+              PATHS
+                  /usr/share/fonts/truetype/wqy/           # Ubuntu and possibly all Debian derivatives, Red Hat
+                  /usr/share/fonts/truetype                # ?
+                  ${LENMUS_ROOT_DIR}/res/fonts             # local builds
+             )
+    if("${WQY_ZENHEI_FONT_PATH}" STREQUAL "WQY_ZENHEI_FONT_PATH-NOTFOUND")
+        message(FATAL_ERROR "wqy-zenhei fonts not found. Aborting...")
+    else()
+        set(LENMUS_WQY_ZENHEI_FONT_PATH ${WQY_ZENHEI_FONT_PATH})
+        message(STATUS "wqy-zenhei fonts found in ${WQY_ZENHEI_FONT_PATH}")
+    endif()
+
+
+    #Check for Bravura font required by lomse
+    # package 'steinberg-bravura-fonts', 'lenmus-bravura-fonts'
+    set (INSTALL_BRAVURA_FONT 0)
+    find_path(BRAVURA_FONT_PATH
+              NAMES Bravura.otf
+              PATHS
+                  /usr/share/fonts/truetype/               # Red Hat
+                  ${LENMUS_ROOT_DIR}/res/fonts             # local builds
+             )
+    if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
+        if (LENMUS_DOWNLOAD_BRAVURA_FONT)
+            message(STATUS "Bravura font not found. Downloading it ...")
+            file(DOWNLOAD 
+                "https://github.com/steinbergmedia/bravura/raw/master/redist/otf/Bravura.otf"
+                "${LENMUS_ROOT_DIR}/res/fonts/Bravura.otf"
+                SHOW_PROGRESS
+    #            EXPECTED_HASH MD5=863c90e6f99c264a1747856130ebdc3c
+                STATUS status
+                LOG log
+            )
+
+            list(GET status 0 status_code)
+            list(GET status 1 status_string)
+            
+            if(NOT status_code EQUAL 0)
+                message(FATAL_ERROR "Error downloading Bravura font. Status_code: ${status_code}
+                    status_string: ${status_string}
+                    log: ${log}
+                    ")
+            endif()
+            message(STATUS "Bravura font downloaded.")
+            set(LENMUS_BRAVURA_FONT_PATH "${LENMUS_ROOT_DIR}/res/fonts/")
+            set(INSTALL_BRAVURA_FONT 1)
+
+        else(LENMUS_DOWNLOAD_BRAVURA_FONT)
+            message(FATAL_ERROR "Bravura font not found. Aborting...")
+        endif(LENMUS_DOWNLOAD_BRAVURA_FONT)
+
+    else()
+        set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
+        message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
+    endif()
+
+endif(UNIX)
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -611,6 +700,41 @@ if( PNG_FOUND )
 else()
     message(SEND_ERROR "libpng package not found.")
 endif(PNG_FOUND)
+
+
+# Check for fontconfig: required by Lomse
+if (UNIX)
+    if(${CMAKE_VERSION} VERSION_LESS "3.14.7") 
+        #cmake 3.10 does not includes the FindFontConfig.cmake module.
+        find_path(FONTCONFIG_INCLUDE_DIR fontconfig/fontconfig.h)
+        find_library(FONTCONFIG_LIBRARIES NAMES fontconfig)
+        if (("${FONTCONFIG_INCLUDE_DIR}" STREQUAL "FONTCONFIG_INCLUDE_DIR-NOTFOUND")
+            OR ("${FONTCONFIG_LIBRARIES}" STREQUAL "FONTCONFIG_LIBRARIES-NOTFOUND")
+           )
+            set(FONTCONFIG_FOUND FALSE)
+        else()
+            set(FONTCONFIG_FOUND TRUE)
+        endif()
+    else()
+        #cmake > 3.14.7
+        find_package(FontConfig REQUIRED)
+    endif()
+
+    if(FONTCONFIG_FOUND )
+        include_directories( ${FONTCONFIG_INCLUDE_DIR}/fontconfig )
+        link_libraries( ${FONTCONFIG_LIBRARIES} )
+        message(STATUS "fontconfig found: libraries= ${FONTCONFIG_LIBRARIES}" )
+        message(STATUS "fontconfig found: include= ${FONTCONFIG_INCLUDE_DIR}/fontconfig" )
+    else()
+        message(FATAL_ERROR "fontconfig package not found.")
+    endif()
+endif()
+
+
+#======= End of dependencies checking ========================================
+
+
+
 
 #process template header config file to replace CMake settings
 configure_file(
@@ -927,7 +1051,7 @@ target_link_libraries ( ${LENMUS}
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
             ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
 			${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
-			${ZLIB_LIBRARIES}
+			${ZLIB_LIBRARIES} ${FONTCONFIG_LIBRARY}
 )
 
 
@@ -1250,19 +1374,19 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
 #)
 
 
-
-# Package: lenmus-fonts
-# ------------------------------------------------------------------------------
-if (LENMUS_USE_LOMSE_SOURCES)
-    #install Lomse fonts
-    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
-            COMPONENT fonts
-            FILES_MATCHING PATTERN "*.ttf" 
-                           PATTERN "*.ttc"
-                           PATTERN "Bravura.otf"
-     )
-endif(LENMUS_USE_LOMSE_SOURCES)
-
+if (WIN32)
+    # Package: lenmus-fonts
+    # ------------------------------------------------------------------------------
+    if (LENMUS_USE_LOMSE_SOURCES)
+        #install Lomse fonts
+        install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
+                COMPONENT fonts
+                FILES_MATCHING PATTERN "*.ttf" 
+                               PATTERN "*.ttc"
+                               PATTERN "Bravura.otf"
+         )
+    endif(LENMUS_USE_LOMSE_SOURCES)
+endif(WIN32)
 
 
 #///////////////////////////////////////////////////////////////////////////////
