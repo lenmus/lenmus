@@ -53,7 +53,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # In Linux, the installation is divided into several packages:
 # - lenmus: (main package) binaries and related files
-# - lenmus-fonts: fonts needed by lomse
 # - lenmus-common: common support files not bound to any particular
 #       release, architecture or language, such as icons, samples and templates.
 # - lenmus-i18n: the message catalogues for lenmus and related translated files
@@ -65,7 +64,7 @@
 # enable the option for the desired package:
 #   cmake -DBUILD_PKG_<pkg>:BOOL=ON ...
 # Replace <pkg> by the desired package name:
-#   pkg = { MAIN | FONTS | COMMON | I18N | EBOOKS | BOUNDLE }
+#   pkg = { MAIN | COMMON | I18N | EBOOKS | BOUNDLE }
 # For instance, to build lenmus-i18n and lenmus-ebooks packages:
 #   cmake -DBUILD_PKG_I18N:BOOL=ON -DBUILD_PKG_EBOOKS:BOOL=ON ...
 # Including the option to build the boundle package will force to ignore
@@ -89,6 +88,26 @@
 # If you would like that this cmake script will download the FluidR3_GM.sf2
 # sound font in case it is not found in the system, you can use the option:
 #   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=ON ...
+#
+#
+# Bravura music font required to render scores
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# By default, this font must not be included in Linux packages and the required
+# font package must be set as an install dependency.
+# As it is necessary to install it in Windows, and as in some Linux distros
+# there is no package to install this font, this cmake scripts includes this
+# font in the installer. To prevent this, you can use the option:
+#   cmake -DLENMUS_INSTALL_BRAVURA_FONT:BOOL=OFF ...
+#
+# When it is requested that Bravura font be included in the package, this
+# cmake script will download the Bravura.otf font in case it is not found in
+# the system. You can use the option:
+#   cmake -DLENMUS_DOWNLOAD_BRAVURA_FONT:BOOL=OFF ...
+# to force not to download it if not found in the system. But if the font is
+# not found, it will not be installed in any case.
+#
+#
+#
 #
 #-------------------------------------------------------------------------------------
 # Modifying this script
@@ -179,11 +198,11 @@ OPTION(LENMUS_DOWNLOAD_SOUNDFONT
 OPTION(LENMUS_DOWNLOAD_BRAVURA_FONT
     "Download Bravura.otf font if not present in source tree"
 	ON)
+OPTION(LENMUS_INSTALL_BRAVURA_FONT
+    "Include Bravura music font in the package in the main and boundle packages"
+	ON)
 OPTION(BUILD_PKG_MAIN
     "Build package 'lenmus-main': Binaries and related files"
-    "OFF")
-OPTION(BUILD_PKG_FONTS
-    "Build package 'lenmus-fonts': Fonts needed for rendering music scores and eBooks"
     "OFF")
 OPTION(BUILD_PKG_COMMON
     "Build package 'lenmus-common': Common support files, such as icons"
@@ -361,7 +380,6 @@ if( WIN32 )
 elseif( UNIX )
     if((NOT BUILD_PKG_BOUNDLE)
         AND (NOT BUILD_PKG_MAIN)
-        AND (NOT BUILD_PKG_FONTS)
         AND (NOT BUILD_PKG_COMMON)
         AND (NOT BUILD_PKG_I18N)
         AND (NOT BUILD_PKG_EBOOKS)
@@ -373,7 +391,6 @@ endif()
 
 message("Packages to build:")
 message(STATUS "BUILD_PKG_MAIN = ${BUILD_PKG_MAIN}")
-message(STATUS "BUILD_PKG_FONTS = ${BUILD_PKG_FONTS}")
 message(STATUS "BUILD_PKG_COMMON = ${BUILD_PKG_COMMON}")
 message(STATUS "BUILD_PKG_I18N = ${BUILD_PKG_I18N}")
 message(STATUS "BUILD_PKG_EBOOKS = ${BUILD_PKG_EBOOKS}")
@@ -442,91 +459,54 @@ else()
     message(STATUS "FluidR3_GM.sf2 found in ${FLUIDR3_PATH}")
 endif()
 
-if (WIN32)
-    #For Unix LenMus can use installed fonts, so it is not necessary to package 
-    #the necessary fonts
 
-    #Check for Liberation sans fonts required by lomse
-    # package 'fonts-liberation'
-    set (INSTALL_LIBERATION_FONT 0)
-    find_path(LIBERATION_FONT_PATH
-              NAMES LiberationSans-Regular.ttf
-              PATHS
-                  /usr/share/fonts/truetype/liberation     # Ubuntu and possibly all Debian derivatives, Red Hat
-                  /usr/share/fonts/truetype/liberation2    # Ubuntu and possibly all Debian derivatives
-                  /usr/share/fonts/truetype                # ?
-                  ${LENMUS_ROOT_DIR}/res/fonts             # local builds
-             )
-    if("${LIBERATION_FONT_PATH}" STREQUAL "LIBERATION_FONT_PATH-NOTFOUND")
-        message(FATAL_ERROR "Liberation fonts not found. Aborting...")
-    else()
-        set(LENMUS_LIBERATION_FONT_PATH ${LIBERATION_FONT_PATH})
-        message(STATUS "Liberation fonts found in ${LIBERATION_FONT_PATH}")
-    endif()
+# Check for Bravura music font required to render scores
+set (INSTALL_BRAVURA_FONT ${LENMUS_INSTALL_BRAVURA_FONT})
+find_path(BRAVURA_FONT_PATH
+          NAMES Bravura.otf
+          PATHS
+              /usr/share/fonts/truetype/               # Red Hat
+              ${LENMUS_ROOT_DIR}/res/z_fonts           # local builds
+         )
+if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
+    if (LENMUS_DOWNLOAD_BRAVURA_FONT)
+        message(STATUS "Bravura font not found. Downloading it ...")
+        file(DOWNLOAD 
+            "https://github.com/steinbergmedia/bravura/raw/master/redist/otf/Bravura.otf"
+            "${LENMUS_ROOT_DIR}/res/fonts/Bravura.otf"
+            SHOW_PROGRESS
+#            EXPECTED_HASH MD5=863c90e6f99c264a1747856130ebdc3c
+            STATUS status
+            LOG log
+        )
 
+        list(GET status 0 status_code)
+        list(GET status 1 status_string)
+        
+        if(NOT status_code EQUAL 0)
+            message(FATAL_ERROR "Error downloading Bravura font. Status_code: ${status_code}
+                status_string: ${status_string}
+                log: ${log}
+                ")
+        endif()
+        message(STATUS "Bravura font downloaded.")
+        set(LENMUS_BRAVURA_FONT_PATH "${LENMUS_ROOT_DIR}/res/fonts/")
+        set(INSTALL_BRAVURA_FONT ON)
 
-    #Check for Chinese fonts required by lomse
-    # package 'fonts-wqy-zenhei'
-    set (INSTALL_WQY_ZENHEI_FONT 0)
-    find_path(WQY_ZENHEI_FONT_PATH
-              NAMES wqy-zenhei.ttc
-              PATHS
-                  /usr/share/fonts/truetype/wqy/           # Ubuntu and possibly all Debian derivatives, Red Hat
-                  /usr/share/fonts/truetype                # ?
-                  ${LENMUS_ROOT_DIR}/res/fonts             # local builds
-             )
-    if("${WQY_ZENHEI_FONT_PATH}" STREQUAL "WQY_ZENHEI_FONT_PATH-NOTFOUND")
-        message(FATAL_ERROR "wqy-zenhei fonts not found. Aborting...")
-    else()
-        set(LENMUS_WQY_ZENHEI_FONT_PATH ${WQY_ZENHEI_FONT_PATH})
-        message(STATUS "wqy-zenhei fonts found in ${WQY_ZENHEI_FONT_PATH}")
-    endif()
-
-
-    #Check for Bravura font required by lomse
-    # package 'steinberg-bravura-fonts', 'lenmus-bravura-fonts'
-    set (INSTALL_BRAVURA_FONT 0)
-    find_path(BRAVURA_FONT_PATH
-              NAMES Bravura.otf
-              PATHS
-                  /usr/share/fonts/truetype/               # Red Hat
-                  ${LENMUS_ROOT_DIR}/res/fonts             # local builds
-             )
-    if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
-        if (LENMUS_DOWNLOAD_BRAVURA_FONT)
-            message(STATUS "Bravura font not found. Downloading it ...")
-            file(DOWNLOAD 
-                "https://github.com/steinbergmedia/bravura/raw/master/redist/otf/Bravura.otf"
-                "${LENMUS_ROOT_DIR}/res/fonts/Bravura.otf"
-                SHOW_PROGRESS
-    #            EXPECTED_HASH MD5=863c90e6f99c264a1747856130ebdc3c
-                STATUS status
-                LOG log
-            )
-
-            list(GET status 0 status_code)
-            list(GET status 1 status_string)
-            
-            if(NOT status_code EQUAL 0)
-                message(FATAL_ERROR "Error downloading Bravura font. Status_code: ${status_code}
-                    status_string: ${status_string}
-                    log: ${log}
-                    ")
-            endif()
-            message(STATUS "Bravura font downloaded.")
-            set(LENMUS_BRAVURA_FONT_PATH "${LENMUS_ROOT_DIR}/res/fonts/")
-            set(INSTALL_BRAVURA_FONT 1)
-
-        else(LENMUS_DOWNLOAD_BRAVURA_FONT)
+    else(LENMUS_DOWNLOAD_BRAVURA_FONT)
+        if (WIN32)
             message(FATAL_ERROR "Bravura font not found. Aborting...")
-        endif(LENMUS_DOWNLOAD_BRAVURA_FONT)
+        else()
+            message(STATUS "Bravura font not found. It will not be installed.")
+        endif()
+        set(INSTALL_BRAVURA_FONT OFF)
+    endif(LENMUS_DOWNLOAD_BRAVURA_FONT)
 
-    else()
-        set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
-        message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
-    endif()
+else()
+    set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
+    message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
+endif()
 
-endif(WIN32)
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -1115,7 +1095,6 @@ endif(BUILD_PROGRAM)
 #
 # In Linux, the installation is divided into several packages:
 # - main: binaries and related files
-# - fonts: fonts needed by lomse
 # - common: common support files not bound to any particular
 #       release, architecture or language, such as icons, samples and templates.
 # - i18n: the message catalogues for lenmus and related translated files
@@ -1224,6 +1203,12 @@ endif(UNIX)
 if(INSTALL_SOUNDFONT)
     install(FILES ${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2
             DESTINATION ${RES_DIR}/sounds
+            COMPONENT main )
+endif()
+
+if(INSTALL_BRAVURA_FONT)
+    install(FILES ${BRAVURA_FONT_PATH}/Bravura.otf
+            DESTINATION ${RES_DIR}/fonts
             COMPONENT main )
 endif()
 
@@ -1376,20 +1361,6 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
 #)
 
 
-if (WIN32)
-    # Package: lenmus-fonts
-    # ------------------------------------------------------------------------------
-    if (LENMUS_USE_LOMSE_SOURCES)
-        #install Lomse fonts
-        install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
-                COMPONENT fonts
-                FILES_MATCHING PATTERN "*.ttf" 
-                               PATTERN "*.ttc"
-                               PATTERN "Bravura.otf"
-         )
-    endif(LENMUS_USE_LOMSE_SOURCES)
-endif(WIN32)
-
 
 #///////////////////////////////////////////////////////////////////////////////
 # CPack section: installers generation
@@ -1397,7 +1368,7 @@ endif(WIN32)
 
 # define the components to package
 if (BUILD_PKG_BOUNDLE)
-    set(CPACK_COMPONENTS_ALL main i18n common fonts ebooks)
+    set(CPACK_COMPONENTS_ALL main i18n common ebooks)
     set(CPACK_MONOLITHIC_INSTALL 1)
     set(CPACK_DEB_COMPONENT_INSTALL 0)
 else()
@@ -1405,9 +1376,6 @@ else()
     set(CPACK_DEB_COMPONENT_INSTALL 1)
     if(BUILD_PKG_MAIN)
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "main")
-    endif()
-    if(BUILD_PKG_FONTS)
-        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "fonts")
     endif()
     if(BUILD_PKG_COMMON)
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "common")
@@ -1505,7 +1473,7 @@ if(UNIX)
     set(CPACK_DEBIAN_MAIN_PACKAGE_ARCHITECTURE ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
     set(CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS})
     string(APPEND CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS
-        "lenmus-fonts, lenmus-common, lenmus-i18n, lenmus-ebooks ")
+        "lenmus-common, lenmus-i18n, lenmus-ebooks ")
     string(CONCAT CPACK_DEBIAN_MAIN_FILE_NAME
             "${CPACK_DEBIAN_MAIN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}"
@@ -1539,20 +1507,6 @@ if(UNIX)
  training and to learn music theory.
  .
 ${LENMUS_AVAILABLE_LOCALE}"
-)
-
-    #fonts package
-    set(CPACK_DEBIAN_FONTS_PACKAGE_SECTION "fonts")
-    set(CPACK_DEBIAN_FONTS_PACKAGE_NAME "lenmus-fonts")
-    set(CPACK_DEBIAN_FONTS_PACKAGE_ARCHITECTURE "all")
-    set(CPACK_DEBIAN_FONTS_PACKAGE_DEPENDS "")
-    string(CONCAT CPACK_DEBIAN_FONTS_FILE_NAME
-            "${CPACK_DEBIAN_FONTS_PACKAGE_NAME}"
-            "_${LENMUS_PACKAGE_VERSION}"
-            "_${CPACK_DEBIAN_FONTS_PACKAGE_ARCHITECTURE}.deb"
-          )
-    set(CPACK_COMPONENT_FONTS_DESCRIPTION
-"Fonts needed by lomse library to render music scores and documents"
 )
 
     #common package

@@ -221,6 +221,7 @@ if( LOMSE_ENABLE_COMPRESSION )
     )
 endif()
 
+# platform dependent implementation files
 if(UNIX AND NOT APPLE)
     set(PLATFORM_FILES
         ${LOMSE_SRC_DIR}/platform/lomse_linux.cpp
@@ -228,6 +229,10 @@ if(UNIX AND NOT APPLE)
 elseif(WIN32)
     set(PLATFORM_FILES
         ${LOMSE_SRC_DIR}/platform/lomse_windows.cpp
+    )
+else()
+    set(PLATFORM_FILES
+        ${LOMSE_SRC_DIR}/platform/lomse_other.cpp
     )
 endif()
 
