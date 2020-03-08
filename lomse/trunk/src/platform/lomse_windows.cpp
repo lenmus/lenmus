@@ -32,8 +32,10 @@
 #include "lomse_build_options.h"
 #include "lomse_logger.h"
 
-#include <locale>   //to upper conversion
-//#include <fontconfig.h>
+//std
+#include <locale>           //to upper conversion
+#include <cstdlib>          //getenv()
+using namespace std;
 
 namespace lomse
 {
@@ -50,14 +52,18 @@ std::string FontSelector::find_font(const std::string& language,
     //For generic families (i.e.: sans, serif, monospace, ...) priority is given to
     //language
 
-    LOMSE_LOG_INFO("lang=%s, name=%s", language.c_str(), name.c_str());
+    //search in cache
+    string key=language + fontFile + name + (fBold ? "1" : "0") + (fItalic ? "1" : "0");
+    map<string, string>::iterator it = m_cache.find(key);
+    if (it != m_cache.end())
+        return it->second;
 
-    string fullpath = m_pLibScope->fonts_path();
+    //get Windows fonts path
+    string fullpath = std::getenv("WINDIR");
+    fullpath += "\\Fonts\\";
+    LOMSE_LOG_INFO("Fonts path=%s", fullpath.c_str());
 
-    if (!fontFile.empty())
-        return fullpath + fontFile;
-
-    //transform name to capital letters for comparisons
+    //transform font name to capital letters for comparisons
     const locale& loc = locale();
     string fontname;
     for (string::value_type a : name)
@@ -66,30 +72,43 @@ std::string FontSelector::find_font(const std::string& language,
     //music font
     if (fontname == "BRAVURA")
     {
+        fullpath = m_pLibScope->fonts_path();
         fullpath += "Bravura.otf";
+        LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());
+        m_cache.insert(make_pair(key, fullpath));
         return fullpath;
     }
 
     //Chinese fonts
-    if (language == "zh_CN")
+    if (language == "zh_CN" || fontFile == "wqy-zenhei.ttc")
     {
-        fullpath += "wqy-zenhei.ttc";
+        if (fBold && fItalic)
+            fullpath += "msjhbd.ttc";
+        else if (fBold)
+            fullpath += "msjhbd.ttc";
+        else if (fItalic)
+            fullpath += "msjhl.ttc";
+        else
+            fullpath += "msjhl.ttc";
+        LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());
+        m_cache.insert(make_pair(key, fullpath));
         return fullpath;
     }
 
-
+    //Latin fonts
     if (fontname == "LIBERATION SERIF" || fontname == "SERIF"
              || fontname == "TIMES NEW ROMAN")
     {
         if (fBold && fItalic)
-            fullpath += "LiberationSerif-BoldItalic.ttf";
+            fullpath += "timesbi.ttf";
         else if (fBold)
-            fullpath += "LiberationSerif-Bold.ttf";
+            fullpath += "timesbd.ttf";
         else if (fItalic)
-            fullpath += "LiberationSerif-Italic.ttf";
+            fullpath += "timesi.ttf";
         else
-            fullpath += "LiberationSerif-Regular.ttf";
-        LOMSE_LOG_INFO("--- Path=%s", fullpath.c_str());
+            fullpath += "times.ttf";
+        LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());
+        m_cache.insert(make_pair(key, fullpath));
         return fullpath;
     }
 
@@ -97,19 +116,24 @@ std::string FontSelector::find_font(const std::string& language,
              || fontname == "HELVETICA")
     {
         if (fBold && fItalic)
-            fullpath += "LiberationSans-BoldItalic.ttf";
+            fullpath += "arialbi.ttf";
         else if (fBold)
-            fullpath += "LiberationSans-Bold.ttf";
+            fullpath += "arialbd.ttf";
         else if (fItalic)
-            fullpath += "LiberationSans-Italic.ttf";
+            fullpath += "ariali.ttf";
         else
-            fullpath += "LiberationSans-Regular.ttf";
-        LOMSE_LOG_INFO("--- Path=%s", fullpath.c_str());
+            fullpath += "arial.ttf";
+        LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());
+        m_cache.insert(make_pair(key, fullpath));
         return fullpath;
     }
 
+    //Other fonts: ask user program
     else
-        return m_pLibScope->get_font(name, fBold, fItalic);
+        fullpath = m_pLibScope->get_font(name, fBold, fItalic);
+        LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());
+        m_cache.insert(make_pair(key, fullpath));
+        return fullpath;
 }
 
 

@@ -45,7 +45,6 @@
 #include <locale>   //to upper conversion
 using namespace agg;
 
-#include <fontconfig.h>
 
 namespace lomse
 {

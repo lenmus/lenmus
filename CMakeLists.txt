@@ -469,7 +469,7 @@ if (WIN32)
     # package 'fonts-wqy-zenhei'
     set (INSTALL_WQY_ZENHEI_FONT 0)
     find_path(WQY_ZENHEI_FONT_PATH
-              NAMES wqy-microhei.ttc
+              NAMES wqy-zenhei.ttc
               PATHS
                   /usr/share/fonts/truetype/wqy/           # Ubuntu and possibly all Debian derivatives, Red Hat
                   /usr/share/fonts/truetype                # ?
@@ -526,7 +526,7 @@ if (WIN32)
         message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
     endif()
 
-endif(UNIX)
+endif(WIN32)
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -1210,14 +1210,16 @@ install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt
 install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt
         DESTINATION ${DOCS_DIR} COMPONENT main )
 
-# Install desktop entry
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
-        DESTINATION "/usr/share/applications"
-        COMPONENT main )
-# Install icon
-install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png
-        DESTINATION "/usr/share/pixmaps"
-        COMPONENT main )
+if (UNIX)
+    # Install desktop entry
+    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
+            DESTINATION "/usr/share/applications"
+            COMPONENT main )
+    # Install icon
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png
+            DESTINATION "/usr/share/pixmaps"
+            COMPONENT main )
+endif(UNIX)
 
 if(INSTALL_SOUNDFONT)
     install(FILES ${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2
