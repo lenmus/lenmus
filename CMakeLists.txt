@@ -1473,7 +1473,7 @@ if(UNIX)
     set(CPACK_DEBIAN_MAIN_PACKAGE_ARCHITECTURE ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
     set(CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS})
     string(APPEND CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS
-        "lenmus-common, lenmus-i18n, lenmus-ebooks ")
+        "lenmus-common, lenmus-i18n, lenmus-ebooks, fonts-wqy-zenhei")
     string(CONCAT CPACK_DEBIAN_MAIN_FILE_NAME
             "${CPACK_DEBIAN_MAIN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}"

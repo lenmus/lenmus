@@ -47,12 +47,12 @@ namespace lomse
 // FontSelector::find_font implementation for Linux
 //=======================================================================================
 std::string FontSelector::find_font(const std::string& language,
-                                    const std::string& fontFile,
+                                    const std::string& UNUSED(fontFile),
                                     const std::string& name,
                                     bool fBold, bool fItalic)
 {
     //search in cache
-    string key=language + fontFile + name + (fBold ? "1" : "0") + (fItalic ? "1" : "0");
+    string key=language + name + (fBold ? "1" : "0") + (fItalic ? "1" : "0");
     map<string, string>::iterator it = m_cache.find(key);
     if (it != m_cache.end())
         return it->second;
@@ -65,15 +65,29 @@ std::string FontSelector::find_font(const std::string& language,
         //font language
     if (!language.empty() && language != "any")
         pattern =FcPatternBuild(pattern, FC_LANG, FcTypeString, language.c_str(), (char *) 0);
-
         //font family
-    if(language == "zh_CN")
+    if(language == "zh_CN" || (language.empty() && name=="WenQuanYi Zen Hei"))
+    {
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "Noto Sans CJK SC", (char *) 0);
         pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "WenQuanYi Zen Hei", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "文泉驿正黑", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "WenQuanYi Micro Hei", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "文泉驿微米黑", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "Microsoft YaHei", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "AR PL ShanHeiSun Uni", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "AR PL New Sung", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "ZYSong18030", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "Adobe Source Han Sans", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "思源黑體", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "Source Han Sans", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "Fandol Hei", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "MHei", (char *) 0);
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "sans", (char *) 0);  //fallback
+    }
     else if (!name.empty())
         pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, name.c_str(), (char *) 0);
     else
-        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "Sans", (char *) 0);
-
+        pattern =FcPatternBuild(pattern, FC_FAMILY, FcTypeString, "sans", (char *) 0);
         //style, weight
     if (fBold)
         pattern =FcPatternBuild(pattern, FC_WEIGHT, FcTypeInteger, FC_WEIGHT_BOLD, (char *) 0);
