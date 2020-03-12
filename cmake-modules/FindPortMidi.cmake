@@ -30,6 +30,7 @@ find_path(PortMidi_INCLUDE_DIR
 find_library(PortMidi_LIBRARY
     NAMES
 		portmidi
+        libportmidi
     PATHS
 		/usr/lib/
 		/usr/local/lib
@@ -55,7 +56,7 @@ find_library(PortTime_LIBRARY
 
 # set the user variables
 set( PortMidi_INCLUDE_DIRS   "${PortMidi_INCLUDE_DIR}" )
-set( PortMidi_LIBRARIES   "${PortMidi_LIBRARY};${PortTime_LIBRARY}" )
+set( PortMidi_LIBRARIES   "${PortMidi_LIBRARY}")    #;${PortTime_LIBRARY}" )
 if( PortMidi_INCLUDE_DIR AND PortMidi_LIBRARY)
     set( PortMidi_FOUND   true )
 else()
