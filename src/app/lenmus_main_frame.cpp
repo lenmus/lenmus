@@ -1514,15 +1514,15 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
     // - fontname can be either the face name (i.e. "Book Antiqua") or
     //   the familly name (i.e. "Liberation sans")
 
-    const string& fontname = pRequest->get_fontname();
-    bool bold = pRequest->get_bold();
-    bool italic = pRequest->get_italic();
-
 #if (LENMUS_PLATFORM_UNIX == 1)
 
     //method get_font_filename() is not invoked in Linux
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
+
+    const string& fontname = pRequest->get_fontname();
+    bool bold = pRequest->get_bold();
+    bool italic = pRequest->get_italic();
 
     pRequest->set_font_fullname("");
 
