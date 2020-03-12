@@ -34,9 +34,11 @@
 
 //other
 #include <fontconfig.h>
+#include <unistd.h>         //for access() function
 
 //std
 #include <sstream>
+#include <string>
 using namespace std;
 
 
@@ -144,6 +146,19 @@ std::string FontSelector::find_font(const std::string& language,
         fullpath = "/usr/share/fonts/truetype/LiberationSerif-Regular.ttf";
     }
     FcPatternDestroy(pattern);
+
+    //if Bravura font is requested but it is not installed in the system (e.g.
+    //missing dependency in installation page, local installation from sources, etc)
+    //try to use local copy at lenmus/res/fonts
+    if (name=="Bravura" && fullpath.find("ravura.otf") == std::string::npos)
+    {
+        string localfont = m_pLibScope->fonts_path();
+        localfont += "Bravura.otf";
+        if (access(localfont.c_str(), F_OK) == 0)
+            fullpath = localfont;
+        //else:
+        //   do nothing. Program will not crash but music symbols will not be displayed.
+    }
 
     LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());
     m_cache.insert(make_pair(key, fullpath));
