@@ -17,14 +17,16 @@ find_path(PortMidi_INCLUDE_DIR
 		portmidi.h
 		porttime.h
     PATHS
+            #Linux
 		/usr/local/include
 		/usr/include
 		/sw/include
 		/opt/local/include
 		/usr/freeware/include
-        $ENV{PortMidi_DIR}/include					#Windows
-        "C:/Program Files (x86)/portmidi/include"		#Windows
-        "C:/Program Files/portmidi/include"				#Windows
+            #Windows
+        $ENV{PortMidi_DIR}/include
+        "C:/Program Files (x86)/portmidi/include"
+        "C:/Program Files/portmidi/include"
 )
 
 find_library(PortMidi_LIBRARY
@@ -32,63 +34,86 @@ find_library(PortMidi_LIBRARY
 		portmidi
         libportmidi
     PATHS
+            #Linux
 		/usr/lib/
 		/usr/local/lib
 		/sw
 		/usr/freeware
-        $ENV{PortMidi_DIR}/lib					#Windows
-        "C:/Program Files (x86)/portmidi/lib"		#Windows
-        "C:/Program Files/portmidi/lib"				#Windows
+            #Windows
+        $ENV{PortMidi_DIR}/lib					    
+        "C:/Program Files (x86)/portmidi/lib"
+        "C:/Program Files/portmidi/lib"
 )
 
 # On some distributions, such as Fedora, porttime is compiled into portmidi.
 # On others, such as Debian, it is a separate library.
 # Therefore we need to deal with this
 
-#Determine Linux Distro
-find_program(LSB_RELEASE_EXEC lsb_release)
-execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
-    OUTPUT_VARIABLE   DISTRIBUTOR_ID
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-set(INCLUDE_PORTTIME 1)  #assume it is needed. e.g. Windows
+set(INCLUDE_PORTTIME 1)  #assume porttime lib is needed. e.g. Windows
 if (UNIX)
-    #determine distribution
-    #TODO: Confirm Distributor ID the different distros
-    # from Internet:
-    #   "CentOS"
-    #   "Debian"
-    #   "RedHatEntrerpriseServer"
-    #   "openSUSE project"
-    #   "Ubuntu"
-    # confirmed:
-    #   "LinuxMint"
-    if (("${DISTRIBUTOR_ID}" STREQUAL "Fedora") OR      #confirmed
-        ("${DISTRIBUTOR_ID}" STREQUAL "Gentoo")         #not sure
-       )
-        set(INCLUDE_PORTTIME "0")   #porttime is included in portmidi
 
-    #else
-    #   Confirmed: Distribution_IDs that package porttime in a separate package
-    #       "Fedora"
+    #Determine Linux Distro
+    find_program(LSB_RELEASE_EXEC lsb_release)
+    if(NOT "${LSB_RELEASE_EXEC}" STREQUAL "LSB_RELEASE_EXEC-NOTFOUND")
+        execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
+            OUTPUT_VARIABLE   DISTRIBUTOR_ID
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    endif()
+
+    #TODO: Confirm Distributor ID for the different distros
+    # confirmed:
+    #   "CentOS", "Debian", "Fedora", "LinuxMint", "Ubuntu"
+    # Unconfirmed values found googling on Internet:
+    #   "archlinux", "Mageia", "openSUSE project",
+    #   "RedHatEntrerpriseServer", "SUSE"
+
+    #porttime is included in portmidi package
+    set(DISTROS_NOT_USING_PORTTIME
+        Fedora
+    )
+    #porttime is an independent package
+    set(DISTROS_USING_PORTTIME
+        Debian
+        LinuxMint
+        Ubuntu
+    )
+
+    if("${DISTRIBUTOR_ID}" IN_LIST   DISTROS_NOT_USING_PORTTIME)
+        set(INCLUDE_PORTTIME 0)   
+    elseif("${DISTRIBUTOR_ID}" IN_LIST   DISTROS_USING_PORTTIME)
+        set(INCLUDE_PORTTIME 1)   
+    else()
+        set(INCLUDE_PORTTIME 0)
+        message(WARNING
+            "Failed to identify your Linux distro: either lsb_release is missing " 
+            "or the Distributor ID '${DISTRIBUTOR_ID}' is not included in this "
+            "cmake script.\n"
+            "It will be assumed that porttime library is included in portmidi "
+            "package. The linkage step might fail, but if it does not fail, you "
+            "will confirm that, in your distro, libporttime is not nedeed.\n"
+            "Please send a PR with your findings for improving this cmake script. "
+            "Thank you".!
+        )
     endif()
 endif(UNIX)
-message(STATUS "Linux DISTRIBUTOR_ID: ${DISTRIBUTOR_ID}")
 
 
 if (INCLUDE_PORTTIME)
     find_library(PortTime_LIBRARY
         NAMES
 		    porttime
+            libporttime
         PATHS
+                #Linux
 		    /usr/lib/
 		    /usr/local/lib
 		    /sw
 		    /usr/freeware
-            $ENV{PortMidi_DIR}/lib					#Windows
-            "C:/Program Files (x86)/portmidi/lib"		#Windows
-            "C:/Program Files/portmidi/lib"				#Windows
+                #Windows
+            $ENV{PortMidi_DIR}/lib
+            "C:/Program Files (x86)/portmidi/lib"
+            "C:/Program Files/portmidi/lib"
     )
     set( PortMidi_LIBRARIES   "${PortMidi_LIBRARY};${PortTime_LIBRARY}" )
 else()
