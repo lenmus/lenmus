@@ -68,7 +68,7 @@ if (UNIX)
     # Unconfirmed values found googling on Internet:
     #   "archlinux", "Mageia", "openSUSE project",
     #   "RedHatEntrerpriseServer", "SUSE"
-    message(STATUS "Linux Distribution ID =${DISTRIBUTOR_ID}");
+    message(STATUS "Linux Distribution ID =${DISTRIBUTOR_ID}")
 
     #porttime is included in portmidi package
     set(DISTROS_NOT_USING_PORTTIME
