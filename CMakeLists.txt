@@ -684,20 +684,14 @@ endif(PNG_FOUND)
 
 # Check for fontconfig: required by Lomse
 if (UNIX)
-    if(${CMAKE_VERSION} VERSION_LESS "3.14.7") 
-        #cmake 3.10 does not includes the FindFontConfig.cmake module.
-        find_path(FONTCONFIG_INCLUDE_DIR fontconfig/fontconfig.h)
-        find_library(FONTCONFIG_LIBRARIES NAMES fontconfig)
-        if (("${FONTCONFIG_INCLUDE_DIR}" STREQUAL "FONTCONFIG_INCLUDE_DIR-NOTFOUND")
-            OR ("${FONTCONFIG_LIBRARIES}" STREQUAL "FONTCONFIG_LIBRARIES-NOTFOUND")
-           )
-            set(FONTCONFIG_FOUND FALSE)
-        else()
-            set(FONTCONFIG_FOUND TRUE)
-        endif()
+    find_path(FONTCONFIG_INCLUDE_DIR fontconfig/fontconfig.h)
+    find_library(FONTCONFIG_LIBRARIES NAMES fontconfig)
+    if (("${FONTCONFIG_INCLUDE_DIR}" STREQUAL "FONTCONFIG_INCLUDE_DIR-NOTFOUND")
+        OR ("${FONTCONFIG_LIBRARIES}" STREQUAL "FONTCONFIG_LIBRARIES-NOTFOUND")
+       )
+        set(FONTCONFIG_FOUND FALSE)
     else()
-        #cmake > 3.14.7
-        find_package(FontConfig REQUIRED)
+        set(FONTCONFIG_FOUND TRUE)
     endif()
 
     if(FONTCONFIG_FOUND )

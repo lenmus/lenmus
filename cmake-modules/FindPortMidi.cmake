@@ -41,22 +41,62 @@ find_library(PortMidi_LIBRARY
         "C:/Program Files/portmidi/lib"				#Windows
 )
 
-find_library(PortTime_LIBRARY
-    NAMES
-		porttime
-    PATHS
-		/usr/lib/
-		/usr/local/lib
-		/sw
-		/usr/freeware
-        $ENV{PortMidi_DIR}/lib					#Windows
-        "C:/Program Files (x86)/portmidi/lib"		#Windows
-        "C:/Program Files/portmidi/lib"				#Windows
+# On some distributions, such as Fedora, porttime is compiled into portmidi.
+# On others, such as Debian, it is a separate library.
+# Therefore we need to deal with this
+
+#Determine Linux Distro
+find_program(LSB_RELEASE_EXEC lsb_release)
+execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
+    OUTPUT_VARIABLE   DISTRIBUTOR_ID
+    OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+
+set(INCLUDE_PORTTIME 1)  #assume it is needed. e.g. Windows
+if (UNIX)
+    #determine distribution
+    #TODO: Confirm Distributor ID the different distros
+    # from Internet:
+    #   "CentOS"
+    #   "Debian"
+    #   "RedHatEntrerpriseServer"
+    #   "openSUSE project"
+    #   "Ubuntu"
+    # confirmed:
+    #   "LinuxMint"
+    if (("${DISTRIBUTOR_ID}" STREQUAL "Fedora") OR      #confirmed
+        ("${DISTRIBUTOR_ID}" STREQUAL "Gentoo")         #not sure
+       )
+        set(INCLUDE_PORTTIME "0")   #porttime is included in portmidi
+
+    #else
+    #   Confirmed: Distribution_IDs that package porttime in a separate package
+    #       "Fedora"
+    endif()
+endif(UNIX)
+message(STATUS "Linux DISTRIBUTOR_ID: ${DISTRIBUTOR_ID}")
+
+
+if (INCLUDE_PORTTIME)
+    find_library(PortTime_LIBRARY
+        NAMES
+		    porttime
+        PATHS
+		    /usr/lib/
+		    /usr/local/lib
+		    /sw
+		    /usr/freeware
+            $ENV{PortMidi_DIR}/lib					#Windows
+            "C:/Program Files (x86)/portmidi/lib"		#Windows
+            "C:/Program Files/portmidi/lib"				#Windows
+    )
+    set( PortMidi_LIBRARIES   "${PortMidi_LIBRARY};${PortTime_LIBRARY}" )
+else()
+    set( PortMidi_LIBRARIES   "${PortMidi_LIBRARY}" )
+endif()
 
 # set the user variables
 set( PortMidi_INCLUDE_DIRS   "${PortMidi_INCLUDE_DIR}" )
-set( PortMidi_LIBRARIES   "${PortMidi_LIBRARY}")    #;${PortTime_LIBRARY}" )
 if( PortMidi_INCLUDE_DIR AND PortMidi_LIBRARY)
     set( PortMidi_FOUND   true )
 else()
