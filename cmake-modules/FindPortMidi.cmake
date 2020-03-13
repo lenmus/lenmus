@@ -50,6 +50,7 @@ find_library(PortMidi_LIBRARY
 # Therefore we need to deal with this
 
 set(INCLUDE_PORTTIME 1)  #assume porttime lib is needed. e.g. Windows
+cmake_policy(SET CMP0057 NEW)   #do not ignore the IN_LIST operator
 if (UNIX)
 
     #Determine Linux Distro
@@ -93,7 +94,7 @@ if (UNIX)
             "package. The linkage step might fail, but if it does not fail, you "
             "will confirm that, in your distro, libporttime is not nedeed.\n"
             "Please send a PR with your findings for improving this cmake script. "
-            "Thank you".!
+            "Thank you!"
         )
     endif()
 endif(UNIX)
