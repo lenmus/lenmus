@@ -37,6 +37,11 @@
 #include <cstdlib>          //getenv()
 using namespace std;
 
+//other
+#include <io.h>
+#define access   _access_s
+
+
 namespace lomse
 {
 
@@ -56,7 +61,8 @@ std::string FontSelector::find_font(const std::string& language,
         return it->second;
 
     //get Windows fonts path
-    string fullpath = std::getenv("WINDIR");
+    string fontspath = std::getenv("WINDIR");
+    string fullpath = fontspath;
     fullpath += "\\Fonts\\";
     LOMSE_LOG_INFO("Fonts path=%s", fullpath.c_str());
 
@@ -120,7 +126,7 @@ std::string FontSelector::find_font(const std::string& language,
 
     // sans-serif --> Arial
     else if (   fontname == "SANS-SERIF"
-             || fontname == "SANS")
+             || fontname == "SANS"
              || fontname == "LIBERATION SANS"
              //[Arial], Helvetica, sans-serif
              || fontname == "HELVETICA"
@@ -146,22 +152,22 @@ std::string FontSelector::find_font(const std::string& language,
     // cursive --> Monotype Corsiva
     else if (   fontname == "CURSIVE"
              //Comic Sans MS, cursive
-             || fontname == "COMIC SANS MS")
+             || fontname == "COMIC SANS MS"
             )
         fontname = "MONOTYPE CORSIVA";
 
     // monospace --> Courier New
-    else if (   fontname == "MONOSPACE")
+    else if (   fontname == "MONOSPACE"
              //Courier New, monospace
              //Lucida Console, Monaco, monospace
-             || fontname == "LUCIDA CONSOLE")
-             || fontname == "MONACO")
+             || fontname == "LUCIDA CONSOLE"
+             || fontname == "MONACO"
             )
         fontname = "COURIER NEW";
 
     // fantasy -->  Courier New
-    else if (   fontname == "FANTASY")
-             || fontname == "")
+    else if (   fontname == "FANTASY"
+             || fontname == ""
             )
         fontname = "COURIER NEW";
 
@@ -180,9 +186,9 @@ std::string FontSelector::find_font(const std::string& language,
     }
     else if (fontname == "COURIER NEW") //------------ Courier New
     {
-        if (italic && bold)
+        if (fBold && fItalic)
             fullpath += "courbi.ttf";
-        else if (italic)
+        else if (fItalic)
             fullpath += "couri.ttf";
         else if (fBold)
             fullpath += "courbd.ttf";
@@ -242,6 +248,16 @@ std::string FontSelector::find_font(const std::string& language,
         //Other fonts: ask user program
         else
             fullpath = m_pLibScope->get_font(name, fBold, fItalic);
+    }
+    
+    //check that file exists
+    if (access(fullpath.c_str(), 0) != 0) 
+    {
+        LOMSE_LOG_ERROR("File font = %s does not exist. Trying Arial.", fullpath.c_str());
+        fullpath = fontspath;
+        fullpath += "arial.ttf";
+        if (access(fullpath.c_str(), 0) != 0) 
+            LOMSE_LOG_ERROR("Arial font not found. The program will prrobably crash!");
     }
 
     LOMSE_LOG_INFO("key=%s, Path=%s", key.c_str(), fullpath.c_str());

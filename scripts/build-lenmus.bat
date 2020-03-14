@@ -31,7 +31,7 @@ if not exist "%root_path%/src" (
 )
 
 ::path for building
-set build_path=%root_path%zz_build-area
+set build_path=%root_path%zz_build-win10
 set sources=%root_path%
 
 ::create or clear build folder

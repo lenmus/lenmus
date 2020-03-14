@@ -507,7 +507,6 @@ else()
     message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
 endif()
 
-
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
     find_package(UnitTest++)
@@ -708,9 +707,96 @@ endif()
 #======= End of dependencies checking ========================================
 
 
+#-----------------------------------------------------------------------------
+# Decide installation folders, as some values need to be defined for configuring
+# file lenmus_config.h before building.
+#
+# By default, the installation prefix is "/usr/local"
+# You can change the install location by running cmake like this:
+#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
+#
+# Remember:
+#  LENMUS_ROOT_DIR:
+#       path to source tree, to copy files from there: i.e. $HOME/projects/lenmus
+#  ROOT_INSTALL:
+#       path to install binaries: i.e.:
+#       '/usr/local'
+#       'C:\Program Files\lenmus'
+#  SHARED_DIR:
+#       path to install shared files i.e.:
+#           '/usr/local/share/lenmus/5.3/'
+#           'C:\Program Files\lenmus'
+#-----------------------------------------------------------------------------
+
+# set installation paths
+if(WIN32)
+    #For CPack using NSIS, the DESTINATION path must be relative because installation path
+    #is always specified at the moment when user executes the installer
+    set(INSTALL_DIR bin)
+    set(SAMPLES_DIR .)
+    set(LOCALE_DIR .)
+    set(LOCALE_LICENSES_DIR locale)
+    set(RES_DIR res)
+    set(TEMPLATES_DIR .)
+    set(XRC_DIR .)
+    set(DOCS_DIR .)
+else()
+    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
+    set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(LOCALE_DIR ${SHARED_DIR})
+    set(LOCALE_LICENSES_DIR ${SHARED_DIR})
+    set(RES_DIR "${SHARED_DIR}/res")
+    set(TEMPLATES_DIR ${SHARED_DIR})
+    set(XRC_DIR ${SHARED_DIR})
+    set(DOCS_DIR ${SHARED_DIR})
+endif()
+
+message("Installation paths:")
+message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
+message(STATUS "INSTALL_DIR = ${INSTALL_DIR}")
+message(STATUS "SHARED_DIR = ${SHARED_DIR}")
+message(STATUS "SAMPLES_DIR = ${SAMPLES_DIR}" )
+message(STATUS "LOCALE_DIR = ${LOCALE_DIR}")
+message(STATUS "LOCALE_LICENSES_DIR = ${LOCALE_LICENSES_DIR}")
+message(STATUS "RES_DIR = ${RES_DIR}")
+message(STATUS "TEMPLATES_DIR = ${TEMPLATES_DIR}")
+message(STATUS "XRC_DIR = ${XRC_DIR}")
+message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 
 
-#process template header config file to replace CMake settings
+# Variables LENMUS_SOUNDFONT_PATH and LENMUS_BRAVURA_FONT_PATH are needed
+# for lenmus_config.h file and are used at run time. Thus for building
+# packages for distribution, the LENMUS_XXX_PATH variables must point to 
+# valid paths in the target distro, that is to the paths in wihich the distro
+# installs FluidR3_GM.sf2 and Bravura.otf files.
+# If the package is going to include any of these files then the respective 
+# LENMUS_XXX_PATH variable must point res/sounds or res/fonts, depending.
+
+#To build Windows installers force to install Bravura and Soundfont
+if (WIN32)
+    set(INSTALL_SOUNDFONT 1)
+    set(INSTALL_BRAVURA_FONT 1)
+endif()
+
+if(INSTALL_SOUNDFONT AND
+   NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
+        file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
+             DESTINATION ${LENMUS_ROOT_DIR}/res/sounds)
+        set(LENMUS_SOUNDFONT_PATH ${RES_DIR}/sounds)
+endif()
+message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
+
+if(INSTALL_BRAVURA_FONT AND
+   NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts/"))
+        file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
+             DESTINATION ${LENMUS_ROOT_DIR}/res/fonts)
+        set(LENMUS_BRAVURA_FONT_PATH ${RES_DIR}/fonts)
+endif()
+message(STATUS "LENMUS_BRAVURA_FONT_PATH=${LENMUS_BRAVURA_FONT_PATH}")
+
+
+
+#process template header lenmus_config.h file to replace CMake settings
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/lenmus_config.h.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
@@ -1068,68 +1154,8 @@ endif(BUILD_PROGRAM)
 
 #///////////////////////////////////////////////////////////////////////////////
 # Program installation
-# You can change the install location by running cmake like this:
-#
-#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
-#
-# By default, the prefix is "/usr/local"
-#
-# Remember:
-#  LENMUS_ROOT_DIR:
-#       path to source tree, to copy files from there: i.e. $HOME/projects/lenmus
-#  ROOT_INSTALL:
-#       path to install binaries: i.e.:
-#       '/usr/local'
-#       'C:\Program Files\lenmus'
-#  SHARED_DIR:
-#       path to install shared files i.e.:
-#           '/usr/local/share/lenmus/5.3/'
-#           'C:\Program Files\lenmus'
-#
-#
-# In Linux, the installation is divided into several packages:
-# - main: binaries and related files
-# - common: common support files not bound to any particular
-#       release, architecture or language, such as icons, samples and templates.
-# - i18n: the message catalogues for lenmus and related translated files
-# - ebooks: the eBooks (all translations).
-#
 #///////////////////////////////////////////////////////////////////////////////
 
-# set installation paths
-if(WIN32)
-    #For CPack using NSIS, the DESTINATION path must be relative because installation path
-    #is always specified at the moment when user executes the installer
-    set(INSTALL_DIR bin)
-    set(SAMPLES_DIR .)
-    set(LOCALE_DIR .)
-    set(LOCALE_LICENSES_DIR locale)
-    set(RES_DIR res)
-    set(TEMPLATES_DIR .)
-    set(XRC_DIR .)
-    set(DOCS_DIR .)
-else()
-    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
-    set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(LOCALE_DIR ${SHARED_DIR})
-    set(LOCALE_LICENSES_DIR ${SHARED_DIR})
-    set(RES_DIR "${SHARED_DIR}/res")
-    set(TEMPLATES_DIR ${SHARED_DIR})
-    set(XRC_DIR ${SHARED_DIR})
-    set(DOCS_DIR ${SHARED_DIR})
-endif()
-
-message("Installation paths:")
-message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
-message(STATUS "INSTALL_DIR = ${INSTALL_DIR}")
-message(STATUS "SHARED_DIR = ${SHARED_DIR}")
-message(STATUS "SAMPLES_DIR = ${SAMPLES_DIR}" )
-message(STATUS "LOCALE_DIR = ${LOCALE_DIR}")
-message(STATUS "LOCALE_LICENSES_DIR = ${LOCALE_LICENSES_DIR}")
-message(STATUS "RES_DIR = ${RES_DIR}")
-message(STATUS "TEMPLATES_DIR = ${TEMPLATES_DIR}")
-message(STATUS "XRC_DIR = ${XRC_DIR}")
-message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 
 # Package: lenmus (component: main)
 # ------------------------------------------------------------------------------
