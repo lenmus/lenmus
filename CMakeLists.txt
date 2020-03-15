@@ -462,7 +462,7 @@ find_path(FLUIDR3_PATH
               /usr/share/sounds/sf2     # Ubuntu and possibly all Debian derivatives
               /usr/share/soundfonts     # Red Hat
               ${LENMUS_ROOT_DIR}/res/sounds     #local builds
-#             ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
+              ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
          )
 
 if("${FLUIDR3_PATH}" STREQUAL "FLUIDR3_PATH-NOTFOUND")
@@ -507,6 +507,7 @@ find_path(BRAVURA_FONT_PATH
           PATHS
               /usr/share/fonts/truetype/               # Red Hat
               ${LENMUS_ROOT_DIR}/res/z_fonts           # local builds
+              ${LENMUS_ROOT_DIR}/res/fonts             # local builds
          )
 if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
     if (LENMUS_DOWNLOAD_BRAVURA_FONT)
@@ -530,7 +531,7 @@ if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
                 ")
         endif()
         message(STATUS "Bravura font downloaded.")
-        set(LENMUS_BRAVURA_FONT_PATH "${LENMUS_ROOT_DIR}/res/fonts/")
+        set(BRAVURA_FONT_PATH "${LENMUS_ROOT_DIR}/res/fonts/")
         set(INSTALL_BRAVURA_FONT ON)
 
     else(LENMUS_DOWNLOAD_BRAVURA_FONT)
@@ -543,9 +544,9 @@ if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
     endif(LENMUS_DOWNLOAD_BRAVURA_FONT)
 
 else()
-    set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
     message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
 endif()
+set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -828,6 +829,7 @@ message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
 
 if(INSTALL_BRAVURA_FONT AND
    NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts/"))
+        message(STATUS "BRAVURA_FONT_PATH=${BRAVURA_FONT_PATH}")
         file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
              DESTINATION ${LENMUS_ROOT_DIR}/res/fonts)
         set(LENMUS_BRAVURA_FONT_PATH ${RES_DIR}/fonts)
