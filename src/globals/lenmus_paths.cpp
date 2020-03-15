@@ -165,6 +165,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     wxFileName oConfigHome;
     oConfigHome.AssignDir(sBinPath);
     wxFileName oDataHome(m_installRoot);
+    wxFileName oSoundFonts(m_installRoot);
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
     //Linux Release version
@@ -247,8 +248,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     }
 
     //6. Other files from system
-    wxFileName oSoundFonts;
-    oSoundFonts.AssignDir( LENMUS_SOUNDFONT_PATH );
+    wxFileName oSoundFonts( LENMUS_SOUNDFONT_PATH );
     oSoundFonts.Normalize();
 
 

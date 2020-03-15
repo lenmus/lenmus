@@ -1058,6 +1058,9 @@ void ChordIntervals::DoInversion()
 //---------------------------------------------------------------------------------------
 void ChordIntervals::SortIntervals()
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+
     //sort intervals, from shortest to largest. Bubble method
 
     bool fSwapDone = true;
@@ -1075,6 +1078,7 @@ void ChordIntervals::SortIntervals()
             }
         }
     }
+#pragma GCC diagnostic pop
 }
 
 //---------------------------------------------------------------------------------------

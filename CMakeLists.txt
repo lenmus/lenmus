@@ -32,7 +32,21 @@
 #
 # The default target (in Linux) is "Unix Makefiles". If you would like to generate
 # a diferent makefile use option -G<desired-target>. For instance:
-#   cmake -G "CodeBlocks - Unix Makefiles" ...
+#   cmake -G "Ninja" ...
+#
+#
+# Default configuration
+# ~~~~~~~~~~~~~~~~~~~~~~~
+# - Unix: only main package containing the binaries will be generated.
+#   Windows: a boundle installer containing all will be generated.
+#   See "Packages to build (Only for Unix)" section.
+#
+# - Unix: The FluidR3_GM soundfont *IS NOT* included in the package.
+#   Windows: It *IS INCLUDED*.
+#   See "SoundFont for the internal synthesizer" section.
+#
+# - The Barvura.otf music font *IS INCLUDED* in the package.
+#   See "Bravura music font required to render scores" section.
 #
 #
 # Installation folders
@@ -45,11 +59,10 @@
 # The default folder (in Linux) for installing man pages is
 #   /usr/share/man
 # You can specify other location by using option MAN_INSTALL_DIR:
-# choose is "Unix Makefiles". If you would like to generate
 #   cmake -DMAN_INSTALL_DIR=/new/install/location/for/manpages ...
 #
 #
-# Packages to build (Only for Linux)
+# Packages to build (Only for Unix)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # In Linux, the installation is divided into several packages:
 # - lenmus: (main package) binaries and related files
@@ -80,14 +93,21 @@
 #
 # SoundFont for the internal synthesizer
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# The internal synthesizer needs a soundfont. Therefore, it is a dependency
-# to have FluidR3_GM.sf2 soundfont installed in the system. In Linux this
+# The internal synthesizer needs the FluidR3_GM.sf2 soundfont. Therefore, it is
+# a dependency to have it installed in the system. In Linux this
 # is provided for specific packages such as the "fluid-soundfont-gm" package in
 # Debian and derivatives.
 #
 # If you would like that this cmake script will download the FluidR3_GM.sf2
 # sound font in case it is not found in the system, you can use the option:
 #   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=ON ...
+#
+# By default, the FluidR3 soundfont must not be included in Linux packages and
+# the required soundfont package must be set as an install dependency. But it is
+# necessary to install it in Windows. Therefore, the default behaviour is
+# to include it in Windows installer but not in Linux packages.
+# You can control this behaviour with the option:
+#   cmake -DLENMUS_INSTALL_SOUNDFONT:BOOL={OFF | ON} ...
 #
 #
 # Bravura music font required to render scores
@@ -122,6 +142,7 @@
 #-------------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+message(STATUS "Using cmake version ${CMAKE_VERSION}")
 
 # project name
 project(lenmus)
@@ -201,6 +222,15 @@ OPTION(LENMUS_DOWNLOAD_BRAVURA_FONT
 OPTION(LENMUS_INSTALL_BRAVURA_FONT
     "Include Bravura music font in the package in the main and boundle packages"
 	ON)
+if(WIN32)
+    OPTION(LENMUS_INSTALL_SOUNDFONT
+        "Include FluidR3 soundfont in the package in the main and boundle packages"
+	    ON)
+else()
+    OPTION(LENMUS_INSTALL_SOUNDFONT
+        "Include FluidR3 soundfont in the package in the main and boundle packages"
+	    OFF)
+endif()
 OPTION(BUILD_PKG_MAIN
     "Build package 'lenmus-main': Binaries and related files"
     "OFF")
@@ -221,13 +251,23 @@ set(MAN_INSTALL_DIR "/usr/share/man"
     CACHE STRING "Directory for installing man pages")
 
 
+# Set a default build type if none was specified
+# https://stackoverflow.com/questions/24460486/cmake-build-type-is-not-being-used-in-cmakelists-txt
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+endif()
+
+
+#------------------------------------------------------
 # macro STRING_UNQUOTE(var str)
 #   Remove quote marks or double quote marks around a string.
 #   If the string is not quoted, then content of str is copied to var
 #   * Parameters:
 #     + var: A variable that stores the result.
 #     + str: A string.
-#------------------------------------------------------
 MACRO(STRING_UNQUOTE var str)
 	set(_ret "${str}")
 	STRING(LENGTH "${str}" _strLen)
@@ -415,7 +455,7 @@ message("Checking for LenMus dependencies:")
 
 # Check for FluidR3_GM.sf2 sound font required by internal synthesizer
 # package 'fluid-soundfont-gm'
-set (INSTALL_SOUNDFONT 0)
+set (INSTALL_SOUNDFONT ${LENMUS_INSTALL_SOUNDFONT})
 find_path(FLUIDR3_PATH
           NAMES FluidR3_GM.sf2
           PATHS
@@ -448,7 +488,7 @@ if("${FLUIDR3_PATH}" STREQUAL "FLUIDR3_PATH-NOTFOUND")
         endif()
         message(STATUS "FluidR3_GM.sf2 soundfont downloaded.")
         set(LENMUS_SOUNDFONT_PATH "${LENMUS_ROOT_DIR}/res/sounds/")
-        set (INSTALL_SOUNDFONT 1)
+        set (INSTALL_SOUNDFONT ON)
 
     else(LENMUS_DOWNLOAD_SOUNDFONT)
         message(FATAL_ERROR "FluidR3_GM.sf2 soundfont not found. Aborting...")
@@ -807,10 +847,20 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
 if (LENMUS_USE_LOMSE_SOURCES)
-    #define path were fonts will be installed.
-    set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
+    #define path were fonts will be installed
+    if (WIN32)
+        #Used only for Bravura font. For all others will use system installed fonts
+        set( FONTS_PATH   "${SHARED_DIR}/res/fonts")
+    elseif (UNIX)
+        #In Linux only system installed fonts are used. This variable is not used
+        set( FONTS_PATH   "not used" )
+    else()
+        #Only fonts installed here will be used
+        set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
+    endif()
 
     # include Lomse build options and create the include file "lomse_config.h"
+    message("Lomse configuration")
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
     set_target_properties(build-version PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
@@ -1462,13 +1512,13 @@ if(UNIX)
     string(CONCAT CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
     if (LENMUS_USE_LOMSE_SOURCES)
-	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0, fluid-soundfont-gm, "
-	            "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
+	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
     else()
-	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0, "
-                "fluid-soundfont-gm, "
-	            "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
+	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), ")
     endif()
+    string(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS
+        "libsqlite3-0, libportmidi0, fluid-soundfont-gm, "
+        "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1)")
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
 "A program for aural training and to learn music theory
  This package provides the program and all lenmus packages required to run
@@ -1493,7 +1543,7 @@ if(UNIX)
     set(CPACK_DEBIAN_MAIN_PACKAGE_ARCHITECTURE ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
     set(CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS})
     string(APPEND CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS
-        "lenmus-common, lenmus-i18n, lenmus-ebooks, fonts-wqy-zenhei")
+        ", lenmus-common, lenmus-i18n, lenmus-ebooks")
     string(CONCAT CPACK_DEBIAN_MAIN_FILE_NAME
             "${CPACK_DEBIAN_MAIN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}"

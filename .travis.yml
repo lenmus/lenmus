@@ -25,6 +25,7 @@ matrix:
             - libsqlite3-dev
             - libfluidsynth-dev
             - fluid-soundfont-gm
+            - libfontconfig1-dev
 
 script:
   - export CC=$COMPILER
