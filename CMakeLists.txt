@@ -772,7 +772,9 @@ endif()
 # set installation paths
 if(WIN32)
     #For CPack using NSIS, the DESTINATION path must be relative because installation path
-    #is always specified at the moment when user executes the installer
+    #is always specified at the moment when user executes the installer. Nevertheless
+    #current NSIS installer does not allow the user to select instalation folder and
+    #it is always installed in "C:/Program Files/lenmus"
     set(INSTALL_DIR bin)
     set(SAMPLES_DIR .)
     set(LOCALE_DIR .)
@@ -843,6 +845,11 @@ configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/lenmus_config.h.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
 )
+message("lenmus_config.h configuration:" )
+message(STATUS "LENMUS_INSTALL_ROOT=${LENMUS_INSTALL_ROOT}")
+message(STATUS "LENMUS_TEST_SCORES_PATH=${LENMUS_TEST_SCORES_PATH}")
+message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
+
 
 #include binary dir so that lenmus_config.h can be accesed during build
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")

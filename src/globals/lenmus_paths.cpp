@@ -258,11 +258,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 
     //1. LenMus program, other binaries, and related files (INSTALL_DIR)
     //      "C:/Program Files/lenmus-x.x.x/"
-    //TODO: Fix this. Using sBinPath is working only when the user runs lenmus by
-    //      mouse click on main menu or in symlinks, because they will point to the
-    //      path in which the lenmus.exe is placed, and then sBinPath will point to
-    //      that path. This should be fixed by using GetModuleFileName(). See:
-    //      https://stackoverflow.com/questions/1528298/get-path-of-executable
     m_installRoot.AssignDir(sBinPath);
     m_installRoot.RemoveLastDir();
     m_installRoot.Normalize();
