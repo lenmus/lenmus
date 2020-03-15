@@ -1514,75 +1514,15 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
     // - fontname can be either the face name (i.e. "Book Antiqua") or
     //   the familly name (i.e. "Liberation sans")
 
+#if (LENMUS_PLATFORM_UNIX == 1)
+
+    //method get_font_filename() is not invoked in Linux
+
+#elif (LENMUS_PLATFORM_WIN32 == 1)
+
     const string& fontname = pRequest->get_fontname();
     bool bold = pRequest->get_bold();
     bool italic = pRequest->get_italic();
-
-#if (LENMUS_PLATFORM_UNIX == 1)
-
-    string path = "/usr/share/fonts/truetype/";
-
-    //if family name, choose a font name
-    string name = fontname;
-    if (name == "serif")
-        name = "Times New Roman";
-    else if (name == "sans-serif")
-        name = "Tahoma";
-    else if (name == "handwritten" || name == "cursive")
-        name = "Monotype Corsiva";
-    else if (name == "monospaced")
-        name = "Courier New";
-
-    //choose a suitable font file
-    string fontfile;
-    if (name == "Times New Roman")
-    {
-        if (italic && bold)
-            fontfile = "freefont/FreeSerifBoldItalic.ttf";
-        else if (italic)
-            fontfile = "freefont/FreeSerifItalic.ttf";
-        else if (bold)
-            fontfile = "freefont/FreeSerifBold.ttf";
-        else
-            fontfile = "freefont/FreeSerif.ttf";
-    }
-
-    else if (name == "Tahoma")
-    {
-        if (bold)
-            fontfile = "freefont/FreeSansOblique.ttf";
-        else
-            fontfile = "freefont/FreeSans.ttf";
-//        fontfile = "wqy/wqy-zenhei.ttc";
-//        //fontfile = "arphic/uming.ttc";
-    }
-
-    else if (name == "Monotype Corsiva")
-    {
-        fontfile = "ttf-dejavu/DejaVuSans-Oblique.ttf";
-    }
-
-    else if (name == "Courier New")
-    {
-        if (italic && bold)
-            fontfile = "freefont/FreeMonoBoldOblique.ttf";
-        else if (italic)
-            fontfile = "freefont/FreeMonoOblique.ttf";
-        else if (bold)
-            fontfile = "freefont/FreeMonoBold.ttf";
-        else
-            fontfile = "freefont/FreeMono.ttf";
-    }
-
-    else
-        fontfile = "freefont/FreeSerif.ttf";
-
-
-    pRequest->set_font_fullname( path + fontfile );
-//    wxLogMessage("[MainFrame::get_font_filename] fontfile %s", fontfile.wx_str());
-
-
-#elif (LENMUS_PLATFORM_WIN32 == 1)
 
     pRequest->set_font_fullname("");
 

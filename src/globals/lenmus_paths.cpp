@@ -165,6 +165,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     wxFileName oConfigHome;
     oConfigHome.AssignDir(sBinPath);
     wxFileName oDataHome(m_installRoot);
+    wxFileName oSoundFonts(m_installRoot);
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
     //Linux Release version
@@ -246,17 +247,17 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
                             , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
 
+    //6. Other files from system
+    wxFileName oSoundFonts( LENMUS_SOUNDFONT_PATH );
+    oSoundFonts.Normalize();
+
+
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     //Windows Release version
     wxStandardPaths& stdPaths = wxStandardPaths::Get();
 
     //1. LenMus program, other binaries, and related files (INSTALL_DIR)
     //      "C:/Program Files/lenmus-x.x.x/"
-    //TODO: Fix this. Using sBinPath is working only when the user runs lenmus by
-    //      mouse click on main menu or in symlinks, becuase tehy will point to the
-    //      path in which the lenmus.exe is placed, and then sBinPath will point to
-    //      that path. This should be fixed by using GetModuleFileName(). See:
-    //      https://stackoverflow.com/questions/1528298/get-path-of-executable
     m_installRoot.AssignDir(sBinPath);
     m_installRoot.RemoveLastDir();
     m_installRoot.Normalize();
@@ -324,13 +325,12 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
                             , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
 
-#endif
-
     //6. Other files from system
-    wxFileName oSoundFonts;
-    oSoundFonts.AssignDir( LENMUS_SOUNDFONT_PATH );
-    oSoundFonts.Normalize();
+    wxFileName oSoundFonts = oSharedHome;
+    oSoundFonts.AppendDir("res");
+    oSoundFonts.AppendDir("sounds");
 
+#endif
 
     LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );

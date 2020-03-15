@@ -32,7 +32,21 @@
 #
 # The default target (in Linux) is "Unix Makefiles". If you would like to generate
 # a diferent makefile use option -G<desired-target>. For instance:
-#   cmake -G "CodeBlocks - Unix Makefiles" ...
+#   cmake -G "Ninja" ...
+#
+#
+# Default configuration
+# ~~~~~~~~~~~~~~~~~~~~~~~
+# - Unix: only main package containing the binaries will be generated.
+#   Windows: a boundle installer containing all will be generated.
+#   See "Packages to build (Only for Unix)" section.
+#
+# - Unix: The FluidR3_GM soundfont *IS NOT* included in the package.
+#   Windows: It *IS INCLUDED*.
+#   See "SoundFont for the internal synthesizer" section.
+#
+# - The Barvura.otf music font *IS INCLUDED* in the package.
+#   See "Bravura music font required to render scores" section.
 #
 #
 # Installation folders
@@ -45,15 +59,13 @@
 # The default folder (in Linux) for installing man pages is
 #   /usr/share/man
 # You can specify other location by using option MAN_INSTALL_DIR:
-# choose is "Unix Makefiles". If you would like to generate
 #   cmake -DMAN_INSTALL_DIR=/new/install/location/for/manpages ...
 #
 #
-# Packages to build (Only for Linux)
+# Packages to build (Only for Unix)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # In Linux, the installation is divided into several packages:
 # - lenmus: (main package) binaries and related files
-# - lenmus-fonts: fonts needed by lomse
 # - lenmus-common: common support files not bound to any particular
 #       release, architecture or language, such as icons, samples and templates.
 # - lenmus-i18n: the message catalogues for lenmus and related translated files
@@ -65,7 +77,7 @@
 # enable the option for the desired package:
 #   cmake -DBUILD_PKG_<pkg>:BOOL=ON ...
 # Replace <pkg> by the desired package name:
-#   pkg = { MAIN | FONTS | COMMON | I18N | EBOOKS | BOUNDLE }
+#   pkg = { MAIN | COMMON | I18N | EBOOKS | BOUNDLE }
 # For instance, to build lenmus-i18n and lenmus-ebooks packages:
 #   cmake -DBUILD_PKG_I18N:BOOL=ON -DBUILD_PKG_EBOOKS:BOOL=ON ...
 # Including the option to build the boundle package will force to ignore
@@ -81,14 +93,41 @@
 #
 # SoundFont for the internal synthesizer
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# The internal synthesizer needs a soundfont. Therefore, it is a dependency
-# to have FluidR3_GM.sf2 soundfont installed in the system. In Linux this
+# The internal synthesizer needs the FluidR3_GM.sf2 soundfont. Therefore, it is
+# a dependency to have it installed in the system. In Linux this
 # is provided for specific packages such as the "fluid-soundfont-gm" package in
 # Debian and derivatives.
 #
 # If you would like that this cmake script will download the FluidR3_GM.sf2
 # sound font in case it is not found in the system, you can use the option:
 #   cmake -DLENMUS_DOWNLOAD_SOUNDFONT:BOOL=ON ...
+#
+# By default, the FluidR3 soundfont must not be included in Linux packages and
+# the required soundfont package must be set as an install dependency. But it is
+# necessary to install it in Windows. Therefore, the default behaviour is
+# to include it in Windows installer but not in Linux packages.
+# You can control this behaviour with the option:
+#   cmake -DLENMUS_INSTALL_SOUNDFONT:BOOL={OFF | ON} ...
+#
+#
+# Bravura music font required to render scores
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# By default, this font must not be included in Linux packages and the required
+# font package must be set as an install dependency.
+# As it is necessary to install it in Windows, and as in some Linux distros
+# there is no package to install this font, this cmake scripts includes this
+# font in the installer. To prevent this, you can use the option:
+#   cmake -DLENMUS_INSTALL_BRAVURA_FONT:BOOL=OFF ...
+#
+# When it is requested that Bravura font be included in the package, this
+# cmake script will download the Bravura.otf font in case it is not found in
+# the system. You can use the option:
+#   cmake -DLENMUS_DOWNLOAD_BRAVURA_FONT:BOOL=OFF ...
+# to force not to download it if not found in the system. But if the font is
+# not found, it will not be installed in any case.
+#
+#
+#
 #
 #-------------------------------------------------------------------------------------
 # Modifying this script
@@ -102,7 +141,8 @@
 #
 #-------------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+message(STATUS "Using cmake version ${CMAKE_VERSION}")
 
 # project name
 project(lenmus)
@@ -176,11 +216,23 @@ OPTION(LENMUS_ENABLE_UNIT_TESTS
 OPTION(LENMUS_DOWNLOAD_SOUNDFONT
     "Download FluidR3 soundfont if not present in source tree"
 	OFF)
+OPTION(LENMUS_DOWNLOAD_BRAVURA_FONT
+    "Download Bravura.otf font if not present in source tree"
+	ON)
+OPTION(LENMUS_INSTALL_BRAVURA_FONT
+    "Include Bravura music font in the package in the main and boundle packages"
+	ON)
+if(WIN32)
+    OPTION(LENMUS_INSTALL_SOUNDFONT
+        "Include FluidR3 soundfont in the package in the main and boundle packages"
+	    ON)
+else()
+    OPTION(LENMUS_INSTALL_SOUNDFONT
+        "Include FluidR3 soundfont in the package in the main and boundle packages"
+	    OFF)
+endif()
 OPTION(BUILD_PKG_MAIN
     "Build package 'lenmus-main': Binaries and related files"
-    "OFF")
-OPTION(BUILD_PKG_FONTS
-    "Build package 'lenmus-fonts': Fonts needed for rendering music scores and eBooks"
     "OFF")
 OPTION(BUILD_PKG_COMMON
     "Build package 'lenmus-common': Common support files, such as icons"
@@ -199,13 +251,23 @@ set(MAN_INSTALL_DIR "/usr/share/man"
     CACHE STRING "Directory for installing man pages")
 
 
+# Set a default build type if none was specified
+# https://stackoverflow.com/questions/24460486/cmake-build-type-is-not-being-used-in-cmakelists-txt
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+endif()
+
+
+#------------------------------------------------------
 # macro STRING_UNQUOTE(var str)
 #   Remove quote marks or double quote marks around a string.
 #   If the string is not quoted, then content of str is copied to var
 #   * Parameters:
 #     + var: A variable that stores the result.
 #     + str: A string.
-#------------------------------------------------------
 MACRO(STRING_UNQUOTE var str)
 	set(_ret "${str}")
 	STRING(LENGTH "${str}" _strLen)
@@ -358,7 +420,6 @@ if( WIN32 )
 elseif( UNIX )
     if((NOT BUILD_PKG_BOUNDLE)
         AND (NOT BUILD_PKG_MAIN)
-        AND (NOT BUILD_PKG_FONTS)
         AND (NOT BUILD_PKG_COMMON)
         AND (NOT BUILD_PKG_I18N)
         AND (NOT BUILD_PKG_EBOOKS)
@@ -370,7 +431,6 @@ endif()
 
 message("Packages to build:")
 message(STATUS "BUILD_PKG_MAIN = ${BUILD_PKG_MAIN}")
-message(STATUS "BUILD_PKG_FONTS = ${BUILD_PKG_FONTS}")
 message(STATUS "BUILD_PKG_COMMON = ${BUILD_PKG_COMMON}")
 message(STATUS "BUILD_PKG_I18N = ${BUILD_PKG_I18N}")
 message(STATUS "BUILD_PKG_EBOOKS = ${BUILD_PKG_EBOOKS}")
@@ -395,7 +455,7 @@ message("Checking for LenMus dependencies:")
 
 # Check for FluidR3_GM.sf2 sound font required by internal synthesizer
 # package 'fluid-soundfont-gm'
-set (INSTALL_SOUNDFONT 0)
+set (INSTALL_SOUNDFONT ${LENMUS_INSTALL_SOUNDFONT})
 find_path(FLUIDR3_PATH
           NAMES FluidR3_GM.sf2
           PATHS
@@ -405,7 +465,7 @@ find_path(FLUIDR3_PATH
               ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
          )
 
-if(FLUIDR3_PATH_NOTFOUND)
+if("${FLUIDR3_PATH}" STREQUAL "FLUIDR3_PATH-NOTFOUND")
     if (LENMUS_DOWNLOAD_SOUNDFONT)
         message(STATUS "FluidR3_GM.sf2 soundfont not found. Downloading it ...")
         file(DOWNLOAD 
@@ -428,16 +488,65 @@ if(FLUIDR3_PATH_NOTFOUND)
         endif()
         message(STATUS "FluidR3_GM.sf2 soundfont downloaded.")
         set(LENMUS_SOUNDFONT_PATH "${LENMUS_ROOT_DIR}/res/sounds/")
-        set (INSTALL_SOUNDFONT 1)
+        set (INSTALL_SOUNDFONT ON)
 
     else(LENMUS_DOWNLOAD_SOUNDFONT)
         message(FATAL_ERROR "FluidR3_GM.sf2 soundfont not found. Aborting...")
     endif(LENMUS_DOWNLOAD_SOUNDFONT)
 
-else(FLUIDR3_PATH_NOTFOUND)
+else()
     set(LENMUS_SOUNDFONT_PATH ${FLUIDR3_PATH})
     message(STATUS "FluidR3_GM.sf2 found in ${FLUIDR3_PATH}")
-endif(FLUIDR3_PATH_NOTFOUND)
+endif()
+
+
+# Check for Bravura music font required to render scores
+set (INSTALL_BRAVURA_FONT ${LENMUS_INSTALL_BRAVURA_FONT})
+find_path(BRAVURA_FONT_PATH
+          NAMES Bravura.otf
+          PATHS
+              /usr/share/fonts/truetype/               # Red Hat
+              ${LENMUS_ROOT_DIR}/res/z_fonts           # local builds
+              ${LENMUS_ROOT_DIR}/res/fonts             # local builds
+         )
+if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
+    if (LENMUS_DOWNLOAD_BRAVURA_FONT)
+        message(STATUS "Bravura font not found. Downloading it ...")
+        file(DOWNLOAD 
+            "https://github.com/steinbergmedia/bravura/raw/master/redist/otf/Bravura.otf"
+            "${LENMUS_ROOT_DIR}/res/fonts/Bravura.otf"
+            SHOW_PROGRESS
+#            EXPECTED_HASH MD5=863c90e6f99c264a1747856130ebdc3c
+            STATUS status
+            LOG log
+        )
+
+        list(GET status 0 status_code)
+        list(GET status 1 status_string)
+        
+        if(NOT status_code EQUAL 0)
+            message(FATAL_ERROR "Error downloading Bravura font. Status_code: ${status_code}
+                status_string: ${status_string}
+                log: ${log}
+                ")
+        endif()
+        message(STATUS "Bravura font downloaded.")
+        set(BRAVURA_FONT_PATH "${LENMUS_ROOT_DIR}/res/fonts/")
+        set(INSTALL_BRAVURA_FONT ON)
+
+    else(LENMUS_DOWNLOAD_BRAVURA_FONT)
+        if (WIN32)
+            message(FATAL_ERROR "Bravura font not found. Aborting...")
+        else()
+            message(STATUS "Bravura font not found. It will not be installed.")
+        endif()
+        set(INSTALL_BRAVURA_FONT OFF)
+    endif(LENMUS_DOWNLOAD_BRAVURA_FONT)
+
+else()
+    message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
+endif()
+set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -612,21 +721,155 @@ else()
     message(SEND_ERROR "libpng package not found.")
 endif(PNG_FOUND)
 
-#process template header config file to replace CMake settings
+
+# Check for fontconfig: required by Lomse
+if (UNIX)
+    find_path(FONTCONFIG_INCLUDE_DIR fontconfig/fontconfig.h)
+    find_library(FONTCONFIG_LIBRARIES NAMES fontconfig)
+    if (("${FONTCONFIG_INCLUDE_DIR}" STREQUAL "FONTCONFIG_INCLUDE_DIR-NOTFOUND")
+        OR ("${FONTCONFIG_LIBRARIES}" STREQUAL "FONTCONFIG_LIBRARIES-NOTFOUND")
+       )
+        set(FONTCONFIG_FOUND FALSE)
+    else()
+        set(FONTCONFIG_FOUND TRUE)
+    endif()
+
+    if(FONTCONFIG_FOUND )
+        include_directories( ${FONTCONFIG_INCLUDE_DIR}/fontconfig )
+        link_libraries( ${FONTCONFIG_LIBRARIES} )
+        message(STATUS "fontconfig found: libraries= ${FONTCONFIG_LIBRARIES}" )
+        message(STATUS "fontconfig found: include= ${FONTCONFIG_INCLUDE_DIR}/fontconfig" )
+    else()
+        message(FATAL_ERROR "fontconfig package not found.")
+    endif()
+endif()
+
+
+#======= End of dependencies checking ========================================
+
+
+#-----------------------------------------------------------------------------
+# Decide installation folders, as some values need to be defined for configuring
+# file lenmus_config.h before building.
+#
+# By default, the installation prefix is "/usr/local"
+# You can change the install location by running cmake like this:
+#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
+#
+# Remember:
+#  LENMUS_ROOT_DIR:
+#       path to source tree, to copy files from there: i.e. $HOME/projects/lenmus
+#  ROOT_INSTALL:
+#       path to install binaries: i.e.:
+#       '/usr/local'
+#       'C:\Program Files\lenmus'
+#  SHARED_DIR:
+#       path to install shared files i.e.:
+#           '/usr/local/share/lenmus/5.3/'
+#           'C:\Program Files\lenmus'
+#-----------------------------------------------------------------------------
+
+# set installation paths
+if(WIN32)
+    #For CPack using NSIS, the DESTINATION path must be relative because installation path
+    #is always specified at the moment when user executes the installer. Nevertheless
+    #current NSIS installer does not allow the user to select instalation folder and
+    #it is always installed in "C:/Program Files/lenmus"
+    set(INSTALL_DIR bin)
+    set(SAMPLES_DIR .)
+    set(LOCALE_DIR .)
+    set(LOCALE_LICENSES_DIR locale)
+    set(RES_DIR res)
+    set(TEMPLATES_DIR .)
+    set(XRC_DIR .)
+    set(DOCS_DIR .)
+else()
+    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
+    set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(LOCALE_DIR ${SHARED_DIR})
+    set(LOCALE_LICENSES_DIR ${SHARED_DIR})
+    set(RES_DIR "${SHARED_DIR}/res")
+    set(TEMPLATES_DIR ${SHARED_DIR})
+    set(XRC_DIR ${SHARED_DIR})
+    set(DOCS_DIR ${SHARED_DIR})
+endif()
+
+message("Installation paths:")
+message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
+message(STATUS "INSTALL_DIR = ${INSTALL_DIR}")
+message(STATUS "SHARED_DIR = ${SHARED_DIR}")
+message(STATUS "SAMPLES_DIR = ${SAMPLES_DIR}" )
+message(STATUS "LOCALE_DIR = ${LOCALE_DIR}")
+message(STATUS "LOCALE_LICENSES_DIR = ${LOCALE_LICENSES_DIR}")
+message(STATUS "RES_DIR = ${RES_DIR}")
+message(STATUS "TEMPLATES_DIR = ${TEMPLATES_DIR}")
+message(STATUS "XRC_DIR = ${XRC_DIR}")
+message(STATUS "DOCS_DIR = ${DOCS_DIR}")
+
+
+# Variables LENMUS_SOUNDFONT_PATH and LENMUS_BRAVURA_FONT_PATH are needed
+# for lenmus_config.h file and are used at run time. Thus for building
+# packages for distribution, the LENMUS_XXX_PATH variables must point to 
+# valid paths in the target distro, that is to the paths in wihich the distro
+# installs FluidR3_GM.sf2 and Bravura.otf files.
+# If the package is going to include any of these files then the respective 
+# LENMUS_XXX_PATH variable must point res/sounds or res/fonts, depending.
+
+#To build Windows installers force to install Bravura and Soundfont
+if (WIN32)
+    set(INSTALL_SOUNDFONT 1)
+    set(INSTALL_BRAVURA_FONT 1)
+endif()
+
+if(INSTALL_SOUNDFONT AND
+   NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
+        file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
+             DESTINATION ${LENMUS_ROOT_DIR}/res/sounds)
+        set(LENMUS_SOUNDFONT_PATH ${RES_DIR}/sounds)
+endif()
+message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
+
+if(INSTALL_BRAVURA_FONT AND
+   NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts/"))
+        message(STATUS "BRAVURA_FONT_PATH=${BRAVURA_FONT_PATH}")
+        file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
+             DESTINATION ${LENMUS_ROOT_DIR}/res/fonts)
+        set(LENMUS_BRAVURA_FONT_PATH ${RES_DIR}/fonts)
+endif()
+message(STATUS "LENMUS_BRAVURA_FONT_PATH=${LENMUS_BRAVURA_FONT_PATH}")
+
+
+
+#process template header lenmus_config.h file to replace CMake settings
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/lenmus_config.h.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
 )
+message("lenmus_config.h configuration:" )
+message(STATUS "LENMUS_INSTALL_ROOT=${LENMUS_INSTALL_ROOT}")
+message(STATUS "LENMUS_TEST_SCORES_PATH=${LENMUS_TEST_SCORES_PATH}")
+message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
+
 
 #include binary dir so that lenmus_config.h can be accesed during build
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
 if (LENMUS_USE_LOMSE_SOURCES)
-    #define path were fonts will be installed.
-    set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
+    #define path were fonts will be installed
+    if (WIN32)
+        #Used only for Bravura font. For all others will use system installed fonts
+        set( FONTS_PATH   "${SHARED_DIR}/res/fonts")
+    elseif (UNIX)
+        #In Linux only system installed fonts are used. This variable is not used
+        set( FONTS_PATH   "not used" )
+    else()
+        #Only fonts installed here will be used
+        set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
+    endif()
 
     # include Lomse build options and create the include file "lomse_config.h"
+    message("Lomse configuration")
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
     set_target_properties(build-version PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
@@ -927,7 +1170,7 @@ target_link_libraries ( ${LENMUS}
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
             ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
 			${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
-			${ZLIB_LIBRARIES}
+			${ZLIB_LIBRARIES} ${FONTCONFIG_LIBRARY}
 )
 
 
@@ -970,69 +1213,8 @@ endif(BUILD_PROGRAM)
 
 #///////////////////////////////////////////////////////////////////////////////
 # Program installation
-# You can change the install location by running cmake like this:
-#
-#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
-#
-# By default, the prefix is "/usr/local"
-#
-# Remember:
-#  LENMUS_ROOT_DIR:
-#       path to source tree, to copy files from there: i.e. $HOME/projects/lenmus
-#  ROOT_INSTALL:
-#       path to install binaries: i.e.:
-#       '/usr/local'
-#       'C:\Program Files\lenmus'
-#  SHARED_DIR:
-#       path to install shared files i.e.:
-#           '/usr/local/share/lenmus/5.3/'
-#           'C:\Program Files\lenmus'
-#
-#
-# In Linux, the installation is divided into several packages:
-# - main: binaries and related files
-# - fonts: fonts needed by lomse
-# - common: common support files not bound to any particular
-#       release, architecture or language, such as icons, samples and templates.
-# - i18n: the message catalogues for lenmus and related translated files
-# - ebooks: the eBooks (all translations).
-#
 #///////////////////////////////////////////////////////////////////////////////
 
-# set installation paths
-if(WIN32)
-    #For CPack using NSIS, the DESTINATION path must be relative because installation path
-    #is always specified at the moment when user executes the installer
-    set(INSTALL_DIR bin)
-    set(SAMPLES_DIR .)
-    set(LOCALE_DIR .)
-    set(LOCALE_LICENSES_DIR locale)
-    set(RES_DIR res)
-    set(TEMPLATES_DIR .)
-    set(XRC_DIR .)
-    set(DOCS_DIR .)
-else()
-    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
-    set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(LOCALE_DIR ${SHARED_DIR})
-    set(LOCALE_LICENSES_DIR ${SHARED_DIR})
-    set(RES_DIR "${SHARED_DIR}/res")
-    set(TEMPLATES_DIR ${SHARED_DIR})
-    set(XRC_DIR ${SHARED_DIR})
-    set(DOCS_DIR ${SHARED_DIR})
-endif()
-
-message("Installation paths:")
-message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
-message(STATUS "INSTALL_DIR = ${INSTALL_DIR}")
-message(STATUS "SHARED_DIR = ${SHARED_DIR}")
-message(STATUS "SAMPLES_DIR = ${SAMPLES_DIR}" )
-message(STATUS "LOCALE_DIR = ${LOCALE_DIR}")
-message(STATUS "LOCALE_LICENSES_DIR = ${LOCALE_LICENSES_DIR}")
-message(STATUS "RES_DIR = ${RES_DIR}")
-message(STATUS "TEMPLATES_DIR = ${TEMPLATES_DIR}")
-message(STATUS "XRC_DIR = ${XRC_DIR}")
-message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 
 # Package: lenmus (component: main)
 # ------------------------------------------------------------------------------
@@ -1086,18 +1268,26 @@ install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt
 install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt
         DESTINATION ${DOCS_DIR} COMPONENT main )
 
-# Install desktop entry
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
-        DESTINATION "/usr/share/applications"
-        COMPONENT main )
-# Install icon
-install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png
-        DESTINATION "/usr/share/pixmaps"
-        COMPONENT main )
+if (UNIX)
+    # Install desktop entry
+    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
+            DESTINATION "/usr/share/applications"
+            COMPONENT main )
+    # Install icon
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png
+            DESTINATION "/usr/share/pixmaps"
+            COMPONENT main )
+endif(UNIX)
 
 if(INSTALL_SOUNDFONT)
     install(FILES ${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2
             DESTINATION ${RES_DIR}/sounds
+            COMPONENT main )
+endif()
+
+if(INSTALL_BRAVURA_FONT)
+    install(FILES ${BRAVURA_FONT_PATH}/Bravura.otf
+            DESTINATION ${RES_DIR}/fonts
             COMPONENT main )
 endif()
 
@@ -1251,27 +1441,13 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
 
 
 
-# Package: lenmus-fonts
-# ------------------------------------------------------------------------------
-if (LENMUS_USE_LOMSE_SOURCES)
-    #install Lomse fonts
-    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"   DESTINATION ${RES_DIR}/fonts
-            COMPONENT fonts
-            FILES_MATCHING PATTERN "*.ttf" 
-                           PATTERN "*.ttc"
-                           PATTERN "Bravura.otf"
-     )
-endif(LENMUS_USE_LOMSE_SOURCES)
-
-
-
 #///////////////////////////////////////////////////////////////////////////////
 # CPack section: installers generation
 #///////////////////////////////////////////////////////////////////////////////
 
 # define the components to package
 if (BUILD_PKG_BOUNDLE)
-    set(CPACK_COMPONENTS_ALL main i18n common fonts ebooks)
+    set(CPACK_COMPONENTS_ALL main i18n common ebooks)
     set(CPACK_MONOLITHIC_INSTALL 1)
     set(CPACK_DEB_COMPONENT_INSTALL 0)
 else()
@@ -1279,9 +1455,6 @@ else()
     set(CPACK_DEB_COMPONENT_INSTALL 1)
     if(BUILD_PKG_MAIN)
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "main")
-    endif()
-    if(BUILD_PKG_FONTS)
-        set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "fonts")
     endif()
     if(BUILD_PKG_COMMON)
         set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} "common")
@@ -1348,13 +1521,13 @@ if(UNIX)
     string(CONCAT CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
     if (LENMUS_USE_LOMSE_SOURCES)
-	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0, fluid-soundfont-gm, "
-	            "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
+	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
     else()
-	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0, "
-                "fluid-soundfont-gm, "
-	            "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1) ")
+	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), ")
     endif()
+    string(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS
+        "libsqlite3-0, libportmidi0, fluid-soundfont-gm, "
+        "libfreetype6, ${PNG_DEPENDENCY}, libfluidsynth-dev, zlib1g (>= 1:1.2.1)")
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
 "A program for aural training and to learn music theory
  This package provides the program and all lenmus packages required to run
@@ -1379,7 +1552,7 @@ if(UNIX)
     set(CPACK_DEBIAN_MAIN_PACKAGE_ARCHITECTURE ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
     set(CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS})
     string(APPEND CPACK_DEBIAN_MAIN_PACKAGE_DEPENDS
-        "lenmus-fonts, lenmus-common, lenmus-i18n, lenmus-ebooks ")
+        ", lenmus-common, lenmus-i18n, lenmus-ebooks")
     string(CONCAT CPACK_DEBIAN_MAIN_FILE_NAME
             "${CPACK_DEBIAN_MAIN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}"
@@ -1413,20 +1586,6 @@ if(UNIX)
  training and to learn music theory.
  .
 ${LENMUS_AVAILABLE_LOCALE}"
-)
-
-    #fonts package
-    set(CPACK_DEBIAN_FONTS_PACKAGE_SECTION "fonts")
-    set(CPACK_DEBIAN_FONTS_PACKAGE_NAME "lenmus-fonts")
-    set(CPACK_DEBIAN_FONTS_PACKAGE_ARCHITECTURE "all")
-    set(CPACK_DEBIAN_FONTS_PACKAGE_DEPENDS "")
-    string(CONCAT CPACK_DEBIAN_FONTS_FILE_NAME
-            "${CPACK_DEBIAN_FONTS_PACKAGE_NAME}"
-            "_${LENMUS_PACKAGE_VERSION}"
-            "_${CPACK_DEBIAN_FONTS_PACKAGE_ARCHITECTURE}.deb"
-          )
-    set(CPACK_COMPONENT_FONTS_DESCRIPTION
-"Fonts needed by lomse library to render music scores and documents"
 )
 
     #common package

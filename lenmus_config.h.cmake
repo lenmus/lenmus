@@ -39,16 +39,19 @@
 //  Paths and installation folders
 //  
 //  LENMUS_SOURCE_ROOT must always point to source tree root. It is only used during
-//  program develpment and for unit tests.
+//  program develpment and for unit tests. It will only work in local builds.
 //
 //  LENMUS_INSTALL_ROOT must point to the folder in which the installer places the
 //	lenmus executable. I've not found a simple way of determining this path at run time,
 //  so it is simpler to have this information here.
 //
+//  LENMUS_TEST_SCORES_PATH is only used for UnitTests. Probably the program will
+//  fail when not local build.
+//
 //--------------------------------------------------------------------------------------
-#define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@
-#define LENMUS_SOURCE_ROOT          @LENMUS_SOURCE_ROOT@
-#define LENMUS_INSTALL_ROOT         "@LENMUS_INSTALL_ROOT@"         //Linux only
+#define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@   //unit tests in local builds
+#define LENMUS_SOURCE_ROOT          @LENMUS_SOURCE_ROOT@        //local builds only
+#define LENMUS_INSTALL_ROOT         "@LENMUS_INSTALL_ROOT@"     //Linux only
 
 
 //---------------------------------------------------------------------------------------
@@ -107,14 +110,15 @@
 //      The CoreAudio device to use.
 //
 // LENMUS_SOUNDFONT_PATH must point to the folder containing the FluidR3_GM.sf2 default
-//      soundfont used by the internal synthesizer.
+//      soundfont used by the internal synthesizer. Only used in Linux. In Windows
+//      it uses "$INSTDIR\lenmus-x.x.x\res\sounds"
 //
 //---------------------------------------------------------------------------------------
 #define LENMUS_AUDIO_DRIVER         "@LENMUS_AUDIO_DRIVER@"
 #define LENMUS_ALSA_DEVICE          "@LENMUS_ALSA_DEVICE@"
 #define LENMUS_DSOUND_DEVICE        "@LENMUS_DSOUND_DEVICE@"
 #define LENMUS_COREAUDIO_DEVICE     "@LENMUS_COREAUDIO_DEVICE@"
-#define LENMUS_SOUNDFONT_PATH       "@LENMUS_SOUNDFONT_PATH@"
+#define LENMUS_SOUNDFONT_PATH       "@LENMUS_SOUNDFONT_PATH@"       //Linux only
 
 
 #endif  // __LENMUS_CONFIG_H__

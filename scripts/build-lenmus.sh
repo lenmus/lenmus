@@ -4,9 +4,9 @@
 # This script MUST BE RUN from <root>/scripts/ folder
 #
 # usage:
-#   ./build-lenmus.sh [-p {main | fonts | common | i18n | ebooks}]*
+#   ./build-lenmus.sh [-p {main | common | i18n | ebooks}]*
 # Example:
-#   ./build-lenmus.sh -p fonts -p i18n
+#   ./build-lenmus.sh -p ebooks -p i18n
 #------------------------------------------------------------------------------
 
 
@@ -22,7 +22,7 @@ function DisplayHelp()
     echo "                     If option -p is not specified, it will generate"
     echo "                     the 'main' package containing the binaries."
     echo "                     Valid options: one or more values"
-    echo "                     { main | fonts | common | i18n | ebooks | boundle | all}* "
+    echo "                     { main | common | i18n | ebooks | boundle | all}* "
     echo "                     If boundle package is requested all other"
     echo "                     requested packages are ignored"
     echo ""
@@ -34,7 +34,6 @@ function SavePackage()
 {
     #validate package
     if [ "$1" != "main" -a      \
-         "$1" != "fonts" -a     \
          "$1" != "common" -a    \
          "$1" != "i18n" -a      \
          "$1" != "ebooks" -a      \
@@ -63,7 +62,7 @@ function SanitizePackages()
                 return 0
             fi
             if [ "${packages[$ix]}" == "all" ]; then
-                packages=("main" "fonts" "common" "i18n" "ebooks")
+                packages=("main" "common" "i18n" "ebooks")
                 return 0
             fi
         done
