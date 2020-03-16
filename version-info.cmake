@@ -29,7 +29,7 @@
 
 set( LENMUS_VERSION_MAJOR 5 )
 set( LENMUS_VERSION_MINOR 6 )
-set( LENMUS_VERSION_PATCH "1a" )  #MUST BE string, e.g.: "3", "3-beta", "0"
+set( LENMUS_VERSION_PATCH "1" )  #MUST BE string, e.g.: "3", "3-beta", "0"
 
 # build version string for installer name
 set( LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )

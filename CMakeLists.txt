@@ -462,7 +462,6 @@ find_path(FLUIDR3_PATH
               /usr/share/sounds/sf2     # Ubuntu and possibly all Debian derivatives
               /usr/share/soundfonts     # Red Hat
               ${LENMUS_ROOT_DIR}/res/sounds     #local builds
-              ${LENMUS_ROOT_DIR}/res/fluidR3    #builds at Launchpad.net
          )
 
 if("${FLUIDR3_PATH}" STREQUAL "FLUIDR3_PATH-NOTFOUND")
@@ -505,9 +504,10 @@ set (INSTALL_BRAVURA_FONT ${LENMUS_INSTALL_BRAVURA_FONT})
 find_path(BRAVURA_FONT_PATH
           NAMES Bravura.otf
           PATHS
-              /usr/share/fonts/truetype/               # Red Hat
+              /usr/share/fonts/truetype/               # Red Hat & fonts-lenmus-bravura.deb
               ${LENMUS_ROOT_DIR}/res/z_fonts           # local builds
               ${LENMUS_ROOT_DIR}/res/fonts             # local builds
+              ${LENMUS_ROOT_DIR}/res/bravura/src       # builds for PPA at Launchpad.net
          )
 if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
     if (LENMUS_DOWNLOAD_BRAVURA_FONT)
@@ -1276,6 +1276,11 @@ if (UNIX)
     # Install icon
     install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png
             DESTINATION "/usr/share/pixmaps"
+            COMPONENT main )
+
+    # Install AppStream upstream metadata
+    install(FILES ${LENMUS_ROOT_DIR}/res/other/lenmus.appdata.xml
+            DESTINATION "/usr/share/metainfo"
             COMPONENT main )
 endif(UNIX)
 

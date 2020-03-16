@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+​<!-- Copyright 2020 Cecilio Salmeron <s.cecilio@gmail.com> -->
+​<component type="desktop-application">
+    <id>lenmus</id>
+	<metadata_license>MIT</metadata_license>
+	<project_license>GPL-2.0+</project_license>
+	<name>LenMus Phonascus</name>
+	<summary>A program for aural training and to learn music theory</summary>
+	<description>
+        <p>Lenmus Phonascus is a totally free program for studying music theory
+           that allows you to focus on specific skills and exercises, on both
+           theory and aural training.
+        </p>
+        <p>The different activities can be customized to meet your needs.
+           Phonascus allows you to work at your own pace, providing interactive
+           feedback until mastery of each concept is achieved.
+        </p>
+        <p>Phonascus aims to create, as a community, the best free program for 
+           music students, to help them in their studies. Phonascus has no
+           commercial purposes.
+        </p>
+	</description>
+
+	<launchable type="desktop-id">lenmus.desktop</launchable>
+
+	<url type="homepage">http://lenmus.org/</url>
+	<screenshots>
+		<screenshot type="default">
+            <caption>Practicing theory</caption>
+			<image>http://www.lenmus.org/mws/content/lenmus/paginas/images/PantIntervalos_full.png</image>
+		</screenshot>
+		<screenshot>
+            <caption>Music theory</caption>
+			<image>http://www.lenmus.org/mws/content/lenmus/paginas/images/PantTeoria_full.png</image>
+		</screenshot>
+		<screenshot>
+            <caption>Aural training and other exercises</caption>
+			<image>http://www.lenmus.org/mws/content/lenmus/paginas/images/PantEscalas_full.png</image>
+		</screenshot>
+	</screenshots>
+
+	<provides>
+		<id>lenmus.desktop</id>
+	</provides>
+
+</component>
+​​
