@@ -17,6 +17,7 @@ Build-Depends: debhelper (>= 8.0.0)
  , zlib1g (>= 1:1.2.1)
  , libfluidsynth-dev
  , fluid-soundfont-gm
+ , lsb-release
 
 
 Package: lenmus-all
