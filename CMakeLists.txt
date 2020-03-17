@@ -546,7 +546,6 @@ if("${BRAVURA_FONT_PATH}" STREQUAL "BRAVURA_FONT_PATH-NOTFOUND")
 else()
     message(STATUS "Bravura font found in ${BRAVURA_FONT_PATH}")
 endif()
-set(LENMUS_BRAVURA_FONT_PATH ${BRAVURA_FONT_PATH})
 
 # Check for UnitTest++. Required when unit tests are enabled (default)
 if (LENMUS_ENABLE_UNIT_TESTS)
@@ -809,13 +808,13 @@ message(STATUS "XRC_DIR = ${XRC_DIR}")
 message(STATUS "DOCS_DIR = ${DOCS_DIR}")
 
 
-# Variables LENMUS_SOUNDFONT_PATH and LENMUS_BRAVURA_FONT_PATH are needed
-# for lenmus_config.h file and are used at run time. Thus for building
-# packages for distribution, the LENMUS_XXX_PATH variables must point to 
-# valid paths in the target distro, that is to the paths in wihich the distro
-# installs FluidR3_GM.sf2 and Bravura.otf files.
-# If the package is going to include any of these files then the respective 
-# LENMUS_XXX_PATH variable must point res/sounds or res/fonts, depending.
+# Variable LENMUS_SOUNDFONT_PATH is needed for lenmus_config.h file and is
+# used at run time. Thus for building packages for distribution, this
+# variable must point to a valid path in the target distro, that is to the 
+# paths in which the distro installs FluidR3_GM.sf2 file. But if
+# the package is going to include this file then the variable 
+# LENMUS_SOUNDFONT_PATH must point to the place at which the soundfont
+# will be installed.
 
 #To build Windows installers force to install Bravura and Soundfont
 if (WIN32)
@@ -836,9 +835,7 @@ if(INSTALL_BRAVURA_FONT AND
         message(STATUS "BRAVURA_FONT_PATH=${BRAVURA_FONT_PATH}")
         file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
              DESTINATION ${LENMUS_ROOT_DIR}/res/fonts)
-        set(LENMUS_BRAVURA_FONT_PATH ${RES_DIR}/fonts)
 endif()
-message(STATUS "LENMUS_BRAVURA_FONT_PATH=${LENMUS_BRAVURA_FONT_PATH}")
 
 
 
