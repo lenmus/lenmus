@@ -7,13 +7,13 @@ matrix:
 
     - os: linux
       env:
-        - COMPILER=gcc-4.9 
+        - COMPILER=gcc-7
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-4.9
+            - g++-7
             - cmake
             - libfreetype6-dev
             - libpng++-dev
