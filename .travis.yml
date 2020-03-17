@@ -1,5 +1,5 @@
 sudo: false
-dist: trusty
+dist: bionic
 language: cpp
 
 matrix:
@@ -26,6 +26,7 @@ matrix:
             - libfluidsynth-dev
             - fluid-soundfont-gm
             - libfontconfig1-dev
+            - lsb-release
 
 script:
   - export CC=$COMPILER
