@@ -13,7 +13,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-4.9
+            - g++ (>= 4.9)
             - cmake
             - libfreetype6-dev
             - libpng++-dev
