@@ -7,29 +7,6 @@ matrix:
 
     - os: linux
       env:
-        - COMPILER=gcc-5
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-            - cmake
-            - libfreetype6-dev
-            - libpng++-dev
-            - zlib1g-dev
-            - libunittest++-dev
-            - libwxgtk3.0-dev
-            - libportmidi-dev
-            - libsqlite3-0
-            - libsqlite3-dev
-            - libfluidsynth-dev
-            - fluid-soundfont-gm
-            - libfontconfig1-dev
-            - lsb-release
-
-    - os: linux
-      env:
         - COMPILER=gcc-7
       addons:
         apt:
