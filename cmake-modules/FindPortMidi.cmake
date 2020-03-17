@@ -54,21 +54,7 @@ cmake_policy(SET CMP0057 NEW)   #do not ignore the IN_LIST operator
 if (UNIX)
 
     #Determine Linux Distro
-    find_program(LSB_RELEASE_EXEC lsb_release)
-    if(NOT "${LSB_RELEASE_EXEC}" STREQUAL "LSB_RELEASE_EXEC-NOTFOUND")
-        execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
-            OUTPUT_VARIABLE   DISTRIBUTOR_ID
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-    endif()
-
-    #TODO: Confirm Distributor ID for the different distros
-    # confirmed:
-    #   "CentOS", "Debian", "Fedora", "LinuxMint", "Ubuntu"
-    # Unconfirmed values found googling on Internet:
-    #   "archlinux", "Mageia", "openSUSE project",
-    #   "RedHatEntrerpriseServer", "SUSE"
-    message(STATUS "Linux Distribution ID =${DISTRIBUTOR_ID}")
+    include(DetermineLinuxDistro)
 
     #porttime is included in portmidi package
     set(DISTROS_NOT_USING_PORTTIME
@@ -81,22 +67,20 @@ if (UNIX)
         Ubuntu
     )
 
-    if("${DISTRIBUTOR_ID}" IN_LIST   DISTROS_NOT_USING_PORTTIME)
+    if("${SYSTEM_TYPE}" IN_LIST   DISTROS_NOT_USING_PORTTIME)
         set(INCLUDE_PORTTIME 0)   
-    elseif("${DISTRIBUTOR_ID}" IN_LIST   DISTROS_USING_PORTTIME)
+    elseif("${SYSTEM_TYPE}" IN_LIST   DISTROS_USING_PORTTIME)
         set(INCLUDE_PORTTIME 1)   
     else()
         set(INCLUDE_PORTTIME 0)
         message(WARNING
-            "Failed to identify your Linux distro: either lsb_release is missing " 
-            "or the Distributor ID '${DISTRIBUTOR_ID}' is not included in this "
-            "cmake script.\n"
+            "Failed to identify your Linux distro: '${SYSTEM_TYPE}'. "
             "It will be assumed that porttime library is included in portmidi "
             "package. The linkage step might fail, but if it does not fail, you "
             "will confirm that, in your distro, libporttime is not nedeed.\n"
-            "Please send a PR with your findings for improving this cmake script. "
-            "Thank you!"
-        )
+            "Please open an issue with your findings for improving this cmake "
+            "script at https://github.com/lenmus/lenmus/issues. "
+            "Thank you!\n\n")
     endif()
 endif(UNIX)
 

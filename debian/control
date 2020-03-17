@@ -18,6 +18,7 @@ Build-Depends: debhelper (>= 8.0.0)
  , libfluidsynth-dev
  , fluid-soundfont-gm
  , lsb-release
+ , libfontconfig1-dev
 
 
 Package: lenmus-all
