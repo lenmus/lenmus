@@ -92,13 +92,13 @@ namespace lenmus
 //        Linux:      <prefix>/bin
 //        Windows:    $INSTDIR\lenmus-x.x.x\bin
 //
-//    2. Shared non-modificable files (SHARED_ROOT):
+//    2. Shared non-modificable files (SHARED_DIR):
 //    ------------------------------------------------------------------------------
 //        Linux:      <prefix>/share/lenmus
 //        Windows:    $INSTDIR\lenmus-x.x.x
 //                    (e.g.: C:\Program Files\lenmus-x.x.x)
 //
-//        <SHARED_ROOT>
+//        <SHARED_DIR>
 //            + /xrc
 //            + /res
 //            + /locale
@@ -128,7 +128,6 @@ namespace lenmus
 //
 //        <DATA_DIR>
 //            + /scores
-//      [      + /x.x.x/samples  ]
 //
 //    5. Logs & temporal files, per user (LOGS_DIR)
 //    ------------------------------------------------------------------------------
@@ -141,9 +140,9 @@ namespace lenmus
 //    6. Default soundfont (SOUND_FONT)
 //    ------------------------------------------------------------------------------
 //        Linux:      LENMUS_SOUNDFONT_PATH when != "", or
-//                    <SHARED_ROOT>/res/sounds, when LENMUS_SOUNDFONT_PATH == ""
+//                    <SHARED_DIR>/res/sounds, when LENMUS_SOUNDFONT_PATH == ""
 //
-//        Windows:    <SHARED_ROOT>/res/sounds
+//        Windows:    <SHARED_DIR>/res/sounds
 //                    (e.g.: C:\Program Files\lenmus-x.x.x\res\sounds)
 //
 //    7. Other resources
@@ -152,14 +151,14 @@ namespace lenmus
 //        Linux:
 //            The program uses FontConfig. If not found, fallbacks to LENMUS_SOUNDFONT_PATH.
 //            The value of this macro is:
-//            - For builds from IDE:  <SHARED_ROOT>/res/fonts
+//            - For builds from IDE:  <SHARED_DIR>/res/fonts
 //            - For builds using cmake:
 //                cmake -DLENMUS_INSTALL_BRAVURA_FONT:BOOL=OFF
 //                    path to system Btavura.otf font
 //                cmake -DLENMUS_INSTALL_BRAVURA_FONT:BOOL=ON
-//                    <SHARED_ROOT>/res/fonts
+//                    <SHARED_DIR>/res/fonts
 //        Windows:
-//            <SHARED_ROOT>/res/fonts
+//            <SHARED_DIR>/res/fonts
 //            (e.g.: C:\Program Files\lenmus-x.x.x\res\fonts)
 //
 //
@@ -185,7 +184,7 @@ void Paths::initialize()
 
     //Step 1: Determine the base paths
     //----------------------------------------------------------------
-    //  SHARED_ROOT (oSharedHome). For shared non-modificable files
+    //  SHARED_DIR (oSharedHome). For shared non-modificable files
     //  CONFIG_DIR (oConfigHome). For user dependent configuration files
     //  DATA_DIR (oDataHome). For user data: e.g.: scores
     //  LOGS_DIR (oLogsHome). For logs & temporal files, per user
@@ -380,7 +379,7 @@ void Paths::initialize()
 
     wxFileName path;
 
-    //SHARED_ROOT subfolders. Shared non-modificable files
+    //SHARED_DIR subfolders. Shared non-modificable files
 
     path = oSharedHome;
     path.AppendDir("xrc");
@@ -549,9 +548,9 @@ void Paths::log_paths()
     LOMSE_LOG_INFO("Config = %s", GetConfigPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Log = %s", GetLogPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Fonts = %s", GetFontsPath().ToStdString().c_str() );
-    LOMSE_LOG_INFO("SoundFonts = %s\n", GetSoundFontsPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("SoundFonts = %s", GetSoundFontsPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("SourceRoot = %s", GetSrcRootPath().ToStdString().c_str() );
-    LOMSE_LOG_INFO("TestScores = %s", GetTestScoresPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("TestScores = %s\n", GetTestScoresPath().ToStdString().c_str() );
 
     wxLogMessage("Binary root = %s", GetBinPath());
     wxLogMessage("Shared root = %s", GetFontsPath());

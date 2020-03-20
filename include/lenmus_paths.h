@@ -45,7 +45,7 @@ private:
     //PREFIX_DIR. The root of all relative paths: <prefix>
     wxString    m_sPrefix;      //the <prefix> path
 
-    //SHARED_ROOT (relative). Shared non-modificable files
+    //SHARED_DIR (relative). Shared non-modificable files
     wxString    m_sLocaleRoot;  //root path for locale folders. <shared>/locale
     wxString    m_sSamples;     //path for sample scores. <shared>/samples
     wxString    m_sCursors;     //path for resource cursors. <shared>/res/cursors
@@ -55,7 +55,7 @@ private:
     wxString    m_sTemplates;   //path for templates. <shared>/templates
     wxString    m_sXrc;         //path for .xrc and .xrs resource files. <shared>/xrc
 
-    //SHARED_ROOT. Paths depending on language
+    //SHARED_DIR. Paths depending on language
     wxString    m_sLangCode;    //language code (2 or 5 chars: i.e. "en", "en_US")
     wxString    m_sLocale;      //path containing program translation files ( .mo catalogs)
     wxString    m_sBooks;       //path for books
