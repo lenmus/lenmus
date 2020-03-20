@@ -173,9 +173,20 @@ wxString ApplicationScope::get_language()
 //---------------------------------------------------------------------------------------
 Paths* ApplicationScope::get_paths()
 {
+    //DEBUG: the paths object is created by TheApp by invoking method
+    //ApplicationScope::set_bin_folder(). But for unit tests it could be not created
     if (!m_pPaths)
         m_pPaths = LENMUS_NEW Paths( wxGetCwd(), *this );
+    //End DEBUG ----------------------------------------------------------------
+
     return m_pPaths;
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::set_bin_folder(const wxString& sBinPath)
+{
+    delete m_pPaths;
+    m_pPaths = LENMUS_NEW Paths(sBinPath, *this);
 }
 
 //---------------------------------------------------------------------------------------
@@ -283,13 +294,6 @@ wxConfigBase* ApplicationScope::get_preferences()
     if (!m_pPrefs)
         create_preferences_object();
     return m_pPrefs;
-}
-
-//---------------------------------------------------------------------------------------
-void ApplicationScope::set_bin_folder(const wxString& sBinPath)
-{
-    delete m_pPaths;
-    m_pPaths = LENMUS_NEW Paths(sBinPath, *this);
 }
 
 //---------------------------------------------------------------------------------------

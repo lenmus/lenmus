@@ -38,10 +38,10 @@ using namespace lomse;
 using namespace std;
 
 #if (LENMUS_PLATFORM_UNIX == 1)     //for getenv(), getpwuid() and getuid()
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
-#include <cstdlib>
+    #include <unistd.h>
+    #include <sys/types.h>
+    #include <pwd.h>
+    #include <cstdlib>
 #endif
 
 
@@ -52,133 +52,164 @@ namespace lenmus
 //=======================================================================================
 // Paths implementation
 //
-// Files to install are divided in groups:
-//  1. LenMus program, other binaries, and related files (INSTALL_DIR)
-//  2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
-//  3. Configuration files, user & version dependent (CONFIG_DIR)
-//  4. User scores and samples, user dependent (DATA_DIR)
-//  5. Logs and temporal files, user dependent (LOGS_DIR)
-
+//To install files LenMus uses several prefixes:
+//    1. BIN_ROOT: LenMus program, other binaries, and related files.
+//    2. SHARED_DIR: Non-modificable data, shared among all users on the computer.
+//    3. CONFIG_DIR: Configuration files, user & version dependent.
+//    4. DATA_DIR: User scores, user dependent.
+//    5. LOGS_DIR: Logs and temporal files, user dependent.
+//    6. SOUND_FONT: Default soundfont.
+//
+//    Paths for programming and debugging
+//    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    When the program is run from the IDE the source tree is used. The root of the
+//    source tree is provided by configuration macro LENMUS_SOURCE_ROOT and all other
+//    roots are derived from it.
+//
+//    Macro LENMUS_SOUNDFONT_PATH is ignored and, instead, the value of
+//    ${LENMUS_SOURCE_ROOT}/res/sounds/fluidR3_GM.sf2  is used.
+//
+//    LENMUS_TEST_SCORES_PATH is used for accesing the unit test scores.
+//
+//
+//    Paths for installation
+//    ~~~~~~~~~~~~~~~~~~~~~~~~~
+//    There is a root path for each group of files, as described in following table:
+//
+//    ------------------------------------------------------------------------------
+//       Linux                       		  Windows
+//       <prefix> = /usr/local                NSIS automatically provides variables:
+//                                                $INSTDIR = C:\Program Files
+//                                                $PROFILE = C:\Users\<user>
+//                                                $DOCUMENTS = $PROFILE\MyDocuments
+//                                                $LOCALAPPDATA = C:\Users\<user>\AppData\Local
+//                                            with the drive letter correctly set.
+//                                            Therefore it is not necessary to do anything
+//                                            in LenMus program for fixing the drive letter.
+//
+//    1. The lenmus program (BIN_DIR):
+//    ------------------------------------------------------------------------------
+//        Linux:      <prefix>/bin
+//        Windows:    $INSTDIR\lenmus-x.x.x\bin
+//
+//    2. Shared non-modificable files (SHARED_ROOT):
+//    ------------------------------------------------------------------------------
+//        Linux:      <prefix>/share/lenmus
+//        Windows:    $INSTDIR\lenmus-x.x.x
+//                    (e.g.: C:\Program Files\lenmus-x.x.x)
+//
+//        <SHARED_ROOT>
+//            + /xrc
+//            + /res
+//            + /locale
+//            + /books
+//            + /templates
+//            + /test-scores
+//            + /samples
+//            + AUTHORS
+//            + LICENSE
+//            + ...
+//
+//    3. User dependent configuration files (CONFIG_DIR):
+//    ------------------------------------------------------------------------------
+//        Linux:      ~/.config/lenmus/x.x.x/
+//        Windows:    $PROFILE\AppData\Local\lenmus\x.x.x
+//                    (e.g.: C:\Users\<user>\\AppData\Local\lenmus\x.x.x\)
+//
+//        <CONFIG_DIR>
+//            + lenmus.db
+//            + lenmus.dini
+//
+//    4. User data: scores, samples, etc.(DATA_DIR)
+//    ------------------------------------------------------------------------------
+//        Linux:      ~/lenmus
+//        Windows:    $PROFILE\lenmus
+//                    (e.g.: C:\Users\<user>\lenmus)
+//
+//        <DATA_DIR>
+//            + /scores
+//      [      + /x.x.x/samples  ]
+//
+//    5. Logs & temporal files, per user (LOGS_DIR)
+//    ------------------------------------------------------------------------------
+//        Linux:      ~/lenmus/temp
+//        Windows:    $PROFILE\lenmus\temp
+//                    (e.g.: C:\Users\<user>\lenmus\temp)
+//
+//        <LOGS_DIR>
+//
+//    6. Default soundfont (SOUND_FONT)
+//    ------------------------------------------------------------------------------
+//        Linux:      LENMUS_SOUNDFONT_PATH when != "", or
+//                    <SHARED_ROOT>/res/sounds, when LENMUS_SOUNDFONT_PATH == ""
+//
+//        Windows:    <SHARED_ROOT>/res/sounds
+//                    (e.g.: C:\Program Files\lenmus-x.x.x\res\sounds)
+//
+//    7. Other resources
+//    ------------------------------------------------------------------------------
+//    Music font Bravura.otf
+//        Linux:
+//            The program uses FontConfig. If not found, fallbacks to LENMUS_SOUNDFONT_PATH.
+//            The value of this macro is:
+//            - For builds from IDE:  <SHARED_ROOT>/res/fonts
+//            - For builds using cmake:
+//                cmake -DLENMUS_INSTALL_BRAVURA_FONT:BOOL=OFF
+//                    path to system Btavura.otf font
+//                cmake -DLENMUS_INSTALL_BRAVURA_FONT:BOOL=ON
+//                    <SHARED_ROOT>/res/fonts
+//        Windows:
+//            <SHARED_ROOT>/res/fonts
+//            (e.g.: C:\Program Files\lenmus-x.x.x\res\fonts)
+//
+//
 //=======================================================================================
 Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     : m_appScope(appScope)
 {
-    //Save the full path to the LenMus executable
-    m_sBin = sBinPath;
+    m_sBin = sBinPath;      //save the full path to the LenMus executable
+    initialize();
+}
 
-    //determine user home folder
-#if (LENMUS_PLATFORM_UNIX == 1)
-    char* homedir = getenv("HOME");
-#elif (LENMUS_PLATFORM_WIN32 == 1)
-    char* homedir = getenv("USERPROFILE");
-#elif (LENMUS_PLATFORM_MAC == 1)
-    char* homedir = getenv("HOME");      //TODO
-#endif
-    if (homedir == NULL)
-    {
-        #if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
-            struct passwd* pw = getpwuid(getuid());
-            homedir = pw->pw_dir;
-        #elif (LENMUS_PLATFORM_WIN32 == 1)
-            //TODO
-        #endif
-    }
-    string sHomedir(homedir);
-    wxString sHome = to_wx_string(sHomedir);
+//---------------------------------------------------------------------------------------
+Paths::~Paths()
+{
+}
 
-
-	//determine version string
+//---------------------------------------------------------------------------------------
+void Paths::initialize()
+{
+    wxString sHome = get_user_home_folder();
     wxString sVersion = m_appScope.get_version_string();
+    determine_prefix();
 
-
-    //determine all paths, according to the following specifications:
-    //
-    // - when the program is a debug build (LENMUS_DEBUG_BUILD == 1) or is not a build
-    //   for installation (LENMUS_RELEASE_INSTALL == 0) the root of the source tree
-    //   is used. The root of the source tree is provided by configuration
-    //   macro LENMUS_SOURCE_ROOT.
-    //
-    // - Otherwise, there is a root path for each group of files, as described in the
-    //   following table:
-    //
-    // ------------------------------------------------------------------------------
-    //    Linux                       			Windows
-    //    <prefix> = /usr/local					$INSTDIR = C:\Program Files
-    //											$PROFILE = C:\Users\<user>
-    //											$DOCUMENTS = C:\Users\<user>
-    //
-    // 1. The lenmus program (INSTALL_DIR):
-    // ------------------------------------------------------------------------------
-    //      <prefix>/bin                		$INSTDIR\lenmus-x.x.x\bin
-    //          + lenmus                            + lenmus.exe
-    //                                              + config-init.txt (NSIS)
-    //                                              + dll (libpng16.dll, zlib.dll)
-    //
-    // 2. Shared non-modificable files (SHARED_ROOT):
-    // ------------------------------------------------------------------------------
-    //      <prefix>/share/lenmus       		$INSTDIR\lenmus-x.x.x
-    //          + /xrc                      		+ \xrc
-    //          + /res                      		+ \res
-    //          + /locale                   		+ \locale
-    //          + /books                    		+ \books
-    //          + /templates                		+ \templates
-    //          + /test-scores              		+ \test-scores
-    //          + /samples							+ \samples
-    //          + /sounds							+ \sounds
-	//          + AUTHORS							+ AUTHORS
-	//          + LICENSE							+ LICENSE
-	//		    + ...								+ ...
-    //
-    // 3. User dependent configuration files (CONFIG_DIR):
-    // ------------------------------------------------------------------------------
-    //      ~/.config/lenmus/x.x.x			$PROFILE\AppData\Local\lenmus\x.x.x
-	//			+ lenmus.db						+ lenmus.db
-	//			+ lenmus.ini					+ lenmus.ini
-    //
-    // 4. User data: scores (DATA_DIR)
-    // ------------------------------------------------------------------------------
-    //      ~/lenmus/scores                 $DOCUMENTS\lenmus\scores
-	//
-    // 5. Logs & temporal files, per user (LOGS_DIR)
-    // ------------------------------------------------------------------------------
-    //      ~/lenmus/temp      				$PROFILE\AppData\Local\lenmus\temp
-    //                                          + <user>_lenmus_log.txt
-	//
+    //Step 1: Determine the base paths
+    //----------------------------------------------------------------
+    //  SHARED_ROOT (oSharedHome). For shared non-modificable files
+    //  CONFIG_DIR (oConfigHome). For user dependent configuration files
+    //  DATA_DIR (oDataHome). For user data: e.g.: scores
+    //  LOGS_DIR (oLogsHome). For logs & temporal files, per user
+    //  SOUND_FONT (oSoundFonts). For FluidR3_GM.sf2 default soundfont
 
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-    //Debug version or Release version for tests.
-    //Use source tree
-    m_installRoot.AssignDir(LENMUS_SOURCE_ROOT);
+    //Base paths for local builds,  for programming and debugging
+    //------------------------------------------------------------
 
-    #if (LENMUS_PLATFORM_WIN32 == 1)
-        //Ignore drive letter in Windows
-        wxFileName drive;
-        drive.GetCwd();
-        m_installRoot.SetVolume( drive.GetVolume() );
-    #endif
-    m_installRoot.Normalize();
-
-    wxFileName oInstallHome(m_installRoot);
-    wxFileName oSharedHome(m_installRoot);
-    wxFileName oLogsHome;
-    oLogsHome.AssignDir(sBinPath);
-    wxFileName oConfigHome;
-    oConfigHome.AssignDir(sBinPath);
-    wxFileName oDataHome(m_installRoot);
-    wxFileName oSoundFonts(m_installRoot);
+    wxFileName oSharedHome(m_sPrefix);
+    wxFileName oLogsHome(sHome);
+    wxFileName oConfigHome(m_sBin);
+    wxFileName oDataHome(m_sPrefix);
+    wxFileName oSoundFonts(m_sPrefix);
+    oSoundFonts.AppendDir("res");
+    oSoundFonts.AppendDir("sounds");
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
-    //Linux Release version
-
-    //1. LenMus program, other binaries, and related files (INSTALL_DIR)
-    //      /usr/local/bin
-    m_installRoot.AssignDir( LENMUS_INSTALL_ROOT );
-    m_installRoot.Normalize();
-    wxFileName oInstallHome(m_installRoot);
+    //Base paths for Linux Release version
+    //---------------------------------------
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
     //      /usr/local/share/lenmus/x.x.x/
-    wxFileName oSharedHome(m_installRoot);
+    wxFileName oSharedHome(m_sPrefix);
     oSharedHome.AppendDir("share");
     oSharedHome.AppendDir("lenmus");
     oSharedHome.AppendDir(sVersion);
@@ -248,24 +279,25 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     }
 
     //6. Other files from system
-    wxFileName oSoundFonts( LENMUS_SOUNDFONT_PATH );
+    wxFileName oSoundFonts;
+    if (strlen(LENMUS_SOUNDFONT_PATH) != 0)
+        oSoundFonts = wxFileName( LENMUS_SOUNDFONT_PATH );
+    else
+    {
+        oSoundFonts = oSharedHome;
+        oSoundFonts.AppendDir("res");
+        oSoundFonts.AppendDir("sounds");
+    }
     oSoundFonts.Normalize();
 
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
-    //Windows Release version
-    wxStandardPaths& stdPaths = wxStandardPaths::Get();
-
-    //1. LenMus program, other binaries, and related files (INSTALL_DIR)
-    //      "C:/Program Files/lenmus-x.x.x/"
-    m_installRoot.AssignDir(sBinPath);
-    m_installRoot.RemoveLastDir();
-    m_installRoot.Normalize();
-    wxFileName oInstallHome(m_installRoot);
+    //Base paths for Windows Release version
+    //-----------------------------------------
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
     //      "C:/Program Files/lenmus-x.x.x/"
-    wxFileName oSharedHome(m_installRoot);
+    wxFileName oSharedHome(m_sPrefix);
 
     //3. Configuration files, user & version dependent (CONFIG_DIR)
     //      "C:\Users\<user>\AppData\Local\lenmus\x.x.x\"
@@ -304,7 +336,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR("Failed to create '%s'."
                             , oDataHome.GetFullPath().ToStdString().c_str() );
     }
-    wxFileName oLogsHome(oDataHome);
+    wxFileName oLogsHome(oDataHome);    // C:/Users/<user>/lenmus
+
     oDataHome.AppendDir("scores");          // C:/Users/<user>/lenmus/scores/
     if (!::wxDirExists( oDataHome.GetFullPath() ))
 	{
@@ -329,10 +362,11 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     wxFileName oSoundFonts = oSharedHome;
     oSoundFonts.AppendDir("res");
     oSoundFonts.AppendDir("sounds");
+    oSoundFonts.Normalize();
 
 #endif
 
-    LOMSE_LOG_INFO("Install root = %s", oInstallHome.GetFullPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Prefix = %s", m_sPrefix.ToStdString().c_str() );
     LOMSE_LOG_INFO("Shared root = %s", oSharedHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Config root = %s", oConfigHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("sHome = %s", sHome.ToStdString().c_str() );
@@ -340,10 +374,13 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     LOMSE_LOG_INFO("Logs root = %s", oLogsHome.GetFullPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("SoundFonts = %s\n", oSoundFonts.GetFullPath().ToStdString().c_str() );
 
-    //determine paths for subfolders
+
+    //Step 2: Derive paths from base roots
+    //----------------------------------------------------------------
+
     wxFileName path;
 
-    // Group 2 subfolders. Shared non-modificable files
+    //SHARED_ROOT subfolders. Shared non-modificable files
 
     path = oSharedHome;
     path.AppendDir("xrc");
@@ -373,10 +410,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     m_sTemplates = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
     path = oSharedHome;
-    path.AppendDir("test-scores");
-    m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    path = oSharedHome;
     path.AppendDir("res");
     path.AppendDir("fonts");
     m_sFonts = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -386,33 +419,90 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
-    // Group 3 subfolders. Configuration files, user & version dependent
-
+    //CONFIG_DIR subfolders. Configuration files, user & version dependent
     path = oConfigHome;
     m_sConfig = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
-    // Group 4 subfolders. User data: scores
-
+    //DATA_DIR subfolders. User data: scores
     path = oDataHome;
+    path.AppendDir("scores");
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
-    // Group 5 subfolders. Logs and temporal files
-
+    //LOGS_DIR subfolders. Logs and temporal files
     path = oLogsHome;
     m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
-    // Group 6. Other folders
+    //SOUND_FONT. Default sountfont
+    path = oSoundFonts;
     m_sSoundFonts = oSoundFonts.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+
+    //Paths for tests and debug. Only valid in local debug builds
+    path = wxFileName(LENMUS_SOURCE_ROOT);
+    path.Normalize();
+    #if (LENMUS_PLATFORM_WIN32 == 1)
+        //for replacing drive letter in Windows
+        wxFileName drive(m_sBin);
+        path.SetVolume( drive.GetVolume() );
+    #endif
+    m_sSourceRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = wxFileName(LENMUS_TEST_SCORES_PATH);
+    path.Normalize();
+    #if (LENMUS_PLATFORM_WIN32 == 1)
+        //for replacing drive letter in Windows
+        wxFileName drive(m_sBin);
+        path.SetVolume( drive.GetVolume() );
+    #endif
+    m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 }
 
 //---------------------------------------------------------------------------------------
-Paths::~Paths()
+wxString Paths::get_user_home_folder()
 {
+#if (LENMUS_PLATFORM_UNIX == 1)
+    char* homedir = getenv("HOME");
+#elif (LENMUS_PLATFORM_WIN32 == 1)
+    char* homedir = getenv("USERPROFILE");
+#elif (LENMUS_PLATFORM_MAC == 1)
+    char* homedir = getenv("HOME");      //TODO
+#endif
+    if (homedir == NULL)
+    {
+        #if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
+            struct passwd* pw = getpwuid(getuid());
+            homedir = pw->pw_dir;
+        #elif (LENMUS_PLATFORM_WIN32 == 1)
+            //TODO
+        #endif
+    }
+    return to_wx_string(homedir);
+}
+
+//---------------------------------------------------------------------------------------
+void Paths::determine_prefix()
+{
+    wxFileName oPrefix;
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    //Debug version or Release version for tests. Use LENMUS_SOURCE_ROOT for <prefix>
+    oPrefix.AssignDir(LENMUS_SOURCE_ROOT);
+
+    #if (LENMUS_PLATFORM_WIN32 == 1)
+        //Ignore drive letter in Windows
+        wxFileName drive(m_sBin);
+        oPrefix.SetVolume( drive.GetVolume() );
+    #endif
+#else
+    oPrefix.AssignDir(m_sBin);
+    oPrefix.RemoveLastDir();    // bin
+#endif
+    oPrefix.Normalize();
+    m_sPrefix = oPrefix.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 }
 
 //---------------------------------------------------------------------------------------
@@ -446,9 +536,6 @@ void Paths::SetLanguageCode(wxString sLangCode)
 //---------------------------------------------------------------------------------------
 void Paths::log_paths()
 {
-    LOMSE_LOG_INFO("LENMUS_INSTALL_ROOT = [%s]", LENMUS_INSTALL_ROOT);
-
-    LOMSE_LOG_INFO("SrcRoot = %s", GetSrcRootPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Bin = %s", GetBinPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Xrc = %s", GetXrcPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Temp = %s", GetTemporaryPath().ToStdString().c_str() );
@@ -457,20 +544,22 @@ void Paths::log_paths()
     LOMSE_LOG_INFO("Sounds = %s", GetSoundsPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Locale = %s", GetLocaleRootPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Scores = %s", GetScoresPath().ToStdString().c_str() );
-    LOMSE_LOG_INFO("TestScores = %s", GetTestScoresPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Samples = %s", GetSamplesPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Templates = %s", GetTemplatesPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Config = %s", GetConfigPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Log = %s", GetLogPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("Fonts = %s", GetFontsPath().ToStdString().c_str() );
     LOMSE_LOG_INFO("SoundFonts = %s\n", GetSoundFontsPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("SourceRoot = %s", GetSrcRootPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("TestScores = %s", GetTestScoresPath().ToStdString().c_str() );
 
-    wxLogMessage("Install root = %s", GetBinPath());
+    wxLogMessage("Binary root = %s", GetBinPath());
     wxLogMessage("Shared root = %s", GetFontsPath());
     wxLogMessage("Config root = %s", GetConfigPath());
     wxLogMessage("Data root = %s", GetScoresPath());
     wxLogMessage("Logs root = %s", GetLogPath());
     wxLogMessage("Sound fonts = %s", GetSoundFontsPath());
+    wxLogMessage("Source root = %s", GetSrcRootPath());
 }
 
 //---------------------------------------------------------------------------------------

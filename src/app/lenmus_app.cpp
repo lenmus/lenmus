@@ -53,6 +53,12 @@ using namespace lomse;
 #include <iostream>
 using namespace std;
 
+#if (LENMUS_PLATFORM_UNIX == 1)     //for determine_exec_path()
+    #include <limits.h>
+    #include <libgen.h>
+    #include <unistd.h>
+#endif
+
 
 // This macro will allow wxWindows to create the application object during program
 // execution (it's better than using a static object for many reasons) and also
@@ -242,29 +248,166 @@ bool TheApp::do_application_setup()
 //---------------------------------------------------------------------------------------
 void TheApp::create_paths_object()
 {
-    m_appScope.set_bin_folder( determine_exe_path() );
+    m_appScope.set_bin_folder( determine_exec_path() );
 }
 
 //---------------------------------------------------------------------------------------
-wxString TheApp::determine_exe_path()
+wxString TheApp::determine_exec_path()
 {
-    #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1)
-    {
-        // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
-        wxString sBinPath = wxPathOnly(argv[0]);
-        //wxLogMessage("[TheApp::determine_exe_path] sBinPath='%s'", sBinPath.wx_str());
-        //but in console mode fails!
-        if (sBinPath.IsEmpty())
-            sBinPath = wxGetCwd();
-        return sBinPath;
-    }
-    //#elif defined(__MACOS9__)
-    //    // On Mac OS 9, the initial working directory is the one that
-    //    // contains the program.
-    //    wxString sBinPath = wxGetCwd();
-    #else
-        #error "Unknown operating system!"
+    // Base on code from:
+    // https://stackoverflow.com/questions/1023306/finding-current-executables-path-without-proc-self-exe
+    // Copyright 2015 by Mark Whitis.  License=MIT
+
+    #ifndef PATH_MAX
+        #define PATH_MAX   4096
     #endif
+
+    char execPathName[PATH_MAX];     // PATH_MAX incudes the \0 so +1 is not required
+
+#if (LENMUS_PLATFORM_UNIX == 1)
+
+    //For Linux try first the /proc/self/exe path
+    #if __linux__  //&& !__ANDROID__
+        #if defined(__sun)
+            #define PROC_SELF_EXE "/proc/self/path/a.out"
+        #else
+            #define PROC_SELF_EXE "/proc/self/exe"
+        #endif
+
+        if (realpath(PROC_SELF_EXE, execPathName))
+            return wxPathOnly(wxString(execPathName));
+
+    #endif // __linux__ && !__ANDROID__
+
+#endif
+
+    //for other platforms or when the /proc/self/exe method fails in Linux, try to
+    //deduce it from argv[0]
+
+    //get some needed values
+    char saved_pwd[PATH_MAX];
+    char saved_argv0[PATH_MAX];
+    char saved_path[PATH_MAX];
+    char path_separator='/';
+    char path_separator_as_string[2]="/";
+    char path_list_separator[8]=":";  // could be ":; "
+
+    char* res = getcwd(saved_pwd, sizeof(saved_pwd));
+
+    strncpy(saved_argv0, wxTheApp->argv[0], sizeof(saved_argv0));
+    saved_argv0[sizeof(saved_argv0)-1]=0;
+
+    strncpy(saved_path, getenv("PATH"), sizeof(saved_path));
+    saved_path[sizeof(saved_path)-1]=0;
+
+    //now, let's proceed
+    char newpath[PATH_MAX+256];
+    char newpath2[PATH_MAX+256];
+
+    res = realpath(saved_argv0, execPathName);
+    size_t size_of_result = sizeof(execPathName);
+    execPathName[0]=0;
+    if (res == nullptr || size_of_result == 0)
+    {
+        //Error. argv[0] is empty. Return current path to try to avoid crashes
+        return wxGetCwd();
+    }
+
+
+    if(saved_argv0[0]==path_separator)
+    {
+        //If argv[0] is an absolute path, use that as a starting point. An absolute
+        //path probably starts with "/" but on some non-Unix systems it might start
+        //with "\" or a drive letter or name prefix followed by a colon.
+
+        res = realpath(saved_argv0, newpath);
+        if(res && !access(newpath, F_OK))
+        {
+            strncpy(execPathName, newpath, size_of_result);
+            execPathName[size_of_result-1]=0;
+            return wxPathOnly(wxString(execPathName));
+        }
+        else
+        {
+            //Error. return current path to try to avoid crashes
+            return wxGetCwd();
+        }
+    }
+
+    else if( strchr(saved_argv0, path_separator ))
+    {
+        //if argv[0] is a relative path (contains "/" or "\" but doesn't start with it,
+        //such as "../../bin/foo", then combine pwd+"/"+argv[0] (use present working
+        //directory from when program started, not current).
+
+        strncpy(newpath2, saved_pwd, sizeof(newpath2));
+        newpath2[sizeof(newpath2)-1]=0;
+
+        strncat(newpath2, path_separator_as_string, sizeof(newpath2));
+        newpath2[sizeof(newpath2)-1]=0;
+
+        strncat(newpath2, saved_argv0, sizeof(newpath2));
+        newpath2[sizeof(newpath2)-1]=0;
+
+        res = realpath(newpath2, newpath);
+        if(res && !access(newpath, F_OK))
+        {
+            strncpy(execPathName, newpath, size_of_result);
+            execPathName[size_of_result-1]=0;
+            return wxPathOnly(wxString(execPathName));
+        }
+        else
+        {
+            //Error. return current path to try to avoid crashes
+            return wxGetCwd();
+        }
+    }
+    else
+    {
+        //if argv[0] is a plain basename (no slashes), then combine it with each entry
+        //in PATH environment variable in turn and try those and use the first one which
+        //succeeds.
+
+        char *saveptr;
+        char *pathitem;
+        for(pathitem=strtok_r(saved_path, path_list_separator,  &saveptr);
+            pathitem;
+            pathitem=strtok_r(NULL, path_list_separator, &saveptr) )
+        {
+
+            strncpy(newpath2, pathitem, sizeof(newpath2));
+            newpath2[sizeof(newpath2)-1]=0;
+
+            strncat(newpath2, path_separator_as_string, sizeof(newpath2));
+            newpath2[sizeof(newpath2)-1]=0;
+
+            strncat(newpath2, saved_argv0, sizeof(newpath2));
+            newpath2[sizeof(newpath2)-1]=0;
+
+            res = realpath(newpath2, newpath);
+            if(res && !access(newpath, F_OK))
+            {
+                strncpy(execPathName, newpath, size_of_result);
+                execPathName[size_of_result-1]=0;
+                return wxPathOnly(wxString(execPathName));
+            }
+        }
+        //Error. return current path to try to avoid crashes
+        return wxGetCwd();
+
+    } // end else
+
+    //if we get here, we have tried all three methods on argv[0] and still haven't
+    //succeeded. Include fallback methods here.
+    //You could try the very platform specific /proc/self/exe, /proc/curproc/file (BSD),
+    //and (char *)getauxval(AT_EXECFN), and dlgetname(...) if present. You might even
+    //try these before argv[0]-based methods, if they are available and you don't
+    //encounter permission issues. In the somewhat unlikely event (when you consider
+    //all versions of all systems) that they are present and don't fail, they might
+    //be more authoritative.
+
+    //Error. return current path to try to avoid crashes
+    return wxGetCwd();
 }
 
 //---------------------------------------------------------------------------------------

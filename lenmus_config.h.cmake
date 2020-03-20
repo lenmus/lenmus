@@ -37,21 +37,21 @@
 
 //--------------------------------------------------------------------------------------
 //  Paths and installation folders
+//  They are only used in local builds for development, debug and unit tests. But must
+//  be always defined, and for all other build cases its value is ignored.
+//
+//  If relative, they are relative to the binary.
+//  If absolute, for Windows, you can use any drive letter (e.g.: "C:") as it will be
+//  always replaced by that of the binary executable .
 //  
-//  LENMUS_SOURCE_ROOT must always point to source tree root. It is only used during
-//  program develpment and for unit tests. It will only work in local builds.
+//  LENMUS_SOURCE_ROOT must point to source tree root.
 //
-//  LENMUS_INSTALL_ROOT must point to the folder in which the installer places the
-//	lenmus executable. I've not found a simple way of determining this path at run time,
-//  so it is simpler to have this information here.
-//
-//  LENMUS_TEST_SCORES_PATH is only used for UnitTests. Probably the program will
-//  fail when not local build.
+//  LENMUS_TEST_SCORES_must point to the folder containing the scores used for
+//  unit tests.
 //
 //--------------------------------------------------------------------------------------
 #define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@   //unit tests in local builds
 #define LENMUS_SOURCE_ROOT          @LENMUS_SOURCE_ROOT@        //local builds only
-#define LENMUS_INSTALL_ROOT         "@LENMUS_INSTALL_ROOT@"     //Linux only
 
 
 //---------------------------------------------------------------------------------------
@@ -110,8 +110,9 @@
 //      The CoreAudio device to use.
 //
 // LENMUS_SOUNDFONT_PATH must point to the folder containing the FluidR3_GM.sf2 default
-//      soundfont used by the internal synthesizer. Only used in Linux. In Windows
-//      it uses "$INSTDIR\lenmus-x.x.x\res\sounds"
+//      soundfont used by the internal synthesizer or must be "" when the soundfont
+//      is included in the package/installer. It is only used in Linux but the
+//      macro must be allways defined, even in Windows.
 //
 //---------------------------------------------------------------------------------------
 #define LENMUS_AUDIO_DRIVER         "@LENMUS_AUDIO_DRIVER@"

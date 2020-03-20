@@ -99,7 +99,7 @@ private:
     void create_paths_object();
     void load_user_preferences();
     void create_needed_folders_if_dont_exist();
-    wxString determine_exe_path();
+    wxString determine_exec_path();
     void restart();
 
     void get_main_window_placement(wxRect* frameRect, bool* fMaximized);
