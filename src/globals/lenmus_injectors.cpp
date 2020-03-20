@@ -98,7 +98,6 @@ ApplicationScope::~ApplicationScope()
     //restore cout buffer
     cout.rdbuf(m_cout_buffer);
 
-    delete m_pPaths;
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
     delete m_pColors;
@@ -107,7 +106,8 @@ ApplicationScope::~ApplicationScope()
     delete m_pWavePlayer;
     delete m_pKeyTranslator;
     delete m_pHelp;
-
+    delete m_pPaths;    //*AFTER* all others, to allow its use in
+                        //m_pMidi::save_user_preferences()
     //database
     if (m_pDB)
     {
