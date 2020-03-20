@@ -4,11 +4,13 @@ Upstream-Contact: Cecilio Salmeron <cecilios@gmail.com>
 Source: https://launchpad.net/lenmus
 
 Files: *
-Copyright: Copyright 2010-2016 Cecilio Salmeron
+Copyright: 2010-2020 Cecilio Salmeron <cecilios@gmail.com>
 License: GPL-3+
 
 Files: debian/*
-Copyright: Copyright 2010-2016 Cecilio Salmeron
+Copyright:
+ 2010-2016 Cecilio Salmeron
+ 2020 Olivier Humbert <trebmuh@tuxfamily.org>
 License: GPL-3+
 
 License: GPL-3+
@@ -31,5 +33,3 @@ License: GPL-3+
  On Debian systems, the full text of the GNU General Public
  License version 3 can be found in the file
  'usr/share/common-licenses/GPL-3'.
-
-
