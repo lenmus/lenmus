@@ -1272,7 +1272,7 @@ install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt
 
 if (UNIX)
     # Install desktop entry
-    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
+    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/org.lenmus.lenmus.desktop
             DESTINATION "/usr/share/applications"
             COMPONENT main )
     # Install icon
@@ -1426,7 +1426,8 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${RES_DIR}
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${RES_DIR}
         COMPONENT common
         FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_DIR}/desktop"
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/org.lenmus.lenmus.desktop
+        DESTINATION "${RES_DIR}/desktop"
         COMPONENT common )
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
         COMPONENT common

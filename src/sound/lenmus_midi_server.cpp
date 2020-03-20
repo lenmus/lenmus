@@ -32,6 +32,8 @@
 namespace lenmus
 {
 
+#define DEFAULT_TAG     "[Default] "
+
 //=======================================================================================
 // FluidSynthesizer implementation
 //=======================================================================================
@@ -109,7 +111,11 @@ void FluidSynthesizer::all_sounds_off()
 bool FluidSynthesizer::load_soundfont(const string& path)
 {
     //return true if error
-    m_soundfont = path;
+
+    if (path.rfind(DEFAULT_TAG, 0) == 0)
+        m_soundfont = get_default_soundfont();
+    else
+        m_soundfont = path;
 
     m_sfontId = fluid_synth_sfload(m_pSynth, path.c_str(), 1);
     if(m_sfontId == FLUID_FAILED)
@@ -118,6 +124,15 @@ bool FluidSynthesizer::load_soundfont(const string& path)
         return true;
     }
     return false;
+}
+
+//---------------------------------------------------------------------------------------
+string FluidSynthesizer::get_soundfont()
+{
+    if (m_soundfont == get_default_soundfont())
+        return DEFAULT_TAG + m_soundfont;
+    else
+        return m_soundfont;
 }
 
 //---------------------------------------------------------------------------------------
@@ -173,14 +188,18 @@ void FluidSynthesizer::configure()
 void FluidSynthesizer::load_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    Paths* pPaths = m_appScope.get_paths();
-    wxString soundsPath = pPaths->GetSoundFontsPath();
-
-    wxString soundfont(soundsPath + "FluidR3_GM.sf2");
+    wxString defaultSoundfont = to_wx_string( get_default_soundfont() );
+    wxString soundfont(defaultSoundfont);
     wxString file;
     pPrefs->Read("/Midi/SoundFont", &file, soundfont);
 
-    m_soundfont = to_std_string(file);
+    if (file.rfind(DEFAULT_TAG, 0) == 0)
+        m_soundfont = to_std_string(defaultSoundfont);
+    else
+        m_soundfont = to_std_string(file);
+
+    LOMSE_LOG_INFO("def='%s', file='%s', soundfont='%s'",
+        defaultSoundfont.ToStdString().c_str(), file.ToStdString().c_str(), m_soundfont.c_str());
 }
 
 //---------------------------------------------------------------------------------------
@@ -188,19 +207,33 @@ void FluidSynthesizer::save_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
-    pPrefs->Write("/Midi/SoundFont", to_wx_string(m_soundfont) );
-	pPrefs->Flush();
+    if (get_default_soundfont() == m_soundfont)
+    {
+        pPrefs->Write("/Midi/SoundFont", DEFAULT_TAG + to_wx_string(m_soundfont) );
+    }
+    else
+    {
+        pPrefs->Write("/Midi/SoundFont", to_wx_string(m_soundfont) );
+    }
+
+    pPrefs->Flush();
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::reset_to_defaults()
 {
+    m_fValid = !load_soundfont( get_default_soundfont() );
+}
+
+//---------------------------------------------------------------------------------------
+string FluidSynthesizer::get_default_soundfont()
+{
     Paths* pPaths = m_appScope.get_paths();
     wxString soundsPath = pPaths->GetSoundFontsPath();
 
-    wxString soundfont(soundsPath + "FluidR3_GM.sf2");
-    m_soundfont = to_std_string(soundfont);
-    m_fValid = !load_soundfont(m_soundfont);
+    string soundfont(soundsPath.ToStdString());
+    soundfont += "FluidR3_GM.sf2";
+    return soundfont;
 }
 
 
