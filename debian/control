@@ -4,26 +4,29 @@ Priority: optional
 Maintainer: Cecilio Salmeron <s.cecilio@gmail.com>
 Standards-Version: 3.9.3
 Homepage: http://www.lenmus.org/
-Build-Depends: debhelper (>= 8.0.0)
- , cdbs
- , cmake (>= 3.1)
- , pkg-config
- , libportmidi-dev
- , libsqlite3-dev (>=3.6.10)
- , libwxgtk3.0-dev (>= 3.0)
- , wx-common
- , libfreetype6-dev
- , libpng++-dev
- , zlib1g (>= 1:1.2.1)
- , libfluidsynth-dev
- , fluid-soundfont-gm
- , lsb-release
- , libfontconfig1-dev
-
+Build-Depends:
+ cdbs,
+ cmake (>= 3.1),
+ debhelper (>= 8.0.0),
+ fluid-soundfont-gm,
+ libfluidsynth-dev,
+ libfontconfig1-dev,
+ libfreetype6-dev,
+ libpng++-dev,
+ libportmidi-dev,
+ libsqlite3-dev (>=3.6.10),
+ libwxgtk3.0-dev (>= 3.0),
+ lsb-release,
+ pkg-config,
+ wx-common,
+ zlib1g (>= 1:1.2.1),
 
 Package: lenmus-all
 Architecture: any
-Depends: fluid-soundfont-gm, ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ fluid-soundfont-gm,
+ ${shlibs:Depends},
+ ${misc:Depends},
 Description: A program for aural training and to learn music theory
  Phonascus is a totally free program for studying music theory that allows
  you to focus on specific skills and exercises, on both theory and aural 
@@ -34,4 +37,3 @@ Description: A program for aural training and to learn music theory
  Phonascus aims to create, as a community, the best free program for 
  music students, to help them in their studies. Phonascus has no 
  commercial purposes.
-
