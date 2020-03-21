@@ -858,17 +858,10 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
 if (LENMUS_USE_LOMSE_SOURCES)
-    #define path were fonts will be installed
-    if (WIN32)
-        #Used only for Bravura font. For all others will use system installed fonts
-        set( FONTS_PATH   "${SHARED_DIR}/res/fonts")
-    elseif (UNIX)
-        #In Linux only system installed fonts are used. This variable is not used
-        set( FONTS_PATH   "not used" )
-    else()
-        #Only fonts installed here will be used
-        set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
-    endif()
+    #define path were fonts will be found by lomse when running. The 
+    #value defined here *is not used* because LenMus program will force
+    #the lomse library to use lenmus fonts path, but I have to put something!
+    set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
 
     # include Lomse build options and create the include file "lomse_config.h"
     message("Lomse configuration")

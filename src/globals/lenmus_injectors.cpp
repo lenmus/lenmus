@@ -173,12 +173,6 @@ wxString ApplicationScope::get_language()
 //---------------------------------------------------------------------------------------
 Paths* ApplicationScope::get_paths()
 {
-    //DEBUG: the paths object is created by TheApp by invoking method
-    //ApplicationScope::set_bin_folder(). But for unit tests it could be not created
-    if (!m_pPaths)
-        m_pPaths = LENMUS_NEW Paths( wxGetCwd(), *this );
-    //End DEBUG ----------------------------------------------------------------
-
     return m_pPaths;
 }
 
@@ -186,6 +180,7 @@ Paths* ApplicationScope::get_paths()
 void ApplicationScope::set_bin_folder(const wxString& sBinPath)
 {
     delete m_pPaths;
+    m_sBinPath = sBinPath;
     m_pPaths = LENMUS_NEW Paths(sBinPath, *this);
 }
 
@@ -258,6 +253,7 @@ void ApplicationScope::inform_lomse_about_fonts_path()
     Paths* pPaths = get_paths();
     wxString sPath = pPaths->GetFontsPath();
     m_lomse.set_default_fonts_path( to_std_string(sPath) );
+    LOMSE_LOG_INFO("Lomse fonts path set to = %s", sPath.ToStdString().c_str() );
 }
 
 //---------------------------------------------------------------------------------------

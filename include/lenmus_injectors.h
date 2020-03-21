@@ -112,7 +112,7 @@ protected:
 
     wxString m_sAppName;
     wxString m_sVendorName;
-    wxString m_sHomeDir;
+    wxString m_sBinPath;
 
     ostringstream   m_lomseReporter;    //to have access to error messages
     streambuf*      m_cout_buffer;      //to restore cout

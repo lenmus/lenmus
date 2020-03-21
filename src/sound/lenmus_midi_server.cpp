@@ -120,7 +120,8 @@ bool FluidSynthesizer::load_soundfont(const string& path)
     m_sfontId = fluid_synth_sfload(m_pSynth, path.c_str(), 1);
     if(m_sfontId == FLUID_FAILED)
     {
-        wxLogMessage("ERROR: SoundFont load failed. path=%s", to_std_string(path).c_str());
+
+        LOMSE_LOG_ERROR("SoundFont load failed. path=%s", path.c_str());
         return true;
     }
     return false;
@@ -145,12 +146,12 @@ void FluidSynthesizer::configure()
     m_pSettings = new_fluid_settings();
     if (m_pSettings == nullptr)
     {
-        wxLogMessage("ERROR: Failed to create the FluidSynth settings");
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth settings");
         m_fValid = false;
         return;
     }
  	fluid_settings_setstr(m_pSettings, "audio.driver", LENMUS_AUDIO_DRIVER);
- 	wxLogMessage("INFO: Using '%s' audio driver", LENMUS_AUDIO_DRIVER);
+ 	LOMSE_LOG_INFO("Using '%s' audio driver", LENMUS_AUDIO_DRIVER);
 
     if (strcmp(LENMUS_AUDIO_DRIVER, "alsa") == 0 && strcmp(LENMUS_ALSA_DEVICE, "default") != 0)
      	fluid_settings_setstr(m_pSettings, "audio.alsa.device", LENMUS_ALSA_DEVICE);
@@ -166,7 +167,7 @@ void FluidSynthesizer::configure()
     m_pSynth = new_fluid_synth(m_pSettings);
     if (m_pSynth == nullptr)
     {
-        wxLogMessage("ERROR: Failed to create the FluidSynth synthesizer");
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth synthesizer");
         m_fValid = false;
         return;
     }
@@ -175,7 +176,7 @@ void FluidSynthesizer::configure()
     m_pDriver = new_fluid_audio_driver(m_pSettings, m_pSynth);
     if (m_pDriver == nullptr)
     {
-        wxLogMessage("ERROR: Failed to create the FluidSynth audio driver");
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth audio driver");
         m_fValid = false;
         return;
     }
@@ -197,9 +198,6 @@ void FluidSynthesizer::load_user_preferences()
         m_soundfont = to_std_string(defaultSoundfont);
     else
         m_soundfont = to_std_string(file);
-
-    LOMSE_LOG_INFO("def='%s', file='%s', soundfont='%s'",
-        defaultSoundfont.ToStdString().c_str(), file.ToStdString().c_str(), m_soundfont.c_str());
 }
 
 //---------------------------------------------------------------------------------------

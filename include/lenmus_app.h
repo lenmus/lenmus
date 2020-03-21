@@ -98,7 +98,6 @@ private:
     void do_application_cleanup();
     void create_paths_object();
     void load_user_preferences();
-    void create_needed_folders_if_dont_exist();
     wxString determine_exec_path();
     void restart();
 
@@ -110,7 +109,6 @@ private:
     SplashFrame* create_GUI(int milliseconds, bool fFirstTime);
 //    void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
     void set_up_current_language();
-    void inform_lomse_about_fonts_path();
     void create_main_frame();
     void wait_and_destroy_splash();
     void show_welcome_window();

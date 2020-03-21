@@ -166,28 +166,23 @@ bool TheApp::do_application_setup()
         return false;
     }
 
+    //this determines the executable path and creates the path objects and the user
+    //folders if they do not exist.
     create_paths_object();
-    create_needed_folders_if_dont_exist();
-	//All paths, except user configurable ones, are valid from this point
+	//all paths, except user configurable ones, are valid from this point
 
     m_appScope.create_preferences_object();
-    //Now preferences object and root path are set up. We can proceed to initialize
+    //preferences object and paths are set. We can proceed to initialize
     //global variables that depend on user preferences.
 
-    // Load user preferences or default values if first run
     load_user_preferences();
-
-	// AWARE: All paths, even user configurable ones, are valid from this point
-	// *************************************************************************
-
+	//all paths, even user configurable ones, are valid from this point
 
     m_appScope.create_logger();
-    set_up_current_language();
+    //from this point macros LOMSE_LOG_XXX can be used
 
-    //in Windows, Lomse library is statically linked and default fonts are in LenMus tree
-    #if (LENMUS_PLATFORM_WIN32 == 1)
-    inform_lomse_about_fonts_path();
-    #endif
+    set_up_current_language();
+    m_appScope.inform_lomse_about_fonts_path();
 
 //    //UploadForensicLogIfExists();
 //    //Upload forensic log, if exists
@@ -408,19 +403,6 @@ wxString TheApp::determine_exec_path()
 
     //Error. return current path to try to avoid crashes
     return wxGetCwd();
-}
-
-//---------------------------------------------------------------------------------------
-void TheApp::create_needed_folders_if_dont_exist()
-{
-    //force to create the Paths object. This will create any needed folder
-    m_appScope.get_paths();
-}
-
-//---------------------------------------------------------------------------------------
-void TheApp::inform_lomse_about_fonts_path()
-{
-    m_appScope.inform_lomse_about_fonts_path();
 }
 
 //---------------------------------------------------------------------------------------
