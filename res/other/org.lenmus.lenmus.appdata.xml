@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 Cecilio Salmeron <s.cecilio@gmail.com> -->
+<component type="desktop-application">
+    <id>org.lenmus.lenmus</id>
+    <metadata_license>MIT</metadata_license>
+    <project_license>GPL-3.0-or-later</project_license>
+    <name>LenMus Phonascus</name>
+    <summary>A program for aural training and to learn music theory</summary>
+    <summary xml:lang="de">Ein Programm, welchens Sie beim Erlernen der Musiktheorie und dem Training des Gehörs unterstützt</summary>
+    <summary xml:lang="el">LenMus είναι ένα δωρεάν πρόγραμμα για να σας βοηθήσει στη μελέτη της θεωρίας της μουσικής και της ακουστικής εκπαίδευσης</summary>
+    <summary xml:lang="es">Un programa para la educación del oido y para aprender teoría musical</summary>
+    <summary xml:lang="fr">Un programme gratuit pour vous aider dans l'étude de la théorie de la musique et de la formation auditive</summary>
+    <summary xml:lang="it">Un programma gratuito che ti aiuta nello studio della teoria musicale e nella formazione dell'orecchio</summary>
+    <summary xml:lang="nl">Een gratis programma om u te helpen bij het bestuderen van muziektheorie en oortraining</summary>
+    <summary xml:lang="tr">Müzik teorisi ve kulak eğitimi çalışmalarında size yardımcı olmak için ücretsiz bir programdır</summary>
+    <summary xml:lang="zh_CN">LenMus是一个免费程序，可帮助您学习音乐理论和进行耳部训练</summary>
+
+    <description>
+        <p>Lenmus Phonascus is a totally free program for studying music theory
+           that allows you to focus on specific skills and exercises, on both
+           theory and aural training.
+        </p>
+        <p>The different activities can be customized to meet your needs.
+           Phonascus allows you to work at your own pace, providing interactive
+           feedback until mastery of each concept is achieved.
+        </p>
+        <p>Phonascus aims to create, as a community, the best free program for 
+           music students, to help them in their studies. Phonascus has no
+           commercial purposes.
+        </p>
+    </description>
+
+    <launchable type="desktop-id">org.lenmus.lenmus.desktop</launchable>
+
+    <url type="homepage">http://lenmus.org/</url>
+    <url type="bugtracker">https://github.com/lenmus/lenmus/issues</url>
+    <url type="help">https://github.com/lenmus/lenmus/issues</url>
+
+    <screenshots>
+        <screenshot type="default">
+            <caption>Practicing theory</caption>
+            <image>http://www.lenmus.org/mws/content/lenmus/paginas/images/PantIntervalos_full.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Music theory</caption>
+            <image>http://www.lenmus.org/mws/content/lenmus/paginas/images/PantTeoria_full.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Aural training and other exercises</caption>
+            <image>http://www.lenmus.org/mws/content/lenmus/paginas/images/PantEscalas_full.png</image>
+        </screenshot>
+    </screenshots>
+
+    <developer_name>LenMus project</developer_name>
+    <update_contact>s.cecilio_at_gmail.org</update_contact>
+
+    <provides>
+        <id>org.lenmus.lenmus.desktop</id>
+    </provides>
+
+</component>
+

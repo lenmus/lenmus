@@ -82,7 +82,7 @@ public:
 
     void configure() override;
     bool load_soundfont(const string& path);
-    inline const string& get_soundfont() { return m_soundfont; }
+    string get_soundfont();
 
     //mandatory overrides from MidiServerBase
     void program_change(int channel, int instr) override;
@@ -95,10 +95,12 @@ public:
     void save_user_preferences() override;
     void load_user_preferences() override;
     void reset_to_defaults();
+    string get_default_soundfont();
 
 protected:
     void load_soundfont();
     void delete_all();
+
 };
 
 /** -------------------------------------------------------------------------------------

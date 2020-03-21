@@ -36,29 +36,47 @@ class Paths
 {
 private:
     ApplicationScope& m_appScope;
-    //root of source tree (when program being developed) or executable path (when program is installed)
-    wxFileName    m_installRoot;
 
     //path names
-    wxString    m_sLocaleRoot;  //root path for locale (it is m_sLocale without the language subfolder)
-    wxString    m_sLocale;      //path containing program translation files ( .mo catalogs)
+
+    //BIN_DIR (relative). The lenmus program: <prefix>/bin
+    wxString    m_sBin;         //path for binaries
+
+    //PREFIX_DIR. The root of all relative paths: <prefix>
+    wxString    m_sPrefix;      //the <prefix> path
+
+    //SHARED_DIR (relative). Shared non-modificable files
+    wxString    m_sLocaleRoot;  //root path for locale folders. <shared>/locale
+    wxString    m_sSamples;     //path for sample scores. <shared>/samples
+    wxString    m_sCursors;     //path for resource cursors. <shared>/res/cursors
+    wxString    m_sFonts;       //path for resource fonts. <shared>/res/fonts
+    wxString    m_sImages;      //path for resource images. <shared>/res/icons
+    wxString    m_sSounds;      //path for wave sounds. <shared>/res/sounds
+    wxString    m_sTemplates;   //path for templates. <shared>/templates
+    wxString    m_sXrc;         //path for .xrc and .xrs resource files. <shared>/xrc
+
+    //SHARED_DIR. Paths depending on language
     wxString    m_sLangCode;    //language code (2 or 5 chars: i.e. "en", "en_US")
-    wxString    m_sScores;      //path for scores
-    wxString    m_sTestScores;  //path for scores for unit tests
-    wxString    m_sSamples;     //path for sample scores
-    wxString    m_sTemplates;   //path for templates
-    wxString    m_sTemp;        //path for temporary files (help books preprocessed, ...)
+    wxString    m_sLocale;      //path containing program translation files ( .mo catalogs)
     wxString    m_sBooks;       //path for books
     wxString    m_sHelp;        //path for help files
-    wxString    m_sBin;         //path for binaries
-    wxString    m_sXrc;         //path for .xrc and .xrs resource files
-    wxString    m_sImages;      //path for resource images
-    wxString    m_sCursors;     //path for resource cursors
-    wxString    m_sSounds;      //path for wave sounds
-    wxString    m_sSoundFonts;  //path for default sound font FluidR3_GM.sf2
+
+    //CONFIG_DIR (absolute). User dependent configuration files
     wxString    m_sConfig;      //path for user configuration file
+
+    //DATA_DIR (absolute). User data: scores
+    wxString    m_sScores;      //path for user scores
+
+    //LOGS_DIR (absolute). Logs & temporal files, per user
+    wxString    m_sTemp;        //path for temporary files
     wxString    m_sLogs;        //path for logs and dumps
-    wxString    m_sFonts;       //path for resource fonts
+
+    //SOUND_FONT (absolute / relative)
+    wxString    m_sSoundFonts;  //path for default sound font FluidR3_GM.sf2
+
+    //Paths for test and debug. Only valid in local debug builds
+    wxString    m_sSourceRoot;  //path to source tree. <SOURCE_ROOT>
+    wxString    m_sTestScores;  //path for scores for unit tests. <SOURCE_ROOT>/test-scores
 
 public:
     Paths(wxString sBinPath, ApplicationScope& appScope);
@@ -69,7 +87,7 @@ public:
     string dump_paths();
 
     //Access to paths
-    wxString GetSrcRootPath() { return m_installRoot.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR); }
+    wxString GetSrcRootPath() { return m_sSourceRoot; } //Only valid in local debug builds
     wxString GetBinPath() { return m_sBin; }
     wxString GetXrcPath() { return m_sXrc; }
     wxString GetTemporaryPath() { return m_sTemp; }
@@ -95,6 +113,9 @@ public:
 
 private:
 	void ClearTempFiles();
+	void initialize();
+	wxString get_user_home_folder();
+    void determine_prefix();
 
 };
 

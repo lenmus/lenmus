@@ -32,6 +32,8 @@
 namespace lenmus
 {
 
+#define DEFAULT_TAG     "[Default] "
+
 //=======================================================================================
 // FluidSynthesizer implementation
 //=======================================================================================
@@ -109,15 +111,29 @@ void FluidSynthesizer::all_sounds_off()
 bool FluidSynthesizer::load_soundfont(const string& path)
 {
     //return true if error
-    m_soundfont = path;
+
+    if (path.rfind(DEFAULT_TAG, 0) == 0)
+        m_soundfont = get_default_soundfont();
+    else
+        m_soundfont = path;
 
     m_sfontId = fluid_synth_sfload(m_pSynth, path.c_str(), 1);
     if(m_sfontId == FLUID_FAILED)
     {
-        wxLogMessage("ERROR: SoundFont load failed. path=%s", to_std_string(path).c_str());
+
+        LOMSE_LOG_ERROR("SoundFont load failed. path=%s", path.c_str());
         return true;
     }
     return false;
+}
+
+//---------------------------------------------------------------------------------------
+string FluidSynthesizer::get_soundfont()
+{
+    if (m_soundfont == get_default_soundfont())
+        return DEFAULT_TAG + m_soundfont;
+    else
+        return m_soundfont;
 }
 
 //---------------------------------------------------------------------------------------
@@ -130,12 +146,12 @@ void FluidSynthesizer::configure()
     m_pSettings = new_fluid_settings();
     if (m_pSettings == nullptr)
     {
-        wxLogMessage("ERROR: Failed to create the FluidSynth settings");
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth settings");
         m_fValid = false;
         return;
     }
  	fluid_settings_setstr(m_pSettings, "audio.driver", LENMUS_AUDIO_DRIVER);
- 	wxLogMessage("INFO: Using '%s' audio driver", LENMUS_AUDIO_DRIVER);
+ 	LOMSE_LOG_INFO("Using '%s' audio driver", LENMUS_AUDIO_DRIVER);
 
     if (strcmp(LENMUS_AUDIO_DRIVER, "alsa") == 0 && strcmp(LENMUS_ALSA_DEVICE, "default") != 0)
      	fluid_settings_setstr(m_pSettings, "audio.alsa.device", LENMUS_ALSA_DEVICE);
@@ -151,7 +167,7 @@ void FluidSynthesizer::configure()
     m_pSynth = new_fluid_synth(m_pSettings);
     if (m_pSynth == nullptr)
     {
-        wxLogMessage("ERROR: Failed to create the FluidSynth synthesizer");
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth synthesizer");
         m_fValid = false;
         return;
     }
@@ -160,7 +176,7 @@ void FluidSynthesizer::configure()
     m_pDriver = new_fluid_audio_driver(m_pSettings, m_pSynth);
     if (m_pDriver == nullptr)
     {
-        wxLogMessage("ERROR: Failed to create the FluidSynth audio driver");
+        LOMSE_LOG_ERROR("Failed to create the FluidSynth audio driver");
         m_fValid = false;
         return;
     }
@@ -173,14 +189,15 @@ void FluidSynthesizer::configure()
 void FluidSynthesizer::load_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    Paths* pPaths = m_appScope.get_paths();
-    wxString soundsPath = pPaths->GetSoundFontsPath();
-
-    wxString soundfont(soundsPath + "FluidR3_GM.sf2");
+    wxString defaultSoundfont = to_wx_string( get_default_soundfont() );
+    wxString soundfont(defaultSoundfont);
     wxString file;
     pPrefs->Read("/Midi/SoundFont", &file, soundfont);
 
-    m_soundfont = to_std_string(file);
+    if (file.rfind(DEFAULT_TAG, 0) == 0)
+        m_soundfont = to_std_string(defaultSoundfont);
+    else
+        m_soundfont = to_std_string(file);
 }
 
 //---------------------------------------------------------------------------------------
@@ -188,19 +205,33 @@ void FluidSynthesizer::save_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
-    pPrefs->Write("/Midi/SoundFont", to_wx_string(m_soundfont) );
-	pPrefs->Flush();
+    if (get_default_soundfont() == m_soundfont)
+    {
+        pPrefs->Write("/Midi/SoundFont", DEFAULT_TAG + to_wx_string(m_soundfont) );
+    }
+    else
+    {
+        pPrefs->Write("/Midi/SoundFont", to_wx_string(m_soundfont) );
+    }
+
+    pPrefs->Flush();
 }
 
 //---------------------------------------------------------------------------------------
 void FluidSynthesizer::reset_to_defaults()
 {
+    m_fValid = !load_soundfont( get_default_soundfont() );
+}
+
+//---------------------------------------------------------------------------------------
+string FluidSynthesizer::get_default_soundfont()
+{
     Paths* pPaths = m_appScope.get_paths();
     wxString soundsPath = pPaths->GetSoundFontsPath();
 
-    wxString soundfont(soundsPath + "FluidR3_GM.sf2");
-    m_soundfont = to_std_string(soundfont);
-    m_fValid = !load_soundfont(m_soundfont);
+    string soundfont(soundsPath.ToStdString());
+    soundfont += "FluidR3_GM.sf2";
+    return soundfont;
 }
 
 

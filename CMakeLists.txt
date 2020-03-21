@@ -37,6 +37,8 @@
 #
 # Default configuration
 # ~~~~~~~~~~~~~~~~~~~~~~~
+# - Build type is 'Release'
+#
 # - Unix: only main package containing the binaries will be generated.
 #   Windows: a boundle installer containing all will be generated.
 #   See "Packages to build (Only for Unix)" section.
@@ -776,7 +778,7 @@ if(WIN32)
     #is always specified at the moment when user executes the installer. Nevertheless
     #current NSIS installer does not allow the user to select instalation folder and
     #it is always installed in "C:/Program Files/lenmus"
-    set(INSTALL_DIR bin)
+    set(BIN_DIR bin)
     set(SAMPLES_DIR .)
     set(LOCALE_DIR .)
     set(LOCALE_LICENSES_DIR locale)
@@ -785,7 +787,7 @@ if(WIN32)
     set(XRC_DIR .)
     set(DOCS_DIR .)
 else()
-    set(INSTALL_DIR "${ROOT_INSTALL}/bin")
+    set(BIN_DIR "${ROOT_INSTALL}/bin")
     set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
     set(LOCALE_DIR ${SHARED_DIR})
     set(LOCALE_LICENSES_DIR ${SHARED_DIR})
@@ -797,7 +799,7 @@ endif()
 
 message("Installation paths:")
 message(STATUS "ROOT_INSTALL = ${ROOT_INSTALL}")
-message(STATUS "INSTALL_DIR = ${INSTALL_DIR}")
+message(STATUS "BIN_DIR = ${BIN_DIR}")
 message(STATUS "SHARED_DIR = ${SHARED_DIR}")
 message(STATUS "SAMPLES_DIR = ${SAMPLES_DIR}" )
 message(STATUS "LOCALE_DIR = ${LOCALE_DIR}")
@@ -822,11 +824,12 @@ if (WIN32)
     set(INSTALL_BRAVURA_FONT 1)
 endif()
 
-if(INSTALL_SOUNDFONT AND
-   NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
+if(INSTALL_SOUNDFONT)
+    set(LENMUS_SOUNDFONT_PATH "")   #to force to make it relative to <SHARED_DIR>
+    if (NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
         file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
              DESTINATION ${LENMUS_ROOT_DIR}/res/sounds)
-        set(LENMUS_SOUNDFONT_PATH ${RES_DIR}/sounds)
+    endif()
 endif()
 message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
 
@@ -855,17 +858,10 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
 if (LENMUS_USE_LOMSE_SOURCES)
-    #define path were fonts will be installed
-    if (WIN32)
-        #Used only for Bravura font. For all others will use system installed fonts
-        set( FONTS_PATH   "${SHARED_DIR}/res/fonts")
-    elseif (UNIX)
-        #In Linux only system installed fonts are used. This variable is not used
-        set( FONTS_PATH   "not used" )
-    else()
-        #Only fonts installed here will be used
-        set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
-    endif()
+    #define path were fonts will be found by lomse when running. The 
+    #value defined here *is not used* because LenMus program will force
+    #the lomse library to use lenmus fonts path, but I have to put something!
+    set( FONTS_PATH   "${SHARED_DIR}/res/fonts" )
 
     # include Lomse build options and create the include file "lomse_config.h"
     message("Lomse configuration")
@@ -1218,18 +1214,18 @@ endif(BUILD_PROGRAM)
 # Package: lenmus (component: main)
 # ------------------------------------------------------------------------------
 
-# bin. LenMus program and other binary and related files (INSTALL_DIR)
+# bin. LenMus program and other binary and related files (BIN_DIR)
 install(TARGETS ${LENMUS}
 	    RUNTIME
-        DESTINATION ${INSTALL_DIR}
+        DESTINATION ${BIN_DIR}
         COMPONENT main
 )
 
 if(WIN32)
     # customization XML file for tile icons and icons
-    install(FILES ${LENMUS_ROOT_DIR}/installer/msw/lenmus.visualelementsmanifest.xml DESTINATION ${INSTALL_DIR} )
-    install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-150x150.png DESTINATION ${INSTALL_DIR}/icons )
-    install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-70x70.png DESTINATION ${INSTALL_DIR}/icons )
+    install(FILES ${LENMUS_ROOT_DIR}/installer/msw/lenmus.visualelementsmanifest.xml DESTINATION ${BIN_DIR} )
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-150x150.png DESTINATION ${BIN_DIR}/icons )
+    install(FILES ${LENMUS_ROOT_DIR}/res/icons/tile-70x70.png DESTINATION ${BIN_DIR}/icons )
 endif(WIN32)
 
 # xrc resources
@@ -1269,7 +1265,7 @@ install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt
 
 if (UNIX)
     # Install desktop entry
-    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop
+    install(FILES ${LENMUS_ROOT_DIR}/res/desktop/org.lenmus.lenmus.desktop
             DESTINATION "/usr/share/applications"
             COMPONENT main )
     # Install icon
@@ -1278,7 +1274,7 @@ if (UNIX)
             COMPONENT main )
 
     # Install AppStream upstream metadata
-    install(FILES ${LENMUS_ROOT_DIR}/res/other/lenmus.appdata.xml
+    install(FILES ${LENMUS_ROOT_DIR}/res/other/org.lenmus.lenmus.appdata.xml
             DESTINATION "/usr/share/metainfo"
             COMPONENT main )
 endif(UNIX)
@@ -1423,7 +1419,8 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/bitmaps   DESTINATION ${RES_DIR}
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/cursors   DESTINATION ${RES_DIR}
         COMPONENT common
         FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${RES_DIR}/desktop"
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/org.lenmus.lenmus.desktop
+        DESTINATION "${RES_DIR}/desktop"
         COMPONENT common )
 install(DIRECTORY ${LENMUS_ROOT_DIR}/res/icons   DESTINATION ${RES_DIR}
         COMPONENT common
@@ -1451,7 +1448,6 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
 
 # define the components to package
 if (BUILD_PKG_BOUNDLE)
-    set(CPACK_COMPONENTS_ALL main i18n common ebooks)
     set(CPACK_MONOLITHIC_INSTALL 1)
     set(CPACK_DEB_COMPONENT_INSTALL 0)
 else()

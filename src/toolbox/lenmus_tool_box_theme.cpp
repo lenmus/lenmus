@@ -358,13 +358,13 @@ wxColour ToolboxTheme::GetColour(lmEColours iColor)
 }
 
 //---------------------------------------------------------------------------------------
-wxPen& ToolboxTheme::GetPen(lmEPens iPen)
+wxPen& ToolboxTheme::GetPen(lmEPens WXUNUSED(iPen))
 {
     return m_GroupBorderInactivePen;
 }
 
 //---------------------------------------------------------------------------------------
-wxBrush& ToolboxTheme::GetBrush(lmEBrushes iBrush)
+wxBrush& ToolboxTheme::GetBrush(lmEBrushes WXUNUSED(iBrush))
 {
     return m_GroupBackgroundSelectedBrush;
 }

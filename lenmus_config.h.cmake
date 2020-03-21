@@ -37,38 +37,48 @@
 
 //--------------------------------------------------------------------------------------
 //  Paths and installation folders
+//  They are only used in local builds for development, debug and unit tests. But must
+//  be always defined, and for all other build cases its value is ignored.
+//
+//  If relative, they are relative to the binary.
+//  If absolute, for Windows, you can use any drive letter (e.g.: "C:") as it will be
+//  always replaced by that of the binary executable .
 //  
-//  LENMUS_SOURCE_ROOT must always point to source tree root. It is only used during
-//  program develpment and for unit tests. It will only work in local builds.
+//  LENMUS_SOURCE_ROOT must point to source tree root.
 //
-//  LENMUS_INSTALL_ROOT must point to the folder in which the installer places the
-//	lenmus executable. I've not found a simple way of determining this path at run time,
-//  so it is simpler to have this information here.
-//
-//  LENMUS_TEST_SCORES_PATH is only used for UnitTests. Probably the program will
-//  fail when not local build.
+//  LENMUS_TEST_SCORES_must point to the folder containing the scores used for
+//  unit tests.
 //
 //--------------------------------------------------------------------------------------
 #define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@   //unit tests in local builds
 #define LENMUS_SOURCE_ROOT          @LENMUS_SOURCE_ROOT@        //local builds only
-#define LENMUS_INSTALL_ROOT         "@LENMUS_INSTALL_ROOT@"     //Linux only
 
 
 //---------------------------------------------------------------------------------------
 // Build type
 //
-// LENMUS_DEBUG_BUILD determines if it is a Debug or a Release build.
+//    LENMUS_DEBUG_BUILD
+//        Determines if the debug menu and other debug options are included in the
+//        build.
 //
-// For Debug builds, LENMUS_RELEASE_INSTALL determines if it is a build for testing or
-// for installation/distribution:
+//    LENMUS_RELEASE_INSTALL
+//        Determines if it is a build for testing or for installation/distribution:
+//        - LENMUS_RELEASE_INSTALL == 0
+//           Build for testing. The required resources (files, icons, etc.) will
+//           be taken from local source tree.
+//        - LENMUS_RELEASE_INSTALL == 1
+//            Build for release. The required resources (files, icons, etc.) will
+//            be taken from install roots and remote servers.
 //
-//  a) LENMUS_RELEASE_INSTALL == 0
-//      Release build but include Debug menu.
-//      Uses files from source tree.
-//
-//  b) LENMUS_RELEASE_INSTALL == 1
-//      Release build, to install or distribute. No debug menu.
-//      Uses install roots.
+//    | LENMUS_     | LENMUS_         |
+//    | DEBUG_BUILD | RELEASE_INSTALL |
+//    +-------------+-----------------+----------------------------------------------
+//    |      1      |       0         | Debug build, using source tree 
+//    |      1      |       1         | Debug build for distribution (?)
+//    +-------------+-----------------+----------------------------------------------
+//    |      0      |       0         | Release build for testing, using source tree
+//    |      0      |       1         | Release build for distribution
+//    +-------------+-----------------+----------------------------------------------
 //
 //---------------------------------------------------------------------------------------
 #define LENMUS_DEBUG_BUILD          @LENMUS_DEBUG_BUILD@
@@ -76,10 +86,8 @@
 
 
 //---------------------------------------------------------------------------------------
-// include tests in build
-//
-// LENMUS_ENABLE_UNIT_TESTS determines if unit test are included in the build.
-//
+// LENMUS_ENABLE_UNIT_TESTS
+//    Determines if unit test are included in the build.
 //---------------------------------------------------------------------------------------
 #define LENMUS_ENABLE_UNIT_TESTS	@LENMUS_ENABLE_UNIT_TESTS@
 
@@ -110,8 +118,9 @@
 //      The CoreAudio device to use.
 //
 // LENMUS_SOUNDFONT_PATH must point to the folder containing the FluidR3_GM.sf2 default
-//      soundfont used by the internal synthesizer. Only used in Linux. In Windows
-//      it uses "$INSTDIR\lenmus-x.x.x\res\sounds"
+//      soundfont used by the internal synthesizer or must be "" when the soundfont
+//      is included in the package/installer. It is only used in Linux but the
+//      macro must be allways defined, even in Windows.
 //
 //---------------------------------------------------------------------------------------
 #define LENMUS_AUDIO_DRIVER         "@LENMUS_AUDIO_DRIVER@"

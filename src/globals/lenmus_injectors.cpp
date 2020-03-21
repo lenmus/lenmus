@@ -98,7 +98,6 @@ ApplicationScope::~ApplicationScope()
     //restore cout buffer
     cout.rdbuf(m_cout_buffer);
 
-    delete m_pPaths;
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
     delete m_pColors;
@@ -107,7 +106,8 @@ ApplicationScope::~ApplicationScope()
     delete m_pWavePlayer;
     delete m_pKeyTranslator;
     delete m_pHelp;
-
+    delete m_pPaths;    //*AFTER* all others, to allow its use in
+                        //m_pMidi::save_user_preferences()
     //database
     if (m_pDB)
     {
@@ -173,9 +173,15 @@ wxString ApplicationScope::get_language()
 //---------------------------------------------------------------------------------------
 Paths* ApplicationScope::get_paths()
 {
-    if (!m_pPaths)
-        m_pPaths = LENMUS_NEW Paths( wxGetCwd(), *this );
     return m_pPaths;
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::set_bin_folder(const wxString& sBinPath)
+{
+    delete m_pPaths;
+    m_sBinPath = sBinPath;
+    m_pPaths = LENMUS_NEW Paths(sBinPath, *this);
 }
 
 //---------------------------------------------------------------------------------------
@@ -247,6 +253,7 @@ void ApplicationScope::inform_lomse_about_fonts_path()
     Paths* pPaths = get_paths();
     wxString sPath = pPaths->GetFontsPath();
     m_lomse.set_default_fonts_path( to_std_string(sPath) );
+    LOMSE_LOG_INFO("Lomse fonts path set to = %s", sPath.ToStdString().c_str() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -283,13 +290,6 @@ wxConfigBase* ApplicationScope::get_preferences()
     if (!m_pPrefs)
         create_preferences_object();
     return m_pPrefs;
-}
-
-//---------------------------------------------------------------------------------------
-void ApplicationScope::set_bin_folder(const wxString& sBinPath)
-{
-    delete m_pPaths;
-    m_pPaths = LENMUS_NEW Paths(sBinPath, *this);
 }
 
 //---------------------------------------------------------------------------------------
