@@ -1,10 +1,42 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.6.0
+[Since last version] 5.6.1
 =============================
 
 * None
+
+
+Version [5.6.1] (March 22nd, 2020)
+==================================
+
+From a user point of view, release 5.6.1 does not have any functional changes.
+The only differences from version 5.6.0 are technical, oriented to improve
+Linux packages and installation:
+
+* A Linux package in [AppImage](https://appimage.org/) format, that run in all
+  common Linux distributions is now buildable and distributed.
+* LenMus cmake script now allows to split the Linux package in several packages:
+    * lenmus: (main package) binaries and related files
+    * lenmus-common: common support files not bound to any particular
+      release, architecture or language, such as icons, samples and templates.
+    * lenmus-i18n: the message catalogues for lenmus and related translated files
+    * lenmus-ebooks: the eBooks (all translations).
+  In addition, a boundle package containing all can be generated.
+* LenMus now uses system installed fonts instead of fonts delivered in LenMus
+  source tree (only for Linux and Windows) and will do the necessary substitutions
+  if a specific font is not installed. For other operating systems the old
+  behavior is maintained.
+* There is no longer need to install 'Liberation' and 'WenQuanYi Zen Hei' fonts
+  for running LenMus. The only needed font is 'Bravura' music font but it is no
+  longer included in source tree. Package maintainers must add an install dependency
+  from this font package. As I have not found a Bravura font package for Debian,
+  I've created one at https://github.com/lenmus/bravura. This .deb package can
+  be downloaded from
+  [here](https://github.com/lenmus/bravura/releases/download/1.18-0/fonts-lenmus-bravura_1.18-0_all.deb).
+  For Linux a new build dependency is introduced from 'fontconfig' package but
+  it is a basic package expected to be installed in most distros.
+* All font files have been removed from source tree.
 
 
 Version [5.6.0] (March 1st, 2020)
@@ -656,7 +688,8 @@ Version 1.0 (Jan/2004):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.6.0...HEAD
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...HEAD
+[5.6.1]: https://github.com/lenmus/lenmus/compare/Release_5.6.0...Release_5.6.1
 [5.6.0]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...Release_5.6.0
 [5.5.0]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...Release_5.5.0
 [5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...Release_5.4.2

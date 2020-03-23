@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -293,6 +293,8 @@ void Paths::initialize()
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     //Base paths for Windows Release version
     //-----------------------------------------
+    
+    wxStandardPaths& stdPaths = wxStandardPaths::Get();
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
     //      "C:/Program Files/lenmus-x.x.x/"
@@ -453,8 +455,6 @@ void Paths::initialize()
     path = wxFileName(LENMUS_TEST_SCORES_PATH);
     path.Normalize();
     #if (LENMUS_PLATFORM_WIN32 == 1)
-        //for replacing drive letter in Windows
-        wxFileName drive(m_sBin);
         path.SetVolume( drive.GetVolume() );
     #endif
     m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
