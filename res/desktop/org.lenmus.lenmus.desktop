@@ -8,7 +8,7 @@ Comment[de]=Ein freies Programm, um die Sprache der Musik zu lernen
 Comment[eu]=Musika hizkuntza lantzeko doako programa
 Comment[en]=A free program to learn music theory
 Comment[es]=Un programa gratuito para aprender lenguage musical
-Comment[fr]=Un logiciel gratuit pour l'apprentissage du langage musical
+Comment[fr]=Un logiciel libre pour l'apprentissage du langage musical
 Comment[gl]=Un programa gratuíto para a aprendizaxe da linguaxe musical
 Comment[it]=Un programma gratuito per l'apprendimento del linguaggio musicale
 Comment[nl]=Een vrij programma voor het leren van muziektaal
@@ -21,4 +21,3 @@ Categories=AudioVideo;Audio;Education;Music;
 Exec=lenmus
 Terminal=false
 Keywords=Music;Music education;Ear training;Aural training;Music theory;Music scores;Music notation;Notation editor;lms;lmd;
-
