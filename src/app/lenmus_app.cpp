@@ -57,6 +57,25 @@ using namespace std;
     #include <limits.h>
     #include <libgen.h>
     #include <unistd.h>
+    #ifndef PATH_MAX
+        #define PATH_MAX   4096
+    #endif
+#endif
+
+#if (LENMUS_PLATFORM_WIN32 == 1)     //for determine_exec_path()
+    #include <io.h>
+    #include <string.h>
+    #define strtok_r     strtok_s
+    //https://social.msdn.microsoft.com/Forums/vstudio/en-US/963aac07-da1a-4612-be4a-faac3f1d65ca/strtok-threadsafety?forum=vcgeneral
+    #define access   _access_s
+    #define F_OK     0
+    #ifndef _MAX_PATH
+        #define _MAX_PATH   4096
+    #endif
+    #ifndef PATH_MAX
+        #define PATH_MAX _MAX_PATH
+    #endif
+    #define realpath(N,R) _fullpath((R),(N),_MAX_PATH)
 #endif
 
 
@@ -259,7 +278,17 @@ wxString TheApp::determine_exec_path()
 
     char execPathName[PATH_MAX];     // PATH_MAX incudes the \0 so +1 is not required
 
-#if (LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_WIN32 == 1)
+    // On Windows the path to the LenMus program is in argv[0]
+    // Use this old code (nobody rported failures) instead of new code that I cannot test
+    wxString sBinPath = wxPathOnly(argv[0]);
+    //wxLogMessage("[TheApp::determine_exe_path] sBinPath='%s'", sBinPath.wx_str());
+    //but in console mode fails!
+    if (sBinPath.IsEmpty())
+        sBinPath = wxGetCwd();
+    return sBinPath;
+    
+#elif (LENMUS_PLATFORM_UNIX == 1)
 
     //For Linux try first the /proc/self/exe path
     #if __linux__  //&& !__ANDROID__
