@@ -287,7 +287,7 @@ wxString TheApp::determine_exec_path()
     if (sBinPath.IsEmpty())
         sBinPath = wxGetCwd();
     return sBinPath;
-    
+
 #elif (LENMUS_PLATFORM_UNIX == 1)
 
     //For Linux try first the /proc/self/exe path
@@ -318,7 +318,7 @@ wxString TheApp::determine_exec_path()
 
     char* res = getcwd(saved_pwd, sizeof(saved_pwd));
 
-    strncpy(saved_argv0, wxTheApp->argv[0], sizeof(saved_argv0));
+    strncpy(saved_argv0, to_std_string(wxTheApp->argv[0]).c_str(), sizeof(saved_argv0));
     saved_argv0[sizeof(saved_argv0)-1]=0;
 
     strncpy(saved_path, getenv("PATH"), sizeof(saved_path));
@@ -688,10 +688,10 @@ void TheApp::OnInitCmdLine(wxCmdLineParser& parser)
         { wxCMD_LINE_SWITCH, "h", "help", "Show this help message",
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
         { wxCMD_LINE_SWITCH, "t", "test",  "Run unit tests",
-            wxCMD_LINE_VAL_NONE },
+            wxCMD_LINE_VAL_NONE, 0 },
 
         //entry for end of table
-        { wxCMD_LINE_NONE, "", "", "", wxCMD_LINE_VAL_NONE }
+        { wxCMD_LINE_NONE, "", "", "", wxCMD_LINE_VAL_NONE, 0 }
     };
 
     parser.SetDesc(cmdLineDesc);
