@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 5.4.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-08 10:43+0100\n"
-"PO-Revision-Date: 2019-11-08 11:15+0100\n"
+"POT-Creation-Date: 2020-04-18 10:17+0200\n"
+"PO-Revision-Date: 2020-04-18 10:17+0200\n"
 "Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: zh_CN\n"
@@ -67,7 +67,7 @@ msgstr "构建信息"
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:372
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:451
 #: src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:139
-#: src/options/lenmus_options_dlg.cpp:260 src/properties/DlgEditText.cpp:148
+#: src/options/lenmus_options_dlg.cpp:273 src/properties/DlgEditText.cpp:148
 #: src/properties/lenmus_dlg_properties.cpp:81 xrc/xrc_strings.cpp:62
 #: xrc/xrc_strings.cpp:127 xrc/xrc_strings.cpp:157 xrc/xrc_strings.cpp:251
 #: xrc/xrc_strings.cpp:305 xrc/xrc_strings.cpp:397
@@ -360,149 +360,145 @@ msgstr ""
 "访问GitHub（https://github.com/lenmus/lenmus）上的LenMus，并通过打开新一期留"
 "言。 谢谢，欢迎您。"
 
-#: src/app/lenmus_app.cpp:155
+#: src/app/lenmus_app.cpp:178
 #, c-format
 msgid "Another instance of %s is already running."
 msgstr "其他几个 %s 实例已经在运行"
 
-#: src/app/lenmus_app.cpp:554
-msgid "Show this help message"
-msgstr ""
-
-#: src/app/lenmus_app.cpp:786
+#: src/app/lenmus_app.cpp:920
 msgid "LenMus First Run"
 msgstr "首次运行LenMus"
 
-#: src/app/lenmus_command_event_handler.cpp:985
+#: src/app/lenmus_command_event_handler.cpp:987
 #, fuzzy
 msgid "Add chord note"
 msgstr "添加音符"
 
-#: src/app/lenmus_command_event_handler.cpp:994
+#: src/app/lenmus_command_event_handler.cpp:996
 #, fuzzy
 msgid "Add tie"
 msgstr "添加标题"
 
-#: src/app/lenmus_command_event_handler.cpp:1055
+#: src/app/lenmus_command_event_handler.cpp:1057
 msgid "Add tuplet"
 msgstr "添加连音符"
 
-#: src/app/lenmus_command_event_handler.cpp:1108
+#: src/app/lenmus_command_event_handler.cpp:1110
 msgid "Break a beam"
 msgstr "拆分符杠"
 
-#: src/app/lenmus_command_event_handler.cpp:1116
-#: src/app/lenmus_command_event_handler.cpp:1132
+#: src/app/lenmus_command_event_handler.cpp:1118
+#: src/app/lenmus_command_event_handler.cpp:1134
 #, fuzzy
 msgid "Change numeric property"
 msgstr "改变音高"
 
-#: src/app/lenmus_command_event_handler.cpp:1124
+#: src/app/lenmus_command_event_handler.cpp:1126
 msgid "Change color property"
 msgstr ""
 
-#: src/app/lenmus_command_event_handler.cpp:1140
+#: src/app/lenmus_command_event_handler.cpp:1142
 #, fuzzy
 msgid "Change string property"
 msgstr "改变音高"
 
-#: src/app/lenmus_command_event_handler.cpp:1157
+#: src/app/lenmus_command_event_handler.cpp:1159
 #, fuzzy
 msgid "Change notes/rests dots"
 msgstr "改变音高"
 
-#: src/app/lenmus_command_event_handler.cpp:1183
+#: src/app/lenmus_command_event_handler.cpp:1185
 msgid "Change note accidentals"
 msgstr "改变休止记号"
 
-#: src/app/lenmus_command_event_handler.cpp:1236
+#: src/app/lenmus_command_event_handler.cpp:1238
 msgid "Delete selection"
 msgstr "取消选择"
 
-#: src/app/lenmus_command_event_handler.cpp:1253
+#: src/app/lenmus_command_event_handler.cpp:1255
 #, c-format
 msgid "Delete %s"
 msgstr "删除 %s"
 
-#: src/app/lenmus_command_event_handler.cpp:1263
+#: src/app/lenmus_command_event_handler.cpp:1265
 msgid "Delete tie"
 msgstr "删除延音线"
 
-#: src/app/lenmus_command_event_handler.cpp:1272
+#: src/app/lenmus_command_event_handler.cpp:1274
 msgid "Delete tuplet"
 msgstr "删除连音符"
 
-#: src/app/lenmus_command_event_handler.cpp:1286
+#: src/app/lenmus_command_event_handler.cpp:1288
 msgid "Insert barline"
 msgstr "插入小节线"
 
-#: src/app/lenmus_command_event_handler.cpp:1301
+#: src/app/lenmus_command_event_handler.cpp:1303
 msgid "Insert clef"
 msgstr "插入谱号"
 
-#: src/app/lenmus_command_event_handler.cpp:1354
-#: src/app/lenmus_command_event_handler.cpp:1562
+#: src/app/lenmus_command_event_handler.cpp:1356
+#: src/app/lenmus_command_event_handler.cpp:1564
 msgid "Insert note"
 msgstr "插入音符"
 
-#: src/app/lenmus_command_event_handler.cpp:1373
-#: src/app/lenmus_command_event_handler.cpp:1576
+#: src/app/lenmus_command_event_handler.cpp:1375
+#: src/app/lenmus_command_event_handler.cpp:1578
 msgid "Insert rest"
 msgstr "插入休止符"
 
-#: src/app/lenmus_command_event_handler.cpp:1406
+#: src/app/lenmus_command_event_handler.cpp:1408
 msgid "Add beam"
 msgstr "添加符杠"
 
-#: src/app/lenmus_command_event_handler.cpp:1432
+#: src/app/lenmus_command_event_handler.cpp:1434
 #, fuzzy
 msgid "Move control point"
 msgstr "移动点"
 
-#: src/app/lenmus_command_event_handler.cpp:1449
+#: src/app/lenmus_command_event_handler.cpp:1451
 #, fuzzy
 #| msgid "Select octave %d"
 msgid "Select object"
 msgstr "选择八度 %d"
 
-#: src/app/lenmus_document_canvas.cpp:2128
+#: src/app/lenmus_document_canvas.cpp:2171
 msgid ""
 "The document contains scores created with a previous version. You must "
 "convert the document to current format (Menu > File > Convert) and edit the "
 "converted document."
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2235
+#: src/app/lenmus_document_canvas.cpp:2278
 #, c-format
 msgid ""
 "Document %s has been modified. Would you like to save it before closing?"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2239
+#: src/app/lenmus_document_canvas.cpp:2282
 msgid "Save the file before closing"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2240
+#: src/app/lenmus_document_canvas.cpp:2283
 msgid "Close without saving the file"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2256
-#: src/app/lenmus_document_canvas.cpp:2308 src/app/lenmus_main_frame.cpp:807
+#: src/app/lenmus_document_canvas.cpp:2299
+#: src/app/lenmus_document_canvas.cpp:2351 src/app/lenmus_main_frame.cpp:804
 msgid "Header"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2268
-#: src/app/lenmus_document_canvas.cpp:2320 src/app/lenmus_main_frame.cpp:809
+#: src/app/lenmus_document_canvas.cpp:2311
+#: src/app/lenmus_document_canvas.cpp:2363 src/app/lenmus_main_frame.cpp:806
 msgid "Paragraph"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2365
-#: src/app/lenmus_document_canvas.cpp:2390
+#: src/app/lenmus_document_canvas.cpp:2408
+#: src/app/lenmus_document_canvas.cpp:2433
 msgid "&Cut"
 msgstr "剪切"
 
-#: src/app/lenmus_document_canvas.cpp:2383
-#: src/app/lenmus_document_canvas.cpp:2395 src/app/lenmus_main_frame.cpp:1054
+#: src/app/lenmus_document_canvas.cpp:2426
+#: src/app/lenmus_document_canvas.cpp:2438 src/app/lenmus_main_frame.cpp:1047
 msgid "Edit"
 msgstr "编辑"
 
@@ -524,186 +520,186 @@ msgstr "打开Internet浏览器。 请耐心等待 ..."
 msgid "Help documentation not found: Re-install LenMus?"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:714
+#: src/app/lenmus_main_frame.cpp:711
 msgid "New"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:717
+#: src/app/lenmus_main_frame.cpp:714
 msgid "Open"
 msgstr "打开"
 
-#: src/app/lenmus_main_frame.cpp:721
+#: src/app/lenmus_main_frame.cpp:718
 msgid "Open books"
 msgstr "打开书籍"
 
-#: src/app/lenmus_main_frame.cpp:744
+#: src/app/lenmus_main_frame.cpp:741
 msgid "Save"
 msgstr "保存"
 
-#: src/app/lenmus_main_frame.cpp:746 src/app/lenmus_main_frame.cpp:3628
-#: src/app/lenmus_main_frame.cpp:3651
+#: src/app/lenmus_main_frame.cpp:743 src/app/lenmus_main_frame.cpp:3561
+#: src/app/lenmus_main_frame.cpp:3584
 msgid "Save as"
 msgstr "保存为"
 
-#: src/app/lenmus_main_frame.cpp:748
+#: src/app/lenmus_main_frame.cpp:745
 msgid "Convert"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:750 src/dialogs/lenmus_dlg_books.cpp:102
+#: src/app/lenmus_main_frame.cpp:747 src/dialogs/lenmus_dlg_books.cpp:102
 msgid "Close"
 msgstr "关闭"
 
-#: src/app/lenmus_main_frame.cpp:752
+#: src/app/lenmus_main_frame.cpp:749
 msgid "Close all"
 msgstr "关闭所有"
 
-#: src/app/lenmus_main_frame.cpp:756
+#: src/app/lenmus_main_frame.cpp:753
 msgid "Print"
 msgstr "打印"
 
-#: src/app/lenmus_main_frame.cpp:758
+#: src/app/lenmus_main_frame.cpp:755
 msgid "Print Setup"
 msgstr "打印 设置"
 
-#: src/app/lenmus_main_frame.cpp:762
+#: src/app/lenmus_main_frame.cpp:759
 msgid "Quit"
 msgstr "罢"
 
-#: src/app/lenmus_main_frame.cpp:796
+#: src/app/lenmus_main_frame.cpp:793
 msgid "Enable edition"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:800 src/app/lenmus_main_frame.cpp:1772
+#: src/app/lenmus_main_frame.cpp:797 src/app/lenmus_main_frame.cpp:1705
 #: xrc/xrc_strings.cpp:155
 msgid "Undo"
 msgstr "撤销"
 
-#: src/app/lenmus_main_frame.cpp:802 src/app/lenmus_main_frame.cpp:1776
+#: src/app/lenmus_main_frame.cpp:799 src/app/lenmus_main_frame.cpp:1709
 #: xrc/xrc_strings.cpp:156
 msgid "Redo"
 msgstr "重做"
 
-#: src/app/lenmus_main_frame.cpp:811
+#: src/app/lenmus_main_frame.cpp:808
 msgid "Score"
 msgstr "乐谱"
 
-#: src/app/lenmus_main_frame.cpp:813
+#: src/app/lenmus_main_frame.cpp:810
 msgid "Insert ..."
 msgstr "插入谱号"
 
-#: src/app/lenmus_main_frame.cpp:813
+#: src/app/lenmus_main_frame.cpp:810
 msgid "Insert new content in the document"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:823
+#: src/app/lenmus_main_frame.cpp:820
 msgid "Tool bar"
 msgstr "工具栏"
 
-#: src/app/lenmus_main_frame.cpp:824
+#: src/app/lenmus_main_frame.cpp:821
 msgid "Hide/show the tools bar"
 msgstr "隐藏/显示工具栏"
 
-#: src/app/lenmus_main_frame.cpp:825
+#: src/app/lenmus_main_frame.cpp:822
 msgid "Status bar"
 msgstr "状态栏"
 
-#: src/app/lenmus_main_frame.cpp:826
+#: src/app/lenmus_main_frame.cpp:823
 msgid "Hide/show the status bar"
 msgstr "隐藏/显示状态栏"
 
-#: src/app/lenmus_main_frame.cpp:827
+#: src/app/lenmus_main_frame.cpp:824
 msgid "Table of content"
 msgstr "查看内容"
 
-#: src/app/lenmus_main_frame.cpp:828
+#: src/app/lenmus_main_frame.cpp:825
 msgid "Hide/show the TOC for current book"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:831 src/app/lenmus_main_frame.cpp:2239
+#: src/app/lenmus_main_frame.cpp:828 src/app/lenmus_main_frame.cpp:2172
 msgid "Virtual keyboard"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:832
+#: src/app/lenmus_main_frame.cpp:829
 #, fuzzy
 msgid "Hide/show virtual keyboard"
 msgstr "隐藏/显示标尺"
 
-#: src/app/lenmus_main_frame.cpp:833 src/app/lenmus_main_frame.cpp:2927
+#: src/app/lenmus_main_frame.cpp:830 src/app/lenmus_main_frame.cpp:2860
 msgid "Command console"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:834
+#: src/app/lenmus_main_frame.cpp:831
 msgid "Show the commands console"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:838
+#: src/app/lenmus_main_frame.cpp:835
 msgid "Welcome page"
 msgstr "欢迎页面"
 
-#: src/app/lenmus_main_frame.cpp:839
+#: src/app/lenmus_main_frame.cpp:836
 msgid "Hide/show welcome page"
 msgstr "隐藏/显示欢迎页面"
 
-#: src/app/lenmus_main_frame.cpp:841
+#: src/app/lenmus_main_frame.cpp:838
 msgid "Show voices in colors"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:842
+#: src/app/lenmus_main_frame.cpp:839
 msgid "Use a different colour for each voice"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:953 src/app/lenmus_main_frame.cpp:1824
-#: src/app/lenmus_main_frame.cpp:3065
+#: src/app/lenmus_main_frame.cpp:950 src/app/lenmus_main_frame.cpp:1757
+#: src/app/lenmus_main_frame.cpp:2998
 msgid "Actual size"
 msgstr "实际尺寸"
 
-#: src/app/lenmus_main_frame.cpp:955 src/app/lenmus_main_frame.cpp:1825
-#: src/app/lenmus_main_frame.cpp:3057
+#: src/app/lenmus_main_frame.cpp:952 src/app/lenmus_main_frame.cpp:1758
+#: src/app/lenmus_main_frame.cpp:2990
 msgid "Fit page full"
 msgstr "满页适应"
 
-#: src/app/lenmus_main_frame.cpp:956 src/app/lenmus_main_frame.cpp:1794
+#: src/app/lenmus_main_frame.cpp:953 src/app/lenmus_main_frame.cpp:1727
 msgid "Zoom so that the full page is displayed"
 msgstr "放大显示完整页面"
 
-#: src/app/lenmus_main_frame.cpp:958 src/app/lenmus_main_frame.cpp:1826
-#: src/app/lenmus_main_frame.cpp:3061
+#: src/app/lenmus_main_frame.cpp:955 src/app/lenmus_main_frame.cpp:1759
+#: src/app/lenmus_main_frame.cpp:2994
 msgid "Fit page width"
 msgstr "页面宽度适应"
 
-#: src/app/lenmus_main_frame.cpp:959 src/app/lenmus_main_frame.cpp:1798
+#: src/app/lenmus_main_frame.cpp:956 src/app/lenmus_main_frame.cpp:1731
 msgid "Zoom so that page width equals window width"
 msgstr "放大至全屏显示"
 
-#: src/app/lenmus_main_frame.cpp:962 src/app/lenmus_main_frame.cpp:1802
+#: src/app/lenmus_main_frame.cpp:959 src/app/lenmus_main_frame.cpp:1735
 msgid "Enlarge image size"
 msgstr "放大图片尺寸"
 
-#: src/app/lenmus_main_frame.cpp:964 src/app/lenmus_main_frame.cpp:1806
+#: src/app/lenmus_main_frame.cpp:961 src/app/lenmus_main_frame.cpp:1739
 msgid "Reduce image size"
 msgstr "减小图片尺寸"
 
-#: src/app/lenmus_main_frame.cpp:965
+#: src/app/lenmus_main_frame.cpp:962
 msgid "Zoom to ..."
 msgstr "放大至..."
 
-#: src/app/lenmus_main_frame.cpp:972
+#: src/app/lenmus_main_frame.cpp:969
 msgid "play"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:973 src/app/lenmus_main_frame.cpp:1837
+#: src/app/lenmus_main_frame.cpp:970 src/app/lenmus_main_frame.cpp:1770
 msgid "Start/resume play back. From selection of full score"
 msgstr "开始/继续回放。从选择的总谱处开始"
 
-#: src/app/lenmus_main_frame.cpp:975
+#: src/app/lenmus_main_frame.cpp:972
 msgid "play from cursor"
 msgstr "从鼠标处播放"
 
-#: src/app/lenmus_main_frame.cpp:976 src/app/lenmus_main_frame.cpp:1841
+#: src/app/lenmus_main_frame.cpp:973 src/app/lenmus_main_frame.cpp:1774
 msgid "Start/resume play back. From cursor measure"
 msgstr "开始/继续回放。从鼠标处开始"
 
-#: src/app/lenmus_main_frame.cpp:978 src/dialogs/lenmus_dlg_metronome.cpp:428
+#: src/app/lenmus_main_frame.cpp:975 src/dialogs/lenmus_dlg_metronome.cpp:430
 #: src/exercises/constrains/lenmus_constrains.cpp:373
 #: src/exercises/constrains/lenmus_constrains.cpp:375
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
@@ -711,371 +707,281 @@ msgstr "开始/继续回放。从鼠标处开始"
 msgid "Stop"
 msgstr "停止"
 
-#: src/app/lenmus_main_frame.cpp:979 src/app/lenmus_main_frame.cpp:1845
+#: src/app/lenmus_main_frame.cpp:976 src/app/lenmus_main_frame.cpp:1778
 msgid "Stop playing back"
 msgstr "停止回放"
 
-#: src/app/lenmus_main_frame.cpp:980
+#: src/app/lenmus_main_frame.cpp:977
 msgid "Pause"
 msgstr "暂停"
 
-#: src/app/lenmus_main_frame.cpp:981 src/app/lenmus_main_frame.cpp:1849
+#: src/app/lenmus_main_frame.cpp:978 src/app/lenmus_main_frame.cpp:1782
 msgid "Pause playing back"
 msgstr "暂停回放"
 
-#: src/app/lenmus_main_frame.cpp:982
+#: src/app/lenmus_main_frame.cpp:979
 msgid "Do count off"
 msgstr "开始计数"
 
-#: src/app/lenmus_main_frame.cpp:983
+#: src/app/lenmus_main_frame.cpp:980
 msgid "Do count off before starting the play back"
 msgstr "开始播放之前，请先算数"
 
-#: src/app/lenmus_main_frame.cpp:986
+#: src/app/lenmus_main_frame.cpp:983
 msgid "Metronome on"
 msgstr "节拍器打开"
 
-#: src/app/lenmus_main_frame.cpp:987 src/app/lenmus_main_frame.cpp:1858
+#: src/app/lenmus_main_frame.cpp:984 src/app/lenmus_main_frame.cpp:1791
 msgid "Turn metronome on/off"
 msgstr "打开/关闭节拍器"
 
-#: src/app/lenmus_main_frame.cpp:990
-msgid "Run Midi wizard"
-msgstr "运行MIDI向导"
-
-#: src/app/lenmus_main_frame.cpp:991 src/app/lenmus_midi_wizard.cpp:60
-msgid "MIDI configuration wizard"
-msgstr "MIDI配置向导"
-
-#: src/app/lenmus_main_frame.cpp:994 src/app/lenmus_midi_wizard.cpp:449
-#: src/app/lenmus_midi_wizard.cpp:642
+#: src/app/lenmus_main_frame.cpp:987 src/options/lenmus_sound_opt_panel.cpp:94
+#: src/options/lenmus_sound_opt_panel.cpp:615
+#: src/options/lenmus_sound_opt_panel.cpp:760
 msgid "Test sound"
 msgstr "测试声音"
 
-#: src/app/lenmus_main_frame.cpp:995
+#: src/app/lenmus_main_frame.cpp:988
 msgid "play an scale to test sound"
 msgstr "播放一个音阶测试声音"
 
-#: src/app/lenmus_main_frame.cpp:996
+#: src/app/lenmus_main_frame.cpp:989
 msgid "All sounds off"
 msgstr "关闭所有声音"
 
-#: src/app/lenmus_main_frame.cpp:997
+#: src/app/lenmus_main_frame.cpp:990
 msgid "Stop inmediatly all sounds"
 msgstr "立即关闭所有声音"
 
-#: src/app/lenmus_main_frame.cpp:1003 src/options/lenmus_options_dlg.cpp:153
+#: src/app/lenmus_main_frame.cpp:996 src/options/lenmus_options_dlg.cpp:158
 msgid "Preferences"
 msgstr "参数选择"
 
-#: src/app/lenmus_main_frame.cpp:1004
+#: src/app/lenmus_main_frame.cpp:997
 msgid "Open preferences dialog"
 msgstr "语言选择"
 
-#: src/app/lenmus_main_frame.cpp:1009
+#: src/app/lenmus_main_frame.cpp:1002
 msgid "Metronome"
 msgstr "节拍器打开"
 
-#: src/app/lenmus_main_frame.cpp:1010
+#: src/app/lenmus_main_frame.cpp:1003
 msgid "Open metronome tool"
 msgstr "节拍器工具"
 
-#: src/app/lenmus_main_frame.cpp:1020
+#: src/app/lenmus_main_frame.cpp:1013
 msgid "LenMus manual"
 msgstr "LenMus帮助"
 
-#: src/app/lenmus_main_frame.cpp:1021
+#: src/app/lenmus_main_frame.cpp:1014
 msgid "Open user's manual"
 msgstr "打开用户手册"
 
-#: src/app/lenmus_main_frame.cpp:1022
+#: src/app/lenmus_main_frame.cpp:1015
 msgid "Editor quick guide"
 msgstr "编辑器快速指南"
 
-#: src/app/lenmus_main_frame.cpp:1023
+#: src/app/lenmus_main_frame.cpp:1016
 msgid "Show editor quick guide"
 msgstr "编辑器快速指南"
 
-#: src/app/lenmus_main_frame.cpp:1025
+#: src/app/lenmus_main_frame.cpp:1018
 msgid "Study guide"
 msgstr "学习指导"
 
-#: src/app/lenmus_main_frame.cpp:1026
+#: src/app/lenmus_main_frame.cpp:1019
 msgid "How to use LenMus in your studies"
 msgstr "如何在学习中使用LenMus"
 
-#: src/app/lenmus_main_frame.cpp:1028
+#: src/app/lenmus_main_frame.cpp:1021
 msgid "Search help"
 msgstr "搜索"
 
-#: src/app/lenmus_main_frame.cpp:1029
+#: src/app/lenmus_main_frame.cpp:1022
 msgid "Search help documentation"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:1031
+#: src/app/lenmus_main_frame.cpp:1024
 msgid "Check now for updates"
 msgstr "检查更新"
 
-#: src/app/lenmus_main_frame.cpp:1032
+#: src/app/lenmus_main_frame.cpp:1025
 msgid "Connect to the Internet and check for program updates"
 msgstr "链接网络并检查更新"
 
-#: src/app/lenmus_main_frame.cpp:1034 src/app/lenmus_welcome_window.cpp:171
+#: src/app/lenmus_main_frame.cpp:1027 src/app/lenmus_welcome_window.cpp:176
 msgid "Visit LenMus website"
 msgstr "访问LenMus网站"
 
-#: src/app/lenmus_main_frame.cpp:1035
+#: src/app/lenmus_main_frame.cpp:1028
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "打开游览器并访问LenMus的网站"
 
-#: src/app/lenmus_main_frame.cpp:1038
+#: src/app/lenmus_main_frame.cpp:1031
 msgid "About"
 msgstr "关于"
 
-#: src/app/lenmus_main_frame.cpp:1039
+#: src/app/lenmus_main_frame.cpp:1032
 msgid "Display information about program version and credits"
 msgstr "程序版本和人员信息陈列"
 
-#: src/app/lenmus_main_frame.cpp:1050
+#: src/app/lenmus_main_frame.cpp:1043
 msgid "File"
 msgstr "文件"
 
-#: src/app/lenmus_main_frame.cpp:1056
+#: src/app/lenmus_main_frame.cpp:1049
 msgid "View"
 msgstr "查看"
 
-#: src/app/lenmus_main_frame.cpp:1060
+#: src/app/lenmus_main_frame.cpp:1053 src/options/lenmus_options_dlg.cpp:168
 msgid "Sound"
 msgstr "声音"
 
-#: src/app/lenmus_main_frame.cpp:1066
+#: src/app/lenmus_main_frame.cpp:1059
 msgid "Zoom"
 msgstr "放大"
 
-#: src/app/lenmus_main_frame.cpp:1067
+#: src/app/lenmus_main_frame.cpp:1060
 msgid "Options"
 msgstr "选择"
 
-#: src/app/lenmus_main_frame.cpp:1068
+#: src/app/lenmus_main_frame.cpp:1061
 msgid "Tools"
 msgstr "工具条"
 
-#: src/app/lenmus_main_frame.cpp:1069 src/widgets/lenmus_wizard.cpp:116
+#: src/app/lenmus_main_frame.cpp:1062 src/widgets/lenmus_wizard.cpp:116
 msgid "Help"
 msgstr "帮助"
 
-#: src/app/lenmus_main_frame.cpp:1239 src/app/lenmus_main_frame.cpp:1249
+#: src/app/lenmus_main_frame.cpp:1232 src/app/lenmus_main_frame.cpp:1242
 msgid "LenMus files"
 msgstr "LenMus帮助"
 
-#: src/app/lenmus_main_frame.cpp:1241 src/app/lenmus_main_frame.cpp:1251
+#: src/app/lenmus_main_frame.cpp:1234 src/app/lenmus_main_frame.cpp:1244
 msgid "MusicXML files"
 msgstr "MusicXML格式"
 
-#: src/app/lenmus_main_frame.cpp:1243
+#: src/app/lenmus_main_frame.cpp:1236
 msgid "MNX files"
 msgstr "MNX格式"
 
-#: src/app/lenmus_main_frame.cpp:1254
+#: src/app/lenmus_main_frame.cpp:1247
 msgid "Choose the file to open"
 msgstr "导出当前文件"
 
-#: src/app/lenmus_main_frame.cpp:1312
+#: src/app/lenmus_main_frame.cpp:1305
 msgid "Errors in file "
 msgstr "文件出现错误"
 
-#: src/app/lenmus_main_frame.cpp:1727
+#: src/app/lenmus_main_frame.cpp:1660
 msgid "Set user preferences"
 msgstr "用户首选项设置"
 
-#: src/app/lenmus_main_frame.cpp:1728
+#: src/app/lenmus_main_frame.cpp:1661
 msgid "Help button"
 msgstr "帮助按钮"
 
-#: src/app/lenmus_main_frame.cpp:1737
+#: src/app/lenmus_main_frame.cpp:1670
 msgid "New document"
 msgstr "打开文档"
 
-#: src/app/lenmus_main_frame.cpp:1739
+#: src/app/lenmus_main_frame.cpp:1672
 msgid "Open a score"
 msgstr "打开乐谱"
 
-#: src/app/lenmus_main_frame.cpp:1743 src/app/lenmus_welcome_window.cpp:205
+#: src/app/lenmus_main_frame.cpp:1676 src/app/lenmus_welcome_window.cpp:210
 msgid "Open the music books"
 msgstr "打开音乐书"
 
-#: src/app/lenmus_main_frame.cpp:1747
+#: src/app/lenmus_main_frame.cpp:1680
 msgid "Save current score to disk"
 msgstr "保存当前乐谱到磁盘"
 
-#: src/app/lenmus_main_frame.cpp:1751
+#: src/app/lenmus_main_frame.cpp:1684
 msgid "Print document"
 msgstr "打印文件"
 
-#: src/app/lenmus_main_frame.cpp:1790
+#: src/app/lenmus_main_frame.cpp:1723
 msgid "Hide/show the Table Of Content for current book"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:1879 src/app/lenmus_main_frame.cpp:1926
+#: src/app/lenmus_main_frame.cpp:1812 src/app/lenmus_main_frame.cpp:1859
 msgid "Metronome tools"
 msgstr "节拍器工具"
 
-#: src/app/lenmus_main_frame.cpp:1883 src/app/lenmus_main_frame.cpp:1922
+#: src/app/lenmus_main_frame.cpp:1816 src/app/lenmus_main_frame.cpp:1855
 msgid "play tools"
 msgstr "播放工具"
 
-#: src/app/lenmus_main_frame.cpp:1887 src/app/lenmus_main_frame.cpp:1918
+#: src/app/lenmus_main_frame.cpp:1820 src/app/lenmus_main_frame.cpp:1851
 msgid "Main tools"
 msgstr "主工具栏"
 
-#: src/app/lenmus_main_frame.cpp:1891 src/app/lenmus_main_frame.cpp:1914
+#: src/app/lenmus_main_frame.cpp:1824 src/app/lenmus_main_frame.cpp:1847
 msgid "Zooming tools"
 msgstr "放大工具栏"
 
-#: src/app/lenmus_main_frame.cpp:1895 src/app/lenmus_main_frame.cpp:1910
+#: src/app/lenmus_main_frame.cpp:1828 src/app/lenmus_main_frame.cpp:1843
 msgid "Edit tools"
 msgstr "编辑工具"
 
-#: src/app/lenmus_main_frame.cpp:1899 src/app/lenmus_main_frame.cpp:1906
+#: src/app/lenmus_main_frame.cpp:1832 src/app/lenmus_main_frame.cpp:1839
 msgid "File tools"
 msgstr "文件工具"
 
-#: src/app/lenmus_main_frame.cpp:2135
+#: src/app/lenmus_main_frame.cpp:2068
 msgid "Counters & options"
 msgstr "计数器和选项"
 
-#: src/app/lenmus_main_frame.cpp:2307
+#: src/app/lenmus_main_frame.cpp:2240
 msgid "Start page"
 msgstr "起始页面"
 
-#: src/app/lenmus_main_frame.cpp:2320
+#: src/app/lenmus_main_frame.cpp:2253
 #, c-format
 msgid "File '%s' not found."
 msgstr "错误：未找到文件 %s"
 
-#: src/app/lenmus_main_frame.cpp:2321 src/app/lenmus_main_frame.cpp:3077
-#: src/app/lenmus_main_frame.cpp:3083
+#: src/app/lenmus_main_frame.cpp:2254 src/app/lenmus_main_frame.cpp:3010
+#: src/app/lenmus_main_frame.cpp:3016
 msgid "Error message"
 msgstr "错误信息"
 
-#: src/app/lenmus_main_frame.cpp:2438 src/app/lenmus_welcome_window.cpp:301
+#: src/app/lenmus_main_frame.cpp:2371 src/app/lenmus_welcome_window.cpp:306
 #: src/dialogs/lenmus_dlg_books.cpp:227 src/dialogs/lenmus_dlg_books.cpp:254
 msgid "Sorry: File not found!"
 msgstr "错误：未找到文件"
 
-#: src/app/lenmus_main_frame.cpp:3046
+#: src/app/lenmus_main_frame.cpp:2979
 msgid "Zooming? (10 to 800)"
 msgstr "放大（10 至 800）"
 
-#: src/app/lenmus_main_frame.cpp:3076
+#: src/app/lenmus_main_frame.cpp:3009
 #, c-format
 msgid "Invalid zooming factor '%s'"
 msgstr "无效放大系数 '%s'"
 
-#: src/app/lenmus_main_frame.cpp:3082
+#: src/app/lenmus_main_frame.cpp:3015
 msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "放大系数必须大于10%小于800%"
 
-#: src/app/lenmus_main_frame.cpp:3116
+#: src/app/lenmus_main_frame.cpp:3049
 msgid "Edit toolbox"
 msgstr "编辑工具箱"
 
-#: src/app/lenmus_main_frame.cpp:3292
+#: src/app/lenmus_main_frame.cpp:3225
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr "当前打印机可能违背正确设置"
 
-#: src/app/lenmus_main_frame.cpp:3292 src/app/lenmus_main_frame.cpp:3294
+#: src/app/lenmus_main_frame.cpp:3225 src/app/lenmus_main_frame.cpp:3227
 msgid "Printing"
 msgstr "打印"
 
-#: src/app/lenmus_main_frame.cpp:3294
+#: src/app/lenmus_main_frame.cpp:3227
 msgid "Printing cancelled"
 msgstr "取消打印"
-
-#: src/app/lenmus_midi_wizard.cpp:226
-msgid "None"
-msgstr "无"
-
-#: src/app/lenmus_midi_wizard.cpp:253
-msgid "Midi devices to use"
-msgstr "Midi设备"
-
-#: src/app/lenmus_midi_wizard.cpp:263
-msgid ""
-"To generate sounds the program needs a MIDI synthesizer device. Normally, "
-"one of these devices is included in the sound board of the PC, but your PC "
-"might have more than one."
-msgstr ""
-"程序需要MIDI合成设备来合成声音。通常，你电脑的声卡中可能包含这其中的一个设"
-"备，也可能包含更多。"
-
-#: src/app/lenmus_midi_wizard.cpp:266
-msgid ""
-"If your PC has more than one device, choose one of them. You can test all of "
-"them and choose the one whose sound you prefer."
-msgstr ""
-"如果你的电脑包含多个MIDI合成设备，选择一个。你可以对它们进行测试并且选你所好"
-
-#: src/app/lenmus_midi_wizard.cpp:275
-msgid "Output device:"
-msgstr "输出设备："
-
-#: src/app/lenmus_midi_wizard.cpp:403
-msgid "Voice channel and instrument"
-msgstr "声道和乐器"
-
-#: src/app/lenmus_midi_wizard.cpp:413
-msgid ""
-"Channels 10 and 16 are specialized in percussion sounds. So it is "
-"recommended to choose any other channel (it doesn't matter which one)."
-msgstr "10至16频道专门播放击打乐器声音。建议选择其他任意声道。"
-
-#: src/app/lenmus_midi_wizard.cpp:416
-msgid ""
-"To facilitate access to the instruments they are grouped into sections. "
-"First choose a section and then choose the desired instrument."
-msgstr "为了方便获取章节中分组的乐器。首先选取一个章节，然后选择想要的音乐。"
-
-#: src/app/lenmus_midi_wizard.cpp:425 src/app/lenmus_midi_wizard.cpp:618
-msgid "Channel:"
-msgstr "频道："
-
-#: src/app/lenmus_midi_wizard.cpp:435
-msgid "Section:"
-msgstr "章节："
-
-#: src/app/lenmus_midi_wizard.cpp:442
-msgid "Instrument:"
-msgstr "乐器："
-
-#: src/app/lenmus_midi_wizard.cpp:596
-msgid "Metronome channel and sounds"
-msgstr "节拍器频道和声音"
-
-#: src/app/lenmus_midi_wizard.cpp:606
-msgid ""
-"Channels 10 and 16 are specialized in percussion sounds. So it is "
-"recommended to choose one of these (it doesn't matter which one)."
-msgstr "10至16频道专门播放击打乐器声音。建议选择其他任意声道。"
-
-#: src/app/lenmus_midi_wizard.cpp:609
-msgid ""
-"To better identify the first beat of each measure it is possible to assign a "
-"different sound to it. But you can also choose the same sound for both, the "
-"first beat and the others."
-msgstr ""
-"为了区分每个小节的第一拍，可以为其设施不同的声音。也可将第一拍和其他拍子的声"
-"音设为一致。"
-
-#: src/app/lenmus_midi_wizard.cpp:628
-msgid "Sound for first beat of each measure:"
-msgstr "每个小节第一拍的声音："
-
-#: src/app/lenmus_midi_wizard.cpp:635
-msgid "Sound for other beats of each measure:"
-msgstr "每个小节的其他节拍的声音"
 
 #: src/app/lenmus_score_wizard.cpp:168
 msgid "Score configuration wizard"
@@ -1196,7 +1102,7 @@ msgstr "分子"
 msgid "Denominator"
 msgstr "分母"
 
-#: src/app/lenmus_splash_frame.cpp:100
+#: src/app/lenmus_splash_frame.cpp:101
 msgid "Free software under GNU General Public License, version 3 or later."
 msgstr "满足GUN通用公共许可证的免费软件，版本3或者更新"
 
@@ -1225,15 +1131,19 @@ msgstr "关于LenMus"
 msgid "What's is new in this version"
 msgstr "这一版本的新特性"
 
-#: src/app/lenmus_welcome_window.cpp:185
+#: src/app/lenmus_welcome_window.cpp:171
+msgid "Report an error or make suggestions"
+msgstr ""
+
+#: src/app/lenmus_welcome_window.cpp:190
 msgid "Learn and practise music theory"
 msgstr "学习和实践音乐理论"
 
-#: src/app/lenmus_welcome_window.cpp:200
+#: src/app/lenmus_welcome_window.cpp:205
 msgid "Study guide: How to use this program"
 msgstr "学习指南：如何使用本软件。"
 
-#: src/app/lenmus_welcome_window.cpp:214
+#: src/app/lenmus_welcome_window.cpp:219
 msgid "Recent documents"
 msgstr "最近打开的文件"
 
@@ -1382,127 +1292,127 @@ msgstr "未知和弦"
 msgid "Not identified"
 msgstr "未鉴定"
 
-#: src/auxmusic/lenmus_chord.cpp:774 xrc/xrc_strings.cpp:205
+#: src/auxmusic/lenmus_chord.cpp:775 xrc/xrc_strings.cpp:205
 msgid "Major triad"
 msgstr "大三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:775 xrc/xrc_strings.cpp:206
+#: src/auxmusic/lenmus_chord.cpp:776 xrc/xrc_strings.cpp:206
 msgid "Minor triad"
 msgstr "小三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:776 xrc/xrc_strings.cpp:207
+#: src/auxmusic/lenmus_chord.cpp:777 xrc/xrc_strings.cpp:207
 msgid "Augmented triad"
 msgstr "增三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:777 xrc/xrc_strings.cpp:208
+#: src/auxmusic/lenmus_chord.cpp:778 xrc/xrc_strings.cpp:208
 msgid "Diminished triad"
 msgstr "减三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:778
+#: src/auxmusic/lenmus_chord.cpp:779
 msgid "Suspended triad (4th)"
 msgstr "延留音和弦（四度）"
 
-#: src/auxmusic/lenmus_chord.cpp:779
+#: src/auxmusic/lenmus_chord.cpp:780
 msgid "Suspended triad (2nd)"
 msgstr "延留音和弦（二度）"
 
-#: src/auxmusic/lenmus_chord.cpp:782
+#: src/auxmusic/lenmus_chord.cpp:783
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:109 xrc/xrc_strings.cpp:15
 #: xrc/xrc_strings.cpp:212
 msgid "Major 7th"
 msgstr "大七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:783
+#: src/auxmusic/lenmus_chord.cpp:784
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:110
 #: xrc/xrc_strings.cpp:216
 msgid "Dominant 7th"
 msgstr "主七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:784
+#: src/auxmusic/lenmus_chord.cpp:785
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:111
 #: xrc/xrc_strings.cpp:213
 msgid "Minor 7th"
 msgstr "小七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:785
+#: src/auxmusic/lenmus_chord.cpp:786
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:112
 #: xrc/xrc_strings.cpp:215
 msgid "Diminished 7th"
 msgstr "减七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:786 xrc/xrc_strings.cpp:217
+#: src/auxmusic/lenmus_chord.cpp:787 xrc/xrc_strings.cpp:217
 msgid "Half diminished 7th"
 msgstr "半减七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:787 xrc/xrc_strings.cpp:218
+#: src/auxmusic/lenmus_chord.cpp:788 xrc/xrc_strings.cpp:218
 msgid "Augmented major 7th"
 msgstr "增大调七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:788
+#: src/auxmusic/lenmus_chord.cpp:789
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:115
 #: xrc/xrc_strings.cpp:214
 msgid "Augmented 7th"
 msgstr "增七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:789 xrc/xrc_strings.cpp:219
+#: src/auxmusic/lenmus_chord.cpp:790 xrc/xrc_strings.cpp:219
 msgid "Minor major 7th"
 msgstr "大小调七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:792
+#: src/auxmusic/lenmus_chord.cpp:793
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:119 xrc/xrc_strings.cpp:13
 #: xrc/xrc_strings.cpp:221
 msgid "Major 6th"
 msgstr "大调六和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:793
+#: src/auxmusic/lenmus_chord.cpp:794
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:120
 #: xrc/xrc_strings.cpp:223
 msgid "Minor 6th"
 msgstr "小六和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:794
+#: src/auxmusic/lenmus_chord.cpp:795
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:121
 #: xrc/xrc_strings.cpp:222
 msgid "Augmented 6th"
 msgstr "增六和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:797
+#: src/auxmusic/lenmus_chord.cpp:798
 msgid "Dominant ninth"
 msgstr "属九和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:798
+#: src/auxmusic/lenmus_chord.cpp:799
 msgid "Major ninth"
 msgstr "大调九和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:799
+#: src/auxmusic/lenmus_chord.cpp:800
 msgid "Minor ninth"
 msgstr "小调九和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:802
+#: src/auxmusic/lenmus_chord.cpp:803
 msgid "Dominant 11th"
 msgstr "属十一和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:803
+#: src/auxmusic/lenmus_chord.cpp:804
 msgid "Major 11th"
 msgstr "大调十一和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:804
+#: src/auxmusic/lenmus_chord.cpp:805
 msgid "Minor 11th"
 msgstr "小调十一和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:807
+#: src/auxmusic/lenmus_chord.cpp:808
 msgid "Dominant 13th"
 msgstr "属十三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:808 xrc/xrc_strings.cpp:25
+#: src/auxmusic/lenmus_chord.cpp:809 xrc/xrc_strings.cpp:25
 msgid "Major 13th"
 msgstr "大调十三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:809
+#: src/auxmusic/lenmus_chord.cpp:810
 msgid "Minor 13th"
 msgstr "小调十三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:813
+#: src/auxmusic/lenmus_chord.cpp:814
 msgid "Tristan chord"
 msgstr "崔丝坦和弦"
 
@@ -1989,48 +1899,48 @@ msgstr "可用电子书"
 msgid "Error when trying to move to folder %s"
 msgstr "无法转移至文件夹 %s"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:120
+#: src/dialogs/lenmus_dlg_metronome.cpp:122
 msgid "Metronome settings"
 msgstr "节拍器打开"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:175
+#: src/dialogs/lenmus_dlg_metronome.cpp:177
 msgid "Tempo:"
 msgstr "速度"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:227
+#: src/dialogs/lenmus_dlg_metronome.cpp:229
 msgid "or tap tempo with this button or with space bar"
 msgstr "或使用此按钮或空格键点按速度"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:245
+#: src/dialogs/lenmus_dlg_metronome.cpp:247
 msgid "Count:"
 msgstr "计数："
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:258
+#: src/dialogs/lenmus_dlg_metronome.cpp:260
 msgid "Reset"
 msgstr "重启"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:274
+#: src/dialogs/lenmus_dlg_metronome.cpp:276
 msgid "Max:"
 msgstr "最大值："
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:287
+#: src/dialogs/lenmus_dlg_metronome.cpp:289
 msgid "Min:"
 msgstr "最低要求："
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:305
+#: src/dialogs/lenmus_dlg_metronome.cpp:307
 msgid "Metronome beat is:"
 msgstr "节拍器工具"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:313
+#: src/dialogs/lenmus_dlg_metronome.cpp:315
 msgid "the note value selected at right"
 msgstr "在右侧选择的音符值"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:316
+#: src/dialogs/lenmus_dlg_metronome.cpp:318
 msgid "implied by time signature"
 msgstr "时间签名暗示"
 
-#: src/dialogs/lenmus_dlg_metronome.cpp:337
-#: src/dialogs/lenmus_dlg_metronome.cpp:423
+#: src/dialogs/lenmus_dlg_metronome.cpp:339
+#: src/dialogs/lenmus_dlg_metronome.cpp:425
 msgid "Start"
 msgstr "开始"
 
@@ -2132,12 +2042,12 @@ msgstr "小测试"
 #: src/exercises/constrains/lenmus_constrains.cpp:372
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:334
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1043
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1090
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1098
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1123
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1245
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1254
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1042
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1089
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1097
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1122
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1246
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1255
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:193
 msgid "Play"
 msgstr "播放"
@@ -2317,32 +2227,32 @@ msgid "Press 'Play' to hear the problem again."
 msgstr "点击”播放“ 重听问题"
 
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:257
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1655
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1656
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:119
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:77
 msgid "Exercise options"
 msgstr "练习选择"
 
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:270
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1644
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1645
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:174
 msgid "Go back to theory"
 msgstr "回到理论"
 
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:285
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1668
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1669
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:132
 msgid "See source score"
 msgstr "查看源乐谱"
 
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:293
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1676
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1677
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:140
 msgid "See MIDI events"
 msgstr "查看MIDI事件"
 
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:313
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1554
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1555
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:183
 msgid "New problem"
 msgstr "新问题"
@@ -2369,76 +2279,76 @@ msgstr "后者大"
 msgid "Both are equal"
 msgstr "两者相同"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1003
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1143
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1216
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1558
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1002
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1142
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1217
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1559
 msgid "Stop playing"
 msgstr "停止播放"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1091
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1256
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1090
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1257
 msgid "Press 'Play' to hear it again"
 msgstr "点击”播放“试听"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1307
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1308
 msgid ""
 "Press any button below to hear how it sounds, and compare with the right "
 "answer"
 msgstr "点击下列任意按钮进行试听，并和正确答案进行比较"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1555
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1556
 #, fuzzy
 msgid "Play problem"
 msgstr "新问题"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1556
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1557
 msgid "Done"
 msgstr ""
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1557
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1558
 #, fuzzy
 msgid "Play my score"
 msgstr "播放模式"
 
-#: src/exercises/ctrols/lenmus_generators.cpp:1119
+#: src/exercises/ctrols/lenmus_generators.cpp:1110
 msgid "No more scheduled work for today."
 msgstr "今日已无更多安排"
 
-#: src/exercises/ctrols/lenmus_generators.cpp:1120
-#: src/exercises/ctrols/lenmus_generators.cpp:1123
+#: src/exercises/ctrols/lenmus_generators.cpp:1111
+#: src/exercises/ctrols/lenmus_generators.cpp:1114
 msgid "Exercise will be changed to 'Practise' mode."
 msgstr "习题将被改为“练习”模式"
 
-#: src/exercises/ctrols/lenmus_generators.cpp:1122
+#: src/exercises/ctrols/lenmus_generators.cpp:1113
 msgid "No scheduled work for today."
 msgstr "今日无安排"
 
-#: src/exercises/ctrols/lenmus_generators.cpp:1438
+#: src/exercises/ctrols/lenmus_generators.cpp:1427
 msgid "Unknown"
 msgstr "未知"
 
-#: src/exercises/ctrols/lenmus_generators.cpp:1444
+#: src/exercises/ctrols/lenmus_generators.cpp:1433
 msgid "milliseconds"
 msgstr ""
 
+#: src/exercises/ctrols/lenmus_generators.cpp:1439
 #: src/exercises/ctrols/lenmus_generators.cpp:1450
-#: src/exercises/ctrols/lenmus_generators.cpp:1461
 msgid "Session report"
 msgstr "章节报告"
 
+#: src/exercises/ctrols/lenmus_generators.cpp:1440
 #: src/exercises/ctrols/lenmus_generators.cpp:1451
-#: src/exercises/ctrols/lenmus_generators.cpp:1462
 msgid "New questions:"
 msgstr "新问题："
 
+#: src/exercises/ctrols/lenmus_generators.cpp:1441
 #: src/exercises/ctrols/lenmus_generators.cpp:1452
-#: src/exercises/ctrols/lenmus_generators.cpp:1463
 msgid "Questions to review:"
 msgstr "问题回顾"
 
+#: src/exercises/ctrols/lenmus_generators.cpp:1442
 #: src/exercises/ctrols/lenmus_generators.cpp:1453
-#: src/exercises/ctrols/lenmus_generators.cpp:1464
 msgid "Average answer time:"
 msgstr "平均答题时间："
 
@@ -3357,14 +3267,14 @@ msgstr "多少个八度"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:309
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:444
-#: src/options/lenmus_options_dlg.cpp:191
+#: src/options/lenmus_options_dlg.cpp:201
 msgid "Other"
 msgstr "其他"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:320
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:376
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:455
-#: src/options/lenmus_options_dlg.cpp:263 src/properties/DlgEditText.cpp:154
+#: src/options/lenmus_options_dlg.cpp:276 src/properties/DlgEditText.cpp:154
 #: src/properties/lenmus_dlg_properties.cpp:87
 #: src/widgets/lenmus_wizard.cpp:138 xrc/xrc_strings.cpp:63
 #: xrc/xrc_strings.cpp:158 xrc/xrc_strings.cpp:252 xrc/xrc_strings.cpp:306
@@ -4177,12 +4087,6 @@ msgstr "检测更新"
 msgid "Last successful check:"
 msgstr "最后一次检测成功："
 
-#: src/options/lenmus_internet_opt_panel.cpp:208
-#, fuzzy
-#| msgid "dd/mm/aaaa"
-msgid "dd/mm/yyyy"
-msgstr "dd/mm/aaaa"
-
 #: src/options/lenmus_internet_opt_panel.cpp:216 xrc/xrc_strings.cpp:178
 msgid "Use a proxy server to connect to Internet"
 msgstr "使用代理连接网络"
@@ -4235,33 +4139,33 @@ msgstr "语言选择"
 msgid "Choose language to use:"
 msgstr "使用语言设置"
 
-#: src/options/lenmus_options_dlg.cpp:110
+#: src/options/lenmus_options_dlg.cpp:115
 msgid "Configuration options"
 msgstr "配置选项"
 
-#: src/options/lenmus_options_dlg.cpp:158
+#: src/options/lenmus_options_dlg.cpp:163
 msgid "Language"
 msgstr "语言"
 
-#: src/options/lenmus_options_dlg.cpp:168
+#: src/options/lenmus_options_dlg.cpp:178
 msgid "Toolbars"
 msgstr "工具条"
 
-#: src/options/lenmus_options_dlg.cpp:173
+#: src/options/lenmus_options_dlg.cpp:183
 msgid "Internet"
 msgstr "因特网"
 
-#: src/options/lenmus_options_dlg.cpp:181
+#: src/options/lenmus_options_dlg.cpp:191
 msgid "Shortcuts"
 msgstr ""
 
-#: src/options/lenmus_options_dlg.cpp:187
+#: src/options/lenmus_options_dlg.cpp:197
 #, fuzzy
 #| msgid "Play"
 msgid "Playback"
 msgstr "播放"
 
-#: src/options/lenmus_options_dlg.cpp:356
+#: src/options/lenmus_options_dlg.cpp:371
 msgid "Please correct the errors before moving to another section."
 msgstr "请在跳到其他章节前先更正错误"
 
@@ -4347,6 +4251,165 @@ msgstr "全部清空"
 #, fuzzy
 msgid "Change selected"
 msgstr "改变模式"
+
+#: src/options/lenmus_sound_opt_panel.cpp:65
+#, fuzzy
+#| msgid "Score configuration wizard"
+msgid "Sound configuration"
+msgstr "乐谱配置向导"
+
+#: src/options/lenmus_sound_opt_panel.cpp:85
+msgid "Use external synthesizer"
+msgstr ""
+
+#: src/options/lenmus_sound_opt_panel.cpp:85
+msgid "Use internal synthesizer"
+msgstr ""
+
+#: src/options/lenmus_sound_opt_panel.cpp:87
+#, fuzzy
+#| msgid "Choose the file to open"
+msgid "Choose synthesizer to use"
+msgstr "导出当前文件"
+
+#: src/options/lenmus_sound_opt_panel.cpp:97
+#, fuzzy
+#| msgid "Reset counters"
+msgid "Reset to defaults"
+msgstr "复位计数器"
+
+#: src/options/lenmus_sound_opt_panel.cpp:105
+#, fuzzy
+#| msgid "Intervals"
+msgid "Internal synth."
+msgstr "音程"
+
+#: src/options/lenmus_sound_opt_panel.cpp:107
+msgid "External synth."
+msgstr ""
+
+#: src/options/lenmus_sound_opt_panel.cpp:109
+#, fuzzy
+#| msgid "Instrument selection"
+msgid "Instrument sound"
+msgstr "乐器选择"
+
+#: src/options/lenmus_sound_opt_panel.cpp:111
+#, fuzzy
+#| msgid "Metronome on"
+msgid "Metronome sound"
+msgstr "节拍器打开"
+
+#: src/options/lenmus_sound_opt_panel.cpp:239
+msgid "SoundFont to use"
+msgstr ""
+
+#: src/options/lenmus_sound_opt_panel.cpp:251
+msgid ""
+"A Soundfont is a file (.sf2/.sf3) with a collection of sample-based "
+"instrument sounds. The internal synthesizer needs a SoundFont to generate "
+"the sounds."
+msgstr ""
+
+#: src/options/lenmus_sound_opt_panel.cpp:258
+msgid "Soundfont to use"
+msgstr ""
+
+#: src/options/lenmus_sound_opt_panel.cpp:274
+#, fuzzy
+#| msgid "Channel:"
+msgid "Change"
+msgstr "频道："
+
+#: src/options/lenmus_sound_opt_panel.cpp:341
+#, fuzzy
+#| msgid "Choose the operation mode"
+msgid "Choose the SoundFont to load"
+msgstr "选择操作模式"
+
+#: src/options/lenmus_sound_opt_panel.cpp:383
+msgid "Midi devices to use"
+msgstr "Midi设备"
+
+#: src/options/lenmus_sound_opt_panel.cpp:393
+msgid ""
+"To generate sounds the program needs a MIDI synthesizer device. Normally, "
+"one of these devices is included in the sound board of the PC, but your PC "
+"might have more than one."
+msgstr ""
+"程序需要MIDI合成设备来合成声音。通常，你电脑的声卡中可能包含这其中的一个设"
+"备，也可能包含更多。"
+
+#: src/options/lenmus_sound_opt_panel.cpp:396
+msgid ""
+"If your PC has more than one device, choose one of them. You can test all of "
+"them and choose the one whose sound you prefer."
+msgstr ""
+"如果你的电脑包含多个MIDI合成设备，选择一个。你可以对它们进行测试并且选你所好"
+
+#: src/options/lenmus_sound_opt_panel.cpp:405
+msgid "Output device:"
+msgstr "输出设备："
+
+#: src/options/lenmus_sound_opt_panel.cpp:467
+msgid "None"
+msgstr "无"
+
+#: src/options/lenmus_sound_opt_panel.cpp:569
+msgid "Voice channel and instrument"
+msgstr "声道和乐器"
+
+#: src/options/lenmus_sound_opt_panel.cpp:579
+msgid ""
+"Channels 10 and 16 are specialized in percussion sounds. So it is "
+"recommended to choose any other channel (it doesn't matter which one)."
+msgstr "10至16频道专门播放击打乐器声音。建议选择其他任意声道。"
+
+#: src/options/lenmus_sound_opt_panel.cpp:582
+msgid ""
+"To facilitate access to the instruments they are grouped into sections. "
+"First choose a section and then choose the desired instrument."
+msgstr "为了方便获取章节中分组的乐器。首先选取一个章节，然后选择想要的音乐。"
+
+#: src/options/lenmus_sound_opt_panel.cpp:591
+#: src/options/lenmus_sound_opt_panel.cpp:736
+msgid "Channel:"
+msgstr "频道："
+
+#: src/options/lenmus_sound_opt_panel.cpp:601
+msgid "Section:"
+msgstr "章节："
+
+#: src/options/lenmus_sound_opt_panel.cpp:608
+msgid "Instrument:"
+msgstr "乐器："
+
+#: src/options/lenmus_sound_opt_panel.cpp:714
+msgid "Metronome channel and sounds"
+msgstr "节拍器频道和声音"
+
+#: src/options/lenmus_sound_opt_panel.cpp:724
+msgid ""
+"Channels 10 and 16 are specialized in percussion sounds. So it is "
+"recommended to choose one of these (it doesn't matter which one)."
+msgstr "10至16频道专门播放击打乐器声音。建议选择其他任意声道。"
+
+#: src/options/lenmus_sound_opt_panel.cpp:727
+msgid ""
+"To better identify the first beat of each measure it is possible to assign a "
+"different sound to it. But you can also choose the same sound for both, the "
+"first beat and the others."
+msgstr ""
+"为了区分每个小节的第一拍，可以为其设施不同的声音。也可将第一拍和其他拍子的声"
+"音设为一致。"
+
+#: src/options/lenmus_sound_opt_panel.cpp:746
+msgid "Sound for first beat of each measure:"
+msgstr "每个小节第一拍的声音："
+
+#: src/options/lenmus_sound_opt_panel.cpp:753
+msgid "Sound for other beats of each measure:"
+msgstr "每个小节的其他节拍的声音"
 
 #: src/options/lenmus_toolbar_opt_panel.cpp:90 xrc/xrc_strings.cpp:163
 msgid "Preferences for toolbars"
@@ -5064,6 +5127,17 @@ msgstr "必须至少选择两个按钮"
 #: xrc/xrc_strings.cpp:396
 msgid "You must choose at least one cadence in tab 'cadences'! "
 msgstr "必须至少在“终止式”标签中选择一个终止式"
+
+#~ msgid "Run Midi wizard"
+#~ msgstr "运行MIDI向导"
+
+#~ msgid "MIDI configuration wizard"
+#~ msgstr "MIDI配置向导"
+
+#, fuzzy
+#~| msgid "dd/mm/aaaa"
+#~ msgid "dd/mm/yyyy"
+#~ msgstr "dd/mm/aaaa"
 
 #~ msgid "&Accept"
 #~ msgstr "接受"
@@ -5925,9 +5999,6 @@ msgstr "必须至少在“终止式”标签中选择一个终止式"
 
 #~ msgid "Select instrument:"
 #~ msgstr "选择乐器"
-
-#~ msgid "Instrument selection"
-#~ msgstr "乐器选择"
 
 #~ msgid "Lyrics"
 #~ msgstr "歌词"
