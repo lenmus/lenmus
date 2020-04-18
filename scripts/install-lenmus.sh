@@ -33,12 +33,12 @@ echo -e "${enhanced}Local installation of LenMus program${reset}"
 #find new package name
 cd ${build_path}
 echo "Now in ${PWD}"
-app=`ls | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
+app=`ls | grep 'lenmus-all_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
 echo "New package to install: ${app}"
 
 #uninstall current version of LenMus, if installed
-installed=`dpkg -l | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*'`
-oldapp=$(echo $installed | egrep -o 'lenmus_[0-9]*.[0-9]*.[0-9]*' | head -n1)
+installed=`dpkg -l | grep 'lenmus-all_[0-9]*.[0-9]*.[0-9]*'`
+oldapp=$(echo $installed | egrep -o 'lenmus-all_[0-9]*.[0-9]*.[0-9]*' | head -n1)
 
 if [ -n "$oldapp" ]; then
     echo -e "${enhanced}Removing old lenmus package ${oldapp}${reset}"
