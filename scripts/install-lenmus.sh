@@ -6,7 +6,6 @@
 # usage: sudo ./install-lenmus.sh
 #------------------------------------------------------------------------------
 
-
 #------------------------------------------------------------------------------
 # main line starts here
 
@@ -32,7 +31,10 @@ build_path="${root_path}/zz_build-area"
 echo -e "${enhanced}Local installation of LenMus program${reset}"
 
 #find new package name
+cd ${build_path}
+echo "Now in ${PWD}"
 app=`ls | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
+echo "New package to install: ${app}"
 
 #uninstall current version of LenMus, if installed
 installed=`dpkg -l | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*'`
@@ -48,6 +50,8 @@ fi
 echo -e "${enhanced}Installing new package ${app} ${reset}"
 sudo dpkg -i "${app}"
 echo "-- Done"
+
+cd ${scripts_path}
 
 exit $E_SUCCESS
 
