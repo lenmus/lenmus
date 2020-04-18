@@ -129,7 +129,6 @@ else
         printf "   %s\n" "lenmus-${packages[$ix]}"
     done
 fi
-echo
 
 #path for building
 build_path="${root_path}/zz_build-area"

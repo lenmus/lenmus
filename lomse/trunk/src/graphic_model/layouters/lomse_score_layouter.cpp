@@ -191,16 +191,23 @@ void ScoreLayouter::layout_in_box()
             //TODO: ScoreLayouter::layout_in_box()
             //  If paper height is smaller than system height it is impossible to fit
             //  one system in a page. We have to split system horizontally (some staves in
-            //  one page and the others in next page). But this is not yet implemented.
-            //  Therefore, for now, just an error message.
-            add_error_message("ERROR: Not enough space for drawing just one system!");
-            stringstream msg;
-            msg << "  Page size too small for " << m_pScore->get_num_instruments()
-                << " instruments.";
-            add_error_message(msg.str());
-            set_layout_is_finished(true);
-            delete_system();
-            return;
+            //  one page and the others in next page) or to adjust scale.
+            //  For now, just an error message or overrun paper.
+            #if (0)
+                //Display error message
+                add_error_message("ERROR: Not enough space for drawing just one system!");
+                stringstream msg;
+                msg << "  Page size too small for " << m_pScore->get_num_instruments()
+                    << " instruments.";
+                add_error_message(msg.str());
+                set_layout_is_finished(true);
+                delete_system();
+                return;
+            #else
+                //Overrun paper
+                add_system_to_page();
+                fSystemsAdded = true;
+            #endif
         }
         else
         {
@@ -1540,9 +1547,10 @@ void LinesBreakerOptimal::compute_optimal_break_sequence()
 
                 if (fTrace)
                 {
-                    dbgLogger << "Penalty for (" << i << ", " << j << ")= "
-                              << (prevPenalty + newPenalty) << ". Current= "
-                              << m_entries[j].penalty << endl;
+                    dbgLogger << "prevPenalty for (" << i << ", " << j << ")= "
+                              << prevPenalty << ", New= " << newPenalty << ". Next= "
+                              << m_entries[j].penalty << ", prev+new= "
+                              << (prevPenalty + newPenalty) << endl;
                 }
 
                 if (fSystemBreak || m_pSpAlgorithm->is_better_option(prevPenalty, newPenalty,
@@ -1550,7 +1558,8 @@ void LinesBreakerOptimal::compute_optimal_break_sequence()
                 {
                     if (fTrace)
                     {
-                        dbgLogger << (prevPenalty + newPenalty) << " is better option than "
+                        dbgLogger << "    " << (prevPenalty + newPenalty)
+                                  << " is better option than "
                                   << m_entries[j].penalty << " for entry " << j << endl;
                     }
 

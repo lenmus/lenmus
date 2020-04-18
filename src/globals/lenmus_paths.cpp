@@ -280,7 +280,7 @@ void Paths::initialize()
     //6. Other files from system
     wxFileName oSoundFonts;
     if (strlen(LENMUS_SOUNDFONT_PATH) != 0)
-        oSoundFonts = wxFileName( LENMUS_SOUNDFONT_PATH );
+        oSoundFonts = wxFileName( LENMUS_SOUNDFONT_PATH , "");
     else
     {
         oSoundFonts = oSharedHome;
@@ -293,7 +293,7 @@ void Paths::initialize()
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     //Base paths for Windows Release version
     //-----------------------------------------
-    
+
     wxStandardPaths& stdPaths = wxStandardPaths::Get();
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
@@ -397,7 +397,7 @@ void Paths::initialize()
     path.AppendDir("cursors");
     m_sCursors = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oSharedHome;
+    path = oSoundFonts;
     path.AppendDir("res");
     path.AppendDir("sounds");
     m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
