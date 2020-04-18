@@ -1,10 +1,18 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.6.1
+[Since last version] 5.6.2
 =============================
 
 * None
+
+
+Version [5.6.2] (Apr 18th, 2020)
+==================================
+
+* Fixed important bug that only affected to Linux platforms. The path for the
+  default sound font was incorrectly set and MIDI sound didn't work without
+  the user having to go to Preferences -> Sound and to change the setting.
 
 
 Version [5.6.1] (March 22nd, 2020)
@@ -688,7 +696,8 @@ Version 1.0 (Jan/2004):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...HEAD
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.6.2...HEAD
+[5.6.2]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...Release_5.6.2
 [5.6.1]: https://github.com/lenmus/lenmus/compare/Release_5.6.0...Release_5.6.1
 [5.6.0]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...Release_5.6.0
 [5.5.0]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...Release_5.5.0
