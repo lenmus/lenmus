@@ -713,7 +713,7 @@ void MainFrame::create_menu()
     create_menu_item(pMenuFile, k_menu_file_open, k_cmd_file_open,
                      _("Open"), "tool_open", wxITEM_NORMAL, true /*dots*/);
     create_menu_item(pMenuFile, k_menu_file_reload, k_cmd_file_reload,
-                     "Reload", "", wxITEM_NORMAL);
+                     _("Reload"), "", wxITEM_NORMAL);
     create_menu_item(pMenuFile, k_menu_open_books, k_cmd_open_books,
                      _("Open books"), "tool_open_ebook", wxITEM_NORMAL, true /*dots*/);
 
