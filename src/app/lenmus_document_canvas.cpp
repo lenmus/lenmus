@@ -1541,6 +1541,13 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         pDC->SetBackground(*wxWHITE_BRUSH);
         pDC->Clear();
 
+        Document* pDoc = get_document();
+        float scale = pDoc->get_page_content_scale();
+        pDC->SetUserScale(scale, scale);
+        paperWidthPixels = int(float(paperWidthPixels) / scale);
+        paperHeightPixels = int(float(paperHeightPixels) / scale);
+
+
         //set print resolution
         wxSize dpi = pDC->GetPPI();
         spInteractor->set_print_ppi( double( max(dpi.x, dpi.y) ) );
@@ -1630,6 +1637,12 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
                             memoryDC.SelectObjectAsSource(bitmap);
                             pDC->Blit(paperPos.x, paperPos.y, tileWidth, tileHeight,
                                     &memoryDC, border, border);
+//                            //print tile borders
+//                            pDC->DrawLine(paperPos.x, paperPos.y,
+//                                          paperPos.x+tileWidth, paperPos.y);
+//                            pDC->DrawLine(paperPos.x+tileWidth, paperPos.y,
+//                                          paperPos.x+tileWidth, paperPos.y+tileHeight);
+
                             memoryDC.SelectObjectAsSource(wxNullBitmap);
                         }
                         else
