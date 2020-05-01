@@ -20,7 +20,7 @@ function DisplayHelp()
     echo "    -h --help        Print this help text."
     echo "    -p --packages    Selects the packages to generate."
     echo "                     If option -p is not specified, it will generate"
-    echo "                     the 'main' package containing the binaries."
+    echo "                     the 'boundle' package containing all."
     echo "                     Valid options: one or more values"
     echo "                     { main | common | i18n | ebooks | boundle | all}* "
     echo "                     If boundle package is requested all other"
@@ -53,6 +53,7 @@ function SavePackage()
 function SanitizePackages()
 {
     if [ "${#packages[*]}" -eq "0" ]; then
+        packages+="boundle"
         return 0
     else
         for ix in ${!packages[*]}
@@ -120,15 +121,11 @@ done
 #print message with packages to generate
 SanitizePackages
 num_packages=${#packages[*]}
-if [ "$num_packages" -eq "0" ]; then
-    echo "Packages to generate: lenmus main package"
-else
-    echo "Packages to generate: ${num_packages}"
-    for ix in ${!packages[*]}
-    do
-        printf "   %s\n" "lenmus-${packages[$ix]}"
-    done
-fi
+echo "Packages to generate: ${num_packages}"
+for ix in ${!packages[*]}
+do
+    printf "   %s\n" "lenmus-${packages[$ix]}"
+done
 
 #path for building
 build_path="${root_path}/zz_build-area"
@@ -156,15 +153,11 @@ else
 fi
 
 #prepare package variables for cmake
-if [ "$num_packages" -eq "0" ]; then
-    package=""
-else
-    for ix in ${!packages[*]}
-    do
-        pkg="$(echo ${packages[$ix]} | tr '[a-z]' '[A-Z]')"
-        package+="-DBUILD_PKG_${pkg}:BOOL=ON "
-    done
-fi
+for ix in ${!packages[*]}
+do
+    pkg="$(echo ${packages[$ix]} | tr '[a-z]' '[A-Z]')"
+    package+="-DBUILD_PKG_${pkg}:BOOL=ON "
+done
 echo "package='${package}'"
 
 # create makefile
