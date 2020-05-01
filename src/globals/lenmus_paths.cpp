@@ -37,7 +37,8 @@ using namespace lomse;
 #include <sstream>
 using namespace std;
 
-#if (LENMUS_PLATFORM_UNIX == 1)     //for getenv(), getpwuid() and getuid()
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
+    //for getenv(), getpwuid() and getuid()
     #include <unistd.h>
     #include <sys/types.h>
     #include <pwd.h>
@@ -202,7 +203,7 @@ void Paths::initialize()
     oSoundFonts.AppendDir("res");
     oSoundFonts.AppendDir("sounds");
 
-#elif (LENMUS_PLATFORM_UNIX == 1)
+#elif (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
     //Base paths for Linux Release version
     //---------------------------------------
 
@@ -469,7 +470,7 @@ wxString Paths::get_user_home_folder()
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     char* homedir = getenv("USERPROFILE");
 #elif (LENMUS_PLATFORM_MAC == 1)
-    char* homedir = getenv("HOME");      //TODO
+    char* homedir = getenv("HOME");
 #endif
     if (homedir == NULL)
     {

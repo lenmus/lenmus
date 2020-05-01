@@ -1514,7 +1514,7 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
     // - fontname can be either the face name (i.e. "Book Antiqua") or
     //   the familly name (i.e. "Liberation sans")
 
-#if (LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
 
     //method get_font_filename() is not invoked in Linux
 
@@ -1806,7 +1806,7 @@ void MainFrame::create_toolbars()
 
 
     // add the toolbars to the manager
-#if (LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
     //In gtk reverse creation order
     m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name("Metronome").Caption(_("Metronome tools")).
@@ -2016,7 +2016,7 @@ void MainFrame::create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemNa
 
 
     //icons are supported only in Windows and Linux, and only in wxITEM_NORMAL items
-    #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1)
+    #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
     if (nKind == wxITEM_NORMAL && sIconName != "")
         pItem->SetBitmap( wxArtProvider::GetBitmap(sIconName, wxART_TOOLBAR, wxSize(16, 16)) );
     #endif
@@ -2044,7 +2044,7 @@ void MainFrame::create_menu_item(wxMenu* pMenu, int menuId, int actionId,
 
 
         //icons are supported only in Windows and Linux, and only in wxITEM_NORMAL items
-        #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1)
+        #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
         if (nKind == wxITEM_NORMAL && !sIconName.empty())
             pItem->SetBitmap( wxArtProvider::GetBitmap(sIconName, wxART_TOOLBAR, wxSize(16, 16)) );
         #endif

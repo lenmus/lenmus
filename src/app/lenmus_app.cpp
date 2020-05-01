@@ -53,7 +53,7 @@ using namespace lomse;
 #include <iostream>
 using namespace std;
 
-#if (LENMUS_PLATFORM_UNIX == 1)     //for determine_exec_path()
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)     //for determine_exec_path()
     #include <limits.h>
     #include <libgen.h>
     #include <unistd.h>
@@ -288,7 +288,7 @@ wxString TheApp::determine_exec_path()
         sBinPath = wxGetCwd();
     return sBinPath;
 
-#elif (LENMUS_PLATFORM_UNIX == 1)
+#elif (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
 
     //For Linux try first the /proc/self/exe path
     #if __linux__  //&& !__ANDROID__
@@ -723,7 +723,7 @@ bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
         #if (LENMUS_ENABLE_UNIT_TESTS == 1)
             bool fUseCout = false;
-            #if (LENMUS_PLATFORM_UNIX == 1)
+            #if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
                 fUseCout = true;
             #endif
             MyTestRunner oTR(nullptr, fUseCout);
