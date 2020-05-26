@@ -331,6 +331,9 @@ if(MSVC)
 elseif(CMAKE_COMPILER_IS_GNUCC)
     set( LENMUS_COMPILER_MSVC "0")
     set( LENMUS_COMPILER_GCC "1")
+elseif(APPLE)    #???  set( LENMUS_COMPILER_MSVC "0") seems to be necessary.  Does  LENMUS_COMPILER_GCC  need to be defined?
+     set( LENMUS_COMPILER_MSVC "0")
+     set( LENMUS_COMPILER_GCC "0")
 endif()
 
 # build type
@@ -1306,7 +1309,7 @@ if (UNIX AND NOT APPLE)
     install(FILES ${LENMUS_ROOT_DIR}/res/other/org.lenmus.lenmus.appdata.xml
             DESTINATION "/usr/share/metainfo"
             COMPONENT main )
-endif(UNIX)
+endif(UNIX AND NOT APPLE)
 
 if(INSTALL_SOUNDFONT)
     install(FILES ${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2
