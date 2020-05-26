@@ -166,4 +166,7 @@ lomse/trunk/scripts/
 #garbage from MS VisualStudio
 .vs/
 
+#Mac specific stuff:
+.DS_Store
+Info.plist.in
 
