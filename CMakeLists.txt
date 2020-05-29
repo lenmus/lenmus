@@ -1537,7 +1537,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
 
 if (APPLE)
     # For Apple generate a drang & drop package
-    set(CPACK_GENERATOR "DRAGNDROP")
+    set(CPACK_GENERATOR "DragNDrop")
 
 elseif(UNIX AND NOT APPLE)
     # For Linux generate one or more Debian packages
