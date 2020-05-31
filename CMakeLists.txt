@@ -849,7 +849,7 @@ if(INSTALL_SOUNDFONT)
     set(LENMUS_SOUNDFONT_PATH "")   #to force to make it relative to <SHARED_DIR>
     if (NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
         file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
-             DESTINATION ${LENMUS_ROOT_DIR}/res/sounds)
+             DESTINATION ${SHARED_DIR}/res/sounds)
     endif()
 endif()
 message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
@@ -858,7 +858,7 @@ if(INSTALL_BRAVURA_FONT AND
    NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts/"))
         message(STATUS "BRAVURA_FONT_PATH=${BRAVURA_FONT_PATH}")
         file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
-             DESTINATION ${LENMUS_ROOT_DIR}/res/fonts)
+             DESTINATION ${SHARED_DIR}/res/fonts)
 endif()
 
 
