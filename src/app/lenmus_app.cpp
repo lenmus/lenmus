@@ -309,7 +309,7 @@ wxString TheApp::determine_exec_path()
     #endif // __linux__ && !__ANDROID__
     
     //A method for MacOS:
-    #if __APPLE__
+    #ifdef __APPLE__
          char macPathName[PATH_MAX];
          uint32_t execSize = sizeof(macPathName);
          if(_NSGetExecutablePath(macPathName, &execSize ) == 0){
