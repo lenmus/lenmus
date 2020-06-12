@@ -990,9 +990,9 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
         wxSafeYield();
     }
 
-#ifndef __WXMAC__
+//#ifndef __WXMAC__
     m_frame->Show(true);
-#endif //ndef __WXMAC__
+//#endif //ndef __WXMAC__
     SetTopWindow(m_frame);
 
     return pSplash;
