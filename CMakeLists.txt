@@ -249,11 +249,15 @@ OPTION(BUILD_PKG_BOUNDLE
     "Build package 'lenmus-ebooks': eBooks (all translations)"
     "OFF")
 
+if(NOT APPLE)
 set(MAN_INSTALL_DIR "/usr/share/man" 
     CACHE STRING "Directory for installing man pages")
+else()
+set(MAN_INSTALL_DIR "/usr/local/man"
+    CACHE STRING "Directory for installing man pages")
+endif()
 
-
-# Set a default build type if none was specified
+#Set a default build type if none was specified
 # https://stackoverflow.com/questions/24460486/cmake-build-type-is-not-being-used-in-cmakelists-txt
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
