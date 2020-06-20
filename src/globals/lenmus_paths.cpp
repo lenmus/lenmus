@@ -212,14 +212,13 @@ void Paths::initialize()
     //      /usr/local/share/lenmus/x.x.x/ (unless on a Mac).
 #if __APPLE__
     //On a Mac, if bundling LenMus in an app, SHARED_DIR should be
-    // <app-location>/lenmus.app/Contents/Resources/x.x.x/
+    // <app-location>/lenmus.app/Contents/Resources/
     //where <app-location> is the directory the app is installed in (usually "/Applications", but it
     // could be anywhere.)
     // Since the binary is installed in <app-location>/lenmus.app/Contents/MacOS, we can assume
     // that m_sPrefix contains "<app-location>/lenmus.app/Contents" at this point.
     wxFileName oSharedHome(m_sPrefix);
     oSharedHome.AppendDir("Resources");
-    oSharedHome.AppendDir(sVersion);
 #else
     // this is for Linux:
     wxFileName oSharedHome(m_sPrefix);
