@@ -47,10 +47,10 @@ ProblemDisplayer::ProblemDisplayer(DocumentWindow* pCanvas, ImoContent* pWrapper
     : m_pCanvas(pCanvas)
     , m_pWrapper(pWrapper)
     , m_pDoc(pDoc)
-    , m_pProblemScore(NULL)
-    , m_pProblemPara(NULL)
-    , m_pSolutionPara(NULL)
-    , m_pSolutionScore(NULL)
+    , m_pProblemScore(nullptr)
+    , m_pProblemPara(nullptr)
+    , m_pSolutionPara(nullptr)
+    , m_pSolutionScore(nullptr)
 {
     //receives a content wrapper to place problem/solution on it
 
@@ -109,7 +109,7 @@ void ProblemDisplayer::remove_problem_score()
         m_pWrapper->remove_child_imo(m_pProblemScore);
         delete m_pProblemScore;
         m_pDoc->set_dirty();
-        m_pProblemScore = NULL;
+        m_pProblemScore = nullptr;
     }
 }
 
@@ -121,7 +121,7 @@ void ProblemDisplayer::remove_solution_score()
         m_pWrapper->remove_child_imo(m_pSolutionScore);
         delete m_pSolutionScore;
         m_pDoc->set_dirty();
-        m_pSolutionScore = NULL;
+        m_pSolutionScore = nullptr;
     }
 }
 
@@ -130,7 +130,7 @@ void ProblemDisplayer::set_problem_text(const string& msg, ImoStyle* pStyle)
 {
     remove_problem_text();
 
-    if (pStyle == NULL)
+    if (pStyle == nullptr)
         pStyle = m_pDoc->get_default_style();
     m_pProblemPara = m_pWrapper->add_paragraph(pStyle);
     m_pProblemPara->add_text_item(msg, pStyle);
@@ -145,7 +145,7 @@ void ProblemDisplayer::remove_problem_text()
         m_pWrapper->remove_item(m_pProblemPara);
         m_pDoc->set_dirty();
         delete m_pProblemPara;
-        m_pProblemPara = NULL;
+        m_pProblemPara = nullptr;
     }
 }
 
@@ -154,7 +154,7 @@ void ProblemDisplayer::set_solution_text(const string& msg, ImoStyle* pStyle)
 {
     remove_solution_text();
 
-    if (pStyle == NULL)
+    if (pStyle == nullptr)
         pStyle = m_pDoc->get_default_style();
     m_pSolutionPara = m_pWrapper->add_paragraph(pStyle);
     m_pSolutionPara->add_text_item(msg, pStyle);
@@ -169,7 +169,7 @@ void ProblemDisplayer::remove_solution_text()
         m_pWrapper->remove_item(m_pSolutionPara);
         m_pDoc->set_dirty();
         delete m_pSolutionPara;
-        m_pSolutionPara = NULL;
+        m_pSolutionPara = nullptr;
     }
 }
 

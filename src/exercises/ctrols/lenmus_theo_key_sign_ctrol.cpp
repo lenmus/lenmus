@@ -94,7 +94,7 @@ void TheoKeySignCtrol::on_settings_changed()
 //    if (m_pConstrains->is_theory_mode())
 //        new_problem();
 //    else
-//        m_pProblemScore = NULL;
+//        m_pProblemScore = nullptr;
 }
 
 
@@ -184,7 +184,7 @@ wxString TheoKeySignCtrol::set_new_problem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -500,7 +500,8 @@ wxString TheoKeySignCtrol::set_new_problem()
     }
 
     //create the score
-    m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    m_pProblemScore = score.internal_object();
     ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (0,0,"");                   //one vstaff, MIDI channel 0, MIDI instr 0
     ImoSystemInfo* pInfo = m_pProblemScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
@@ -525,7 +526,7 @@ wxString TheoKeySignCtrol::set_new_problem()
         //inverse problem
         m_sAnswer = ( m_fMajorMode ? m_sMajor[nAnswer] : m_sMinor[nAnswer] );
         m_pSolutionScore = m_pProblemScore;
-        m_pProblemScore = (ImoScore*)NULL;
+        m_pProblemScore = (ImoScore*)nullptr;
         wxString question = _("Problem. How many accidentals has next key signature?:");
         question += " " + m_sAnswer;
         return question;
@@ -535,7 +536,7 @@ wxString TheoKeySignCtrol::set_new_problem()
 
 wxDialog* TheoKeySignCtrol::get_settings_dialog()
 {
-    return (wxDialog*)NULL;
+    return (wxDialog*)nullptr;
 }
 
 

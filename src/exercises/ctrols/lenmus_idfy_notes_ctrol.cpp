@@ -114,7 +114,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacin
 
     // "Play all notes to identify" link
     m_pPlayAllNotes =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("Play all notes to identify")) );
     m_pPlayAllNotes->add_event_handler(k_on_click_event, this, on_play_all_notes_event);
     pPlayRefPara->add_control( m_pPlayAllNotes );
@@ -123,7 +123,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacin
     // "Play A4 reference note" link
     pPlayRefPara->add_inline_box(1000.0f, pSpacerStyle);
     m_pPlayA4 =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("Play A4 reference note")) );
     m_pPlayA4->add_event_handler(k_on_click_event, this, on_play_a4_event);
     pPlayRefPara->add_control( m_pPlayA4 );
@@ -132,7 +132,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spacin
     // "Continue" link
     pPlayRefPara->add_inline_box(1000.0f, pSpacerStyle);
     m_pContinue =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("Continue")) );
     m_pContinue->add_event_handler(k_on_click_event, this, on_continue_event);
     pPlayRefPara->add_control( m_pContinue );
@@ -249,7 +249,7 @@ void IdfyNotesCtrol::on_settings_changed()
 //    if (m_pConstrains->is_theory_mode())
 //        new_problem();
 //    else
-//        m_pProblemScore = NULL;
+//        m_pProblemScore = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ wxDialog* IdfyNotesCtrol::get_settings_dialog()
 //---------------------------------------------------------------------------------------
 ImoScore* IdfyNotesCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -409,12 +409,13 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
 {
     //delete the previous score
     delete *pProblemScore;
-    *pProblemScore = NULL;
+    *pProblemScore = nullptr;
     delete *pSolutionScore;
-    *pSolutionScore = NULL;
+    *pSolutionScore = nullptr;
 
     //create the score with the note
-    *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    *pProblemScore = score.internal_object();
     (*pProblemScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
     // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
@@ -450,7 +451,8 @@ void IdfyNotesCtrol::play_a4()
     stop_sounds();
 
     delete m_pAuxScore;
-    m_pAuxScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    m_pAuxScore = score.internal_object();
     ImoInstrument* pInstr = m_pAuxScore->add_instrument();
         // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
     pInstr->add_clef( k_clef_G2 );
@@ -464,7 +466,7 @@ void IdfyNotesCtrol::play_a4()
     set_play_mode(k_play_normal_instrument);
     countoff_status(k_no_countoff);
     metronome_status(k_no_metronome);
-    m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, NULL);
+    m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -473,7 +475,7 @@ void IdfyNotesCtrol::play_all_notes()
     stop_sounds();
     m_pPlayer->load_score(m_pScoreToPlay, this);
     Interactor* pInteractor = m_pDisplay->is_displayed(m_pScoreToPlay) ?
-                              m_pCanvas->get_interactor() : NULL;
+                              m_pCanvas->get_interactor() : nullptr;
     set_play_mode(k_play_normal_instrument);
     countoff_status(k_no_countoff);
     metronome_status(k_no_metronome);
@@ -526,7 +528,8 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     }
 
     //create the score
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();
@@ -707,7 +710,7 @@ void IdfyNotesCtrol::display_all_notes()
     m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );
     m_pDisplay->set_problem_score(m_pProblemScore);
     m_pScoreToPlay = m_pProblemScore;
-    m_pProblemScore = NULL; //ownership transferred to m_pDisplay
+    m_pProblemScore = nullptr; //ownership transferred to m_pDisplay
 
     m_pPlayA4->enable(true);
     m_pNewProblem->enable(false);

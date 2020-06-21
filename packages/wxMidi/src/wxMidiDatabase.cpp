@@ -207,7 +207,7 @@ static wxString	m_sSectName[] = {
 
 
 //initialize the only instance
-wxMidiDatabaseGM* wxMidiDatabaseGM::m_pInstance = (wxMidiDatabaseGM*)NULL;
+wxMidiDatabaseGM* wxMidiDatabaseGM::m_pInstance = (wxMidiDatabaseGM*)nullptr;
 
 // ----------------------------------------------------------------------------
 // wxMidiDatabaseGM ctor/dtor

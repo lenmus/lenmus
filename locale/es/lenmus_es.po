@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 5.4.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-22 13:30+0100\n"
-"PO-Revision-Date: 2020-02-22 13:30+0100\n"
+"PO-Revision-Date: 2020-04-22 13:07+0200\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: <cecilios@gmail.com>\n"
 "Language: es\n"
@@ -739,7 +739,7 @@ msgstr "Pausa"
 
 #: src/app/lenmus_main_frame.cpp:978 src/app/lenmus_main_frame.cpp:1842
 msgid "Pause playing back"
-msgstr "Pausa en la ejecución de la partitura"
+msgstr "Pausar la ejecución"
 
 #: src/app/lenmus_main_frame.cpp:979
 msgid "Do count off"

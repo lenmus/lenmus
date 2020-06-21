@@ -43,7 +43,7 @@ public:
     Matrix()
         : m_rows(0)
         , m_cols(0)
-        , m_data(NULL)
+        , m_data(nullptr)
     {
     }
 

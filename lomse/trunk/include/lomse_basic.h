@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2020. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -285,7 +285,7 @@ typedef Point<Pixels> VPoint;   //point, in pixels
 typedef Size<Pixels> VSize;     //size, in pixels
 typedef Rectangle<Pixels> VRect; //rectangle, in pixels
 
-//for compilers that not use <stdint.h>  (i.e. MS VisualStudio 2003)
+//for compilers that not use <stdint.h>  (e.g., MS VisualStudio 2003)
 #ifndef UINT32_MAX
     typedef int             int_least32_t;
     typedef unsigned int    uint_least32_t;
@@ -436,6 +436,12 @@ inline bool is_different(Color c1, Color c2) {
 //
 //
 //};
+
+
+
+
+
+
 
 
 }   //namespace lomse

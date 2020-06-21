@@ -64,7 +64,7 @@ public:
     void initialize_strings() {}
     void initialize_ctrol();
     void create_answer_buttons(LUnits WXUNUSED(height), LUnits WXUNUSED(spacing)) {}
-    ImoScore* prepare_aux_score(int WXUNUSED(nButton)) { return NULL; }
+    ImoScore* prepare_aux_score(int WXUNUSED(nButton)) { return nullptr; }
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
 

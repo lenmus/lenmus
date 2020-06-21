@@ -424,7 +424,7 @@ wxString Updater::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDefau
 //---------------------------------------------------------------------------------------
 wxXmlNode* Updater::GetNextSibling(wxXmlNode* pNode)
 {
-    // Return next sibling element or NULL if no more
+    // Return next sibling element or nullptr if no more
     pNode = pNode->GetNext();
     while (pNode && pNode->GetType() != wxXML_ELEMENT_NODE)
         pNode = pNode->GetNext();
@@ -434,7 +434,7 @@ wxXmlNode* Updater::GetNextSibling(wxXmlNode* pNode)
 //---------------------------------------------------------------------------------------
 wxXmlNode* Updater::GetFirstChild(wxXmlNode* pNode)
 {
-    // Return first child element or NULL if no more
+    // Return first child element or nullptr if no more
     pNode = pNode->GetChildren();
     while (pNode && pNode->GetType() != wxXML_ELEMENT_NODE)
         pNode = pNode->GetNext();

@@ -49,7 +49,7 @@ public:
 };
 
 //---------------------------------------------------------------------------------------
-//DefaultStatusReporter: a NULL reporter that just discards received data
+//DefaultStatusReporter: a nullptr reporter that just discards received data
 class DefaultStatusReporter : public StatusReporter
 {
 public:

@@ -48,7 +48,7 @@
 #include "lomse_injectors.h"
 #include "lomse_events.h"
 #include "lomse_im_factory.h"
-#include "lomse_document.h"
+#include "private/lomse_document_p.h"
 #include "lomse_image_reader.h"
 #include "lomse_score_player_ctrl.h"
 #include "lomse_im_algorithms.h"
@@ -1903,7 +1903,7 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ For dynamic content, i.e. exercises
+//@ For dynamic content, e.g., exercises
 //@
 //@ <dynamic> = (dynamic <classid> <param>*)
 //@ <classid> = (classid <label>)
@@ -2312,7 +2312,7 @@ public:
 
 //@--------------------------------------------------------------------------------------
 //@ <font> = (font <font_name> <font_size> <font_style>)
-//@ <font_name> = string   i.e. "Times New Roman", "Trebuchet"
+//@ <font_name> = string   e.g., "Times New Roman", "Trebuchet"
 //@ <font_size> = num      in points
 //@ <font_style> = { "bold" | "normal" | "italic" | "bold-italic" }
 //@
@@ -2386,7 +2386,7 @@ public:
 
 //@--------------------------------------------------------------------------------------
 //@ <goFwd> = (goFwd <duration> [voice])
-//@ <duration> = note/rest duration, letter plus dots, i.e. 'e..'
+//@ <duration> = note/rest duration, letter plus dots, e.g., 'e..'
 //@
 //@ Version 1.x
 //@ <goBack> = (goBack <timeShift>)
@@ -2394,9 +2394,9 @@ public:
 //@ <timeShift> = { start | end | <number> | <duration> }
 //@
 //@ the time shift can be:
-//@   a) one of the tags 'start' and 'end': i.e. (goBack start) (goFwd end)
+//@   a) one of the tags 'start' and 'end': e.g., (goBack start) (goFwd end)
 //@   b) a number: the amount of 256th notes to go forward or backwards
-//@   c) a note/rest duration, i.e. 'e..'
+//@   c) a note/rest duration, e.g., 'e..'
 
 class GoBackFwdAnalyser : public ElementAnalyser
 {
@@ -2504,8 +2504,8 @@ protected:
         pImo->set_visible(false);
 
         // <duration> (label)
-        //AWARE: As goFwd is a rest, only note/rest duration is allowed (i.e. "e.")
-        //       Duration for goFwd is no longer alloed as number (i.e. 32)
+        //AWARE: As goFwd is a rest, only note/rest duration is allowed (e.g., "e.")
+        //       Duration for goFwd is no longer alloed as number (e.g., 32)
         if (get_mandatory(k_label))
             set_duration(pImo);
 
@@ -2725,15 +2725,15 @@ protected:
         m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
         string symbol = get_string_value();
         if (symbol == "brace")
-            pGrp->set_symbol(ImoInstrGroup::k_brace);
+            pGrp->set_symbol(k_group_symbol_brace);
         else if (symbol == "bracket")
-            pGrp->set_symbol(ImoInstrGroup::k_bracket);
+            pGrp->set_symbol(k_group_symbol_bracket);
         else if (symbol == "line")
-            pGrp->set_symbol(ImoInstrGroup::k_line);
+            pGrp->set_symbol(k_group_symbol_line);
         else if (symbol == "none")
-            pGrp->set_symbol(ImoInstrGroup::k_none);
+            pGrp->set_symbol(k_group_symbol_none);
         else
-            error_msg("Invalid value for <grpSymbol>. Must be 'none', 'brace', "
+            error_msg("Invalid value for group symbol. Must be 'none', 'brace', "
                       "'bracket' or 'line'. 'none' assumed.");
     }
 
@@ -2742,14 +2742,14 @@ protected:
         m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
         string value = get_string_value();
         if (value == "yes")
-            pGrp->set_join_barlines(ImoInstrGroup::k_standard);
+            pGrp->set_join_barlines(EJoinBarlines::k_joined_barlines);
         else if (value == "no")
-            pGrp->set_join_barlines(ImoInstrGroup::k_no);
+            pGrp->set_join_barlines(EJoinBarlines::k_non_joined_barlines);
         else if (value == "mensurstrich")
-            pGrp->set_join_barlines(ImoInstrGroup::k_mensurstrich);
+            pGrp->set_join_barlines(EJoinBarlines::k_mensurstrich_barlines);
         else
         {
-            pGrp->set_join_barlines(ImoInstrGroup::k_standard);
+            pGrp->set_join_barlines(EJoinBarlines::k_joined_barlines);
             error_msg("Invalid value for joinBarlines. Must be "
                       "'yes', 'no' or 'mensurstrich'. 'yes' assumed.");
         }
@@ -2758,26 +2758,9 @@ protected:
     void add_instruments_to_group(ImoScore* pScore, ImoInstrGroup* pGrp,
                                   ImoInstrument* pFirstInstr, ImoInstrument* pLastInstr)
     {
-        ImoInstruments* pColInstr = pScore->get_instruments();
-        ImoObj::children_iterator it;
-        bool fAdd = false;
-        for (it= pColInstr->begin(); it != pColInstr->end(); ++it)
-        {
-            ImoInstrument* pInstr = static_cast<ImoInstrument*>(*it);
-            if (fAdd)
-                pGrp->add_instrument(pInstr);
-
-            if (pInstr == pFirstInstr)
-            {
-                pGrp->add_instrument(pInstr);
-                fAdd = true;
-            }
-            else if (pInstr == pLastInstr)
-            {
-                pGrp->add_instrument(pInstr);
-                break;
-            }
-        }
+        int iFirstInstr = pScore->get_instr_number_for(pFirstInstr);
+        int iLastInstr = pScore->get_instr_number_for(pLastInstr);
+        pGrp->set_range(iFirstInstr, iLastInstr);
     }
 
 };
@@ -2963,7 +2946,13 @@ public:
                     pInstrument = static_cast<ImoInstrument*>(
                                 ImFactory::inject(k_imo_instrument, pDoc, get_node_id()) );
             }
+            else
+            {
+                pInstrument->set_id( get_node_id() );
+                pDoc->assign_id(pInstrument);
+            }
             pInstrument->set_instr_id(partId);
+
         }
         else if (m_pAnalyser->is_instr_id_required())
         {

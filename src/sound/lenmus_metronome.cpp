@@ -40,7 +40,7 @@ void MetronomeTimer::Notify()
 GlobalMetronome::GlobalMetronome(ApplicationScope& appScope, long nMM)
     : Metronome(nMM)
     , m_nSound(-1)
-    , m_pTimer(NULL)
+    , m_pTimer(nullptr)
 {
     m_pMidiServer = appScope.get_midi_server();
 }

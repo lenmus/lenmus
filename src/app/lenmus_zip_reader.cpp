@@ -63,7 +63,7 @@ void LdpZipReader::read_file(const wxFSFile& file)
 {
     wxInputStream *s = file.GetStream();
 
-    if (s == NULL)
+    if (s == nullptr)
     {
         wxLogError(_("Cannot open HTML document: %s"), file.GetLocation().wx_str());
         m_content = "";

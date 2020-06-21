@@ -102,7 +102,7 @@ namespace lenmus
 //    //initializations
 //    m_pConstrains = pConstrains;
 //    m_pConstrains = dynamic_cast<....Constrains*>(m_pBaseConstrains);
-//    m_pProblemScore = (ImoScore*)NULL;
+//    m_pProblemScore = (ImoScore*)nullptr;
 //
 //    create_controls();
 //}
@@ -149,7 +149,7 @@ namespace lenmus
 //    //TODO: Create the dialog class and implement it. The uncomment following code:
 //    //wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
 //    //return LENMUS_NEW DlgCfgTheoHarmony(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
-//    return (wxDialog*)NULL;
+//    return (wxDialog*)nullptr;
 //}
 //
 //void TheoHarmonyCtrol::set_new_problem()
@@ -205,7 +205,7 @@ namespace lenmus
 //    lmLDPParser parserLDP;
 //    lmLDPNode* pNode;
 //    lmVStaff* pVStaff;
-//    ImoNote* pNoteToAttach = NULL;
+//    ImoNote* pNoteToAttach = nullptr;
 //    wxString sExerciseTitle;
 //    bool bDebugDisplayHiddenNotes = false; // activate only for debug
 //
@@ -230,19 +230,19 @@ namespace lenmus
 //        wxLogMessage(" CLEARING DATA ");
 //        for (int nC=0; nC < nMAX_HARMONY_EXERCISE_CHORDS; nC++)
 //        {
-//            if (pHE_Chords[nC] != NULL)
+//            if (pHE_Chords[nC] != nullptr)
 //            {
 //                wxLogMessage("  deleting chord %d", nC);
 //                //@ todo: to do? delete pHE_Chords[nC];
-//                pHE_Chords[nC] = NULL;
+//                pHE_Chords[nC] = nullptr;
 //            }
 //            for (int nV=0; nV < nNUM_VOICES_IN_HARMONY_EXERCISE; nV++)
 //            {
-//                if (pHE_Notes[nC][nV] != NULL)
+//                if (pHE_Notes[nC][nV] != nullptr)
 //                {
 //                    wxLogMessage("  deleting note chord %d v:%d", nC, nV);
 //                    //@ todo: to do? delete pHE_Notes[nC][nV];
-//                    pHE_Notes[nC][nV] = NULL;
+//                    pHE_Notes[nC][nV] = nullptr;
 //                }
 //                nHE_NotesFPitch[nC][nV] = 0;
 //                sHE_Notes[nC][nV] = "";
@@ -448,7 +448,7 @@ namespace lenmus
 //                    int ni = 0; // index to nIntvB
 //                    for (nVoice = nNUM_VOICES_IN_HARMONY_EXERCISE-1; nVoice>=1; nVoice--,ni++)
 //                    {
-//                        assert(pHE_Chords[nChordCount] != NULL);
+//                        assert(pHE_Chords[nChordCount] != nullptr);
 //
 //                        int nVoiceIndex = nVoice - 1;
 //

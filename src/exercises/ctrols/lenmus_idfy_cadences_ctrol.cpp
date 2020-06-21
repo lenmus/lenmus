@@ -106,7 +106,7 @@ void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spa
 
     int iB;
     for (iB=0; iB < k_num_buttons; iB++) {
-        m_pAnswerButton[iB] = NULL;
+        m_pAnswerButton[iB] = nullptr;
     }
 
     //rows with buttons
@@ -198,7 +198,7 @@ void IdfyCadencesCtrol::on_settings_changed()
 //    if (m_pConstrains->is_theory_mode())
 //        new_problem();
 //    else
-//        m_pProblemScore = NULL;
+//        m_pProblemScore = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ wxDialog* IdfyCadencesCtrol::get_settings_dialog()
 ImoScore* IdfyCadencesCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     //answer buttons not allowed for playing cadences
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
     //// solution score; the tonic chord is then visible
     //if (!m_pConstrains->is_theory_mode()) {
     //    delete m_pSolutionScore;
-    //    m_pSolutionScore = NULL;
+    //    m_pSolutionScore = nullptr;
     //}
 
 
@@ -364,18 +364,19 @@ wxString IdfyCadencesCtrol::prepare_score(EClef WXUNUSED(nClef), ECadenceType nT
     if (*pProblemScore)
     {
         delete *pProblemScore;
-        *pProblemScore = NULL;
+        *pProblemScore = nullptr;
     }
     if (pSolutionScore)
     {
         delete *pSolutionScore;
-        *pSolutionScore = NULL;
+        *pSolutionScore = nullptr;
     }
 
     //create a score with the chord
     string sPattern;
 
-    *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    *pProblemScore = score.internal_object();
     (*pProblemScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
     // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
@@ -442,7 +443,8 @@ wxString IdfyCadencesCtrol::prepare_score(EClef WXUNUSED(nClef), ECadenceType nT
     //Prepare Solution Score
     if (pSolutionScore)
     {
-        *pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+        AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+        *pSolutionScore = score.internal_object();
         (*pSolutionScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
         ImoInstrument* pInstr = (*pSolutionScore)->add_instrument();
         // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");

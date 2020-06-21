@@ -67,7 +67,7 @@ SUITE(AppTest)
     //    #if (LENMUS_PLATFORM_WIN32 == 1)
     //        m_appScope.set_bin_folder(_T("c:\\lenmus\\bin\\"));
     //        Paths* pPaths = m_appScope.get_paths();
-    //        CHECK( pPaths != NULL );
+    //        CHECK( pPaths != nullptr );
 
     //        CHECK( pPaths->GetSrcRootPath() == _T("c:\\lenmus\\") );
     //        CHECK( pPaths->GetBinPath() == _T("c:\\lenmus\\bin\\") );
@@ -92,7 +92,7 @@ SUITE(AppTest)
     //    #else if (LENMUS_PLATFORM_UNIX == 1)
     //        m_appScope.set_bin_folder("/home/x/lenmus/");
     //        Paths* pPaths = m_appScope.get_paths();
-    //        CHECK( pPaths != NULL );
+    //        CHECK( pPaths != nullptr );
 
     //        CHECK( pPaths->GetSrcRootPath() == "../../../lenmus/" );
     //        CHECK( pPaths->GetBinPath() == "/home/x/lenmus/" );
@@ -130,7 +130,7 @@ SUITE(AppTest)
     TEST_FIXTURE(AppTestFixture, AppScope_GetMidiServer)
     {
         MidiServer* pMidi = m_appScope.get_midi_server();
-        CHECK( pMidi != NULL );
+        CHECK( pMidi != nullptr );
     }
 
 };

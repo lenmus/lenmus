@@ -330,8 +330,8 @@ private:
     ToolPage* CreatePage(EToolPageID nPageID);
 	inline EToolPageID get_selected_page_id() const { return m_nCurPageID; }
 
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor=NULL);
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection=NULL);
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor=nullptr);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection=nullptr);
 
     void enable_mouse_mode_buttons(bool fEnable);
     void enable_current_page(bool fEnable);

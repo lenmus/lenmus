@@ -402,13 +402,13 @@ void FragmentsTable::ChooseRandom()
 }
 
 //---------------------------------------------------------------------------------------
-//! Returns the next segment entry for the chosen fragment or NULL if no more available
+//! Returns the next segment entry for the chosen fragment or nullptr if no more available
 SegmentEntry* FragmentsTable::GetNextSegment()
 {
     if (m_nNextSegment < (int)m_pSegments->Count())
         return m_pSegments->Item(m_nNextSegment++);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------

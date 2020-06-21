@@ -382,6 +382,11 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "<tr><td colspan='3'>&nbsp;</td></tr>"
         //
     "<tr><td colspan='3'><b>" +
+        _("macOS package:") + "</b></td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Bob Byerly</td></tr>"
+    "<tr><td colspan='3'>&nbsp;</td></tr>"
+        //
+    "<tr><td colspan='3'><b>" +
         _("Music advice:") + "</b></td></tr>"
     "<tr><td colspan='3'>" +
     "  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>"
@@ -412,6 +417,8 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("French") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         "<td>Carlos Alarcia</td></tr>"
+        "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
+        L"<td>Frédéric Baudrand</td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         "<td>Christophe Marcoux</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("Galician") + "</i></b></td></tr>"

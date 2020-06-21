@@ -42,7 +42,7 @@ namespace lenmus
 //---------------------------------------------------------------------------------------
 wxXmlNode* XmlParser::GetNextSibling(wxXmlNode* pNode)
 {
-    // Return next sibling element or NULL if no more
+    // Return next sibling element or nullptr if no more
     pNode = pNode->GetNext();
     while (pNode && pNode->GetType() != wxXML_ELEMENT_NODE)
         pNode = pNode->GetNext();
@@ -52,7 +52,7 @@ wxXmlNode* XmlParser::GetNextSibling(wxXmlNode* pNode)
 //---------------------------------------------------------------------------------------
 wxXmlNode* XmlParser::GetFirstChild(wxXmlNode* pNode)
 {
-    // Return first child element or NULL if no more
+    // Return first child element or nullptr if no more
     pNode = pNode->GetChildren();
     while (pNode && pNode->GetType() != wxXML_ELEMENT_NODE)
         pNode = pNode->GetNext();
@@ -119,7 +119,7 @@ wxString XmlParser::GetText(wxXmlNode* pElement)
 //---------------------------------------------------------------------------------------
 void XmlParser::DumpXMLTree(wxXmlNode *pRoot)
 {
-    if (pRoot == NULL) return;
+    if (pRoot == nullptr) return;
     if (pRoot->GetType() != wxXML_ELEMENT_NODE) return;
 
     wxXmlNode *pNode = pRoot->GetChildren();

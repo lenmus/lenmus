@@ -82,7 +82,7 @@ typedef void (wxEvtHandler::*UpdateViewportEventFunction)(lmUpdateViewportEvent&
 #define LM_EVT_UPDATE_VIEWPORT(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_UPDATE_VIEWPORT, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( UpdateViewportEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( UpdateViewportEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 //---------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ typedef void (wxEvtHandler::*VisualTrackingEventFunction)(lmVisualTrackingEvent&
 #define LM_EVT_SCORE_HIGHLIGHT(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_SCORE_HIGHLIGHT, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( VisualTrackingEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( VisualTrackingEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 //---------------------------------------------------------------------------------------
@@ -164,7 +164,7 @@ typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);
 #define LM_EVT_END_OF_PLAYBACK(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_END_OF_PLAYBACK, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( EndOfPlayEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( EndOfPlayEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 //---------------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ typedef void (wxEvtHandler::*UpdateUIEventFunction)(lmUpdateUIEvent&);
 #define LM_EVT_UPDATE_UI(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_UPDATE_UI, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( UpdateUIEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( UpdateUIEventFunction, & fn ), (wxObject *) nullptr ),
 
 //---------------------------------------------------------------------------------------
 // lmShowContextualMenuEvent: An event for requesting to show a contextual menu
@@ -243,7 +243,7 @@ typedef void (wxEvtHandler::*ShowContextualMenuEventFunction)(lmShowContextualMe
 #define LM_EVT_SHOW_CONTEXTUAL_MENU(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_SHOW_CONTEXTUAL_MENU, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( ShowContextualMenuEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( ShowContextualMenuEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 //---------------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ typedef void (wxEvtHandler::*CountersEventFunction)(CountersEvent&);
 #define LM_EVT_COUNTERS_DLG(fn) \
     DECLARE_EVENT_TABLE_ENTRY( EVT_COUNTERS_DLG, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( CountersEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( CountersEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 //---------------------------------------------------------------------------------------
@@ -338,7 +338,7 @@ typedef void (wxEvtHandler::*PageRequestEventFunction)(PageRequestEvent&);
 #define LM_EVT_PAGE_REQUEST(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_PAGE_REQUEST, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( PageRequestEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( PageRequestEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 }   // namespace lenmus

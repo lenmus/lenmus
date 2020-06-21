@@ -73,7 +73,7 @@ ToolGroup::ToolGroup(wxPanel* pParent, EGroupType nGroupType,
     SetFont(wxFont(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, "Tahoma"));
 
     //Any ToolGroup can be used as a control in properties dialogs. In them,
-    //the owner is not a ToolPage and pointer pColors is NULL
+    //the owner is not a ToolPage and pointer pColors is nullptr
     m_fGuiControl = (m_pParent->IsKindOf(CLASSINFO(ToolPage)) ? false : true);
 
     if(pColours)
@@ -196,7 +196,7 @@ void ToolGroup::DoRender(wxDC& dc)
 
     //set colors
     //AWARE: ToolGroup is used as a control in properties dialogs. In them,
-    // the owner is not a ToolPage and pointer pColors is NULL
+    // the owner is not a ToolPage and pointer pColors is nullptr
 
     wxColour colorMaxHight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHIGHLIGHT);   //button highlight
     wxColour colorHiLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHILIGHT);

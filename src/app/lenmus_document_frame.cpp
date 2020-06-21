@@ -123,7 +123,7 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //    const BookIndexArray& items = m_pBooksData->GetIndexArray();
 //    size_t len = items.size();
 //
-//    TextBookHelpMergedIndexItem *history[128] = {NULL};
+//    TextBookHelpMergedIndexItem *history[128] = {nullptr};
 //
 //    for (size_t i = 0; i < len; i++)
 //    {
@@ -142,7 +142,7 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //            TextBookHelpMergedIndexItem *mi = LENMUS_NEW TextBookHelpMergedIndexItem();
 //            mi->name = pItem->GetIndentedName();
 //            mi->items.Add(pItem);
-//            mi->parent = (pItem->level == 0) ? NULL : history[pItem->level - 1];
+//            mi->parent = (pItem->level == 0) ? nullptr : history[pItem->level - 1];
 //            history[pItem->level] = mi;
 //            merged.Add(mi);
 //        }
@@ -214,9 +214,9 @@ DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
     , CanvasInterface(parent)
     , m_appScope(appScope)
     , m_lomse(lomse)
-    , m_left(NULL)
-    , m_right(NULL)
-    , m_pBooksData(NULL)
+    , m_left(nullptr)
+    , m_right(nullptr)
+    , m_pBooksData(nullptr)
     , m_sppliterPos(100)
 {
 }
@@ -259,12 +259,12 @@ void DocumentFrame::create_content_pane(int iTocItem)
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* DocumentFrame::get_active_score()
+AScore DocumentFrame::get_active_score()
 {
     if (m_right)
         return m_right->get_active_score();
     else
-        return NULL;
+        return AScore();
 }
 
 //---------------------------------------------------------------------------------------
@@ -273,7 +273,7 @@ Interactor* DocumentFrame::get_interactor()
     if (m_right)
         return m_right->get_interactor();
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -414,13 +414,13 @@ void DocumentFrame::load_page(const string& filename)
     {
         if (filename.find(".lmd"))
         {
-            int viewType = k_view_vertical_book;
+            int viewType = k_view_single_page;  //k_view_vertical_book;
             m_right->display_document(filename, viewType);
         }
         else
         {
             LdpZipReader reader(filename);
-            int viewType = k_view_vertical_book;
+            int viewType = k_view_single_page;  //k_view_vertical_book;
             string title = "test";
             m_right->display_document(reader, viewType, title);
         }

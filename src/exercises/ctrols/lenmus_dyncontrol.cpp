@@ -115,8 +115,10 @@ DummyControl::DummyControl(long dynId, ApplicationScope& appScope, const string&
 }
 
 //---------------------------------------------------------------------------------------
-void DummyControl::generate_content(ImoDynamic* pDyn, Document* pDoc)
+void DummyControl::generate_content(ADynamic dyn, ADocument doc)
 {
+    ImoDynamic* pDyn = dyn.internal_object();
+    Document* pDoc = doc.internal_object();
     ImoStyle* pErrorStyle = pDoc->create_private_style();
     pErrorStyle->color( Color(255,0,0) );
     pErrorStyle->font_weight( ImoStyle::k_font_weight_bold );
@@ -124,6 +126,13 @@ void DummyControl::generate_content(ImoDynamic* pDyn, Document* pDoc)
     ImoParagraph* pPara = pDyn->add_paragraph(pErrorStyle);
     pPara->add_text_item("*** Dynamic object error: unknown classid ***",
                          pErrorStyle);
+
+//    std::unique_ptr<IStyle> errorStyle = doc.new_private_style();
+//    errorStyle->color( Color(255,0,0) );
+//    errorStyle->font_weight( ImoStyle::k_font_weight_bold );
+//
+//    std::unique_ptr<IParagraph> para = dyn.append_paragraph(*errorStyle);
+//    para.append_text_item("*** Dynamic object error: unknown classid ***", *errorStyle);
 }
 
 

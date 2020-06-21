@@ -113,7 +113,7 @@ void BarlineProperties::CreateControls()
 	wxArrayString m_pBarlinesListChoices;
     m_pBarlinesList = new wxBitmapComboBox();
     m_pBarlinesList->Create(this, k_id_barline, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
-							0, NULL, wxCB_READONLY);
+							0, nullptr, wxCB_READONLY);
 	pMainSizer->Add( m_pBarlinesList, 0, wxALL, 5 );
 
 	this->SetSizer( pMainSizer );

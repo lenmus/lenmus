@@ -73,10 +73,10 @@ public:
     void Run();
 
     virtual bool HasNextPage(WizardPage* page)
-        { return page->GetNext() != NULL; }
+        { return page->GetNext() != nullptr; }
 
     virtual bool HasPrevPage(WizardPage* page)
-        { return page->GetPrev() != NULL; }
+        { return page->GetPrev() != nullptr; }
 
     virtual bool IsOptional(WizardPage* page)
         { return ((WizardPage*)page)->IsOptional(); }
@@ -109,7 +109,7 @@ private:
     wxPoint         m_posWizard;    //dialog position from the ctor
 
     // wizard state
-    WizardPage*   m_pCurPage;         //current page or NULL
+    WizardPage*   m_pCurPage;         //current page or nullptr
 
     // wizard controls
     wxButton*       m_pBtnPrev;      //"<Back" button

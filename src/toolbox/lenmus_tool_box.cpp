@@ -235,7 +235,7 @@ ToolPage* ToolBox::CreatePage(EToolPageID nPanel)
         default:
             wxASSERT(false);
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ void ToolBox::OnResize(wxSizeEvent& WXUNUSED(event))
 ////TODO TB
 ////    ToolPage* pSelPage = m_cPages[m_nCurPageID];
 ////    return pSelPage->GetContextualMenuForToolPage();
-//    return NULL;
+//    return nullptr;
 //}
 
 ////---------------------------------------------------------------------------------------
@@ -598,7 +598,7 @@ void GrpMouseMode::update_tools_info(ToolsInfo* pInfo)
 // ToolsInfo implementation
 //=======================================================================================
 ToolsInfo::ToolsInfo()
-	: m_pToolBox(NULL)
+	: m_pToolBox(nullptr)
     , toolID(k_tool_none)
     , noteType(k_quarter)
 	, dots(0)

@@ -191,7 +191,7 @@ private:
 
     // the current item or wxNOT_FOUND
     //
-    // if m_selStore == NULL this is also the selected item, otherwise the
+    // if m_selStore == nullptr this is also the selected item, otherwise the
     // selections are managed by m_selStore
     int m_current;
 

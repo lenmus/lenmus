@@ -62,15 +62,15 @@ public:
 
     // constructor and destructor
     ProblemDisplayer(DocumentWindow* pCanvas, ImoContent* pWrapper, Document* pDoc,
-                     LUnits minHeight, ImoStyle* pStyle=NULL);
+                     LUnits minHeight, ImoStyle* pStyle=nullptr);
     ~ProblemDisplayer();
 
     void set_problem_score(ImoScore* pScore);
     void set_solution_score(ImoScore* pScore);
-    void set_problem_text(const string& msg, ImoStyle* pStyle=NULL);
-    void set_solution_text(const string& msg, ImoStyle* pStyle=NULL);
+    void set_problem_text(const string& msg, ImoStyle* pStyle=nullptr);
+    void set_solution_text(const string& msg, ImoStyle* pStyle=nullptr);
     void remove_problem_text();
-    inline bool is_score_displayed() { return m_pProblemScore != NULL; }
+    inline bool is_score_displayed() { return m_pProblemScore != nullptr; }
     void clear();
     inline bool is_displayed(ImoScore* pScore) { return pScore == m_pProblemScore
                                                         || pScore == m_pSolutionScore; }

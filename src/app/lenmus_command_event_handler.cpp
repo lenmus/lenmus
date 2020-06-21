@@ -254,7 +254,7 @@ void CommandEventHandler::check_commands_for_current_toolbox_context()
 //    //TODO: Should transfer octave to toolbox?
 ////
 ////                //check if the note is added to form a chord and determine base note
-////                ImoNote* pBaseOfChord = (ImoNote*)NULL;
+////                ImoNote* pBaseOfChord = (ImoNote*)nullptr;
 ////                if (event.AltDown())
 ////                {
 ////                    lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
@@ -657,7 +657,7 @@ void CommandEventHandler::set_drag_image_for_tool(EToolID toolID)
     {
         LibraryScope& libScope = m_pController->get_library_scope();
 
-        GmoShape* pShape = NULL;
+        GmoShape* pShape = nullptr;
         UPoint offset(0.0, 0.0);
         switch(toolID)
         {
@@ -684,14 +684,14 @@ void CommandEventHandler::set_drag_image_for_tool(EToolID toolID)
                 EAccidentals acc = m_toolsInfo.acc;
                 if (m_toolsInfo.fIsNote)
                 {
-                    NoteEngraver engraver(libScope, &scoreMeter, NULL, 0, 0);
+                    NoteEngraver engraver(libScope, &scoreMeter, nullptr, 0, 0);
                     pShape = engraver.create_tool_dragged_shape(noteType, acc, dots);
                     offset = engraver.get_drag_offset();
                     m_toolsInfo.clickCmd = k_cmd_note;
                 }
                 else
                 {
-                    RestEngraver engraver(libScope, &scoreMeter, NULL, 0, 0);
+                    RestEngraver engraver(libScope, &scoreMeter, nullptr, 0, 0);
                     pShape = engraver.create_tool_dragged_shape(noteType, dots);
                     offset = engraver.get_drag_offset();
                     m_toolsInfo.clickCmd = k_cmd_rest;
@@ -724,7 +724,7 @@ void CommandEventHandler::set_drag_image_for_tool(EToolID toolID)
     }
     else
     {
-        spInteractor->set_drag_image(NULL, k_get_ownership, UPoint(0.0, 0.0));
+        spInteractor->set_drag_image(nullptr, k_get_ownership, UPoint(0.0, 0.0));
         spInteractor->show_drag_image(false);
     }
 }
@@ -1017,7 +1017,7 @@ void CommandGenerator::add_tie()
 //	pScore->AttachAuxObj(pNewTitle);
 //
 //    //show dialog to create the text
-//	DlgProperties dlg((DocumentWindow*)NULL);
+//	DlgProperties dlg((DocumentWindow*)nullptr);
 //	pNewTitle->OnEditProperties(&dlg);
 //	dlg.Layout();
 //	if (dlg.ShowModal() == wxID_OK)
@@ -1049,8 +1049,8 @@ void CommandGenerator::add_tuplet()
     //      it has been checked that all notes/rest in the seleccion are not in a tuplet,
     //      are consecutive and are in the same voice.
 
-    ImoNoteRest* pStart = NULL;
-    ImoNoteRest* pEnd = NULL;
+    ImoNoteRest* pStart = nullptr;
+    ImoNoteRest* pEnd = nullptr;
 	m_selection->get_start_end_note_rests(&pStart, &pEnd);
 	if (pStart && pEnd)
 	{
@@ -1078,7 +1078,7 @@ void CommandGenerator::add_tuplet()
 //	pScore->AttachAuxObj(pNewText);
 //
 //    //show dialog to edit the text
-//	DlgProperties dlg((DocumentWindow*)NULL);
+//	DlgProperties dlg((DocumentWindow*)nullptr);
 //	pNewText->OnEditProperties(&dlg);
 //	dlg.Layout();
 //	dlg.ShowModal();
@@ -2017,7 +2017,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //            {
 //                //mouse was previously over an object. Inform it that it is left
 //                m_pMouseOverGMO->OnMouseOut(this, m_uMousePagePos);
-//                m_pMouseOverGMO = (GmoObj*)NULL;
+//                m_pMouseOverGMO = (GmoObj*)nullptr;
 //            }
 //        }
 //        return;
@@ -2105,7 +2105,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //					    if (m_pCurGMO == m_pDraggedGMO)
 //						    OnLeftClickOnObject(m_pCurGMO, m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
 //                    }
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_NONE;
 //                    m_fCheckTolerance = true;
 //				}
@@ -2116,7 +2116,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //					#endif
 //
 //					OnLeftDoubleClickOnObject(m_pCurGMO, m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_NONE;
 //				}
 //				else if (event.RightDown())
@@ -2167,7 +2167,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //					    if (m_pCurGMO == m_pDraggedGMO)
 //						    OnRightClickOnObject(m_pCurGMO, m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
 //                    }
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_NONE;
 //                    m_fCheckTolerance = true;
 //				}
@@ -2178,7 +2178,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //					#endif
 //
 //					OnRightDoubleClickOnObject(m_pCurGMO, m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_NONE;
 //				}
 //				else
@@ -2201,7 +2201,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //					if(fDebugMode) g_pLogger->LogDebug("button on canvas: event.LeftDown()");
 //					#endif
 //
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_START_LEFT;
 //					m_vStartDrag.x = m_vMouseCanvasPos.x;
 //					m_vStartDrag.y = m_vMouseCanvasPos.y;
@@ -2245,7 +2245,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                        //non-dragging. Left click on object
 //					    OnLeftClickOnCanvas(m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
 //                    }
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_NONE;
 //                    m_fCheckTolerance = true;
 //				}
@@ -2255,7 +2255,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //					if(fDebugMode) g_pLogger->LogDebug("button on canvas: event.RightDown()");
 //					#endif
 //
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_START_RIGHT;
 //					m_vStartDrag.x = m_vMouseCanvasPos.x;
 //					m_vStartDrag.y = m_vMouseCanvasPos.y;
@@ -2299,7 +2299,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                        //non-dragging. Right click on object
 //					    OnRightClickOnCanvas(m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
 //                    }
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					m_nDragState = lmDRAG_NONE;
 //                    m_fCheckTolerance = true;
 //				}
@@ -2342,7 +2342,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				m_fCheckTolerance = true;
 //				OnObjectContinueDragLeft(event, pDC, false, m_vEndDrag, m_vCanvasOffset, m_uMousePagePos, nKeysPressed);
 //				OnObjectEndDragLeft(event, pDC, m_vMouseCanvasPos, m_vCanvasOffset, m_uMousePagePos, nKeysPressed);
-//				m_pDraggedGMO = (GmoObj*)NULL;
+//				m_pDraggedGMO = (GmoObj*)nullptr;
 //			}
 //			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
 //			{
@@ -2354,7 +2354,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				m_fCheckTolerance = true;
 //				OnObjectContinueDragRight(event, pDC, false, m_vEndDrag, m_vCanvasOffset, m_uMousePagePos, nKeysPressed);
 //				OnObjectEndDragRight(event, pDC, m_vMouseCanvasPos, m_vCanvasOffset, m_uMousePagePos, nKeysPressed);
-//				m_pDraggedGMO = (GmoObj*)NULL;
+//				m_pDraggedGMO = (GmoObj*)nullptr;
 //			}
 //			else if (m_nDragState == lmDRAG_START_LEFT)
 //			{
@@ -2374,7 +2374,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				    #ifdef _LM_DEBUG_
 //				    if(fDebugMode) g_pLogger->LogDebug("object is not left draggable. Drag cancelled");
 //				    #endif
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					OnCanvasBeginDragLeft(m_vStartDrag, m_uMousePagePos, nKeysPressed);
 //				}
 //				m_vEndDrag = m_vMouseCanvasPos;
@@ -2405,7 +2405,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else
 //				{
 //					//the object is not draggable: transfer message to canvas
-//					m_pDraggedGMO = (GmoObj*)NULL;
+//					m_pDraggedGMO = (GmoObj*)nullptr;
 //					OnCanvasBeginDragRight(m_vStartDrag, m_uMousePagePos, nKeysPressed);
 //				}
 //				m_vEndDrag = m_vMouseCanvasPos;
@@ -2446,7 +2446,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //				OnCanvasContinueDragLeft(false, m_vEndDrag, m_uMousePagePos, nKeysPressed);
 //				OnCanvasEndDragLeft(m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
-//				m_pDraggedGMO = (GmoObj*)NULL;
+//				m_pDraggedGMO = (GmoObj*)nullptr;
 //			}
 //			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
 //			{
@@ -2459,7 +2459,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //				OnCanvasContinueDragRight(false, m_vEndDrag, m_uMousePagePos, nKeysPressed);
 //				OnCanvasEndDragRight(m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
-//				m_pDraggedGMO = (GmoObj*)NULL;
+//				m_pDraggedGMO = (GmoObj*)nullptr;
 //			}
 //			else if (m_nDragState == lmDRAG_START_LEFT)
 //			{
@@ -2648,8 +2648,8 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //          m_nMousePointedArea
 //    //          m_rCurGridTime
 //
-//    m_pCurShapeStaff = (lmShapeStaff*)NULL;
-//    m_pCurBSI = (lmBoxSliceInstr*)NULL;
+//    m_pCurShapeStaff = (lmShapeStaff*)nullptr;
+//    m_pCurBSI = (lmBoxSliceInstr*)nullptr;
 //
 //    //check if pointing to a shape (not to a box)
 //	m_pCurGMO = m_pView->FindShapeAt(m_nNumPage, m_uMousePagePos, true);
@@ -2671,7 +2671,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        //get the SliceInstr.
 //        GmoObj* pBox = m_pView->FindBoxAt(m_nNumPage, m_uMousePagePos);
 //        //AWARE: Returned box is the smallest one containig to mouse point. If point is
-//        //only in lmBoxPage NULL is returned.
+//        //only in lmBoxPage nullptr is returned.
 //        if (pBox)
 //        {
 //            if (pBox->IsBoxSliceInstr())
@@ -2764,7 +2764,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //{
 //	ToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 //	if (!pToolBox)
-//        return (wxMenu*)NULL;
+//        return (wxMenu*)nullptr;
 //
 //	return pToolBox->GetContextualMenuForSelectedPage();
 //}
@@ -2772,7 +2772,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //void CommandEventHandler::StartToolDrag(wxDC* pDC)
 //{
 //    PrepareToolDragImages();
-//    wxBitmap* pCursorDragImage = (wxBitmap*)NULL;
+//    wxBitmap* pCursorDragImage = (wxBitmap*)nullptr;
 //    if (m_pToolBitmap)
 //    {
 //        pCursorDragImage = new wxBitmap(*m_pToolBitmap);
@@ -2787,7 +2787,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        m_fDraggingTool = false;
 //
 //    m_pView->OnImageBeginDrag(true, pDC, m_vCanvasOffset, m_uMousePagePos,
-//                            (GmoObj*)NULL, m_vDragHotSpot, m_uHotSpotShift,
+//                            (GmoObj*)nullptr, m_vDragHotSpot, m_uHotSpotShift,
 //                            pCursorDragImage );
 //}
 //
@@ -3031,7 +3031,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    {
 //        wxLogMessage("[CommandEventHandler::LoadMouseCursor] Failure loading mouse cursor image '%s'",
 //                     oFilename.GetFullPath().wx_str());
-//        return NULL;
+//        return nullptr;
 //    }
 //
 //    //set hot spot point
@@ -3045,7 +3045,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        wxLogMessage("[CommandEventHandler::LoadMouseCursor] Failure creating mouse cursor from image '%s'",
 //                     oFilename.GetFullPath().wx_str());
 //        delete pCursor;
-//        return NULL;
+//        return nullptr;
 //    }
 //
 //    return pCursor;
@@ -3221,7 +3221,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //{
 //    //prepare drag image for current selected tool.
 //    //This method must set variables m_pToolBitmap and m_vToolHotSpot
-//    //If m_pToolBitmap is set to NULL it will imply that no drag image will be used.
+//    //If m_pToolBitmap is set to nullptr it will imply that no drag image will be used.
 //
 //    //TODO: It should be responsibility of each tool to provide this information. Move
 //    //this code to each ToolPage in the ToolBox. Later,move to each tool group (not to
@@ -3323,7 +3323,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    else
 //    {
 //        //No drag image. Only mouse cursor
-//        m_pToolBitmap = (wxBitmap*)NULL;
+//        m_pToolBitmap = (wxBitmap*)nullptr;
 //    }
 //
 //}
@@ -3331,7 +3331,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //void CommandEventHandler::UpdateToolInfoString()
 //{
 //    //Add note pitch in status bar inofo
-//    if (!(pageID == k_page_notes && m_fSelIsNote) || m_pCurShapeStaff == NULL)
+//    if (!(pageID == k_page_notes && m_fSelIsNote) || m_pCurShapeStaff == nullptr)
 //        return;
 //
 //    lmDPitch dpNote = GetNotePitchFromPosition(m_pCurShapeStaff, m_uMousePagePos);
@@ -3776,7 +3776,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    m_pView->DeselectAllGMObjects(true);     //true: redraw view content
 //
 //    lmScore* pScore = m_pDoc->GetScore();
-//    pScore->PopupMenu(this, (GmoObj*)NULL, vCanvasPos);
+//    pScore->PopupMenu(this, (GmoObj*)nullptr, vCanvasPos);
 //}
 //
 //void CommandEventHandler::OnLeftClickOnCanvas(lmDPoint vCanvasPos, UPoint uPagePos,
@@ -3807,8 +3807,8 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //This implies that any saved pointer to a lmObject is no longer valid.
 //    //This method should deal with these pointer.
 //
-//	m_pDraggedGMO = (GmoObj*)NULL;	    //object being dragged
-//	m_pMouseOverGMO = (GmoObj*)NULL;	//object on which mouse was flying over
+//	m_pDraggedGMO = (GmoObj*)nullptr;	    //object being dragged
+//	m_pMouseOverGMO = (GmoObj*)nullptr;	//object on which mouse was flying over
 //}
 
 

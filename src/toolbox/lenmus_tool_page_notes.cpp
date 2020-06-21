@@ -1336,7 +1336,7 @@ void GrpBeams::update_tools_info(ToolsInfo* WXUNUSED(pInfo))
 //---------------------------------------------------------------------------------------
 void GrpBeams::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
 {
-    ImoStaffObj* pSO = NULL;
+    ImoStaffObj* pSO = nullptr;
     if (fEnable)
         pSO = static_cast<ImoStaffObj*>( pCursor->get_pointee() );
 
@@ -1439,13 +1439,13 @@ wxIMPLEMENT_DYNAMIC_CLASS(ToolPageNotesHarmony, ToolPageNotes);
 
 //---------------------------------------------------------------------------------------
 ToolPageNotesHarmony::ToolPageNotesHarmony()
-    : m_pMenu(NULL)
+    : m_pMenu(nullptr)
 {
 }
 
 //---------------------------------------------------------------------------------------
 ToolPageNotesHarmony::ToolPageNotesHarmony(wxWindow* parent)
-    : m_pMenu(NULL)
+    : m_pMenu(nullptr)
 {
     Create(parent);
 }
@@ -1454,7 +1454,7 @@ ToolPageNotesHarmony::ToolPageNotesHarmony(wxWindow* parent)
 void ToolPageNotesHarmony::Create(wxWindow* parent)
 {
     ToolPageNotes::Create(parent);
-    m_pMenu = NULL;
+    m_pMenu = nullptr;
 
     m_title = _("Harmony");
     m_selector = _("Harmony exercise");

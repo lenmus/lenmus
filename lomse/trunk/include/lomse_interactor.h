@@ -142,7 +142,7 @@ struct ptime
 
 	The %Interactor for a %View is provided by the Presenter. It is best practice not
 	to save pointers to the %Interactor because when processing a Lomse event the
-	Document (and thus, the Interactor) could have been deleted (i.e. because your
+	Document (and thus, the Interactor) could have been deleted (e.g., because your
     application has closed the window displaying the document).
 
 	Lomse provides type @b SpInteractor, an smart pointer to the %Interactor. The
@@ -260,6 +260,7 @@ public:
 
                 pPlayer->play(fVisualTracking, nMM, spInteractor.get());
             }
+        }
         @endcode
     */
     void set_operating_mode(int mode);
@@ -332,19 +333,6 @@ public:
         @endcode
     */
     void switch_task(int taskType);
-
-    /** Define the duration for one beat, for metronome and for methods that use
-        measure/beat parameters to define a location. This value is shared by all
-        scores contained in the document and can be changed at any time.
-        Changes while the score is being played back are ignored until playback finishes.
-        @param beatType A value from enum #EBeatDuration.
-        @param duration The duration (in Lomse Time Units) for one beat. You can use
-            a value from enum ENoteDuration casted to double. This parameter is
-            required only when value for parameter `beatType` is `k_beat_specified`.
-            For all other values, if a non-zero value is specified, the value
-            will be used for the beat duration in scores without time signature.
-    */
-    void define_beat(int beatType, TimeUnits duration=0.0);
 
     //@}    //operating modes
 
@@ -493,7 +481,6 @@ public:
         @endcode
     */
     virtual void set_rendering_buffer(RenderingBuffer* rbuf);
-
 
     /** Set/reset a rendering option for the view associated to this %Interactor.
 
@@ -1643,6 +1630,7 @@ protected:
 
     void create_graphic_model();
     void delete_graphic_model();
+    bool graphic_model_must_be_updated();
     void request_window_update();
     VRect get_damaged_rectangle();
     GmoObj* find_object_at(Pixels x, Pixels y);

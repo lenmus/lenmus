@@ -210,7 +210,7 @@ protected:
     void set_lomse_callbacks();
     void load_file(const string& filename);
     Interactor* get_active_canvas_interactor();
-    ImoScore* get_active_score();
+    AScore get_active_score();
     DocumentWindow* get_active_document_window();
     DocumentFrame* get_active_document_frame();
     DocumentWindow* get_document_window_for_page(int iCanvas);

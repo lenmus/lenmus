@@ -93,8 +93,8 @@ public:
 // entries don't have an image.
 struct BookIndexItem
 {
-    BookIndexItem() : level(0), parent(NULL), id(wxEmptyString),
-                        titlenum(wxEmptyString), pBookRecord(NULL) {}
+    BookIndexItem() : level(0), parent(nullptr), id(wxEmptyString),
+                        titlenum(wxEmptyString), pBookRecord(nullptr) {}
 
     int                 level;          // level of this entry. 0: book, 1-n: pages
     BookIndexItem*    parent;         // parent entry if this is a sub-entry (level > 0)

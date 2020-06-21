@@ -112,9 +112,9 @@ wxEND_EVENT_TABLE()
 TheApp::TheApp()
     : wxApp()
     , m_fUseGui(true)
-    , m_pInstanceChecker((wxSingleInstanceChecker*)NULL)
-    , m_pLocale(NULL)
-    , m_pSplash(NULL)
+    , m_pInstanceChecker((wxSingleInstanceChecker*)nullptr)
+    , m_pLocale(nullptr)
+    , m_pSplash(nullptr)
     , m_appScope(cout)
 {
     #if (LENMUS_DEBUG_BUILD == 0)
@@ -259,7 +259,7 @@ bool TheApp::do_application_setup()
 
     //Seed the random-number generator with current time so that
     //the numbers will be different every time we run.
-    srand( (unsigned)time( NULL ) );
+    srand( (unsigned)time( nullptr ) );
 
     return true;
 }
@@ -412,7 +412,7 @@ wxString TheApp::determine_exec_path()
         char *pathitem;
         for(pathitem=strtok_r(saved_path, path_list_separator,  &saveptr);
             pathitem;
-            pathitem=strtok_r(NULL, path_list_separator, &saveptr) )
+            pathitem=strtok_r(nullptr, path_list_separator, &saveptr) )
         {
 
             strncpy(newpath2, pathitem, sizeof(newpath2));
@@ -558,7 +558,7 @@ void TheApp::initialize_xrc_resources()
 void TheApp::create_main_frame()
 {
     m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
-	m_nSplashStartTime = long( time(NULL) );
+	m_nSplashStartTime = long( time(nullptr) );
 #if 1       //1 = no splash. useful for what? only for delaying user
     m_pSplash = create_GUI(0L, true);
 #else
@@ -573,7 +573,7 @@ void TheApp::wait_and_destroy_splash()
 
     if (m_pSplash)
     {
-	    m_nSplashVisibleMilliseconds -= ((long)time( NULL ) - m_nSplashStartTime);
+	    m_nSplashVisibleMilliseconds -= ((long)time( nullptr ) - m_nSplashStartTime);
 	    if (m_nSplashVisibleMilliseconds > 0) ::wxMilliSleep( m_nSplashVisibleMilliseconds );
         m_pSplash->AllowDestroy();    // allow to destroy the splash
     }
@@ -768,7 +768,7 @@ void TheApp::set_up_current_language()
         if (lang.IsEmpty())
         {
             // Not found. Pop up a dialog to choose language.
-            lang = choose_language(NULL);
+            lang = choose_language(nullptr);
         }
         pPrefs->Write("/Locale/Language", lang);
     }
@@ -945,7 +945,7 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     bool fRestarting = false;
 	if (m_frame && !fFirstTime)
     {
-		SetTopWindow(NULL);
+		SetTopWindow(nullptr);
         m_frame->quit();
         fRestarting = true;
 	}
@@ -974,7 +974,7 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
         // shape. The color specified as second parameter of SplashFrame creation will
         // be used as the mask color to set the shape
 
-    SplashFrame* pSplash = NULL;
+    SplashFrame* pSplash = nullptr;
     if (nMilliseconds > 0 && !fRestarting)
     {
         wxBitmap bitmap = wxArtProvider::GetBitmap("app_splash", wxART_OTHER);

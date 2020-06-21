@@ -72,8 +72,8 @@ public:
     virtual ~DocumentLoader() {}
 
     wxWindow* create_canvas(const string& filename,
-                                   int viewType = k_view_vertical_book);
-    wxWindow* create_canvas_and_new_document(int viewType = k_view_vertical_book);
+                                   int viewType = k_view_single_page);
+    wxWindow* create_canvas_and_new_document(int viewType = k_view_single_page);
 
 };
 
@@ -105,7 +105,7 @@ public:
     void hide_toc();
 
     //accessors
-    ImoScore* get_active_score();
+    AScore get_active_score();
     Interactor* get_interactor();
     DocumentWindow* get_document_window() { return m_right; }
 

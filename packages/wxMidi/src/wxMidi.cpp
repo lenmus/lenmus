@@ -46,7 +46,7 @@ DEFINE_EVENT_TYPE(wxEVT_MIDI_INPUT)
 /// Default constructor, intended for wxMidi internal use.
 wxMidiSysExMessage::wxMidiSysExMessage()
     : wxMidiMessage()
-	, m_pMessage(NULL)
+	, m_pMessage(nullptr)
 	, m_timestamp(0)
 	, m_nError(wxMIDI_NO_ERROR)
 	, m_nSize(0L)
@@ -75,7 +75,7 @@ wxMidiSysExMessage::wxMidiSysExMessage()
 */
 wxMidiSysExMessage::wxMidiSysExMessage(wxByte* msg, wxMidiTimestamp timestamp)
     : wxMidiMessage()
-	, m_pMessage(NULL)
+	, m_pMessage(nullptr)
 	, m_timestamp(timestamp)
 	, m_nError(wxMIDI_NO_ERROR)
 	, m_nSize(0L)
@@ -108,7 +108,7 @@ wxMidiSysExMessage::~wxMidiSysExMessage()
 {
 	if (m_pMessage) {
 		delete [] m_pMessage;
-		m_pMessage = (wxByte*) NULL;
+		m_pMessage = (wxByte*) nullptr;
 	}
 }
 
@@ -123,7 +123,7 @@ wxMidiDevice::wxMidiDevice(wxMidiDeviceID nDevice)
 	int devices = Pm_CountDevices();
 	if (m_nDevice > devices-1) m_nDevice = 0;
 	m_pInfo = Pm_GetDeviceInfo(m_nDevice);
-	m_stream = (PortMidiStream*)NULL;
+	m_stream = (PortMidiStream*)nullptr;
 }
 
 wxMidiDevice::~wxMidiDevice()
@@ -189,7 +189,7 @@ bool wxMidiDevice::IsOutputPort()
 wxMidiError wxMidiOutDevice::Open(long latency, void* pDriverInfo)
 {
 	return (wxMidiError)Pm_OpenOutput(&m_stream, m_nDevice, pDriverInfo,
-									  0, NULL, NULL, latency );
+									  0, nullptr, nullptr, latency );
 }
 
 wxMidiError wxMidiOutDevice::Write(wxMidiShortMessage* pMsg)
@@ -256,12 +256,12 @@ wxMidiError wxMidiOutDevice::AllSoundsOff()
 
 wxMidiInDevice::wxMidiInDevice(wxMidiDeviceID nDevice, double timeoutSeconds)
 	: wxMidiDevice(nDevice)
-	, m_pThread(NULL)
+	, m_pThread(nullptr)
 	, m_fUseTimeAlgorithm(true)
     , m_timeCounter(time_t(-1))
 	, m_timeoutSeconds(timeoutSeconds)
 	, m_numNullReads(0)
-	, m_SysexBuffer(NULL)
+	, m_SysexBuffer(nullptr)
 	, m_fReadingSysex(false)
 	, m_fEventPending(false)
 {
@@ -278,7 +278,7 @@ wxMidiInDevice::~wxMidiInDevice()
 wxMidiError wxMidiInDevice::Open(void* pDriverInfo, int buffersize)
 {
 	return (wxMidiError)Pm_OpenInput(&m_stream, m_nDevice, pDriverInfo,
-									 buffersize, NULL, NULL);
+									 buffersize, nullptr, nullptr);
 }
 
 wxMidiError wxMidiInDevice::Read(wxMidiPmEvent* buffer, long* length )
@@ -333,13 +333,13 @@ wxMidiMessage* wxMidiInDevice::Read(wxMidiError* pError)
 		// if read was not successful return the error
 		if (nError < wxMIDI_NO_ERROR) {
 			*pError = nError;
-			return (wxMidiMessage*)NULL;
+			return (wxMidiMessage*)nullptr;
 		}
 
 		// check if something read
 		if (nError == 0) {
 			*pError = wxMIDI_ERROR_NoDataAvailable;
-			return (wxMidiMessage*)NULL;
+			return (wxMidiMessage*)nullptr;
 		}
 	}
 
@@ -376,9 +376,9 @@ wxMidiMessage* wxMidiInDevice::Read(wxMidiError* pError)
 				*pError = nError;
 				delete pSysExMsg;
 				delete [] m_SysexBuffer;
-				m_SysexBuffer = (wxByte*)NULL;
+				m_SysexBuffer = (wxByte*)nullptr;
 				m_fReadingSysex = false;
-				return (wxMidiMessage*)NULL;
+				return (wxMidiMessage*)nullptr;
 			}
 
             //Read operations can be faster than arrival of bytes (3.8 KB/sec at max.).
@@ -390,7 +390,7 @@ wxMidiMessage* wxMidiInDevice::Read(wxMidiError* pError)
                 {
                     *pError = wxMIDI_ERROR_TimeOut;
                     delete pSysExMsg;
-                    return (wxMidiMessage*)NULL;
+                    return (wxMidiMessage*)nullptr;
                 }
             }
             else
@@ -448,8 +448,8 @@ wxMidiMessage* wxMidiInDevice::Read(wxMidiError* pError)
 		*pError = wxMIDI_NO_ERROR;
 
 		//reset the wxMidiInDevice buffer
-		m_SysexBuffer = (wxByte*)NULL;
-		m_CurSysexDataPtr = (wxByte*)NULL;
+		m_SysexBuffer = (wxByte*)nullptr;
+		m_CurSysexDataPtr = (wxByte*)nullptr;
 		m_fReadingSysex = false;
 
 		return pSysExMsg;
@@ -577,7 +577,7 @@ wxMidiError wxMidiInDevice::StopListening()
 	//stop the thread and wait for its termination
 	m_pThread->Delete();
 	delete m_pThread;
-	m_pThread = (wxMidiThread*)NULL;
+	m_pThread = (wxMidiThread*)nullptr;
 	return wxMIDI_NO_ERROR;
 }
 
@@ -593,7 +593,7 @@ bool wxMidiInDevice::too_much_time_without_receiving_bytes()
     //true when elapsed time since first void Read operation is greater
     //than the user specified timeout (in wxMidiInDevice constructor)
 
-    time_t currentTime = time(NULL);    //current time (in seconds elapsed since the Epoch)
+    time_t currentTime = time(nullptr);    //current time (in seconds elapsed since the Epoch)
 
     if (currentTime == time_t(-1))
     {
@@ -664,7 +664,7 @@ void* wxMidiThread::Entry()
     catch(...)
     {
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -680,7 +680,7 @@ void* wxMidiThread::Entry()
 //================================================================================
 
 
-wxMidiSystem* wxMidiSystem::m_pInstance = (wxMidiSystem*)NULL;
+wxMidiSystem* wxMidiSystem::m_pInstance = (wxMidiSystem*)nullptr;
 
 wxMidiSystem::~wxMidiSystem()
 {

@@ -75,7 +75,7 @@ protected:
 public:
     virtual ~DynControl() {}
 
-    virtual void generate_content(lomse::ImoDynamic* pDyn, Document* pDoc) = 0;
+    virtual void generate_content(ADynamic dyn, ADocument doc) = 0;
 
     inline long get_dynid() { return m_dynId; }
 
@@ -99,7 +99,7 @@ public:
     DummyControl(long dynId, ApplicationScope& appScope, const string& classid);
     ~DummyControl() {};
 
-    void generate_content(lomse::ImoDynamic* pDyn, Document* pDoc);
+    void generate_content(ADynamic dyn, ADocument doc);
 
 };
 

@@ -36,7 +36,7 @@
 //// lmPgmOptions implementation
 ////-------------------------------------------------------------------------------------------
 //
-//lmPgmOptions* lmPgmOptions::m_pInstance = (lmPgmOptions*)NULL;
+//lmPgmOptions* lmPgmOptions::m_pInstance = (lmPgmOptions*)nullptr;
 //
 //lmPgmOptions::lmPgmOptions()
 //{
@@ -66,7 +66,7 @@
 //{
 //    if (m_pInstance)
 //        delete m_pInstance;
-//    m_pInstance = (lmPgmOptions*)NULL;
+//    m_pInstance = (lmPgmOptions*)nullptr;
 //}
 //
 //

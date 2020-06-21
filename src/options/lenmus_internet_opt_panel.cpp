@@ -190,7 +190,7 @@ void InternetOptPanel::create_controls()
 	m_pTxtCheckFreq->Wrap( -1 );
 	pSizerCheckFreq->Add( m_pTxtCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pCboCheckFreq = LENMUS_NEW wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN );
+	m_pCboCheckFreq = LENMUS_NEW wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxCB_DROPDOWN );
 	pSizerCheckFreq->Add( m_pCboCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	pBoxUpdates->Add( pSizerCheckFreq, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 5 );

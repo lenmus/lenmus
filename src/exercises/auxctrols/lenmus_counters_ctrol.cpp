@@ -49,7 +49,7 @@ namespace lenmus
 //=======================================================================================
 CountersCtrol::CountersCtrol(ApplicationScope& appScope, Document* pDoc,
                              ExerciseCtrol* pOwner, ExerciseOptions* pConstrains)
-    : Control(*(appScope.get_lomse().get_library_scope()), pDoc, NULL)
+    : Control(*(appScope.get_lomse().get_library_scope()), pDoc, nullptr)
     , m_appScope(appScope)
     , m_pOwner(pOwner)
     , m_pConstrains(pConstrains)
@@ -129,7 +129,7 @@ QuizCounters::QuizCounters(ApplicationScope& appScope,
 {
     wxASSERT(nNumTeams == 1 || nNumTeams == 2);
 
-    m_pRightCounter[0] = NULL;
+    m_pRightCounter[0] = nullptr;
 
     ArtProvider art(m_appScope);
     m_pProblemMngr->ResetCounters();
@@ -205,20 +205,20 @@ GmoBoxControl* QuizCounters::layout(LibraryScope& WXUNUSED(libraryScope), UPoint
         cursor.x += m_imagesSize.width + 200.0f;
 
     GmoShapeImage* pImgRight =
-        LENMUS_NEW GmoShapeImage(NULL, m_imgRight, cursor, m_imagesSize);
+        LENMUS_NEW GmoShapeImage(nullptr, m_imgRight, cursor, m_imagesSize);
     m_pMainBox->add_shape(pImgRight, GmoShape::k_layer_top);
  ////       m_imgRight->SetToolTip(_("Right answers counter"));
 
     //second icon
     cursor.x += m_imagesSize.width + 250.0f;
     GmoShapeImage* pImgWrong =
-        LENMUS_NEW GmoShapeImage(NULL, m_imgWrong, cursor, m_imagesSize);
+        LENMUS_NEW GmoShapeImage(nullptr, m_imgWrong, cursor, m_imagesSize);
     m_pMainBox->add_shape(pImgWrong, GmoShape::k_layer_top);
 
     //third icon
     cursor.x += m_imagesSize.width + 350.0f;
     GmoShapeImage* pImgTotal =
-        LENMUS_NEW GmoShapeImage(NULL, m_imgTotal, cursor, m_imagesSize);
+        LENMUS_NEW GmoShapeImage(nullptr, m_imgTotal, cursor, m_imagesSize);
     m_pMainBox->add_shape(pImgTotal, GmoShape::k_layer_top);
     //m_imgTotal->SetToolTip(_("Total: your marks"));
 
@@ -268,7 +268,7 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
     if (m_fTwoTeamsMode)
     {
         GmoShapeImage* pImgTeam =
-            LENMUS_NEW GmoShapeImage(NULL, m_imgTeam[nTeam], cursor, m_imagesSize);
+            LENMUS_NEW GmoShapeImage(nullptr, m_imgTeam[nTeam], cursor, m_imagesSize);
         m_pMainBox->add_shape(pImgTeam, GmoShape::k_layer_top);
         cursor.x += m_imagesSize.width + 200.0f;
 //        m_pImgTeam->SetToolTip(
@@ -318,7 +318,7 @@ void QuizCounters::handle_event(SpEventInfo WXUNUSED(pEvent))
 //---------------------------------------------------------------------------------------
 void QuizCounters::UpdateDisplay()
 {
-    if (m_pRightCounter[0] == NULL) return;
+    if (m_pRightCounter[0] == nullptr) return;
     for (int i=0; i < m_pProblemMngr->GetNumTeams(); i++)
         UpdateDisplays(i);
 }
@@ -629,7 +629,7 @@ PractiseCounters::PractiseCounters(ApplicationScope& appScope, Document* pDoc,
     : CountersCtrol(appScope, pDoc, pOwner, pConstrains)
     , m_size(PRACTISE_COUNTERS_WIDTH, PRACTISE_COUNTERS_HEIGHT)
     , m_pProblemMngr(pProblemMngr)
-    , m_pRightCounter(NULL)
+    , m_pRightCounter(nullptr)
 {
     m_pProblemMngr->ResetPractiseCounters();
     load_images();
@@ -687,20 +687,20 @@ GmoBoxControl* PractiseCounters::layout(LibraryScope& WXUNUSED(libraryScope), UP
     cursor.y += 15.0f;  //counters ctrol border
 
     GmoShapeImage* pImgRight =
-        LENMUS_NEW GmoShapeImage(NULL, m_imgRight, cursor, m_imagesSize);
+        LENMUS_NEW GmoShapeImage(nullptr, m_imgRight, cursor, m_imagesSize);
     m_pMainBox->add_shape(pImgRight, GmoShape::k_layer_top);
  ////       m_imgRight->SetToolTip(_("Right answers counter"));
 
     //second icon
     cursor.x += m_imagesSize.width + 250.0f;
     GmoShapeImage* pImgWrong =
-        LENMUS_NEW GmoShapeImage(NULL, m_imgWrong, cursor, m_imagesSize);
+        LENMUS_NEW GmoShapeImage(nullptr, m_imgWrong, cursor, m_imagesSize);
     m_pMainBox->add_shape(pImgWrong, GmoShape::k_layer_top);
 
     //third icon
     cursor.x += m_imagesSize.width + 350.0f;
     GmoShapeImage* pImgTotal =
-        LENMUS_NEW GmoShapeImage(NULL, m_imgTotal, cursor, m_imagesSize);
+        LENMUS_NEW GmoShapeImage(nullptr, m_imgTotal, cursor, m_imagesSize);
     m_pMainBox->add_shape(pImgTotal, GmoShape::k_layer_top);
     //m_imgTotal->SetToolTip(_("Total: your marks"));
 
@@ -792,7 +792,7 @@ void PractiseCounters::reset_counters()
 //---------------------------------------------------------------------------------------
 void PractiseCounters::UpdateDisplay()
 {
-    if (m_pRightCounter == NULL) return;
+    if (m_pRightCounter == nullptr) return;
 
     int nRight = m_pProblemMngr->GetRight();
     int nWrong = m_pProblemMngr->GetWrong();

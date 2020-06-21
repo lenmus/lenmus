@@ -304,8 +304,8 @@ DlgSpacingParams::DlgSpacingParams(wxWindow * parent, float force, float alpha,
 	this->Layout();
 
 	// Connect Events
-	m_cmdUpdate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_update ), NULL, this );
-	m_cmdClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_close ), NULL, this );
+	m_cmdUpdate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_update ), nullptr, this );
+	m_cmdClose->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_close ), nullptr, this );
 
     //load current values for spacing params
     *m_txtForce << m_force;
@@ -317,8 +317,8 @@ DlgSpacingParams::DlgSpacingParams(wxWindow * parent, float force, float alpha,
 DlgSpacingParams::~DlgSpacingParams()
 {
 	// Disconnect Events
-	m_cmdUpdate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_update ), NULL, this );
-	m_cmdClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_close ), NULL, this );
+	m_cmdUpdate->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_update ), nullptr, this );
+	m_cmdClose->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( DlgSpacingParams::on_close ), nullptr, this );
 }
 
 //---------------------------------------------------------------------------------------
