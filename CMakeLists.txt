@@ -181,8 +181,8 @@ if(CMAKE_NO_STD_NAMESPACE)
 endif()
 
 # force to use c++11
-set(CMAKE_CXX_STANDARD 11)				#require c+11 or greater
-set(CMAKE_CXX_STANDARD_REQUIRED ON) 	#prevent fallback to any previous standard
+set(CMAKE_CXX_STANDARD 11)                #require c+11 or greater
+set(CMAKE_CXX_STANDARD_REQUIRED ON)     #prevent fallback to any previous standard
 
 #check that the compiler supports c++11 and std::regex
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -213,25 +213,25 @@ OPTION(LENMUS_USE_LOMSE_SOURCES
     "Build LenMus using Lomse sources instead of using the library"
     ON)
 OPTION(LENMUS_ENABLE_UNIT_TESTS
-	"Include also unit tests in LenMus executable"
-	ON)
+    "Include also unit tests in LenMus executable"
+    ON)
 OPTION(LENMUS_DOWNLOAD_SOUNDFONT
     "Download FluidR3 soundfont if not present in source tree"
-	OFF)
+    OFF)
 OPTION(LENMUS_DOWNLOAD_BRAVURA_FONT
     "Download Bravura.otf font if not present in source tree"
-	ON)
+    ON)
 OPTION(LENMUS_INSTALL_BRAVURA_FONT
     "Include Bravura music font in the package in the main and boundle packages"
-	ON)
+    ON)
 if(WIN32)
     OPTION(LENMUS_INSTALL_SOUNDFONT
         "Include FluidR3 soundfont in the package in the main and boundle packages"
-	    ON)
+        ON)
 else()
     OPTION(LENMUS_INSTALL_SOUNDFONT
         "Include FluidR3 soundfont in the package in the main and boundle packages"
-	    OFF)
+        OFF)
 endif()
 OPTION(BUILD_PKG_MAIN
     "Build package 'lenmus-main': Binaries and related files"
@@ -249,11 +249,15 @@ OPTION(BUILD_PKG_BOUNDLE
     "Build package 'lenmus-ebooks': eBooks (all translations)"
     "OFF")
 
+if(NOT APPLE)
 set(MAN_INSTALL_DIR "/usr/share/man" 
     CACHE STRING "Directory for installing man pages")
+else()
+set(MAN_INSTALL_DIR "/usr/local/man"
+    CACHE STRING "Directory for installing man pages")
+endif()
 
-
-# Set a default build type if none was specified
+#Set a default build type if none was specified
 # https://stackoverflow.com/questions/24460486/cmake-build-type-is-not-being-used-in-cmakelists-txt
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -271,28 +275,28 @@ endif()
 #     + var: A variable that stores the result.
 #     + str: A string.
 MACRO(STRING_UNQUOTE var str)
-	set(_ret "${str}")
-	STRING(LENGTH "${str}" _strLen)
+    set(_ret "${str}")
+    STRING(LENGTH "${str}" _strLen)
 
-	# if _strLen > 1
-	#   if lCh and rCh are both "'"
-	#      Remove _lCh and _rCh
-	#   elseif lCh and rCh are both "\""
-	#      Remove _lCh and _rCh
-	# Otherwise don't touch
-	IF(_strLen GREATER 1)
-	    STRING(SUBSTRING "${str}" 0 1 _lCh)
-	    MATH(EXPR _strLen_1 ${_strLen}-1)
-	    MATH(EXPR _strLen_2 ${_strLen_1}-1)
-	    STRING(SUBSTRING "${str}" ${_strLen_1} 1 _rCh)
-	    #MESSAGE("_lCh=${_lCh} _rCh=${_rCh} _ret=|${_ret}|")
-	    IF("${_lCh}" STREQUAL "'" AND "${_rCh}" STREQUAL "'")
-		    STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
+    # if _strLen > 1
+    #   if lCh and rCh are both "'"
+    #      Remove _lCh and _rCh
+    #   elseif lCh and rCh are both "\""
+    #      Remove _lCh and _rCh
+    # Otherwise don't touch
+    IF(_strLen GREATER 1)
+        STRING(SUBSTRING "${str}" 0 1 _lCh)
+        MATH(EXPR _strLen_1 ${_strLen}-1)
+        MATH(EXPR _strLen_2 ${_strLen_1}-1)
+        STRING(SUBSTRING "${str}" ${_strLen_1} 1 _rCh)
+        #MESSAGE("_lCh=${_lCh} _rCh=${_rCh} _ret=|${_ret}|")
+        IF("${_lCh}" STREQUAL "'" AND "${_rCh}" STREQUAL "'")
+            STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
         ELSEIF ("${_lCh}" STREQUAL "\"" AND "${_rCh}" STREQUAL "\"")
-		    STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
-	    ENDIF()
-	ENDIF()
-	set(${var} "${_ret}")
+            STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
+        ENDIF()
+    ENDIF()
+    set(${var} "${_ret}")
 ENDMACRO()
 
 
@@ -314,9 +318,13 @@ if(WIN32)
     set( LENMUS_PLATFORM_WIN32 "1")
     set( LENMUS_PLATFORM_UNIX "0")
     set( LENMUS_PLATFORM_MAC "0")
-elseif(UNIX)
+elseif(UNIX AND NOT APPLE)
     set( LENMUS_PLATFORM_WIN32 "0")
     set( LENMUS_PLATFORM_UNIX "1")
+    set( LENMUS_PLATFORM_MAC "0")
+elseif(APPLE)
+    set( LENMUS_PLATFORM_WIN32 "0")
+    set( LENMUS_PLATFORM_UNIX "1")  #for now keep this. When all other issued solved we will fix this and check
     set( LENMUS_PLATFORM_MAC "0")
 endif()
 
@@ -327,6 +335,9 @@ if(MSVC)
 elseif(CMAKE_COMPILER_IS_GNUCC)
     set( LENMUS_COMPILER_MSVC "0")
     set( LENMUS_COMPILER_GCC "1")
+elseif(APPLE)    #???  set( LENMUS_COMPILER_MSVC "0") seems to be necessary.  Does  LENMUS_COMPILER_GCC  need to be defined?
+     set( LENMUS_COMPILER_MSVC "0")
+     set( LENMUS_COMPILER_GCC "0")
 endif()
 
 # build type
@@ -390,13 +401,15 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT
 endif()
 message(STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
 set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
-set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL}/" )	#LENMUS_INSTALL_ROOT is needed for lenmus_config.h
+set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL}/" )    #LENMUS_INSTALL_ROOT is needed for lenmus_config.h
 
 
 #set shared folder
-if( UNIX )
-	set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
-elseif( WIN32 )
+if(UNIX AND NOT APPLE)
+    set(SHARED_DIR ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_PACKAGE_VERSION} )
+elseif(APPLE)
+    set(SHARED_DIR ${ROOT_INSTALL}/Resources )
+elseif(WIN32)
     set(SHARED_DIR ${ROOT_INSTALL} )
 endif()
 
@@ -418,6 +431,9 @@ include_directories(
 #------------------------------------------------------------------------
 if( WIN32 )
     #only boundle package is possible
+    set(BUILD_PKG_BOUNDLE 1)
+elseif( APPLE )
+    #force to build the boundle package
     set(BUILD_PKG_BOUNDLE 1)
 elseif( UNIX )
     if((NOT BUILD_PKG_BOUNDLE)
@@ -560,20 +576,20 @@ if (LENMUS_ENABLE_UNIT_TESTS)
     else(UNITTEST++_FOUND)
         message(STATUS "UnitTest++ not found. Unit tests disabled.")
         message(STATUS "UnitTest++_DIR = $ENV{UnitTest++_DIR}")
-		set(LENMUS_ENABLE_UNIT_TESTS OFF)
+        set(LENMUS_ENABLE_UNIT_TESTS OFF)
     endif()
 endif(LENMUS_ENABLE_UNIT_TESTS)
 
 
 #change value to "1" or "0", as required in lenmus_config.h
 if (LENMUS_ENABLE_UNIT_TESTS)
-	set(LENMUS_ENABLE_UNIT_TESTS "1")
+    set(LENMUS_ENABLE_UNIT_TESTS "1")
 else()
-	set(LENMUS_ENABLE_UNIT_TESTS "0")
-endif()	
+    set(LENMUS_ENABLE_UNIT_TESTS "0")
+endif()    
 if(WIN32)
     #TODO: I have problems to link with UnitTest++, so disable it for now
-	set(LENMUS_ENABLE_UNIT_TESTS "0")
+    set(LENMUS_ENABLE_UNIT_TESTS "0")
 endif()
 message(STATUS "LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 
@@ -582,11 +598,11 @@ message(STATUS "LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
 if(WIN32)
     #See: https://stackoverflow.com/questions/41574177/cmake-findwxwidgets-fails-only-on-first-invocation-of-configure-command
     set(WX_ROOT_DIR "$ENV{wxWidgets_DIR}")
-	if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-		set(wxWidgets_CONFIGURATION mswud)
-	else()
-		set(wxWidgets_CONFIGURATION mswu)
-	endif()
+    if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        set(wxWidgets_CONFIGURATION mswud)
+    else()
+        set(wxWidgets_CONFIGURATION mswu)
+    endif()
     set(wxWidgets_ROOT_DIR "$ENV{wxWidgets_DIR}")
     set(wxWidgets_LIB_DIR "$ENV{wxWidgets_DIR}/lib/vc_x64_lib")
 endif(WIN32)
@@ -724,7 +740,7 @@ endif(PNG_FOUND)
 
 
 # Check for fontconfig: required by Lomse
-if (UNIX)
+if (UNIX)   #includes APPLE
     find_path(FONTCONFIG_INCLUDE_DIR fontconfig/fontconfig.h)
     find_library(FONTCONFIG_LIBRARIES NAMES fontconfig libfontconfig)
     if (("${FONTCONFIG_INCLUDE_DIR}" STREQUAL "FONTCONFIG_INCLUDE_DIR-NOTFOUND")
@@ -786,6 +802,15 @@ if(WIN32)
     set(TEMPLATES_DIR .)
     set(XRC_DIR .)
     set(DOCS_DIR .)
+elseif(APPLE)
+    set(BIN_DIR "${ROOT_INSTALL}/Contents/MacOS")
+    set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(LOCALE_DIR ${SHARED_DIR})
+    set(LOCALE_LICENSES_DIR ${SHARED_DIR})
+    set(RES_DIR "${SHARED_DIR}/res")
+    set(TEMPLATES_DIR ${SHARED_DIR})
+    set(XRC_DIR ${SHARED_DIR})
+    set(DOCS_DIR ${SHARED_DIR})
 else()
     set(BIN_DIR "${ROOT_INSTALL}/bin")
     set(SAMPLES_DIR $ENV{HOME}/${CMAKE_PROJECT_NAME} )
@@ -828,7 +853,7 @@ if(INSTALL_SOUNDFONT)
     set(LENMUS_SOUNDFONT_PATH "")   #to force to make it relative to <SHARED_DIR>
     if (NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
         file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
-             DESTINATION ${LENMUS_ROOT_DIR}/res/sounds)
+             DESTINATION ${SHARED_DIR}/res/sounds)
     endif()
 endif()
 message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
@@ -837,7 +862,7 @@ if(INSTALL_BRAVURA_FONT AND
    NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts/"))
         message(STATUS "BRAVURA_FONT_PATH=${BRAVURA_FONT_PATH}")
         file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
-             DESTINATION ${LENMUS_ROOT_DIR}/res/fonts)
+             DESTINATION ${SHARED_DIR}/res/fonts)
 endif()
 
 
@@ -871,7 +896,7 @@ endif()
 
 
 # create and include the man page
-if (UNIX)
+if (UNIX)   #includes APPLE
     include( ${LENMUS_ROOT_DIR}/manpage.cmake )
 endif()
 
@@ -887,12 +912,12 @@ configure_file(
 # Target: LenMus program
 #////////////////////////////////////////////////////////////////////////
 
-set (LENMUS  lenmus)
+set (LENMUS_APP  lenmus)
 
 # set name of lenmus executable
 if( WIN32 )
     set( CMAKE_EXECUTABLE_SUFFIX ".exe" )
-elseif( UNIX )
+elseif( UNIX )   #includes APPLE
     set( CMAKE_EXECUTABLE_SUFFIX "" )
 endif()
 
@@ -1116,12 +1141,14 @@ endif()
 
 
 # Define target
-if(UNIX)
-	add_executable( ${LENMUS} ${ALL_SOURCES} )
+if (UNIX AND NOT APPLE)
+    add_executable( ${LENMUS_APP} ${ALL_SOURCES} )
+elseif (APPLE)
+    add_executable( ${LENMUS_APP} MACOSX_BUNDLE ${ALL_SOURCES} )
 else()
-	add_executable( ${LENMUS} WIN32 ${ALL_SOURCES} )
+    add_executable( ${LENMUS_APP} WIN32 ${ALL_SOURCES} )
 endif()
-add_dependencies(${LENMUS} lenmus-version)
+add_dependencies(${LENMUS_APP} lenmus-version)
 
 
 # Add resources
@@ -1136,70 +1163,80 @@ add_dependencies(${LENMUS} lenmus-version)
 #endif()
 
 
-# Compiler options
+# Compiler options and definitions
 if (WIN32)
     # remove noisy warning 4996: function or variable may be unsafe (i.e. strcat)
-    set_target_properties(${LENMUS} PROPERTIES COMPILE_FLAGS "/wd4996")
-endif(WIN32)
+    set_target_properties(${LENMUS_APP} PROPERTIES COMPILE_FLAGS "/wd4996")
 
-# "Print all warnings", macros for GCC & __UNIX__
-if(UNIX)
+    # force to use static Runtime library
+    set(CompilerFlags
+            CMAKE_CXX_FLAGS
+            CMAKE_CXX_FLAGS_DEBUG
+            CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_C_FLAGS
+            CMAKE_C_FLAGS_DEBUG
+            CMAKE_C_FLAGS_RELEASE
+        )
+    foreach(CompilerFlag ${CompilerFlags})
+        string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+    endforeach()
+
+elseif(UNIX AND NOT APPLE)
+    # "Print all warnings", macros for GCC & __UNIX__
     add_definitions( -Wall -DGCC -D__UNIX__ )
-endif(UNIX)
 
+elseif(APPLE)
+    # "Print all warnings", macros for __UNIX__
+    add_definitions( -Wall -D__UNIX__ )
 
-# Linker options
-#if(WIN32)
-	#if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-		#set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:WinMainCRTStartup")
-		#link_libraries(libucrtd.lib)
-	#else()
-		#set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:WinMainCRTStartup")
-		#link_libraries(libucrt.lib)
-	#endif()
-#endif(WIN32)
+endif()
 
 
 # libraries to link
-target_link_libraries ( ${LENMUS} 
+target_link_libraries ( ${LENMUS_APP} 
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
             ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
-			${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
-			${ZLIB_LIBRARIES} ${FONTCONFIG_LIBRARY}
+            ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
+            ${ZLIB_LIBRARIES} ${FONTCONFIG_LIBRARY}
 )
 
 
-# Target properties
-#if(APPLE)
-#    set_target_properties(${PROJECT_NAME} PROPERTIES
-#        RESOURCE ${RESOURCES_DIR}/other/osx/carbon/wxmac.icns
-#        MACOSX_BUNDLE_ICON_FILE wxmac.icns
-#        MACOSX_BUNDLE_COPYRIGHT "Copyright LenMus"
-#        MACOSX_BUNDLE_GUI_IDENTIFIER "org.wxwidgets.minimal"
-#        )
-#endif()
+# Target properties for macOS bundle
+if(APPLE)
+    set_target_properties(${LENMUS_APP} PROPERTIES
+           MACOSX_BUNDLE_EXECUTABLE_NAME ${LENMUS_APP}
+        MACOSX_BUNDLE_GUI_IDENTIFIER "org.lenmus.lenmus"
+        MACOSX_BUNDLE_BUNDLE_NAME "LenMus Phonascus"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${LENMUS_VERSION}
+        MACOSX_BUNDLE_LONG_VERSION_STRING ${LENMUS_VERSION_LONG}
+        MACOSX_BUNDLE_COPYRIGHT "© 2002-2020 LenMus project. License GNU GPL v.3 or greater"
+        MACOSX_BUNDLE_INFO_PLIST "${LENMUS_ROOT_DIR}/Info.plist.in"
+        MACOSX_BUNDLE_BUNDLE_VERSION 1
+    )
 
-if (WIN32)
-	# In Windows force to use static Runtime library
-	set(CompilerFlags
-			CMAKE_CXX_FLAGS
-			CMAKE_CXX_FLAGS_DEBUG
-			CMAKE_CXX_FLAGS_RELEASE
-			CMAKE_C_FLAGS
-			CMAKE_C_FLAGS_DEBUG
-			CMAKE_C_FLAGS_RELEASE
-		)
-	foreach(CompilerFlag ${CompilerFlags})
-		string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-	endforeach()
-endif(WIN32)
+        # ADD_LANG
+    set(BUNDLE_LOCALIZATIONS
+"       <string>de</string>
+        <string>el</string>
+        <string>en</string>
+        <string>es</string>
+        <string>eu</string>
+        <string>fr</string>
+        <string>gl_ES</string>
+        <string>it</string>
+        <string>nl</string>
+        <string>tr</string>
+        <string>zh_CN</string>
+")
+endif()
+
 
 # Display compiler and linker settings
-message("Configuration for target ${LENMUS}")
+message("Configuration for target ${LENMUS_APP}")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
+    message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
 else()
-	message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
+    message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
 endif()
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}" )
 
@@ -1215,10 +1252,9 @@ endif(BUILD_PROGRAM)
 # ------------------------------------------------------------------------------
 
 # bin. LenMus program and other binary and related files (BIN_DIR)
-install(TARGETS ${LENMUS}
-	    RUNTIME
-        DESTINATION ${BIN_DIR}
-        COMPONENT main
+install(TARGETS ${LENMUS_APP}
+    RUNTIME DESTINATION ${BIN_DIR} COMPONENT main
+    BUNDLE DESTINATION . COMPONENT main
 )
 
 if(WIN32)
@@ -1263,7 +1299,7 @@ install(FILES ${LENMUS_ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt
 install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_en.txt
         DESTINATION ${DOCS_DIR} COMPONENT main )
 
-if (UNIX)
+if (UNIX AND NOT APPLE)
     # Install desktop entry
     install(FILES ${LENMUS_ROOT_DIR}/res/desktop/org.lenmus.lenmus.desktop
             DESTINATION "/usr/share/applications"
@@ -1277,7 +1313,7 @@ if (UNIX)
     install(FILES ${LENMUS_ROOT_DIR}/res/other/org.lenmus.lenmus.appdata.xml
             DESTINATION "/usr/share/metainfo"
             COMPONENT main )
-endif(UNIX)
+endif(UNIX AND NOT APPLE)
 
 if(INSTALL_SOUNDFONT)
     install(FILES ${LENMUS_ROOT_DIR}/res/sounds/FluidR3_GM.sf2
@@ -1290,6 +1326,7 @@ if(INSTALL_BRAVURA_FONT)
             DESTINATION ${RES_DIR}/fonts
             COMPONENT main )
 endif()
+
 
 
 # Package: lenmus-i18n
@@ -1319,31 +1356,31 @@ install(FILES ${LENMUS_ROOT_DIR}/installer/msw/locale/license_zh_CN.txt
 
 # locale folder. help files and language catalogs for all languages
 install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale
-		DESTINATION ${LOCALE_DIR}
+        DESTINATION ${LOCALE_DIR}
         COMPONENT i18n 
         FILES_MATCHING
-		    PATTERN "common/*.*"
-		    PATTERN "*.htm"
-		    #help
+            PATTERN "common/*.*"
+            PATTERN "*.htm"
+            #help
             PATTERN "help*" EXCLUDE
             PATTERN "images*" EXCLUDE
-		    #PATTERN "*.html"
-		    #PATTERN "*.js"
-		    #PATTERN "*.map"
-		    #PATTERN "*.inv"
-		    #PATTERN "*.png"
-		    #PATTERN "*.gif"
-		    #PATTERN "*.jpg"
-		    #PATTERN "*.css"
-		    #language catalogs
-		    PATTERN "*.mo"
-		    PATTERN "x_*" EXCLUDE
-		    PATTERN "z_*" EXCLUDE
-		    PATTERN "*~" EXCLUDE
-		    #exclude unsupported languages
-		        # ADD_LANG
-		    PATTERN "kk*" EXCLUDE
-		    PATTERN "ru*" EXCLUDE
+            #PATTERN "*.html"
+            #PATTERN "*.js"
+            #PATTERN "*.map"
+            #PATTERN "*.inv"
+            #PATTERN "*.png"
+            #PATTERN "*.gif"
+            #PATTERN "*.jpg"
+            #PATTERN "*.css"
+            #language catalogs
+            PATTERN "*.mo"
+            PATTERN "x_*" EXCLUDE
+            PATTERN "z_*" EXCLUDE
+            PATTERN "*~" EXCLUDE
+            #exclude unsupported languages
+                # ADD_LANG
+            PATTERN "kk*" EXCLUDE
+            PATTERN "ru*" EXCLUDE
 )
 
 #generate include files with translations for NSIS installer 
@@ -1395,17 +1432,17 @@ endif()
 
 # locale folder. eBooks for all languages (English included)
 install(DIRECTORY  ${LENMUS_ROOT_DIR}/locale/
-		DESTINATION ${LOCALE_DIR}/locale
+        DESTINATION ${LOCALE_DIR}/locale
         COMPONENT ebooks
         FILES_MATCHING
-		    #books 
-		    PATTERN "*.lmb"
-		    #exclude unsupported languages
-		        # ADD_LANG
-		    PATTERN "x_*" EXCLUDE
-		    PATTERN "z_*" EXCLUDE
-		    PATTERN "kk*" EXCLUDE
-		    PATTERN "ru*" EXCLUDE
+            #books 
+            PATTERN "*.lmb"
+            #exclude unsupported languages
+                # ADD_LANG
+            PATTERN "x_*" EXCLUDE
+            PATTERN "z_*" EXCLUDE
+            PATTERN "kk*" EXCLUDE
+            PATTERN "ru*" EXCLUDE
 )
 
 
@@ -1435,10 +1472,24 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/res/sounds   DESTINATION ${RES_DIR}
 
 # samples 
 #install(DIRECTORY ${LENMUS_ROOT_DIR}/scores/samples  DESTINATION "${SAMPLES_DIR}"
-#	    FILES_MATCHING PATTERN "*.lms"
-#	    PATTERN "test_set" EXCLUDE
+#        FILES_MATCHING PATTERN "*.lms"
+#        PATTERN "test_set" EXCLUDE
 #       COMPONENT common )
 #)
+
+
+# fix up the macOS bundle in-place and make it standalone
+if (APPLE)
+    # add Mac specific extension .app
+    set(APPS "\${CMAKE_INSTALL_PREFIX}/${LENMUS_APP}.app")
+
+    # Directories to look for dependencies
+    set(DIRS ${CMAKE_BINARY_DIR})
+
+    install(CODE "include(BundleUtilities)
+        fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
+endif()
+
 
 
 
@@ -1488,14 +1539,16 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
  commercial purposes.
 ")
 
-if(UNIX)
-    #-------------------------------------------------------------------------------------
-	# configure CPack for Debian packages
-    #-------------------------------------------------------------------------------------
-	set(CPACK_GENERATOR "DEB")
-	set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron <s.cecilio@gmail.com>")
+if (APPLE)
+    # For Apple generate a drang & drop package
+    set(CPACK_GENERATOR "DragNDrop")
+
+elseif(UNIX AND NOT APPLE)
+    # For Linux generate one or more Debian packages
+    set(CPACK_GENERATOR "DEB")
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron <s.cecilio@gmail.com>")
     set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${LENMUS_VENDOR_SITE}")
-    set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries
+    set(CPACK_STRIP_FILES ON)        #remove debug information, if any, from binaries
 
     #auxiliary variable describing current available translations
         # ADD_LANG
@@ -1521,9 +1574,9 @@ if(UNIX)
     string(CONCAT CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}"
             "_${LENMUS_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
     if (LENMUS_USE_LOMSE_SOURCES)
-	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
     else()
-	    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), ")
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), ")
     endif()
     string(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS
         "libsqlite3-0, libportmidi0, fluid-soundfont-gm, "
@@ -1619,15 +1672,11 @@ ${LENMUS_AVAILABLE_LOCALE}"
 ${LENMUS_AVAILABLE_LOCALE}"
 )
 
-
-
 elseif(WIN32)
-    #-------------------------------------------------------------------------------------
-    # configure CPack for NSIS installer
-    #-------------------------------------------------------------------------------------
+    # For Windows generate a NSIS installer
     # AWARE: Only variables starting with "CPACK_" can be used to customize the installer.
     set(CPACK_GENERATOR "NSIS")
-    set(CPACK_STRIP_FILES ON)		#remove debug information, if any, from binaries
+    set(CPACK_STRIP_FILES ON)        #remove debug information, if any, from binaries
     set(CPACK_PACKAGE_NAME "lenmus")
     set(CPACK_PACKAGE_VERSION ${LENMUS_PACKAGE_VERSION})
     
@@ -1639,8 +1688,9 @@ elseif(WIN32)
     set(CPACK_LENMUS_BUILD_INSTALLER_PATH "${CMAKE_BINARY_DIR}")
     set(CPACK_LENMUS_INSTALL_PATH "${SHARED_DIR}")
 
-	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
-	message("Installation default path: ${CPACK_LENMUS_INSTALL_PATH}" )
+    message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
+    message("Installation default path: ${CPACK_LENMUS_INSTALL_PATH}" )
+
 endif()
 
 # Must be after the last CPACK macro

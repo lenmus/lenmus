@@ -251,6 +251,7 @@ may be down. Please, try again later.");
 //---------------------------------------------------------------------------------------
 bool Updater::CheckInternetConnection()
 {
+#ifndef __APPLE__
     bool fConnected = false;    //assume not connected
 
     // check connection
@@ -261,6 +262,9 @@ bool Updater::CheckInternetConnection()
 
     delete pManager;
     return fConnected;
+#else
+    return true;
+#endif
 }
 
 //---------------------------------------------------------------------------------------

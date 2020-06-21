@@ -80,7 +80,7 @@ using namespace lomse;
 #include <wx/filename.h>
 
 #ifdef __WXMAC__
-#include <wx/mac/printdlg.h>
+#include <wx/osx/printdlg.h>
 #endif
 
 

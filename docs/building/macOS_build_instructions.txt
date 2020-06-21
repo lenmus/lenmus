@@ -1,0 +1,185 @@
+Building LenMus on MacOS
+========================
+
+Last updated:  20/June/2020
+
+Table of contents
+-----------------
+
+1.  Current state of development and general requirements
+
+2.  Installing requirements and dependencies
+    2.1  Xcode
+    2.2  Homebrew
+    2.3  Libraries and utilities
+    2.4  wxWidgets
+    2.5  FluidR3_GM.sf2
+
+3.  Command-line install
+    3.1  Building
+    3.2  Preparing the app bundle
+    3.3  Testing the app bundle
+    3.4  Final fix and install
+
+4.  (optional) Xcode IDE development
+
+============================================================
+1. Current state of development and general requirements
+============================================================
+
+
+These instructions are tested on a Mac running Catalina (MacOS 10.15) and Xcode version 11.5.  They will probably work on some earlier versions (an earlier version has been successfully built under MacOS 10.14 -- Mojave).  
+
+At present LenMus is mostly functional under MacOS.  There is at least one lesson that LenMus always crashes on, and a minor issue with the metronome interface that can be worked around.  Hopefully these will be fixed soon.
+
+
+============================================================
+2. Installing requirements and dependencies
+============================================================
+
+2.1  Xcode
+-----------
+
+Xcode is a free download from the App store, and contains the basic software development tools (C++ compiler, make, etc.) needed.  It includes both command-line tools and a very sophisticated IDE.  This needs to be installed first.
+
+2.1  Homebrew
+-------------
+
+Install the Homebrew package manager.  This will allow easy installation of various libraries needed by LenMus.  See https://brew.sh/, or just open a terminal window and paste in:
+
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+It should be possible (and is recommended) to install Homebrew as a regular user with administrative privileges (NOT using sudo.)  You can find discussion of this on the web if you run into problems.
+
+
+
+2.2 Libraries and utilities
+---------------------------
+
+LenMus requires the cmake utility, as well as some additional libraries.  In a terminal window, use the Homebrew commands:
+
+    brew install cmake
+    brew install portmidi
+    brew install fluid-synth
+    brew install fontconfig
+
+LenMus also requires sqlite3, libpng, zlib, and FreeType2.  These should already be available on your Mac, but in case of problems you may wish to look for Homebrew alternatives.
+
+
+2.3 wxWidgets
+-------------
+
+There is a Homebrew implementation of wxWidgets, although not the most current version.  I had some difficulties with the Homebrew version, but you may wish to try it, using:
+
+   brew install wxwidgets
+
+This would install a 3.0.x version. The most current version is 3.1.x.  If you encounter problems using LenMus with this version, I recommend doing:
+
+   brew uninstall wxwidgets
+
+and installing the latest version (3.1.x) from source.  Go to
+
+   http://wxwidgets.org/downloads/
+
+and select the source for Linux, MacOS, etc.  There will be build instructions in the source.  Do a "make install" after building to install these libraries in /usr/local.
+
+
+2.5  FluidR3_GM.sf2
+-------------------
+
+The sound font FluidR3_GM.sf2 required by the internal synthesizer can be downloaded from 
+
+   https://github.com/lenmus/lenmus/releases/download/Release_5.5.0/FluidR3_GM.sf2
+
+It should be placed in the res/sounds folder of the LenMus source tree.
+
+
+
+============================================================
+3. Command-line Install
+============================================================
+
+(Alternatively, LenMus can be built using the Xcode IDE.  See section 4 below.)
+
+
+3.1  Building
+-------------
+
+Assuming you're in the top-level lenmus source folder, issue the commands:
+
+     mkdir z_mybuild
+     cd z_mybuild
+     cmake ../
+
+If no errors from the "cmake" command, issue:
+
+     make
+
+There will be lots of warnings from the make command, but hopefully no errors.
+
+
+
+3.2  Preparing the app bundle
+-----------------------------
+
+(This part should be automated in a future release.)  If there are no errors from the "make" command, inside your z_mybuild folder there should be a folder "bin" containing a folder hierarchy 
+
+     bin --  lenmus.app -- Contents
+
+Inside the folder "Contents" will be a file "Info.plist" and a folder MacOS containing the binary executable "lenmus".  We need to add some support files.  So, starting from the "z_mybuild" folder, issue the commands:
+
+     cd bin/lenmus.app/Contents
+     mkdir -p Resources
+     cp -r  ../../../../locale ./Resources/
+     cp -r  ../../../../res ./Resources/
+     cp -r  ../../../../templates ./Resources/
+     cp -r  ../../../../xrc ./Resources/
+
+For a complete distribution, also copy from the top lenmus folder the files AUTHORS, CHANGELOG.md, INSTALL, all the various license files (LICENSE, LICENSE_GNU_FDL_1.3.txt, LICENSE_GNU_GPL_1.3.txt, license_*.txt), NEWS, README.md, and THANKS.  The app will run without these but they should be included for completeness, especially if app is distributed.
+
+
+
+
+
+3.3  Testing the app bundle
+---------------------------
+
+Go back to the "z_mybuild/bin" folder containing "lenmus.app".  (E.g., cd ../.. from the previous step.)  Test things out by issuing the command:
+
+    open ./lenmus.app
+
+A functional version of lenmus should now open.  Test it out and exit it when finished testing.
+
+
+
+3.4  Final fix and install
+--------------------------
+
+If the test works, go back to the z_mybuild folder  (cd .. from the previous step) and issue the command 
+
+   make package
+
+This should build an installation package with a name like "lenmus-x.x.x-Darwin.dmg" in the "z_mybuild" folder.  Double-click on it in the Finder to open it.  You can move the app to the /Applications folder, your desktop, or any other folder of your choice.
+
+TROUBLESHOOTING:  "make package" may fail.  As part of the package-building process, the shared libraries required by LenMus are copied into a FrameWorks folder in the app bundle and edited with the standard utility "install_name_tool" to change their install paths.  For this to work, the libraries must have been built with write permission for the owner (mode 0644).  Some Homebrew packages have their libraries' permissions incorrectly set to mode 0444.  To fix this:
+
+    cd /usr/local/Cellar
+    find . -type f -name \*.dylib | xargs chmod u+w
+
+and try "make package" again from the z_build folder.
+
+
+
+
+============================================================
+4.  (optional) Xcode IDE development
+============================================================
+
+In step 3.1, use instead
+
+    mkdir z_mybuild
+    cd z_mybuild
+    cmake -G Xcode ../
+
+This will generate an Xcode project file in the z_mybuild folder allowing one to continue using the Xcode IDE.  This would be preferred for development and debugging, or just exploring the source code.  If you do this, after opening the project I suggest opening File--Project Settings, and changing the Build system to "New Build System".  This will enable debugging.  There will be some obvious Xcode targets corresponding to "make" and "make package".  The manual intervention in step 3.2 is still needed, and you may find the lenmus.app folder buried one level deeper in the bin folder.  Make the obvious changes.
+

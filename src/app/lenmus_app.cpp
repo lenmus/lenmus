@@ -78,6 +78,11 @@ using namespace std;
     #define realpath(N,R) _fullpath((R),(N),_MAX_PATH)
 #endif
 
+//For finding executable path on MacOS:
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+
 
 // This macro will allow wxWindows to create the application object during program
 // execution (it's better than using a static object for many reasons) and also
@@ -302,6 +307,17 @@ wxString TheApp::determine_exec_path()
             return wxPathOnly(wxString(execPathName));
 
     #endif // __linux__ && !__ANDROID__
+    
+    //A method for MacOS:
+    #ifdef __APPLE__
+         char macPathName[PATH_MAX];
+         uint32_t execSize = sizeof(macPathName);
+         if(_NSGetExecutablePath(macPathName, &execSize ) == 0){
+            if(realpath(macPathName, execPathName)){
+                return wxPathOnly(wxString(execPathName));
+            }
+         }
+    #endif // macOS
 
 #endif
 
@@ -974,9 +990,9 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
         wxSafeYield();
     }
 
-#ifndef __WXMAC__
+//#ifndef __WXMAC__
     m_frame->Show(true);
-#endif //ndef __WXMAC__
+//#endif //ndef __WXMAC__
     SetTopWindow(m_frame);
 
     return pSplash;
