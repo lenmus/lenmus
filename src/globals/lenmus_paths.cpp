@@ -201,17 +201,33 @@ void Paths::initialize()
     wxFileName oSoundFonts(m_sPrefix);
     oSoundFonts.AppendDir("res");
     oSoundFonts.AppendDir("sounds");
+    
+
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
     //Base paths for Linux Release version
     //---------------------------------------
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
-    //      /usr/local/share/lenmus/x.x.x/
+    //      /usr/local/share/lenmus/x.x.x/ (unless on a Mac).
+#if __APPLE__
+    //On a Mac, if bundling LenMus in an app, SHARED_DIR should be
+    // <app-location>/lenmus.app/Contents/Resources/
+    //where <app-location> is the directory the app is installed in (usually "/Applications", but it
+    // could be anywhere.)
+    // Since the binary is installed in <app-location>/lenmus.app/Contents/MacOS, we can assume
+    // that m_sPrefix contains "<app-location>/lenmus.app/Contents" at this point.
+    wxFileName oSharedHome(m_sPrefix);
+    oSharedHome.AppendDir("Resources");
+#else
+    // this is for Linux:
     wxFileName oSharedHome(m_sPrefix);
     oSharedHome.AppendDir("share");
     oSharedHome.AppendDir("lenmus");
     oSharedHome.AppendDir(sVersion);
+#endif
+    
+    //Remaining configuration should be the same for Linux or Mac.
 
     //3. Configuration files, user & version dependent (CONFIG_DIR)
     //      ~/.config/lenmus/x.x.x/

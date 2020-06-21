@@ -185,7 +185,7 @@ void DlgMetronome::create_dialog()
 	bSizer1->Add( 0, 0, 0, wxRIGHT|wxLEFT, 10 );
 
 	m_pItalianTempo = new wxChoice( this, k_id_choice_italian_tempo, wxDefaultPosition, wxDefaultSize, m_italianTempoChoices, 0 );
-	m_pItalianTempo->SetSelection( 0 );
+//	m_pItalianTempo->SetSelection( 0 );
 	bSizer1->Add( m_pItalianTempo, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
@@ -323,7 +323,7 @@ void DlgMetronome::create_dialog()
     m_beatNoteChoice = new wxBitmapComboBox( this, k_id_metronome_note,
                              wxEmptyString, wxDefaultPosition, wxSize(60, -1),
                              0, nullptr, wxCB_READONLY);
-	m_beatNoteChoice->SetSelection( 0 );
+//	m_beatNoteChoice->SetSelection( 0 );
 	bSizer161->Add( m_beatNoteChoice, 0, wxALL, 5 );
 
 	sbSizer1->Add( bSizer161, 0, 0, 5 );

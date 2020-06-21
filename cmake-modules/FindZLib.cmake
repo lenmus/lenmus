@@ -27,6 +27,7 @@ find_path(ZLIB_INCLUDE_DIR
 find_library(ZLIB_LIBRARY
     NAMES
         zlib
+	z
     PATHS
         /usr/lib/
         /usr/local/lib
