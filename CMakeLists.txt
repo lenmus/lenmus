@@ -324,8 +324,8 @@ elseif(UNIX AND NOT APPLE)
     set( LENMUS_PLATFORM_MAC "0")
 elseif(APPLE)
     set( LENMUS_PLATFORM_WIN32 "0")
-    set( LENMUS_PLATFORM_UNIX "1")  #for now keep this. When all other issued solved we will fix this and check
-    set( LENMUS_PLATFORM_MAC "0")
+    set( LENMUS_PLATFORM_UNIX "0")
+    set( LENMUS_PLATFORM_MAC "1") #Mac config differs from unix config only in a few places
 endif()
 
 # compiler
@@ -856,6 +856,13 @@ if(INSTALL_SOUNDFONT)
              DESTINATION ${SHARED_DIR}/res/sounds)
     endif()
 endif()
+
+#This is probably not the best way to handle this for Mac, but... :
+if(APPLE)
+    set(LENMUS_SOUNDFONT_PATH "")   #to force to make it relative to <SHARED_DIR>
+endif()
+
+
 message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
 
 if(INSTALL_BRAVURA_FONT AND
