@@ -402,25 +402,17 @@ void DocumentFrame::load_page(int iTocItem)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
-    //wxLogMessage("DocumentFrame::load_page (by filename) %s. Filename='%s'", GetLabel().wx_str(), to_wx_string(filename).wx_str());
-
-    //Code commented out and replaced by following code because it causes a rare problem
-    //when returning back from exercise 1 in L1_MusicReading_accidentals.lms
-    //
-    //int viewType = k_view_vertical_book;
-    // m_right->display_document(filename, viewType);
-
     if (!filename.empty())
     {
         if (filename.find(".lmd"))
         {
-            int viewType = k_view_single_page;  //k_view_vertical_book;
+            int viewType = k_view_vertical_book;
             m_right->display_document(filename, viewType);
         }
         else
         {
             LdpZipReader reader(filename);
-            int viewType = k_view_single_page;  //k_view_vertical_book;
+            int viewType = k_view_vertical_book;
             string title = "test";
             m_right->display_document(reader, viewType, title);
         }
@@ -431,11 +423,6 @@ void DocumentFrame::load_page(const string& filename)
 wxString DocumentFrame::get_path_for_toc_item(int iItem)
 {
     return m_pBooksData->get_path_for_toc_item(iItem);
-//    const BookIndexArray& contents = m_pBooksData->GetContentsArray();
-//    if (!contents[iItem]->page.empty())
-//        return contents[iItem]->GetFullPath();
-//    else
-//        return wxEmptyString;
 }
 
 //---------------------------------------------------------------------------------------

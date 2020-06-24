@@ -611,7 +611,6 @@ void DocumentWindow::display_new_document(const wxString& filename, int viewType
         delete m_pPresenter;
         m_fLoadingDocument = true;
         m_pPresenter = m_lomse.new_document(viewType);
-        //m_pPresenter = m_lomse.new_document(k_view_single_system);
         m_fLoadingDocument = false;
 
         //use filename (without path) as page title
