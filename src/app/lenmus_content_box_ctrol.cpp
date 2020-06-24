@@ -278,7 +278,7 @@ private:
     {
         m_items[n] = (size_t)-1;
         delete m_cells[n];
-        m_cells[n] = NULL;
+        m_cells[n] = nullptr;
     }
 
 public:
@@ -287,7 +287,7 @@ public:
         for ( size_t n = 0; n < SIZE; n++ )
         {
             m_items[n] = (size_t)-1;
-            m_cells[n] = NULL;
+            m_cells[n] = nullptr;
         }
 
         m_next = 0;
@@ -310,7 +310,7 @@ public:
         }
     }
 
-    // return the cached cell for this index or NULL if none
+    // return the cached cell for this index or nullptr if none
     wxHtmlCell *Get(size_t item) const
     {
         for ( size_t n = 0; n < SIZE; n++ )
@@ -319,11 +319,11 @@ public:
                 return m_cells[n];
         }
 
-        return NULL;
+        return nullptr;
     }
 
     // returns true if we already have this item cached
-    bool Has(size_t item) const { return Get(item) != NULL; }
+    bool Has(size_t item) const { return Get(item) != nullptr; }
 
     // ensure that the item is cached
     void Store(size_t item, wxHtmlCell *cell)
@@ -356,10 +356,10 @@ private:
     // the index of the LRU (oldest) cell
     size_t m_next;
 
-    // the parsed representation of the cached item or NULL
+    // the parsed representation of the cached item or nullptr
     wxHtmlCell *m_cells[SIZE];
 
-    // the index of the currently cached item (only valid if m_cells != NULL)
+    // the index of the currently cached item (only valid if m_cells != nullptr)
     size_t m_items[SIZE];
 };
 
@@ -422,7 +422,7 @@ void ContentBoxCtrol::Init()
 {
     m_current = m_anchor = wxNOT_FOUND;
 
-    m_htmlParser = NULL;
+    m_htmlParser = nullptr;
     m_htmlRendStyle = LENMUS_NEW ContentBoxStyle(*this);
     m_cache = LENMUS_NEW lmHtmlListBoxCache;
 
@@ -612,7 +612,7 @@ void ContentBoxCtrol::CacheItem(size_t n) const
 
         wxHtmlContainerCell *cell = (wxHtmlContainerCell *)m_htmlParser->
                 Parse(OnGetItemMarkup(n));
-        wxCHECK_RET( cell, "wxHtmlParser::Parse() returned NULL?" );
+        wxCHECK_RET( cell, "wxHtmlParser::Parse() returned nullptr?" );
 
         // set the cell's ID to item's index so that CellCoordsToPhysical()
         // can quickly find the item:

@@ -485,9 +485,9 @@ wxString Paths::get_user_home_folder()
 #elif (LENMUS_PLATFORM_WIN32 == 1)
     char* homedir = getenv("USERPROFILE");
 #elif (LENMUS_PLATFORM_MAC == 1)
-    char* homedir = getenv("HOME");      //TODO
+    char* homedir = getenv("HOME");
 #endif
-    if (homedir == NULL)
+    if (homedir == nullptr)
     {
         #if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
             struct passwd* pw = getpwuid(getuid());

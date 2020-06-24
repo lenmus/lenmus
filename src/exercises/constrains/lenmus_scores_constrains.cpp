@@ -371,12 +371,15 @@ int FragmentsTable::SelectFragments(ETimeSignature nTimeSign)
             m_aSelectionSet.Add(i);
 //            //DBG -----------------------------------------------------------------------
 //            ArrayOfSegments* pSegments =  m_aFragment[i]->GetSegments();
-//            wxLogMessage("[FragmentsTable::SelectFragments] entry=%d, nTimeSign =%d",
-//                         i, nTimeSign);
+//            stringstream msg;
+//            msg << "entry=" << i << ", nTimeSign=" << nTimeSign;
+//            LOMSE_LOG_INFO(msg.str());
 //            for (int s=0; s < (int)pSegments->Count(); ++s)
 //            {
+//                stringstream msg;
 //                SegmentEntry* pEntry = pSegments->Item(s);
-//                wxLogMessage("     %s", pEntry->GetSource().wx_str());
+//                msg << "    " << to_std_string(pEntry->GetSource());
+//                LOMSE_LOG_INFO(msg.str());
 //            }
 //            //END DBG -------------------------------------------------------------------
         }
@@ -402,13 +405,13 @@ void FragmentsTable::ChooseRandom()
 }
 
 //---------------------------------------------------------------------------------------
-//! Returns the next segment entry for the chosen fragment or NULL if no more available
+//! Returns the next segment entry for the chosen fragment or nullptr if no more available
 SegmentEntry* FragmentsTable::GetNextSegment()
 {
     if (m_nNextSegment < (int)m_pSegments->Count())
         return m_pSegments->Item(m_nNextSegment++);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------

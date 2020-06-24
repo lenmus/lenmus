@@ -93,7 +93,7 @@ void TheoIntervalsCtrol::get_ctrol_options_from_params()
 ImoScore* TheoIntervalsCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     // In theory interval exercises it is not allowed to play an interval
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -408,7 +408,7 @@ void BuildIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 
     int iB;
     for (iB=0; iB < k_num_buttons; iB++)
-        m_pAnswerButton[iB] = NULL;
+        m_pAnswerButton[iB] = nullptr;
 
     //row with column labels
     ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
@@ -466,7 +466,7 @@ wxString BuildIntervalsCtrol::prepare_scores()
     //The problem interval has been set.
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -494,7 +494,8 @@ wxString BuildIntervalsCtrol::prepare_scores()
     }
 
     //prepare solution score
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,"");		//MIDI channel 0, MIDI instr 0
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
@@ -517,7 +518,8 @@ wxString BuildIntervalsCtrol::prepare_scores()
     sPattern0 += m_fpStart.to_rel_ldp_name(m_nKey);
     sPattern0 += " w)";
     m_pSolutionScore = pScore;
-    m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    score = m_doc.create_object(k_obj_score).downcast_to_score();
+    m_pProblemScore = score.internal_object();
     pInstr = m_pProblemScore->add_instrument();    // (0,0,"");		//MIDI channel 0, MIDI instr 0
     pInfo = m_pProblemScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
@@ -685,7 +687,7 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     int iB;
     for (iB=0; iB < k_num_buttons; iB++)
     {
-        m_pAnswerButton[iB] = NULL;
+        m_pAnswerButton[iB] = nullptr;
     }
 
     //row with buttons for unison and related
@@ -780,7 +782,7 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     //The problem interval has been set.
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -812,7 +814,8 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     //             to_wx_string(sPattern1).wx_str() );
 
     //create the score with the interval
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     pScore->set_long_option("Render.SpacingMethod", k_spacing_fixed);
     pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,"");		//MIDI channel 0, MIDI instr 0
@@ -860,7 +863,7 @@ wxString IdfyIntervalsCtrol::prepare_scores()
 
     //set score with the problem
     m_pProblemScore = pScore;
-    m_pSolutionScore = NULL;
+    m_pSolutionScore = nullptr;
 
     //return question string
     return _("Identify the next interval:");

@@ -60,10 +60,10 @@ DlgExerciseMode::DlgExerciseMode(wxWindow* parent, int* pMode,
 #endif
                wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER )
     , m_pMode(pMode)
-    , m_pRadLearning(NULL)
-    , m_pRadPractice(NULL)
-    , m_pRadExam(NULL)
-    , m_pRadQuiz(NULL)
+    , m_pRadLearning(nullptr)
+    , m_pRadPractice(nullptr)
+    , m_pRadExam(nullptr)
+    , m_pRadQuiz(nullptr)
     , m_pParent(parent)
     , m_pConstrains(pConstrains)
 {

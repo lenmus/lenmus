@@ -106,7 +106,7 @@ void PageSelector::initialize()
 {
     m_pMenu = new wxMenu;
     for (int i=0; i < k_page_max; ++i)
-        m_menuitems[i] = NULL;
+        m_menuitems[i] = nullptr;
 }
 
 //---------------------------------------------------------------------------------------

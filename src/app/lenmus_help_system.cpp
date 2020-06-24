@@ -71,7 +71,7 @@ protected:
     wxTimer m_timer;
 
 public:
-	HelpDlg(wxWindow* pParent = NULL);
+	HelpDlg(wxWindow* pParent = nullptr);
 	~HelpDlg();
 
     void create_controls();
@@ -160,7 +160,7 @@ void HelpDlg::on_activate(wxActivateEvent& event)
 HelpSystem::HelpSystem(wxWindow* pParent, ApplicationScope& appScope)
     : m_appScope(appScope)
     , m_pParent(pParent)
-    , m_pHelp(NULL)
+    , m_pHelp(nullptr)
 {
 }
 
@@ -192,7 +192,7 @@ bool HelpSystem::initialize()
 
     ::wxMessageBox(_("Help documentation not found: Re-install LenMus?"));
     delete m_pHelp;
-    m_pHelp = NULL;
+    m_pHelp = nullptr;
     return false;
 }
 

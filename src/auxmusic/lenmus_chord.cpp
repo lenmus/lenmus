@@ -144,7 +144,7 @@ public:
 
 
 //the only instance of ChordsDB class
-ChordsDB* ChordsDB::m_pInstance = NULL;
+ChordsDB* ChordsDB::m_pInstance = nullptr;
 
 //---------------------------------------------------------------------------------------
 ChordsDB::ChordsDB()
@@ -180,7 +180,7 @@ ChordsDB* ChordsDB::GetInstance()
 void ChordsDB::DeleteInstance()
 {
     delete m_pInstance;
-    m_pInstance = (ChordsDB*)NULL;
+    m_pInstance = (ChordsDB*)nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ ChordDBEntry* ChordsDB::Find(ChordIntervals* pChordIntv)
     LOMSE_LOG_ERROR( to_std_string(sIntvals) );
     #endif
 
-    return (ChordDBEntry*)NULL;
+    return (ChordDBEntry*)nullptr;
 }
 
 
@@ -347,7 +347,7 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
 //TODO 5.0
 ////---------------------------------------------------------------------------------------
 //Chord::Chord(FPitch fpRootNote, lmFiguredBass* pFigBass, EKeySignature nKey)
-//    : ChordIntervals(0, (FIntval*)NULL)
+//    : ChordIntervals(0, (FIntval*)nullptr)
 //    , m_nKey(nKey)
 //    , m_nInversion(0)
 //    , m_nType(ect_undefined)
@@ -937,9 +937,9 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //        return;
 //    }
 //
-//    if ( pNotes[0] == NULL)
+//    if ( pNotes[0] == nullptr)
 //    {
-//        wxLogMessage(" ChordIntervals ERROR: note %d is NULL", 0);
+//        wxLogMessage(" ChordIntervals ERROR: note %d is nullptr", 0);
 //        return;
 //    }
 //
@@ -947,9 +947,9 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //    //get intervals
 //    for (int i=0; i < m_nNumIntv; i++)
 //    {
-//        if ( pNotes[i+1] == NULL)
+//        if ( pNotes[i+1] == nullptr)
 //        {
-//            wxLogMessage(" ChordIntervals ERROR: note %d is NULL", i+1);
+//            wxLogMessage(" ChordIntervals ERROR: note %d is nullptr", i+1);
 //            return;
 //        }
 //

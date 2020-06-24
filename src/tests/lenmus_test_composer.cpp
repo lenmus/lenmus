@@ -125,9 +125,10 @@ SUITE(ComposerTest)
 
     TEST_FIXTURE(ComposerTestFixture, composer_1)
     {
-        Document doc(*m_pLibScope);
-        doc.create_empty();
-        Composer composer(&doc);
+        Document theDoc(*m_pLibScope);
+        theDoc.create_empty();
+        ADocument doc = theDoc.get_document_api();
+        Composer composer(doc);
 
         ScoreConstrains constrains(m_appScope);
         set_constrains_for_lesson_18(constrains);
@@ -136,7 +137,7 @@ SUITE(ComposerTest)
 
         ImoScore* pScore = composer.generate_score(&constrains);
 
-        CHECK( pScore != NULL );
+        CHECK( pScore != nullptr );
         CHECK( composer.get_score_clef() == k_clef_percussion );
 //        m_msg << pScore->to_string();
 //        write_msg();

@@ -147,7 +147,7 @@ void EarIntervalsCtrol::create_answer_buttons(LUnits height, LUnits WXUNUSED(spa
 
     int iB = 0;
     for (iB=0; iB < k_num_buttons; iB++)
-        m_pAnswerButton[iB] = NULL;
+        m_pAnswerButton[iB] = nullptr;
 
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     for (int iRow=0; iRow < k_num_rows; iRow++)
@@ -206,7 +206,7 @@ void EarIntervalsCtrol::on_settings_changed()
 //    if (m_pConstrains->is_theory_mode())
 //        new_problem();
 //    else
-//        m_pProblemScore = NULL;
+//        m_pProblemScore = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -278,7 +278,7 @@ wxString EarIntervalsCtrol::set_new_problem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -327,7 +327,7 @@ wxString EarIntervalsCtrol::set_new_problem()
 
     //prepare the score
     m_pProblemScore = prepare_score(m_pitch[0], m_pitch[1]);
-    m_pSolutionScore = NULL;
+    m_pSolutionScore = nullptr;
 
     //compute the right answer
     m_sAnswer = oIntv.get_interval_name();
@@ -353,7 +353,8 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
     string sPattern0 = "(n " + note0.to_rel_ldp_name(m_nKey) + " w)";
     string sPattern1 = "(n " + note1.to_rel_ldp_name(m_nKey) + " w)";
 
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();

@@ -140,8 +140,8 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
                wxFULL_REPAINT_ON_RESIZE, "DocumentWindow" )
     , m_appScope(appScope)
     , m_lomse(lomse)
-    , m_pPresenter(NULL)
-    , m_buffer(NULL)
+    , m_pPresenter(nullptr)
+    , m_buffer(nullptr)
     , m_filename("")
     , m_zoomMode(k_zoom_fit_width)
     , m_fIgnoreOnSize(false)
@@ -149,8 +149,8 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_fEditionGuiForced(false)
     , m_fAskToSaveModifications(true)
     , m_fLoadingDocument(false)
-    , m_pContextualMenu(NULL)
-    , m_pMenuOwner(NULL)
+    , m_pContextualMenu(nullptr)
+    , m_pMenuOwner(nullptr)
 {
     Hide();     //keep hidden until necessary, to avoid useless repaints
     set_edition_gui_mode(EditInterface::k_full_edition);
@@ -172,9 +172,9 @@ DocumentWindow::~DocumentWindow()
 }
 
 //---------------------------------------------------------------------------------------
-Document* DocumentWindow::get_document() const
+ADocument DocumentWindow::get_document() const
 {
-    return m_pPresenter->get_document_raw_ptr();
+    return m_pPresenter->get_document();
 }
 
 //---------------------------------------------------------------------------------------
@@ -232,9 +232,10 @@ void DocumentWindow::play_active_score(PlayerGui* pGUI)
     {
         spInteractor->set_operating_mode(Interactor::k_mode_playback);
 
-        ImoScore* pScore = get_active_score();
-        if (pScore)
+        AScore score = get_active_score();
+        if (score.is_valid())
         {
+            ImoScore* pScore = score.internal_object();
             ScorePlayer* pPlayer  = m_appScope.get_score_player();
             pPlayer->load_score(pScore, pGUI);
             customize_playback(spInteractor);
@@ -246,10 +247,6 @@ void DocumentWindow::play_active_score(PlayerGui* pGUI)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::customize_playback(SpInteractor spInteractor)
 {
-    //metronome options
-    Metronome* pMtr = m_appScope.get_metronome();
-    spInteractor->define_beat(pMtr->get_beat_type(), pMtr->get_beat_duration());
-
     //visual tracking during playback
     int trackingMode = m_appScope.get_visual_tracking_mode();
     spInteractor->set_visual_tracking_mode(trackingMode);
@@ -614,7 +611,6 @@ void DocumentWindow::display_new_document(const wxString& filename, int viewType
         delete m_pPresenter;
         m_fLoadingDocument = true;
         m_pPresenter = m_lomse.new_document(viewType);
-        //m_pPresenter = m_lomse.new_document(k_view_single_system);
         m_fLoadingDocument = false;
 
         //use filename (without path) as page title
@@ -700,7 +696,7 @@ Interactor* DocumentWindow::get_interactor() const
     if (SpInteractor sp = wp.lock())
         return sp.get();
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -731,7 +727,7 @@ void DocumentWindow::on_paint(wxPaintEvent& WXUNUSED(event))
 {
     LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
-    if (!IsShown() || m_pPresenter == NULL)
+    if (!IsShown() || m_pPresenter == nullptr)
         return;
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
@@ -1502,12 +1498,12 @@ void DocumentWindow::update_status_bar_caret_timepos()
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* DocumentWindow::get_active_score()
+AScore DocumentWindow::get_active_score()
 {
-    //TO_FIX: This method assumes that the document only contains the score.
-    //        See issue #????
-    Document* pDoc = m_pPresenter->get_document_raw_ptr();
-    return dynamic_cast<ImoScore*>( pDoc->get_im_root()->get_content_item(0) );
+    //TO_FIX: This method assumes that the active score is the first one and that
+    //        the document contains at least one score.
+    ADocument doc = m_pPresenter->get_document();
+    return doc.first_score();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1541,8 +1537,8 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         pDC->SetBackground(*wxWHITE_BRUSH);
         pDC->Clear();
 
-        Document* pDoc = get_document();
-        float scale = pDoc->get_page_content_scale();
+        ADocument doc = get_document();
+        float scale = doc.page_content_scale();
         pDC->SetUserScale(scale, scale);
         paperWidthPixels = int(float(paperWidthPixels) / scale);
         paperHeightPixels = int(float(paperHeightPixels) / scale);
@@ -2152,9 +2148,9 @@ void DocumentWindow::debug_dump_internal_model()
 {
     if (m_pPresenter)
     {
-        Document* pDoc = get_document();
+        ADocument doc = get_document();
         DlgDebug dlg(this, "Internal Model Dump",
-                     to_wx_string(pDoc->dump_tree()) );
+                     to_wx_string(doc.internal_object()->dump_tree()) );
         dlg.ShowModal();
     }
 }
@@ -2164,9 +2160,9 @@ void DocumentWindow::debug_display_document_ids()
 {
     if (m_pPresenter)
     {
-        Document* pDoc = get_document();
+        ADocument doc = get_document();
         DlgDebug dlg(this, "Document Ids dump",
-                     to_wx_string(pDoc->dump_ids()) );
+                     to_wx_string(doc.internal_object()->dump_ids()) );
         dlg.ShowModal();
     }
 }
@@ -2240,8 +2236,8 @@ bool DocumentWindow::should_enable_edit_redo()
 //---------------------------------------------------------------------------------------
 bool DocumentWindow::is_document_modified()
 {
-    Document* pDoc = get_document();
-    return pDoc && pDoc->is_modified();
+    ADocument doc = get_document();
+    return doc.internal_object()->is_modified();
 }
 
 //---------------------------------------------------------------------------------------
@@ -2545,7 +2541,7 @@ void DocumentWindow::on_popup_properties(wxCommandEvent& WXUNUSED(event))
 //    if (pDoc)
 //    {
 //	    pDoc->Modify(true);
-//        pDoc->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
+//        pDoc->UpdateAllViews((wxView*)nullptr, new lmUpdateHint() );
 //    }
 //}
 //

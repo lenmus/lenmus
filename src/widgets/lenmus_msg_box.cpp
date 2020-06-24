@@ -44,7 +44,7 @@ wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 MsgBoxBase::MsgBoxBase(const wxString& sMessage, const wxString& sTitle)
-	: wxDialog((wxWindow*)NULL, wxID_ANY, sTitle, wxDefaultPosition,
+	: wxDialog((wxWindow*)nullptr, wxID_ANY, sTitle, wxDefaultPosition,
                wxSize(600, -1), wxDEFAULT_DIALOG_STYLE, "MsgBox"),
       m_sMessage(sMessage)
 {

@@ -36,7 +36,7 @@ ContentFrame::ContentFrame(wxWindow* parent, wxWindowID id, const wxString& titl
                            const wxPoint& pos, const wxSize& size, long style,
                            const wxString& name)
     : wxFrame(parent, id, title, pos, size, style, name)
-    , m_pContentWindow(NULL)
+    , m_pContentWindow(nullptr)
 {
 }
 
@@ -58,7 +58,7 @@ Canvas* ContentFrame::get_active_canvas()
     if (m_pContentWindow)
         return m_pContentWindow->get_active_canvas();
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ Canvas* ContentFrame::get_canvas_for_index(int iCanvas) const
     if (m_pContentWindow)
         return m_pContentWindow->get_canvas(iCanvas);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ Canvas* ContentWindow::get_active_canvas()
     if (iActive != -1)
         return dynamic_cast<Canvas*>( GetPage(iActive) );
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -199,7 +199,7 @@ void CanvasInterface::set_title(wxWindow* pWnd, const wxString& title)
 {
     m_title = title;
 
-    if (m_pClientWindow != NULL)
+    if (m_pClientWindow != nullptr)
     {
         size_t pos;
         for (pos = 0; pos < m_pClientWindow->GetPageCount(); pos++)

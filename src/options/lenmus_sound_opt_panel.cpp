@@ -117,9 +117,9 @@ void SoundOptionsPanel::create_controls()
 	this->Layout();
 
 	// Connect Events
-	m_pRadSynthesizer->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( SoundOptionsPanel::on_new_synthesizer ), NULL, this );
-	m_pTestSoundButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SoundOptionsPanel::on_test_sound ), NULL, this );
-	m_pResetDefaultsButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SoundOptionsPanel::on_reset_to_defaults ), NULL, this );
+	m_pRadSynthesizer->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( SoundOptionsPanel::on_new_synthesizer ), nullptr, this );
+	m_pTestSoundButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SoundOptionsPanel::on_test_sound ), nullptr, this );
+	m_pResetDefaultsButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( SoundOptionsPanel::on_reset_to_defaults ), nullptr, this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -282,13 +282,13 @@ void OptInternalSynthPanel::create_controls()
 	this->Layout();
 
 	// Connect Events
-	m_pButtonChange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInternalSynthPanel::on_button_change ), NULL, this );
+	m_pButtonChange->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInternalSynthPanel::on_button_change ), nullptr, this );
 }
 
 OptInternalSynthPanel::~OptInternalSynthPanel()
 {
 	// Disconnect Events
-	m_pButtonChange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInternalSynthPanel::on_button_change ), NULL, this );
+	m_pButtonChange->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInternalSynthPanel::on_button_change ), nullptr, this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -420,7 +420,7 @@ void OptExternalSynthPanel::create_controls()
 
 
 	// Connect Events
-	m_pOutCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
+	m_pOutCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -616,10 +616,10 @@ void OptInstrumentsPanel::create_controls()
     itemBoxSizer25->Add(pButtonTest, 0, wxALIGN_LEFT|wxALL, 5);
 
 	// Connect Events
-	m_pVoiceChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
-	m_pSectCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
-	m_pInstrCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
-	pButtonTest->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInstrumentsPanel::on_test_sound ), NULL, this );
+	m_pVoiceChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
+	m_pSectCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
+	m_pInstrCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
+	pButtonTest->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptInstrumentsPanel::on_test_sound ), nullptr, this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -761,10 +761,10 @@ void OptMetronomePanel::create_controls()
     itemBoxSizer43->Add(pButtonTest, 0, wxALIGN_LEFT|wxALL, 5);
 
 	// Connect Events
-	m_pMtrChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
-	m_pMtrInstr1Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
-	m_pMtrInstr2Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), NULL, this );
-	pButtonTest->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptMetronomePanel::on_test_sound ), NULL, this );
+	m_pMtrChannelCombo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
+	m_pMtrInstr1Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
+	m_pMtrInstr2Combo->Connect(wxEVT_COMBOBOX, wxCommandEventHandler( OptionsTab::on_change_settings ), nullptr, this );
+	pButtonTest->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( OptMetronomePanel::on_test_sound ), nullptr, this );
 }
 
 //---------------------------------------------------------------------------------------

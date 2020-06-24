@@ -111,7 +111,7 @@ public:
     virtual wxString& get_selector() { return m_selector; }
 
     virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
-    virtual wxMenu* GetContextualMenuForToolPage() { return (wxMenu*)NULL; }
+    virtual wxMenu* GetContextualMenuForToolPage() { return (wxMenu*)nullptr; }
     virtual long get_key_translation_context()=0;
 
 protected:

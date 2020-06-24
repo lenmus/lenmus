@@ -523,7 +523,6 @@ find_path(BRAVURA_FONT_PATH
           NAMES Bravura.otf
           PATHS
               /usr/share/fonts/truetype/               # Red Hat & fonts-lenmus-bravura.deb
-              ${LENMUS_ROOT_DIR}/res/z_fonts           # local builds
               ${LENMUS_ROOT_DIR}/res/fonts             # local builds
               ${LENMUS_ROOT_DIR}/res/bravura/src       # builds for PPA at Launchpad.net
          )
@@ -851,9 +850,11 @@ endif()
 
 if(INSTALL_SOUNDFONT)
     set(LENMUS_SOUNDFONT_PATH "")   #to force to make it relative to <SHARED_DIR>
-    if (NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds/"))
-        file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
-             DESTINATION ${SHARED_DIR}/res/sounds)
+    if (NOT ("${FLUIDR3_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/sounds"))
+        install(FILES ${FLUIDR3_PATH}/FluidR3_GM.sf2
+                DESTINATION ${SHARED_DIR}/res/sounds )
+#       file(COPY ${FLUIDR3_PATH}/FluidR3_GM.sf2
+#             DESTINATION ${SHARED_DIR}/res/sounds)
     endif()
 endif()
 
@@ -866,10 +867,12 @@ endif()
 message(STATUS "LENMUS_SOUNDFONT_PATH=${LENMUS_SOUNDFONT_PATH}")
 
 if(INSTALL_BRAVURA_FONT AND
-   NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts/"))
+   NOT ("${BRAVURA_FONT_PATH}" STREQUAL "${LENMUS_ROOT_DIR}/res/fonts"))
         message(STATUS "BRAVURA_FONT_PATH=${BRAVURA_FONT_PATH}")
-        file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
-             DESTINATION ${SHARED_DIR}/res/fonts)
+        #file(COPY ${BRAVURA_FONT_PATH}/Bravura.otf
+        #     DESTINATION ${SHARED_DIR}/res/fonts)
+        install(FILES ${BRAVURA_FONT_PATH}/Bravura.otf
+                DESTINATION ${SHARED_DIR}/res/fonts )
 endif()
 
 
@@ -897,7 +900,7 @@ if (LENMUS_USE_LOMSE_SOURCES)
 
     # include Lomse build options and create the include file "lomse_config.h"
     message("Lomse configuration")
-    include( ${LOMSE_ROOT_DIR}/build-options.cmake )
+    include( ${CMAKE_CURRENT_SOURCE_DIR}/lomse-build-options.cmake )
     set_target_properties(build-version PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
 
@@ -1579,7 +1582,7 @@ elseif(UNIX AND NOT APPLE)
       set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
     endif() 
     string(CONCAT CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}"
-            "_${LENMUS_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}.deb")
+            "_${LENMUS_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
     if (LENMUS_USE_LOMSE_SOURCES)
         set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
     else()

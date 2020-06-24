@@ -140,7 +140,7 @@ void GrpBarlines::create_controls_in_group(wxBoxSizer* pMainSizer)
     //bitmap combo box to select the clef
     m_pBarlinesList = new wxBitmapComboBox();
     m_pBarlinesList->Create(this, k_id_barlines_list, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
-                       0, NULL, wxCB_READONLY);
+                       0, nullptr, wxCB_READONLY);
 
 	pCtrolsSizer->Add( m_pBarlinesList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -396,7 +396,7 @@ void GrpBarlines2::synchronize_with_selection(bool fEnable, SelectionSet* pSelec
 //    //bitmap combo box to select the clef
 //    m_pBarlinesList = new wxBitmapComboBox();
 //    m_pBarlinesList->Create(this, k_id_barlines_list, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
-//                       0, NULL, wxCB_READONLY);
+//                       0, nullptr, wxCB_READONLY);
 //
 //	pCtrolsSizer->Add( m_pBarlinesList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 //

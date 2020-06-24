@@ -115,7 +115,7 @@ void TheoMusicReadingCtrol::create_controls()
         if (m_pConstrains->IncludeSettingsLink())
         {
             HyperlinkCtrl* pSettingsLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("Exercise options")) );
             pTopLinePara->add_control( pSettingsLink );
             pSettingsLink->add_event_handler(k_on_click_event, this, on_settings);
@@ -128,7 +128,7 @@ void TheoMusicReadingCtrol::create_controls()
 
             // "See source score"
             HyperlinkCtrl* pSeeSourceLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("See source score")) );
             pTopLinePara->add_control( pSeeSourceLink );
             pSeeSourceLink->add_event_handler(k_on_click_event, this, on_see_source_score);
@@ -136,7 +136,7 @@ void TheoMusicReadingCtrol::create_controls()
 
             // "See MIDI events"
             HyperlinkCtrl* pSeeMidiLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("See MIDI events")) );
             pTopLinePara->add_control( pSeeMidiLink );
             pSeeMidiLink->add_event_handler(k_on_click_event, this, on_see_midi_events);
@@ -150,14 +150,14 @@ void TheoMusicReadingCtrol::create_controls()
 
     // "count off" check box
     m_pChkCountOff =
-        LENMUS_NEW CheckboxCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("Start with count off")) );
     pLinksPara1->add_control( m_pChkCountOff );
     pLinksPara1->add_inline_box(2000.0f, pSpacerStyle);
 
     // "use metronome" check box
     m_pChkMetronome =
-        LENMUS_NEW CheckboxCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("Play with metronome")) );
     pLinksPara1->add_control( m_pChkMetronome );
 
@@ -170,7 +170,7 @@ void TheoMusicReadingCtrol::create_controls()
     if (m_pConstrains->IncludeGoBackLink())
     {
         HyperlinkCtrl* pGoBackLink =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("Go back to theory")) );
         pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
         pLinksPara2->add_control( pGoBackLink );
@@ -179,7 +179,7 @@ void TheoMusicReadingCtrol::create_controls()
 
     // "New problem" button
     m_pNewProblem =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("New problem")) );
     m_pNewProblem->add_event_handler(k_on_click_event, this, on_new_problem);
     pLinksPara2->add_control( m_pNewProblem );
@@ -189,7 +189,7 @@ void TheoMusicReadingCtrol::create_controls()
     if (m_pConstrains->IncludePlayLink())
     {
         m_pPlayButton =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("Play")) );
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
         pLinksPara2->add_control( m_pPlayButton );
@@ -221,7 +221,7 @@ void TheoMusicReadingCtrol::create_controls()
     ImoStyle* pProblemStyle = m_pDoc->create_private_style();
     create_problem_display_box( m_pDyn->add_content_wrapper(), pProblemStyle );
 
-    m_pCounters = NULL;
+    m_pCounters = nullptr;
     m_fControlsCreated = true;
 }
 
@@ -237,7 +237,7 @@ wxString TheoMusicReadingCtrol::set_new_problem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -249,11 +249,11 @@ wxString TheoMusicReadingCtrol::set_new_problem()
     if (m_pProblemScore)
     {
         delete m_pProblemScore;
-        m_pProblemScore = NULL;
+        m_pProblemScore = nullptr;
     }
 
     //Generate a random score
-    Composer composer(m_pDoc);
+    Composer composer(m_doc);
     m_pProblemScore = composer.generate_score(m_pScoreConstrains);
     return "";
 }

@@ -53,7 +53,7 @@ public:
 
     void DumpXMLTree(wxXmlNode *pRoot);
     void ParseError(const wxChar* szFormat, ...);
-    void TagError(const wxString sElement, const wxString sTagName, wxXmlNode* pElement = NULL);
+    void TagError(const wxString sElement, const wxString sTagName, wxXmlNode* pElement = nullptr);
 
 };
 

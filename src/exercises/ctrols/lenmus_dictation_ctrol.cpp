@@ -61,7 +61,7 @@ DictationCtrol::DictationCtrol(long dynId, ApplicationScope& appScope,
 {
     for (int i=0; i < 4; ++i)
     {
-        m_pPlayFragment[i] = NULL;
+        m_pPlayFragment[i] = nullptr;
     }
     clear_play_counters();
 }
@@ -122,7 +122,7 @@ void DictationCtrol::add_optional_content_block_1()
 void DictationCtrol::add_play_fragment_link(int i, ImoParagraph* pContainer)
 {
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
-    m_pPlayFragment[i] = LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc, m_label_play[i]);
+    m_pPlayFragment[i] = LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc, m_label_play[i]);
     switch (i)
     {
         case 0:
@@ -176,7 +176,7 @@ wxDialog* DictationCtrol::get_settings_dialog()
     //TODO
 //    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
 //    return LENMUS_NEW DlgCfgRhythmicDictation(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -294,7 +294,7 @@ void DictationCtrol::display_problem_score()
     m_pDisplay->set_solution_text( to_std_string(
                     _("This is the solution (in colour, missing in your score):") ));
     m_pDisplay->set_solution_score(m_pProblemScore);
-    m_pProblemScore = NULL;     //ownership transferred to Document.
+    m_pProblemScore = nullptr;     //ownership transferred to Document.
 }
 
 //---------------------------------------------------------------------------------------
@@ -350,9 +350,9 @@ void DictationCtrol::play_or_stop_fragment(int i)
         set_play_mode(k_play_normal_instrument);
         SpInteractor spInteractor = m_pCanvas ?
                                     m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
-        Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+        Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
         this->countoff_status(true);
-        bool fVisualTracking = (m_pProblemScore == NULL);   //if NULL it is displayed
+        bool fVisualTracking = (m_pProblemScore == nullptr);   //if nullptr it is displayed
         int startMeasure = 2 * i + 1;
         int numMeasures = 2;
         m_pPlayer->play_measures(startMeasure, numMeasures, fVisualTracking,
@@ -376,7 +376,7 @@ void DictationCtrol::play_context_score()
     set_play_mode(k_play_normal_instrument);
     SpInteractor spInteractor = m_pCanvas ?
                                 m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
-    Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+    Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
     m_pPlayer->play(false, m_nPlayMM, pInteractor);
 }
 
@@ -770,7 +770,7 @@ RhythmicDictationCtrol::~RhythmicDictationCtrol()
 void RhythmicDictationCtrol::prepare_problem_score()
 {
     //Generate a random score
-    Composer composer(m_pDoc);
+    Composer composer(m_doc);
     //TODO: take midi instrument from exercise config / options
     composer.midi_instrument(0);     //Acoustic Grand Piano (0)
 //    composer.midi_instrument(68);    //Oboe (68)
@@ -793,7 +793,8 @@ void RhythmicDictationCtrol::prepare_problem_score()
 //---------------------------------------------------------------------------------------
 void RhythmicDictationCtrol::prepare_user_score()
 {
-    m_pUserScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    m_pUserScore = score.internal_object();
     ImoInstrument* pInstr = m_pUserScore->add_instrument();
     ImoSoundInfo* pSound = pInstr->get_sound_info(0);
     ImoMidiInfo* pMidi = pSound->get_midi_info();
@@ -832,7 +833,7 @@ MelodicDictationCtrol::~MelodicDictationCtrol()
 void MelodicDictationCtrol::prepare_problem_score()
 {
     //Generate a random score
-    Composer composer(m_pDoc);
+    Composer composer(m_doc);
     //TODO: take midi instrument from exercise config / options
     composer.midi_instrument(0);     //Acoustic Grand Piano (0)
 //    composer.midi_instrument(68);    //Oboe (68)
@@ -847,7 +848,8 @@ void MelodicDictationCtrol::prepare_problem_score()
 //---------------------------------------------------------------------------------------
 void MelodicDictationCtrol::prepare_user_score()
 {
-    m_pUserScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    m_pUserScore = score.internal_object();
     ImoInstrument* pInstr = m_pUserScore->add_instrument();
     ImoSoundInfo* pSound = pInstr->get_sound_info(0);
     ImoMidiInfo* pMidi = pSound->get_midi_info();
@@ -891,7 +893,7 @@ void HarmonicDictationCtrol::prepare_problem_score()
     m_timeType = k_time_4_4;
 
     //Generate a random score
-    Composer composer(m_pDoc);
+    Composer composer(m_doc);
     m_pProblemScore = composer.generate_score(m_pScoreConstrains);
 
     //set instrument
@@ -906,7 +908,8 @@ void HarmonicDictationCtrol::prepare_problem_score()
 //---------------------------------------------------------------------------------------
 void HarmonicDictationCtrol::prepare_user_score()
 {
-    m_pUserScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    m_pUserScore = score.internal_object();
     ImoInstrument* pInstr = m_pUserScore->add_instrument();
     ImoSystemInfo* pInfo = m_pUserScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines

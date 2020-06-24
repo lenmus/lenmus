@@ -143,7 +143,7 @@ void IdfyChordCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 
     int iB;
     for (iB=0; iB < k_num_buttons; iB++)
-        m_pAnswerButton[iB] = NULL;
+        m_pAnswerButton[iB] = nullptr;
 
     //rows with label and buttons
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
@@ -280,7 +280,8 @@ ImoScore* IdfyChordCtrol::prepare_aux_score(int nButton)
     // the user press the button to play a specific sound (chord, interval, scale, etc.)
     // This method is then invoked to prepare the score with the requested sound.
 
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     prepare_score(k_clef_G2, (EChordType)m_nRealChord[nButton], &pScore);
     return pScore;
 }
@@ -290,7 +291,7 @@ wxString IdfyChordCtrol::set_new_problem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -346,14 +347,15 @@ wxString IdfyChordCtrol::prepare_score(EClef WXUNUSED(nClef), EChordType nType, 
     if (*pScore)
     {
         delete *pScore;
-        *pScore = NULL;
+        *pScore = nullptr;
     }
 
     //create a score with the chord
     string sPattern;
 
     int nNumNotes = oChord.get_num_notes();
-    *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    *pScore = score.internal_object();
     (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pScore)->add_instrument();
     // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");

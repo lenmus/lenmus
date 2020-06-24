@@ -60,6 +60,8 @@ protected:
     EBookCtrolOptions*  m_pBaseConstrains;
     ImoDynamic*         m_pDyn;
     Document*           m_pDoc;
+    ADynamic            m_dyn;
+    ADocument           m_doc;
     bool                m_fControlsCreated;
     int                 m_state;        //interal state (FSM)
     ImoId               m_dynId;
@@ -70,8 +72,8 @@ public:
     virtual ~EBookCtrol();
 
     //implementation of virtual pure in parent DynControl
-    void generate_content(ImoDynamic* pDyn, Document* pDoc);
-    virtual void handle_event(SpEventInfo pEvent);
+    void generate_content(ADynamic dyn, ADocument doc) override;
+    virtual void handle_event(SpEventInfo pEvent) override;
 
     virtual void get_ctrol_options_from_params() = 0;
     virtual void initialize_ctrol() = 0;
@@ -85,8 +87,8 @@ public:
     virtual void on_go_back();
 
     //overrides of PlayerNoGui for using general metronome for speed settings
-    int get_metronome_mm();
-    Metronome* get_metronome();
+    int get_metronome_mm() override;
+    Metronome* get_metronome() override;
 
     //access to parent window
     wxWindow* get_parent_window();
@@ -148,7 +150,7 @@ protected:
     virtual void new_problem();
     virtual void reset_exercise();
     virtual void set_event_handlers();
-    virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=NULL);
+    virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=nullptr);
     virtual bool is_play_button_initially_enabled();
     virtual bool check_success(int nButton);
     virtual void display_first_time_content();
@@ -336,7 +338,7 @@ protected:
 
     ScorePlayer* m_pPlayer;
     ImoScore*   m_pProblemScore;    //score with the problem
-	ImoScore*   m_pSolutionScore;	//if not NULL, score with the solution. If NULL
+	ImoScore*   m_pSolutionScore;	//if not nullptr, score with the solution. If nullptr
                                     //   problem score will be used as solution score
     ImoScore*   m_pAuxScore;        //score to play user selected buttons
     int         m_nPlayMM;          //metronome setting to play scores
@@ -445,11 +447,11 @@ protected:
     ImoStyle* m_pLinksSpacerStyle;
     virtual void layout_exercise();
     virtual void add_settings_goback_and_debug_links(ImoParagraph* pContainer,
-                                                     ImoStyle* pSpacerStyle=NULL);
-    virtual void add_new_problem_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
-    virtual void add_play_problem_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
-    virtual void add_done_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
-    virtual void add_play_solution_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
+                                                     ImoStyle* pSpacerStyle=nullptr);
+    virtual void add_new_problem_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=nullptr);
+    virtual void add_play_problem_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=nullptr);
+    virtual void add_done_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=nullptr);
+    virtual void add_play_solution_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=nullptr);
     virtual void add_optional_content_block_1() {}
     virtual void add_optional_content_block_2() {}
 
@@ -459,7 +461,7 @@ protected:
     virtual void initial_play_of_problem();
     virtual void reset_exercise();
     virtual void correct_exercise();
-    virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=NULL);
+    virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=nullptr);
     virtual void enable_links_for_current_state();
 
     void create_controls();

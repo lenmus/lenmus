@@ -40,7 +40,7 @@ namespace lenmus
 // ----------------------------------------------------------------------------
 
 WizardPage::WizardPage(wxWizard* pParent)
-    : wxWizardPageSimple(pParent, NULL, NULL, wxNullBitmap)     //wx2.8     , NULL)
+    : wxWizardPageSimple(pParent, nullptr, nullptr, wxNullBitmap)     //wx2.8     , nullptr)
 {
     m_pParent = pParent;
     m_fOptional = false;
@@ -70,7 +70,7 @@ Wizard::Wizard(wxWindow *parent, int id, const wxString& title,
     : wxDialog(parent, id, title, pos, size, style)
 {
     m_posWizard = pos;
-    m_pFirstPage = (WizardPage*)NULL;
+    m_pFirstPage = (WizardPage*)nullptr;
 
     CreateControls();
 }
@@ -280,7 +280,7 @@ void Wizard::OnHelp(wxCommandEvent& WXUNUSED(event))
 {
     // this function probably can never be called when we don't have an active
     // page, but a small extra check won't hurt
-    if(m_pCurPage != NULL)
+    if(m_pCurPage != nullptr)
     {
         // Create and send the help event to the specific page handler
         // event data contains the active page so that context-sensitive

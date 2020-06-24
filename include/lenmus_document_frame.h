@@ -105,7 +105,7 @@ public:
     void hide_toc();
 
     //accessors
-    ImoScore* get_active_score();
+    AScore get_active_score();
     Interactor* get_interactor();
     DocumentWindow* get_document_window() { return m_right; }
 

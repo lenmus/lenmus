@@ -32,8 +32,11 @@ Carlos De La Fuente
 Porting to other platforms (alphabetical order)
 ------------------------------------------------
 
+Bob Byerly
+    Changes and instructions for creating macOS app bundle.
+
 Miguel Fernandez Fidalgo
-    Initial makefiles for linux with autotools
+    Initial makefiles for linux with autotools.
 
 Antonio Nicolás Pina
     Makefiles for linux with autotools. Debian package.
@@ -89,6 +92,7 @@ Translation credits (alphabetical order)
 ------------------------------------------
 
 Carlos Alarcía              			French. Versions 3.3 to 3.5
+Frédéric Baudrand                       French. Since version 5.6.2
 Mauro Giubileo              			Italian. Version 4.0
 Jack Van Handenhove         			Dutch. Since version 3.5
 Wenxi Lu (卢文汐)            				Simplified Chinese. Since version 5.0
@@ -99,7 +103,7 @@ Elif Öztürk                 			Turkish. Version 3.3
 Undine Peters               			German. Since version 5.2
 Cecilio Salmerón            			Spanish. Since version 1.0
 Xema Sanxurxo Rodríguez     			Galician. Version 4.0
-Avgeris Tsironis (Αυγέρης Τσιρώνης)		Greek. Version 5.5
+Avgeris Tsironis (Αυγέρης Τσιρώνης)		Greek. Since version 5.5
 
 
 

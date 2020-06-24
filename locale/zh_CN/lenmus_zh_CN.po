@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 5.4.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-18 10:17+0200\n"
-"PO-Revision-Date: 2020-04-18 10:17+0200\n"
+"POT-Creation-Date: 2020-05-17 13:04+0200\n"
+"PO-Revision-Date: 2020-05-17 13:05+0200\n"
 "Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: zh_CN\n"
@@ -461,44 +461,44 @@ msgstr "移动点"
 msgid "Select object"
 msgstr "选择八度 %d"
 
-#: src/app/lenmus_document_canvas.cpp:2171
+#: src/app/lenmus_document_canvas.cpp:2184
 msgid ""
 "The document contains scores created with a previous version. You must "
 "convert the document to current format (Menu > File > Convert) and edit the "
 "converted document."
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2278
+#: src/app/lenmus_document_canvas.cpp:2291
 #, c-format
 msgid ""
 "Document %s has been modified. Would you like to save it before closing?"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2282
+#: src/app/lenmus_document_canvas.cpp:2295
 msgid "Save the file before closing"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2283
+#: src/app/lenmus_document_canvas.cpp:2296
 msgid "Close without saving the file"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2299
-#: src/app/lenmus_document_canvas.cpp:2351 src/app/lenmus_main_frame.cpp:804
+#: src/app/lenmus_document_canvas.cpp:2312
+#: src/app/lenmus_document_canvas.cpp:2364 src/app/lenmus_main_frame.cpp:804
 msgid "Header"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2311
-#: src/app/lenmus_document_canvas.cpp:2363 src/app/lenmus_main_frame.cpp:806
+#: src/app/lenmus_document_canvas.cpp:2324
+#: src/app/lenmus_document_canvas.cpp:2376 src/app/lenmus_main_frame.cpp:806
 msgid "Paragraph"
 msgstr ""
 
-#: src/app/lenmus_document_canvas.cpp:2408
-#: src/app/lenmus_document_canvas.cpp:2433
+#: src/app/lenmus_document_canvas.cpp:2421
+#: src/app/lenmus_document_canvas.cpp:2446
 msgid "&Cut"
 msgstr "剪切"
 
-#: src/app/lenmus_document_canvas.cpp:2426
-#: src/app/lenmus_document_canvas.cpp:2438 src/app/lenmus_main_frame.cpp:1047
+#: src/app/lenmus_document_canvas.cpp:2439
+#: src/app/lenmus_document_canvas.cpp:2451 src/app/lenmus_main_frame.cpp:1047
 msgid "Edit"
 msgstr "编辑"
 
@@ -527,6 +527,10 @@ msgstr ""
 #: src/app/lenmus_main_frame.cpp:714
 msgid "Open"
 msgstr "打开"
+
+#: src/app/lenmus_main_frame.cpp:716
+msgid "Reload"
+msgstr ""
 
 #: src/app/lenmus_main_frame.cpp:718
 msgid "Open books"

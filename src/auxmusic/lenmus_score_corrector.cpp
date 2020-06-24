@@ -33,11 +33,11 @@ namespace lenmus
 // ScoreComparer implementation
 //=======================================================================================
 ScoreComparer::ScoreComparer()
-    : m_A(NULL)
-    , m_B(NULL)
+    : m_A(nullptr)
+    , m_B(nullptr)
     , m_D(0)
-    , m_xPath(NULL)
-    , m_yPath(NULL)
+    , m_xPath(nullptr)
+    , m_yPath(nullptr)
 {
 }
 
@@ -46,10 +46,10 @@ void ScoreComparer::initialize()
 {
     free_memory();
 
-    m_A = NULL;
-    m_B = NULL;
-    m_xPath = NULL;
-    m_yPath = NULL;
+    m_A = nullptr;
+    m_B = nullptr;
+    m_xPath = nullptr;
+    m_yPath = nullptr;
     m_D = 0;
 }
 

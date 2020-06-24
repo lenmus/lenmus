@@ -204,7 +204,7 @@ void IdfyTonalityCtrol::on_settings_changed()
 //    if (m_pConstrains->is_theory_mode())
 //        new_problem();
 //    else
-//        m_pProblemScore = NULL;
+//        m_pProblemScore = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ wxDialog* IdfyTonalityCtrol::get_settings_dialog()
 ImoScore* IdfyTonalityCtrol::prepare_aux_score(int WXUNUSED(nButton))
 {
     //answer buttons no allowed to play tonalities
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClef WXUNUSED(nClef), EKeySignature n
     if (*pProblemScore)
     {
         delete *pProblemScore;
-        *pProblemScore = NULL;
+        *pProblemScore = nullptr;
     }
 
     //determine tonic note
@@ -389,7 +389,8 @@ wxString IdfyTonalityCtrol::prepare_score(EClef WXUNUSED(nClef), EKeySignature n
     //create the score
     string sPattern;
 
-    *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    *pProblemScore = score.internal_object();
     (*pProblemScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
     // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");

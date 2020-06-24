@@ -69,9 +69,9 @@ EBookCtrol::EBookCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* p
     , EventHandler()
     , PlayerNoGui()
     , m_pCanvas(pCanvas)
-    , m_pBaseConstrains(NULL)
-    , m_pDyn(NULL)
-    , m_pDoc(NULL)
+    , m_pBaseConstrains(nullptr)
+    , m_pDyn(nullptr)
+    , m_pDoc(nullptr)
     , m_fControlsCreated(false)
     , m_state(0)
 {
@@ -83,11 +83,13 @@ EBookCtrol::~EBookCtrol()
 }
 
 //---------------------------------------------------------------------------------------
-void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
+void EBookCtrol::generate_content(ADynamic dyn, ADocument doc)
 {
-    m_pDyn = pDyn;
-    m_pDoc = pDoc;
-    m_dynId = pDyn->get_id();
+    m_doc = doc;
+    m_dyn = dyn;
+    m_pDyn = m_dyn.internal_object();
+    m_pDoc = m_doc.internal_object();
+    m_dynId = dyn.object_id();
 
     get_ctrol_options_from_params();
     initialize_ctrol();
@@ -188,20 +190,20 @@ wxWindow* EBookCtrol::get_parent_window()
 //=======================================================================================
 ExerciseCtrol::ExerciseCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas)
     : EBookCtrol(dynId, appScope, pCanvas)
-    , m_pScoreToPlay(NULL)
-    , m_pDisplay(NULL)
-    , m_pCounters(NULL)
+    , m_pScoreToPlay(nullptr)
+    , m_pDisplay(nullptr)
+    , m_pCounters(nullptr)
     , m_fCountersValid(false)
-    , m_pCountersWrapper(NULL)
-    , m_pCountersPara(NULL)
+    , m_pCountersWrapper(nullptr)
+    , m_pCountersPara(nullptr)
     , m_fQuestionAsked(false)
     , m_nRespAltIndex(-1)
     , m_fSolutionDisplayed(false)
-    , m_pPlayButton(NULL)
-    , m_pNewProblem(NULL)
-    , m_pShowSolution(NULL)
+    , m_pPlayButton(nullptr)
+    , m_pNewProblem(nullptr)
+    , m_pShowSolution(nullptr)
     , m_nNumButtons(0)
-    , m_pProblemManager(NULL)
+    , m_pProblemManager(nullptr)
     , m_sKeyPrefix("")
 {
 }
@@ -253,7 +255,7 @@ void ExerciseCtrol::create_controls()
         if (pConstrains->IncludeSettingsLink())
         {
             HyperlinkCtrl* pSettingsLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("Exercise options")) );
             pTopLinePara->add_control( pSettingsLink );
             pSettingsLink->add_event_handler(k_on_click_event, this, on_settings);
@@ -266,7 +268,7 @@ void ExerciseCtrol::create_controls()
             if (fAddSpace)
                 pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
             HyperlinkCtrl* pGoBackLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("Go back to theory")) );
             pTopLinePara->add_control( pGoBackLink );
             pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
@@ -281,7 +283,7 @@ void ExerciseCtrol::create_controls()
 
             // "See source score"
             HyperlinkCtrl* pSeeSourceLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("See source score")) );
             pTopLinePara->add_control( pSeeSourceLink );
             pSeeSourceLink->add_event_handler(k_on_click_event, this, on_see_source_score);
@@ -289,7 +291,7 @@ void ExerciseCtrol::create_controls()
 
             // "See MIDI events"
             HyperlinkCtrl* pSeeMidiLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                          to_std_string(_("See MIDI events")) );
             pTopLinePara->add_control( pSeeMidiLink );
             pSeeMidiLink->add_event_handler(k_on_click_event, this, on_see_midi_events);
@@ -309,7 +311,7 @@ void ExerciseCtrol::create_controls()
 
     // "New problem" button
     m_pNewProblem =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                  to_std_string(_("New problem")) );
     m_pNewProblem->add_event_handler(k_on_click_event, this, on_new_problem);
     pLinksPara->add_control( m_pNewProblem );
@@ -319,7 +321,7 @@ void ExerciseCtrol::create_controls()
     if (pConstrains->IncludeSolutionLink())
     {
         m_pShowSolution =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("Show solution")) );
         m_pShowSolution->add_event_handler(k_on_click_event, this, on_display_solution);
         pLinksPara->add_control( m_pShowSolution );
@@ -330,7 +332,7 @@ void ExerciseCtrol::create_controls()
     if (pConstrains->IncludePlayLink())
     {
         m_pPlayButton =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("Play")) );
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
         pLinksPara->add_control( m_pPlayButton );
@@ -408,8 +410,8 @@ void ExerciseCtrol::remove_counters_ctrol()
     {
         m_pCountersWrapper->remove_item(m_pCountersPara);
         delete m_pCountersPara;     //this añso deletes the CounterControl
-        m_pCountersPara = NULL;
-        m_pCounters = NULL;
+        m_pCountersPara = nullptr;
+        m_pCounters = nullptr;
     }
 }
 
@@ -443,7 +445,7 @@ void ExerciseCtrol::create_problem_manager()
 //---------------------------------------------------------------------------------------
 CountersCtrol* ExerciseCtrol::create_counters_ctrol(ImoContent* pWrapper)
 {
-    CountersCtrol* pNewCtrol = NULL;
+    CountersCtrol* pNewCtrol = nullptr;
     ExerciseOptions* pConstrains = dynamic_cast<ExerciseOptions*>(m_pBaseConstrains);
     if (pConstrains->IsUsingCounters() )
     {
@@ -969,12 +971,12 @@ CompareScoresCtrol::CompareScoresCtrol(long dynId, ApplicationScope& appScope,
     : wxEvtHandler()
     , CompareCtrol(dynId, appScope, pCanvas)
     , m_pPlayer( m_appScope.get_score_player() )
-    , m_pSolutionScore(NULL)
+    , m_pSolutionScore(nullptr)
     , m_nPlayMM(80)
     , m_fPlayingProblem(false)
 {
-    m_pScore[0] = NULL;
-    m_pScore[1] = NULL;
+    m_pScore[0] = nullptr;
+    m_pScore[1] = nullptr;
     Connect(wxID_ANY, wxEVT_TIMER,
         (wxObjectEventFunction)(void (wxEvtHandler::*)(wxTimerEvent&))&CompareScoresCtrol::on_timer_event);
 }
@@ -1032,7 +1034,7 @@ void CompareScoresCtrol::play(bool WXUNUSED(fVisualTracking))
             set_play_mode(k_play_normal_instrument);
             SpInteractor spInteractor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
                                                   : SpInteractor();
-            Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+            Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
             m_pPlayer->play(k_do_visual_tracking, m_nPlayMM, pInteractor);
         }
     }
@@ -1063,10 +1065,10 @@ void CompareScoresCtrol::PlayScore(int nIntv, bool fVisualTracking)
     countoff_status(k_no_countoff);
     metronome_status(k_no_metronome);
     set_play_mode(k_play_normal_instrument);
-    //Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
+    //Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : nullptr;
     SpInteractor spInteractor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
                                           : SpInteractor();
-    Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+    Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
     m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 }
 
@@ -1128,7 +1130,7 @@ void CompareScoresCtrol::display_solution()
 {
     m_pDisplay->remove_problem_text();
     m_pDisplay->set_problem_score(m_pSolutionScore);
-    m_pSolutionScore = NULL;
+    m_pSolutionScore = nullptr;
     m_pDoc->notify_if_document_modified();
 }
 
@@ -1136,7 +1138,7 @@ void CompareScoresCtrol::display_solution()
 void CompareScoresCtrol::display_problem_score()
 {
     //remove any displayed score
-    m_pDisplay->set_problem_score(NULL);
+    m_pDisplay->set_problem_score(nullptr);
 
     //play problem
     m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
@@ -1148,15 +1150,15 @@ void CompareScoresCtrol::delete_scores()
 {
     if (m_pSolutionScore) {
         delete m_pSolutionScore;
-        m_pSolutionScore = (ImoScore*)NULL;
+        m_pSolutionScore = (ImoScore*)nullptr;
     }
     if (m_pScore[0]) {
         delete m_pScore[0];
-        m_pScore[0] = (ImoScore*)NULL;
+        m_pScore[0] = (ImoScore*)nullptr;
     }
     if (m_pScore[1]) {
         delete m_pScore[1];
-        m_pScore[1] = (ImoScore*)NULL;
+        m_pScore[1] = (ImoScore*)nullptr;
     }
 }
 
@@ -1192,9 +1194,9 @@ OneScoreCtrol::OneScoreCtrol(long dynId, ApplicationScope& appScope,
                              DocumentWindow* pCanvas)
     : ExerciseCtrol(dynId, appScope, pCanvas)
     , m_pPlayer( m_appScope.get_score_player() )
-    , m_pProblemScore(NULL)
-	, m_pSolutionScore(NULL)
-    , m_pAuxScore(NULL)
+    , m_pProblemScore(nullptr)
+	, m_pSolutionScore(nullptr)
+    , m_pAuxScore(nullptr)
     , m_nPlayMM(320)    //it is assumed whole notes
 {
 }
@@ -1230,7 +1232,7 @@ void OneScoreCtrol::play(bool fVisualTracking)
         fVisualTracking &= m_pDisplay->is_displayed(m_pScoreToPlay);
         SpInteractor spInteractor = m_pCanvas ?
                                     m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
-        Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+        Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
         m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 
         if (m_pCanvas && pInteractor)
@@ -1277,7 +1279,7 @@ void OneScoreCtrol::play_specific_sound(int nButton)
         {
             m_pPlayer->load_score(m_pAuxScore, this);
             set_play_mode(k_play_normal_instrument);
-            m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, NULL);
+            m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, nullptr);
         }
     }
 }
@@ -1293,14 +1295,14 @@ void OneScoreCtrol::display_solution()
         //if there is a solution score, display it as solution
         m_pDisplay->set_problem_score(m_pSolutionScore);
         m_pScoreToPlay = m_pSolutionScore;
-        m_pSolutionScore = NULL; //ownership transferred to m_pDisplay
+        m_pSolutionScore = nullptr; //ownership transferred to m_pDisplay
 	}
 	else if (m_pProblemScore && !m_pDisplay->is_score_displayed())
     {
         //if problem score not yet displayed, display it as the solution
         m_pDisplay->set_problem_score(m_pProblemScore);
         m_pScoreToPlay = m_pProblemScore;
-        m_pProblemScore = NULL;         //ownership transferred to m_pDisplay
+        m_pProblemScore = nullptr;         //ownership transferred to m_pDisplay
     }
     m_pDisplay->set_solution_text( to_std_string(m_sAnswer) );
     if (are_answer_buttons_allowed_for_playing())
@@ -1322,12 +1324,12 @@ void OneScoreCtrol::display_problem_score()
             //theory
             m_pDisplay->set_problem_score(m_pProblemScore);
             m_pScoreToPlay = m_pProblemScore;
-            m_pProblemScore = NULL; //ownership transferred to m_pDisplay
+            m_pProblemScore = nullptr; //ownership transferred to m_pDisplay
         }
         else
         {
             //ear training
-            m_pDisplay->set_problem_score(NULL);
+            m_pDisplay->set_problem_score(nullptr);
             m_pScoreToPlay = m_pProblemScore;
             play(k_no_visual_tracking);
         }
@@ -1352,13 +1354,13 @@ bool OneScoreCtrol::remove_problem_text_when_displaying_solution()
 void OneScoreCtrol::delete_scores()
 {
     delete m_pProblemScore;
-    m_pProblemScore = NULL;
+    m_pProblemScore = nullptr;
 
     delete m_pSolutionScore;
-    m_pSolutionScore = NULL;
+    m_pSolutionScore = nullptr;
 
     delete m_pAuxScore;
-    m_pAuxScore = NULL;
+    m_pAuxScore = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1524,18 +1526,18 @@ void OneScoreCtrol::on_debug_show_midi_events()
 FullEditorCtrol::FullEditorCtrol(long dynId, ApplicationScope& appScope,
                              DocumentWindow* pCanvas)
     : EBookCtrol(dynId, appScope, pCanvas)
-    , m_pProblemScore(NULL)
-    , m_pContextScore(NULL)
-    , m_pUserScore(NULL)
+    , m_pProblemScore(nullptr)
+    , m_pContextScore(nullptr)
+    , m_pUserScore(nullptr)
     , m_pPlayer( m_appScope.get_score_player() )
     , m_nPlayMM(66)
     , m_midiVoice(0)        //Acoustic Grand Piano
-    , m_pUserScoreToPlay(NULL)
-    , m_pDisplay(NULL)
-    , m_pPlayProblem(NULL)
-    , m_pPlayUserScore(NULL)
-    , m_pNewProblem(NULL)
-    , m_pDoneButton(NULL)
+    , m_pUserScoreToPlay(nullptr)
+    , m_pDisplay(nullptr)
+    , m_pPlayProblem(nullptr)
+    , m_pPlayUserScore(nullptr)
+    , m_pNewProblem(nullptr)
+    , m_pDoneButton(nullptr)
     , m_numTimesProblemPlayed(0)
 {
 }
@@ -1593,14 +1595,14 @@ void FullEditorCtrol::layout_exercise()
 //
 //    // "count off" check box
 //    m_pChkCountOff =
-//        LENMUS_NEW CheckboxCtrl(*pLibScope, NULL, m_pDoc,
+//        LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
 //                                 to_std_string(_("Start with count off")) );
 //    pLinksPara1->add_control( m_pChkCountOff );
 //    pLinksPara1->add_inline_box(2000.0f, pSpacerStyle);
 
 //    // "use metronome" check box
 //    m_pChkMetronome =
-//        LENMUS_NEW CheckboxCtrl(*pLibScope, NULL, m_pDoc,
+//        LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
 //                                 to_std_string(_("Play with metronome")) );
 //    pLinksPara1->add_control( m_pChkMetronome );
 
@@ -1641,7 +1643,7 @@ void FullEditorCtrol::add_settings_goback_and_debug_links(ImoParagraph* pContain
     if (m_pConstrains->IncludeGoBackLink())
     {
         HyperlinkCtrl* pGoBackLink =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("Go back to theory")) );
         pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
         pContainer->add_control( pGoBackLink );
@@ -1652,7 +1654,7 @@ void FullEditorCtrol::add_settings_goback_and_debug_links(ImoParagraph* pContain
     if (m_pConstrains->IncludeSettingsLink())
     {
         HyperlinkCtrl* pSettingsLink =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("Exercise options")) );
         pContainer->add_control( pSettingsLink );
         pSettingsLink->add_event_handler(k_on_click_event, this, on_settings);
@@ -1665,7 +1667,7 @@ void FullEditorCtrol::add_settings_goback_and_debug_links(ImoParagraph* pContain
 
         // "See source score"
         HyperlinkCtrl* pSeeSourceLink =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("See source score")) );
         pSeeSourceLink->add_event_handler(k_on_click_event, this, on_see_source_score);
         pContainer->add_control( pSeeSourceLink );
@@ -1673,7 +1675,7 @@ void FullEditorCtrol::add_settings_goback_and_debug_links(ImoParagraph* pContain
 
         // "See MIDI events"
         HyperlinkCtrl* pSeeMidiLink =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc,
                                      to_std_string(_("See MIDI events")) );
         pSeeMidiLink->add_event_handler(k_on_click_event, this, on_see_midi_events);
         pContainer->add_control( pSeeMidiLink );
@@ -1686,7 +1688,7 @@ void FullEditorCtrol::add_new_problem_link(ImoParagraph* pContainer,
 {
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     m_pNewProblem =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc, m_label_new_problem);
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc, m_label_new_problem);
     m_pNewProblem->add_event_handler(k_on_click_event, this, on_new_problem);
     pContainer->add_control( m_pNewProblem );
     if (pSpacerStyle)
@@ -1699,7 +1701,7 @@ void FullEditorCtrol::add_play_problem_link(ImoParagraph* pContainer,
 {
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     m_pPlayProblem =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc, m_label_play_problem);
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc, m_label_play_problem);
     m_pPlayProblem->add_event_handler(k_on_click_event, this, on_play_problem);
     pContainer->add_control( m_pPlayProblem );
     if (pSpacerStyle)
@@ -1711,7 +1713,7 @@ void FullEditorCtrol::add_done_link(ImoParagraph* pContainer, ImoStyle* pSpacerS
 {
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     m_pDoneButton =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc, m_label_done);
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc, m_label_done);
     m_pDoneButton->add_event_handler(k_on_click_event, this, on_correct_exercise);
     pContainer->add_control( m_pDoneButton );
     if (pSpacerStyle)
@@ -1724,7 +1726,7 @@ void FullEditorCtrol::add_play_solution_link(ImoParagraph* pContainer,
 {
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     m_pPlayUserScore =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc, m_label_play_user_score);
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, nullptr, m_pDoc, m_label_play_user_score);
     m_pPlayUserScore->add_event_handler(k_on_click_event, this, on_play_user_score);
     pContainer->add_control( m_pPlayUserScore );
     if (pSpacerStyle)
@@ -1738,9 +1740,9 @@ void FullEditorCtrol::do_play_problem(bool fDoCountOff)
     set_play_mode(k_play_normal_instrument);
     SpInteractor spInteractor = m_pCanvas ?
                                 m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
-    Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+    Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
     this->countoff_status(fDoCountOff);
-    bool fVisualTracking = (m_pProblemScore == NULL);   //if NULL it is displayed
+    bool fVisualTracking = (m_pProblemScore == nullptr);   //if nullptr it is displayed
     m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 }
 
@@ -1780,7 +1782,7 @@ void FullEditorCtrol::display_user_score()
     {
         m_pDisplay->set_problem_score(m_pUserScore);
         m_pUserScoreToPlay = m_pUserScore;
-        m_pUserScore = NULL;    //ownership transferred to m_pDisplay
+        m_pUserScore = nullptr;    //ownership transferred to m_pDisplay
     }
 }
 
@@ -1791,9 +1793,9 @@ void FullEditorCtrol::delete_scores()
     delete m_pContextScore;
     delete m_pUserScore;
 
-    m_pProblemScore = NULL;
-    m_pContextScore = NULL;
-    m_pUserScore = NULL;
+    m_pProblemScore = nullptr;
+    m_pContextScore = nullptr;
+    m_pUserScore = nullptr;
 
     delete_specific_scores();
 }
@@ -1834,7 +1836,7 @@ void FullEditorCtrol::play_or_stop_user_score()
         bool fVisualTracking = m_pDisplay->is_displayed(m_pUserScoreToPlay);
         SpInteractor spInteractor = m_pCanvas ?
                                     m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
-        Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
+        Interactor* pInteractor = (spInteractor ? spInteractor.get() : nullptr);
         m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 
         //AWARE The link label is restored to "play" when the EndOfPlay event is
@@ -1965,7 +1967,7 @@ void FullEditorCtrol::enable_edition()
     SpInteractor spIntor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
                                      : SpInteractor();
 
-    Interactor* pIntor = (spIntor ? spIntor.get() : NULL);
+    Interactor* pIntor = (spIntor ? spIntor.get() : nullptr);
     if (pIntor)
         pIntor->enable_edition_restricted_to( m_pUserScore->get_id() );
 }
@@ -1975,7 +1977,7 @@ void FullEditorCtrol::disable_edition()
 {
     SpInteractor spIntor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
                                      : SpInteractor();
-    Interactor* pIntor = (spIntor ? spIntor.get() : NULL);
+    Interactor* pIntor = (spIntor ? spIntor.get() : nullptr);
     if (pIntor)
         pIntor->set_operating_mode(Interactor::k_mode_read_only);
 }
@@ -1994,7 +1996,7 @@ void FullEditorCtrol::mover_cursor_to_end()
 {
     SpInteractor spIntor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
                                      : SpInteractor();
-    Interactor* pIntor = (spIntor ? spIntor.get() : NULL);
+    Interactor* pIntor = (spIntor ? spIntor.get() : nullptr);
     if (pIntor)
     {
         DocCursor* pCursor = pIntor->get_cursor();

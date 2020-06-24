@@ -213,7 +213,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
     if (cmd.empty())
     {
         m_error = "No command entered!";
-        return NULL;
+        return nullptr;
     }
 
 
@@ -241,7 +241,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
             return LENMUS_NEW CmdCursor(CmdCursor::k_exit);
 
         m_error = errorMsg;
-        return NULL;
+        return nullptr;
     }
 
     //insertion
@@ -290,7 +290,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
         }
 
         m_error = errorMsg;
-        return NULL;
+        return nullptr;
     }
 
     //deletion
@@ -308,7 +308,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
         }
 
         m_error = errorMsg;
-        return NULL;
+        return nullptr;
     }
 
     //selection
@@ -342,11 +342,11 @@ DocCommand* CommandParser::create_command(const string& cmd)
             return LENMUS_NEW CmdSelection(CmdSelection::k_set, token_as_imoid());
 
         m_error = errorMsg;
-        return NULL;
+        return nullptr;
     }
 
     m_error = errorMsg;
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -380,14 +380,14 @@ ImoId CommandParser::token_as_imoid()
 DocCommand* CommandParser::error_no_more_tokens()
 {
     m_error = "More parameters expected! Command ignored";
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
 DocCommand* CommandParser::error_bad_syntax()
 {
     m_error = "Bad syntax! Command ignored";
-    return NULL;
+    return nullptr;
 }
 
 

@@ -68,9 +68,9 @@
 //    for (int nR = lmCVR_FirstChordValidationRule; nR<lmCVR_LastChordValidationRule; nR++)
 //    {
 //        pRule = tRules.GetRule(nR);
-//        if ( pRule == NULL)
+//        if ( pRule == nullptr)
 //        {
-////todo: remove this message?            wxLogMessage(" Rule %d is NULL !!!", nR);
+////todo: remove this message?            wxLogMessage(" Rule %d is nullptr !!!", nR);
 //        }
 //        else if (pRule->IsEnabled())
 //        {
@@ -225,8 +225,8 @@
 //        fSwapDone = 0;
 //        for (nCount = 0; nCount < nNumNotes - 1; nCount++)
 //        {
-//            wxASSERT(pInpChordNotes[nCount] != NULL);
-//            wxASSERT(pInpChordNotes[nCount+1] != NULL);
+//            wxASSERT(pInpChordNotes[nCount] != nullptr);
+//            wxASSERT(pInpChordNotes[nCount+1] != nullptr);
 //            if (pInpChordNotes[nCount]->GetFPitch() > pInpChordNotes[nCount+1]->GetFPitch() )
 //            {
 //	            auxNote = pInpChordNotes[nCount];
@@ -241,7 +241,7 @@
 //void SortChordNotes(int nNumNotes, FPitch fInpChordNotes[])
 //{
 //    // todo remove? wxASSERT(nNumNotes < k_notes_in_chord);
-//    wxASSERT(fInpChordNotes != NULL);
+//    wxASSERT(fInpChordNotes != nullptr);
 //    // Classic Bubble sort
 //    int nCount, fSwapDone;
 //    FPitch auxNote;
@@ -271,16 +271,16 @@
 //void GetIntervalsFromNotes(int nNumNotes, ImoNote** pInpChordNotes, lmChordInfo* tOutChordInfo)
 //{
 //    wxASSERT(nNumNotes < k_notes_in_chord);
-//    wxASSERT(pInpChordNotes != NULL);
-//    wxASSERT(tOutChordInfo != NULL);
-//    wxASSERT(pInpChordNotes[0] != NULL);
+//    wxASSERT(pInpChordNotes != nullptr);
+//    wxASSERT(tOutChordInfo != nullptr);
+//    wxASSERT(pInpChordNotes[0] != nullptr);
 //
 //    FIntval fpIntv;
 //    int nCurrentIntvIndex = 0;
 //    int nExistingIntvIndex = 0;
 //    for (int nCount = 1; nCount < nNumNotes; nCount++)
 //    {
-//        wxASSERT(pInpChordNotes[nCount] != NULL);
+//        wxASSERT(pInpChordNotes[nCount] != nullptr);
 //        fpIntv = (FIntval) (pInpChordNotes[nCount]->GetFPitch() - pInpChordNotes[0]->GetFPitch());
 //
 //        if (fpIntv >= k_interval_p8)
@@ -340,7 +340,7 @@
 //    }while (fSwapDone);
 //
 //
-//    // Set the non-used intervals to  NULL
+//    // Set the non-used intervals to  nullptr
 //    for (int i=tOutChordInfo->nNumIntervals; i<k_intervals_in_chord; i++)
 //    {
 //      tOutChordInfo->nIntervals[i] = lmNULL_FIntval;
@@ -372,8 +372,8 @@
 //    m_pFontInfo = pFontInfo;
 //    m_pSize = pSize;
 //
-//    assert(m_pFontInfo != NULL);
-//    assert(m_pSize != NULL);
+//    assert(m_pFontInfo != nullptr);
+//    assert(m_pSize != nullptr);
 //
 //    m_ntCurrentBoxYStart = m_ntConstInitialBoxYStart;
 //}
@@ -387,10 +387,10 @@
 //}
 //void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmScoreChord* pChordDsct, wxColour colour, wxString &sText)
 //{
-//    if (pChordDsct == NULL )
+//    if (pChordDsct == nullptr )
 //    {
 //        wxLogMessage(
-//            " DisplayChordInfo ERROR: Chord descriptor is NULL. Msg: %s"
+//            " DisplayChordInfo ERROR: Chord descriptor is nullptr. Msg: %s"
 //            , sText.wx_str());
 //        return;  // todo: improvement: in this case, display a box but not attached to any note ?
 //    }
@@ -414,7 +414,7 @@
 //
 ///* todo remove    for (int i = 0; i<m_nNumChordNotes; i++)
 //    {
-//        assert(pChordDsct->GetNoteLmNote(i) != NULL);
+//        assert(pChordDsct->GetNoteLmNote(i) != nullptr);
 //        pChordDsct->GetNoteLmNote(i)->SetColour(colour);
 //    } */
 //
@@ -803,7 +803,7 @@
 //
 //int lmActiveNotes::GetNotes(ImoNote** pNotes)
 //{
-//    assert(pNotes != NULL);
+//    assert(pNotes != nullptr);
 //    std::list<lmActiveNoteInfo*>::iterator it;
 //    int nCount = 0;
 //    for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it, nCount++)
@@ -917,7 +917,7 @@
 //lmRule::lmRule(int nRuleID)
 //{
 //    m_fEnabled = true;
-//    m_pChordDescriptor = NULL;
+//    m_pChordDescriptor = nullptr;
 //    m_sDetails = "nothing";
 //    m_nRuleId = nRuleID;
 //};
@@ -935,9 +935,9 @@
 //int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )
 //{
 //    sResultDetails = "Rule: No parallel motion ";
-//    if ( m_pChordDescriptor == NULL)
+//    if ( m_pChordDescriptor == nullptr)
 //    {
-//        wxLogMessage(" lmRuleNoParallelMotion: m_pChordDescriptor NULL ");
+//        wxLogMessage(" lmRuleNoParallelMotion: m_pChordDescriptor nullptr ");
 //        return false;
 //    }
 //    int nDifColour = this->GetRuleId() * 10;   // each rule has a slightly different color
@@ -1049,9 +1049,9 @@
 //        {"Direct", "Oblique", "Contrary"};
 //
 //    sResultDetails = "Rule: No resulting fifth/octaves ";
-//    if ( m_pChordDescriptor == NULL)
+//    if ( m_pChordDescriptor == nullptr)
 //    {
-//        wxLogMessage(" lmRuleNoResultingFifthOctaves: m_pChordDescriptor NULL ");
+//        wxLogMessage(" lmRuleNoResultingFifthOctaves: m_pChordDescriptor nullptr ");
 //        return 0;
 //    }
 //
@@ -1174,9 +1174,9 @@
 //                                     , ChordInfoBox* pBox)
 //{
 //    sResultDetails = "Rule: No voices crossing:";
-//    if ( m_pChordDescriptor == NULL)
+//    if ( m_pChordDescriptor == nullptr)
 //    {
-//        wxLogMessage(" lmRuleNoVoicesCrossing: m_pChordDescriptor NULL ");
+//        wxLogMessage(" lmRuleNoVoicesCrossing: m_pChordDescriptor nullptr ");
 //        return 0;
 //    }
 //    int nDifColour = this->GetRuleId() * 10;   // each rule has a slightly different color
@@ -1261,9 +1261,9 @@
 //                                           , ChordInfoBox* pBox)
 //{
 //    sResultDetails = " Rule: no interval higher than octave";
-//    if ( m_pChordDescriptor == NULL)
+//    if ( m_pChordDescriptor == nullptr)
 //    {
-//        wxLogMessage(" lmNoIntervalHigherThanOctave:  m_pChordDescriptor NULL ");
+//        wxLogMessage(" lmNoIntervalHigherThanOctave:  m_pChordDescriptor nullptr ");
 //        return 0;
 //    }
 //    int nDifColour = this->GetRuleId() * 10;
@@ -1410,7 +1410,7 @@
 //{
 //    std::map<int, lmRule*>::iterator it = m_Rules.find(nRuleId);
 //    if(it == m_Rules.end())
-//        return NULL;
+//        return nullptr;
 //    else
 //        return it->second;
 //}

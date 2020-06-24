@@ -82,7 +82,7 @@ typedef void (wxEvtHandler::*ToolBoxToolSelectedEventFunction)(ToolBoxToolSelect
 #define LM_EVT_TOOLBOX_TOOL_SELECTED(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_TOOL_SELECTED, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( ToolBoxToolSelectedEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( ToolBoxToolSelectedEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 //---------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ typedef void (wxEvtHandler::*ToolBoxPageChangedEventFunction)(ToolBoxPageChanged
 #define LM_EVT_TOOLBOX_PAGE_CHANGED(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_PAGE_CHANGED, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( ToolBoxPageChangedEventFunction, & fn ), (wxObject *) NULL ),
+    wxStaticCastEvent( ToolBoxPageChangedEventFunction, & fn ), (wxObject *) nullptr ),
 
 
 }   // namespace lenmus

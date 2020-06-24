@@ -120,7 +120,7 @@ void DlgClefs::create_dialog()
 
 	wxBoxSizer* mainSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* hSizer = NULL;
+	wxBoxSizer* hSizer = nullptr;
 	int i;
     for(i=0; i < k_num_clefs; i++)
     {

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2020. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -53,6 +53,10 @@ class ImoStaffObj;
 class PlayerGui;
 class SelectionSet;
 class GmoObj;
+
+class ADocument;
+class ADynamic;
+class AObject;
 
 class Interactor;
 typedef std::weak_ptr<Interactor>     WpInteractor;
@@ -225,7 +229,7 @@ typedef std::shared_ptr<EventDoc>  SpEventDoc;
 	inform the user application that it must immediately update the content of the
 	window associated to the lomse View, by displaying the current bitmap. User
 	application must put immediately the content of the currently rendered buffer
-	into the window without calling any Lomse methods (i.e. force_redraw) or generating
+	into the window without calling any Lomse methods (e.g., force_redraw) or generating
 	application events. .
 
 	For receiving these events you will have to register a callback when
@@ -657,7 +661,7 @@ typedef std::shared_ptr<EventUpdateUI>  SpEventUpdateUI;
         different box areas. Probably your application should ignore these events.
     - TaskDataEntry selected: As mouse moves, mouse in and out events are generated,
         as mouse flies over the different box areas. Your application can handle these
-        events and react to them as convenient (i.e. highlighting the implied
+        events and react to them as convenient (e.g., highlighting the implied
         insertion point/area).
 
     <b>Type k_on_click_event</b>
@@ -1374,30 +1378,39 @@ public:
     ~RequestDynamic() {}
 
     /** If the user application has not yet handled this request, this method returns
-        the ImoDynamic object that should be replaced. Otherwise, returns the replacement
-        ImoObj set by the user application.    */
-    inline ImoObj* get_object() { return m_pObj; }
+        the dynamic object that should be replaced. Otherwise, returns the replacement
+        object set by the user application.
+    */
+    AObject get_object();
 
-    /// Returns a pointer to the Document to which this request refers to.    */
-    inline Document* get_document() { return m_pDoc; }
+    /// Returns the document to which this request refers to.    */
+    ADocument get_document();
 
     ///for setting requested data
-    inline void set_object(ImoObj* pObj) { m_pObj = pObj; }
+    void set_object(AObject& obj);
 
 };
 
 //---------------------------------------------------------------------------------------
 // RequestFont
-/** When a Documnet uses a font that is not available in the Lomse package, Lomse
-    sends this request to the user application, asking for the file path for the font
-    to use.
-    The user application has to answer this request by invoking method
+/** When a Document uses a font that Lomse can not find it sends this request to the
+    user application, asking for the file path for the font to use. The user application
+    has to answer this request by invoking method
     RequestFont::set_font_fullname() passing as argument the path to the font to use.
 
-    Currently, Lomse only uses the fonts distributed
-    with liblomse package and this causes different problems
-    (see <a href="https://github.com/lenmus/lomse/issues/102">issue #102</a>).
-    The RequestFont request is just a bypass for this problem.
+    Lomse manages fonts in different ways depending on the platform:
+      - For Linux (and macOS) Lomse uses system installed fonts and makes substitutions
+        when requested font is not available. The RequestFont callback is only used
+        when Lomse cannot find the "Bravura.otf" music font needed for rendering musical
+        symbols, when it is not installed in the system (e.g. missing dependency in
+        installation page, local installation from sources, etc.).
+      - For Windows, Lomse also uses system installed fonts and makes substitutions
+        when requested font is not available, but the substitutions table is small and
+        thus, the RequestFont callback is used when Lomse cannot find the the requested
+        font or an appropriate substitution.
+      - For other platforms Lomse only uses the fonts distributed with Lomse package
+        and the RequestFont callback is used when requesting any other font not present
+        in Lomse package.
 
     <b>Example:</b>
 
@@ -1451,8 +1464,8 @@ public:
         //use operating system services to find a suitable font
 
         //notes on parameters received:
-        // - fontname can be either the face name (i.e. "Book Antiqua") or
-        //   the familly name (i.e. "Liberation sans")
+        // - fontname can be either the face name (e.g., "Book Antiqua") or
+        //   the familly name (e.g., "Liberation sans")
 
         const string& fontname = pRequest->get_fontname();
         bool bold = pRequest->get_bold();
@@ -1540,7 +1553,7 @@ public:
 
     //getters
     /** Returns the <i>fontname</i>. It can be either the face name (i.e.
-        "Book Antiqua") or the familly name (i.e. "Liberation sans"). */
+        "Book Antiqua") or the familly name (e.g., "Liberation sans"). */
     inline const string& get_fontname() { return m_fontname; }
     ///Returns @true is the font is requested in bold face. */
     inline bool get_bold() { return m_bold; }

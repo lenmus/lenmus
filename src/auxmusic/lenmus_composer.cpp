@@ -97,10 +97,11 @@ static lmEHarmonicFunction m_aProgression[][8] =
 //=======================================================================================
 // Composer implementation
 //=======================================================================================
-Composer::Composer(Document* pDoc)
-    : m_pDoc(pDoc)
+Composer::Composer(ADocument doc)
+    : m_doc(doc)
     , m_midiVoice(0)    //Acoustic Grand Piano
 {
+    m_pDoc = doc.internal_object();
 }
 
 //---------------------------------------------------------------------------------------
@@ -224,7 +225,8 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     bool fCompound = get_num_ref_notes_per_pulse_for(m_nTimeSign) != 1;
 
     // prepare and initialize the score
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     ImoInstrument* pInstr = pScore->add_instrument();
     pScore->set_version(200);
     ImoSoundInfo* pSound = pInstr->get_sound_info(0);
@@ -737,9 +739,9 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     // So first we have to compute the number of on-chord notes. The following code is a
     // loop to count on-chord notes in first staff of first instrument
     // and to locate last note. This is necessary to assign it the root pitch (later)
-    // ImoNote* pLastNote = NULL;
+    // ImoNote* pLastNote = nullptr;
     int nNumPoints = 0;
-    ImoTimeSignature* pTS = NULL;
+    ImoTimeSignature* pTS = nullptr;
     StaffObjsCursor cursor(pScore);
     int numNotes = 0;   //DBG
     while(!cursor.is_end())
@@ -800,12 +802,12 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     FPitch nRootNote = GenerateInChordList(nKey, nChords[iC], aOnChordPitch);
 
     // Loop to process notes/rests in first staff of first instrument
-    ImoNote* pOnChord1 = NULL;      //Pair of on-chord notes. First one
-    ImoNote* pOnChord2 = NULL;      //Pair of on-chord notes. Second one
+    ImoNote* pOnChord1 = nullptr;      //Pair of on-chord notes. First one
+    ImoNote* pOnChord2 = nullptr;      //Pair of on-chord notes. Second one
     ImoNote* pNonChord[20];         //non-chord notes between the two on-chord notes
     int nCount = 0;                 //number of non-chord notes between the two on-chord notes
 
-    ImoNote* pNotePrev = NULL;
+    ImoNote* pNotePrev = nullptr;
     ImoNote* pNoteCur;
     int iPt = 0;
     FPitch fpNew;
@@ -1586,7 +1588,7 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
 {
     // Receives the two on-chord notes and the non-chord notes between them, and assign
     // the pitch to all notes
-    // The first on-chord note can be NULL (first anacruxis measure)
+    // The first on-chord note can be nullptr (first anacruxis measure)
     // The number of non-chord notes received is in 'nNumNotes'
 
     //case: no non-chord notes. Nothing to do

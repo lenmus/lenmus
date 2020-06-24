@@ -498,27 +498,27 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
                      const wxSize& size)
-    : ContentFrame(NULL, wxID_ANY, appScope.get_app_full_name(), pos, size)
+    : ContentFrame(nullptr, wxID_ANY, appScope.get_app_full_name(), pos, size)
     , PlayerGui()
     , EditInterface()
     , m_appScope(appScope)
     , m_lastOpenFile("")
-    , m_pWelcomeWnd(NULL)
-    , m_pConsole(NULL)
-    , m_pVirtualKeyboard(NULL)
-    , m_pSpacingParamsDlg(NULL)
+    , m_pWelcomeWnd(nullptr)
+    , m_pConsole(nullptr)
+    , m_pVirtualKeyboard(nullptr)
+    , m_pSpacingParamsDlg(nullptr)
     , m_pMetronomeDlg(nullptr)
-    , m_pToolbar(NULL)
-    , m_pTbFile(NULL)
-    , m_pTbEdit(NULL)
-    , m_pTbZoom(NULL)
-    , m_pTbPlay(NULL)
-    , m_pTbMtr(NULL)
-    , m_pTbTextBooks(NULL)
-    , m_pStatusBar(NULL)
-    , m_pToolBox(NULL)
-    , m_pPrintData(NULL)
-    , m_pPageSetupData(NULL)
+    , m_pToolbar(nullptr)
+    , m_pTbFile(nullptr)
+    , m_pTbEdit(nullptr)
+    , m_pTbZoom(nullptr)
+    , m_pTbPlay(nullptr)
+    , m_pTbMtr(nullptr)
+    , m_pTbTextBooks(nullptr)
+    , m_pStatusBar(nullptr)
+    , m_pToolBox(nullptr)
+    , m_pPrintData(nullptr)
+    , m_pPageSetupData(nullptr)
     , m_fileHistory(9, wxID_FILE1)      //max files, id of first file)
 //    , m_caretTimer(this, k_id_caret_timer)
     , m_nblinkTime(500)     //milliseconds
@@ -698,7 +698,7 @@ void MainFrame::create_menu()
     //Centralized code to create the menu bar.
     //bitmaps on menus are supported only on Windows and GTK+
 
-    m_booksMenu = NULL;
+    m_booksMenu = nullptr;
 
     wxSize nIconSize(16, 16);
     wxConfigBase* pPrefs = m_appScope.get_preferences();
@@ -865,7 +865,7 @@ void MainFrame::create_menu()
 
     // Debug strings will not be translatable. It is mandatory that all development is
     // in English
-    m_dbgMenu = NULL;
+    m_dbgMenu = nullptr;
 
     LOMSE_LOG_INFO("LENMUS_DEBUG_BUILD = %d", LENMUS_DEBUG_BUILD);
     LOMSE_LOG_INFO("LENMUS_RELEASE_INSTALL = %d", LENMUS_RELEASE_INSTALL);
@@ -1117,7 +1117,7 @@ void MainFrame::delete_status_bar()
 {
     if (!m_pStatusBar) return;
 
-    m_pStatusBar = NULL;
+    m_pStatusBar = nullptr;
     m_appScope.set_status_reporter(m_pStatusBar);   //this deletes status bar
     SetStatusBar(m_pStatusBar);
 }
@@ -1199,7 +1199,6 @@ void MainFrame::on_file_new(wxCommandEvent& WXUNUSED(event))
     LomseDoorway& lib = m_appScope.get_lomse();
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
     loader.create_canvas_and_new_document(k_view_vertical_book);
-    //loader.create_canvas_and_new_document(k_view_single_system);
 
     //enable edition
     m_editMenu->Check(k_menu_edit_enable_edition, true);
@@ -1276,7 +1275,6 @@ void MainFrame::on_open_book(wxCommandEvent& event)
 void MainFrame::on_file_reload(wxCommandEvent& WXUNUSED(event))
 {
     //TODO: viewType is harcoded here and in other places. Refactor
-    //int viewType = k_view_single_system;
     int viewType = k_view_vertical_book;
     DocumentWindow* pWnd = dynamic_cast<DocumentWindow*>( get_active_canvas() );
     if (pWnd)
@@ -1293,7 +1291,6 @@ void MainFrame::load_file(const string& filename)
 
     //create canvas and show document
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    //int viewType = k_view_single_system;
     int viewType = k_view_vertical_book;
     loader.create_canvas(filename, viewType);
     m_lastOpenFile = filename;
@@ -1488,20 +1485,24 @@ void MainFrame::on_lomse_request(Request* pRequest)
 //---------------------------------------------------------------------------------------
 void MainFrame::generate_dynamic_content(RequestDynamic* pRD)
 {
-    ImoDynamic* pDyn = dynamic_cast<ImoDynamic*>( pRD->get_object() );
-    string& classid = pDyn->get_classid();
-    Document* pDoc = pRD->get_document();
-    Canvas* pCanvas = get_active_canvas();
-    DocumentWindow* pWnd = NULL;
-    DocumentFrame* pFrame = dynamic_cast<DocumentFrame*>( pCanvas );
-    if (pFrame)
-        pWnd = pFrame->get_document_window();
-    else
-        pWnd = dynamic_cast<DocumentCanvas*>( pCanvas );
+    AObject obj = pRD->get_object();
+    if (obj.is_dynamic())
+    {
+        ADynamic dyn = obj.downcast_to_dynamic();
+        string& classid = dyn.classid();
+        ADocument doc = pRD->get_document();
+        Canvas* pCanvas = get_active_canvas();
+        DocumentWindow* pWnd = nullptr;
+        DocumentFrame* pFrame = dynamic_cast<DocumentFrame*>( pCanvas );
+        if (pFrame)
+            pWnd = pFrame->get_document_window();
+        else
+            pWnd = dynamic_cast<DocumentCanvas*>( pCanvas );
 
-    DynControl* pControl
-        = DynControlFactory::create_dyncontrol(m_appScope, classid, pWnd);
-    pControl->generate_content(pDyn, pDoc);
+        DynControl* pControl
+            = DynControlFactory::create_dyncontrol(m_appScope, classid, pWnd);
+        pControl->generate_content(dyn, doc);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -1909,7 +1910,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pToolbar);
         delete m_pToolbar;
-        m_pToolbar = (wxToolBar*)NULL;
+        m_pToolbar = (wxToolBar*)nullptr;
     }
 
     // file toolbar
@@ -1917,7 +1918,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pTbFile);
         delete m_pTbFile;
-        m_pTbFile = (wxToolBar*)NULL;
+        m_pTbFile = (wxToolBar*)nullptr;
     }
 
     // edit toolbar
@@ -1925,7 +1926,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pTbEdit);
         delete m_pTbEdit;
-        m_pTbEdit = (wxToolBar*)NULL;
+        m_pTbEdit = (wxToolBar*)nullptr;
     }
 
     // play toolbar
@@ -1933,7 +1934,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pTbPlay);
         delete m_pTbPlay;
-        m_pTbPlay = (wxToolBar*)NULL;
+        m_pTbPlay = (wxToolBar*)nullptr;
     }
 
     // metronome toolbar
@@ -1941,7 +1942,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pTbMtr);
         delete m_pTbMtr;
-        m_pTbMtr = (wxToolBar*)NULL;
+        m_pTbMtr = (wxToolBar*)nullptr;
     }
 
     // zoom toolbar
@@ -1949,7 +1950,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pTbZoom);
         delete m_pTbZoom;
-        m_pTbZoom = (wxToolBar*)NULL;
+        m_pTbZoom = (wxToolBar*)nullptr;
     }
 
     // Text books navigation toolbar
@@ -1957,7 +1958,7 @@ void MainFrame::delete_toolbars()
     {
         m_layoutManager.DetachPane(m_pTbTextBooks);
         delete m_pTbTextBooks;
-        m_pTbTextBooks = (wxToolBar*)NULL;
+        m_pTbTextBooks = (wxToolBar*)nullptr;
     }
 
     // tell the manager to "commit" all the changes just made
@@ -2187,7 +2188,7 @@ void MainFrame::show_virtual_keyboard()
 ////---------------------------------------------------------------------------------------
 //void MainFrame::on_create_counters_panel(wxCommandEvent& WXUNUSED(event))
 //{
-//    ExerciseCtrol* pExerciseCtrol = NULL;
+//    ExerciseCtrol* pExerciseCtrol = nullptr;
 //    QuizManager* pProblemMngr = LENMUS_NEW QuizManager(m_appScope, pExerciseCtrol);
 //    DlgCounters* pDlg = create_counters_dlg(k_quiz_mode, pProblemMngr);
 //
@@ -2215,8 +2216,8 @@ void MainFrame::show_virtual_keyboard()
 //DlgCounters* MainFrame::create_counters_dlg(int mode, ProblemManager* pManager)
 //{
 //    int numTeams = 2;
-//    ExerciseCtrol* pExerciseCtrol = NULL;
-//    ExerciseOptions* pConstrains = NULL;
+//    ExerciseCtrol* pExerciseCtrol = nullptr;
+//    ExerciseOptions* pConstrains = nullptr;
 //    return LENMUS_NEW QuizCounters(this, wxID_ANY, numTeams, pExerciseCtrol, pConstrains,
 //                            (QuizManager*)pManager, wxPoint(0,0));
 //
@@ -2709,9 +2710,10 @@ void MainFrame::on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event))
 {
-    ImoScore* pScore = get_active_score();
-    if (pScore)
+    AScore score = get_active_score();
+    if (score.is_valid())
     {
+        ImoScore* pScore = score.internal_object();
         SoundEventsTable* pTable = pScore->get_midi_table();
         DlgDebug dlg(this, "MIDI events table", to_wx_string(pTable->dump_midi_events()) );
         dlg.ShowModal();
@@ -2723,9 +2725,10 @@ void MainFrame::on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event))
 {
-    ImoScore* pScore = get_active_score();
-    if (pScore)
+    AScore score = get_active_score();
+    if (score.is_valid())
     {
+        ImoScore* pScore = score.internal_object();
         ColStaffObjs* pTable = pScore->get_staffobjs_table();
         DlgDebug dlg(this, "MIDI events table", to_wx_string(pTable->dump()) );
         dlg.ShowModal();
@@ -2931,7 +2934,7 @@ void MainFrame::on_zoom_fit_full(wxCommandEvent& WXUNUSED(event))
 void MainFrame::on_update_UI_zoom(wxUpdateUIEvent &event)
 {
     DocumentWindow* pCanvas = get_active_document_window();
-    event.Enable(pCanvas != NULL);
+    event.Enable(pCanvas != nullptr);
 
     if (pCanvas)
     {
@@ -3062,8 +3065,8 @@ void MainFrame::show_tool_box()
     m_pToolBox->SetFocus();
 
     //enable/disable tools
-    SelectionSet* pSelection = NULL;
-    DocCursor* pCursor = NULL;
+    SelectionSet* pSelection = nullptr;
+    DocCursor* pCursor = nullptr;
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
     {
@@ -3130,7 +3133,7 @@ void MainFrame::on_view_tool_bar(wxCommandEvent& WXUNUSED(event))
     else
         delete_toolbars();
 
-    bool fToolBar = (m_pToolbar != NULL);
+    bool fToolBar = (m_pToolbar != nullptr);
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     pPrefs->Write("/MainFrame/ViewToolBar", fToolBar);
 }
@@ -3138,7 +3141,7 @@ void MainFrame::on_view_tool_bar(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_tool_bar(wxUpdateUIEvent &event)
 {
-    event.Check(m_pToolbar != NULL);
+    event.Check(m_pToolbar != nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3149,7 +3152,7 @@ void MainFrame::on_view_status_bar(wxCommandEvent& WXUNUSED(event))
     else
         delete_status_bar();
 
-    bool fStatusBar = (m_pStatusBar != NULL);
+    bool fStatusBar = (m_pStatusBar != nullptr);
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     pPrefs->Write("/MainFrame/ViewStatusBar", fStatusBar);
 }
@@ -3157,7 +3160,7 @@ void MainFrame::on_view_status_bar(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_status_bar(wxUpdateUIEvent &event)
 {
-    event.Check(m_pStatusBar != NULL);
+    event.Check(m_pStatusBar != nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3187,7 +3190,7 @@ void MainFrame::on_view_voices_in_colours(wxCommandEvent& event)
 //        if (fAsNew)
 //        {
 //            lmLDPParser parser;
-//            NewScoreWindow((lmEditorMode*)NULL, parser.ParseFile(sFilename));
+//            NewScoreWindow((lmEditorMode*)nullptr, parser.ParseFile(sFilename));
 //        }
 //        else
 //        {
@@ -3389,7 +3392,7 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
     }
 
     DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas == NULL)
+    if (pCanvas == nullptr)
     {
         event.Enable(false);
     }
@@ -3442,7 +3445,7 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 //---------------------------------------------------------------------------------------
 void MainFrame::set_toolbox_for_active_page()
 {
-    static DocumentWindow* pPrevCanvas = NULL;
+    static DocumentWindow* pPrevCanvas = nullptr;
     DocumentWindow* pCanvas = get_active_document_window();
 
     bool fEditionEnabled = pCanvas ? pCanvas->is_edition_enabled()
@@ -3537,7 +3540,7 @@ bool MainFrame::close_active_document_window()
         pCanvas->on_window_closing(event);
         m_pContentWindow->close_active_canvas();
     }
-    return pCanvas != NULL;
+    return pCanvas != nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3552,7 +3555,7 @@ void MainFrame::on_file_save(wxCommandEvent& WXUNUSED(event))
 void MainFrame::on_file_save_as(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas == NULL)
+    if (pCanvas == nullptr)
         return;
 
     //display file selector
@@ -3575,7 +3578,7 @@ void MainFrame::on_file_save_as(wxCommandEvent& WXUNUSED(event))
 void MainFrame::on_file_convert(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas == NULL)
+    if (pCanvas == nullptr)
         return;
 
     //display file selector
@@ -3600,8 +3603,8 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 {
     DocumentWindow* pCanvas = get_active_document_window();
     DocumentFrame* pFrame = dynamic_cast<DocumentFrame*>( get_active_canvas() );
-    bool fEnable = (pCanvas != NULL);
-    bool fSimpleDocument = (pFrame == NULL) && (pCanvas != NULL);
+    bool fEnable = (pCanvas != nullptr);
+    bool fSimpleDocument = (pFrame == nullptr) && (pCanvas != nullptr);
     bool fEdit = fEnable && pCanvas->is_edition_enabled();
 
     switch (event.GetId())
@@ -3677,21 +3680,21 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_score(wxUpdateUIEvent &event)
 {
-    ImoScore* pScore = get_active_score();
-    event.Enable(pScore != NULL);
+    AScore score = get_active_score();
+    event.Enable(score.is_valid());
 }
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_document(wxUpdateUIEvent &event)
 {
     DocumentWindow* pCanvas = get_active_document_window();
-    event.Enable(pCanvas != NULL);
+    event.Enable(pCanvas != nullptr);
 }
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
 {
-    ImoScore* pScore = get_active_score();
+    AScore score = get_active_score();
     switch (event.GetId())
     {
 		case k_menu_metronome:
@@ -3705,7 +3708,7 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
         case k_menu_play_start:
         {
             ScorePlayer* pPlayer = m_appScope.get_score_player();
-            event.Enable( pScore != NULL && !pPlayer->is_playing());
+            event.Enable( score.is_valid() && !pPlayer->is_playing());
             break;
         }
         case k_menu_play_cursor_start:
@@ -3716,13 +3719,13 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
         case k_menu_play_pause:
         {
             ScorePlayer* pPlayer = m_appScope.get_score_player();
-            event.Enable( pScore != NULL && pPlayer->is_playing());
+            event.Enable( score.is_valid() && pPlayer->is_playing());
             break;
         }
 
         default:
             // Other items: only enabled if a score is displayed
-            event.Enable( pScore != NULL );
+            event.Enable(score.is_valid());
     }
 }
 
@@ -3916,7 +3919,7 @@ void MainFrame::on_metronome_update_text(wxCommandEvent& WXUNUSED(event))
 //    if (GetActiveDoc())
 //    {
 //	    GetActiveDoc()->Modify(true);
-//        GetActiveDoc()->UpdateAllViews((wxView*)NULL, LENMUS_NEW lmUpdateHint() );
+//        GetActiveDoc()->UpdateAllViews((wxView*)nullptr, LENMUS_NEW lmUpdateHint() );
 //    }
 //}
 
@@ -3988,7 +3991,7 @@ void MainFrame::on_update_UI_view_voices_in_colours(wxUpdateUIEvent &event)
     if (m_appScope.are_experimental_features_enabled())
     {
         DocumentWindow* pCanvas = get_active_document_window();
-        event.Enable(pCanvas != NULL);
+        event.Enable(pCanvas != nullptr);
     }
     else
         event.Enable(false);
@@ -4001,9 +4004,9 @@ bool MainFrame::is_welcome_page_displayed()
     {
         int idx = get_canvas_index(m_pWelcomeWnd);
         if (idx == wxNOT_FOUND)
-            m_pWelcomeWnd = NULL;
+            m_pWelcomeWnd = nullptr;
     }
-    return (m_pWelcomeWnd != NULL);
+    return (m_pWelcomeWnd != nullptr);
 }
 
 ////---------------------------------------------------------------------------------------
@@ -4170,13 +4173,13 @@ void MainFrame::disable_tool(wxUpdateUIEvent &event)
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* MainFrame::get_active_score()
+AScore MainFrame::get_active_score()
 {
     DocumentWindow* pWnd = get_active_document_window();
     if (pWnd)
         return pWnd->get_active_score();
     else
-        return NULL;
+        return AScore();
 }
 
 //---------------------------------------------------------------------------------------
@@ -4186,7 +4189,7 @@ Interactor* MainFrame::get_active_canvas_interactor()
     if (pWnd)
         return pWnd->get_interactor();
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------

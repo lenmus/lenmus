@@ -9,16 +9,79 @@
 # example: ./po-update 5.2 TheoryHarmony
 #------------------------------------------------------------------------------
 
+
+# script settings
+#------------------------------------------------------------------------------
+
+# exit this script when a command fails
+set -e
+
+# colors for messages
+#------------------------------------------------------------------------------
+YELLOW="\e[33m"     # black background, yellow chars
+GREEN="\e[32m"      # black background, green chars
+RED="\e[31m"        # black background, red chars
+WHITE="\e[7m"       # white background, black chars
+NC="\e[0m"          # reset to default
+
+
+#==============================================================================
+# Define functions
+#==============================================================================
+
+#------------------------------------------------------------------------------
+# Display error message
+function display_error()
+{
+    local MESSAGE="$1"
+    >&2 echo -e "${RED}$MESSAGE${NC}"
+}
+
+#------------------------------------------------------------------------------
+# Display error message and terminate script
+function abort()
+{
+    display_error "$1"
+    >&2 echo ""
+    exit 1
+}
+
+#------------------------------------------------------------------------------
+# Display warning message
+function warning()
+{
+    local MESSAGE="$1"
+    >&2 echo -e "${YELLOW}$MESSAGE${NC}"
+}
+
+#------------------------------------------------------------------------------
+# Display the help message
+function display_help()
+{
+    echo "Usage: $(basename $0) <version> <book> [<language>]"
+    echo ""
+    echo "  <version>   Version string (e.g.: 5.6) to update it in POT/PO files"
+    echo "  <book> =    { GeneralExercises | L1_MusicReading | | L2_MusicReading | TheoryHarmony }"
+    echo ""
+    echo "  <language>  It is only used for selecting the PO files to update."
+    echo "              It is the language code (e.g. gl_ES) for the PO file to update."
+    echo "              If not specified, all PO files will be updated."
+    echo ""
+    exit 1
+}
+
 #------------------------------------------------------------------------------
 # update old PO file
+# $1 = language code
 function UpdatePO()
 {
     LANG=$1
     echo "Updating file ${BOOK}_$LANG.po"
-    cd /datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/$LANG
+    cd "${LOCALE_PATH}/$LANG"
     sed --in-place ${BOOK}_$LANG.po -e 's/"Project-Id-Version:.*/"Project-Id-Version: LenMus $VERS\\n"/'
     sed --in-place ${BOOK}_$LANG.po -e 's/"cecilios@gmail.com/"s.cecilio@gmail.com"/'
-    msgmerge --update -v ${BOOK}_$LANG.po ../src/$BOOK/$BOOK.pot
+    msgmerge --update -v ${BOOK}_$LANG.po ${POT_PATH}/$BOOK.pot
+    cd ${SCRIPTS_PATH}
 }
 
 
@@ -32,25 +95,42 @@ MINPARAMS=2     #Two mandatory parameters: version, book
 VERS=$1
 BOOK=$2
 
+#get current directory and check we are running from <root>/scripts/i18n
+#For this I just check that "src" folder exists in <root> folder
+SCRIPTS_PATH=$(dirname "${PWD}")
+LENMUS_ROOT_DIR=$(dirname "${SCRIPTS_PATH}")
+if [[ ! -e "${LENMUS_ROOT_DIR}/src" ]]; then
+    abort "Error: not running from <root>/scripts"
+fi
+
+BASE_DIR=$(dirname "${LENMUS_ROOT_DIR}")
+ROOT_DIR="${BASE_DIR}/langtool"
+if [[ ! -e "${ROOT_DIR}" ]]; then
+    abort "Error: langtool root folder not found"
+fi
+LOCALE_PATH="${ROOT_DIR}/locale"
+POT_PATH="${ROOT_DIR}/locale/pot-files"
+SRC_PATH="${ROOT_DIR}/locale/src"
+
 # check that two params are present
 if [ $# -lt "$MINPARAMS" ]
 then
-    echo "Usage: `basename $0` pack-version book-name [language]"
+    display_help
     exit $E_NOARGS
 fi
 
 # check book name
 if [ "$2" != "GeneralExercises" -a "$2" != "L1_MusicReading" -a "$2" != "L2_MusicReading" -a "$2" != "TheoryHarmony" ]
 then
-    echo "Invalid book name '$2'"
+    display_help
     exit $E_NOARGS
 fi
 
 
 # Create/Update the POT file
-echo "Updating file $2.pot"
-cd /datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/src/$2
-xgettext -s --from-code=UTF-8 --keyword=_ -o $2.pot $2.cpp
+echo "Updating file ${BOOK}.pot"
+cd ${SRC_PATH}/$2
+xgettext -s --from-code=UTF-8 --keyword=_ -o ${POT_PATH}/${BOOK}.pot ${BOOK}.cpp
 
 # For each language, update old PO file
 if [ -z "$3" ]

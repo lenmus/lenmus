@@ -118,7 +118,7 @@ public:
     //void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
-    ImoScore* get_active_score();
+    AScore get_active_score();
     Interactor* get_interactor() const;
     SpInteractor get_interactor_shared_ptr() const;
     inline LibraryScope& get_library_scope() { return *m_lomse.get_library_scope(); }
@@ -130,7 +130,7 @@ public:
     bool is_document_modified();
     bool is_document_editable();
 
-    Document* get_document() const;
+    ADocument get_document() const;
     inline wxString& get_filename() { return m_filename; }
     inline wxString& get_full_filename() { return m_fullNameWithPath; }
     inline int get_zoom_mode() const { return m_zoomMode; }

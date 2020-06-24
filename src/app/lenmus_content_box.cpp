@@ -227,7 +227,7 @@ void BookContentBox::EnsureVisible(const long& nTree)
 wxTreeItemData* BookContentBox::GetItemData(const long& WXUNUSED(item)) const
 {
     //Returns the tree item data associated with the item.
-    return (wxTreeItemData*)NULL;
+    return (wxTreeItemData*)nullptr;
 }
 
 void BookContentBox::SelectItem(const long& item, bool WXUNUSED(select))

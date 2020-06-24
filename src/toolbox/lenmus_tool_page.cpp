@@ -145,7 +145,7 @@ ToolGroup* ToolPage::GetToolGroup(EToolGroupID nGroupID)
             return *it;
     }
     wxASSERT(false);
-    return (ToolGroup*)NULL;      //compiler happy
+    return (ToolGroup*)nullptr;      //compiler happy
 }
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -210,7 +210,7 @@ void IdfyScalesCtrol::on_settings_changed()
 //    if (m_pConstrains->is_theory_mode())
 //        new_problem();
 //    else
-//        m_pProblemScore = NULL;
+//        m_pProblemScore = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -260,7 +260,9 @@ wxDialog* IdfyScalesCtrol::get_settings_dialog()
 //---------------------------------------------------------------------------------------
 ImoScore* IdfyScalesCtrol::prepare_aux_score(int nButton)
 {
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    //ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
     prepare_score(k_clef_G2, (EScaleType)m_nRealScale[nButton], &pScore);
     return pScore;
 }
@@ -270,7 +272,7 @@ wxString IdfyScalesCtrol::set_new_problem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
-    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //  m_pSolutionScore - The score with the solution or nullptr if it is the
     //              same score than the problem score.
     //  m_sAnswer - the message to present when displaying the solution
     //  m_nRespIndex - the number of the button for the right answer
@@ -342,14 +344,15 @@ wxString IdfyScalesCtrol::prepare_score(EClef WXUNUSED(nClef), EScaleType nType,
     if (*pScore)
     {
         delete *pScore;
-        *pScore = NULL;
+        *pScore = nullptr;
     }
 
     //create a score with the scale
     string sPattern;
 
     int nNumNotes = scale.get_num_notes();
-    *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    *pScore = score.internal_object();
     (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     (*pScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pScore)->add_instrument();

@@ -157,7 +157,7 @@ void DlgProperties::add_specific_panels_for(ImoObj* pImo)
     add_general_panel_for(pImo);
 
     m_pOwnerImo = pImo;
-    PropertiesPage* pPanel = NULL;
+    PropertiesPage* pPanel = nullptr;
     wxString tabName;
 
     switch(pImo->get_obj_type())

@@ -101,7 +101,7 @@ namespace lenmus
 //    //initializations
 //    m_pConstrains = pConstrains;
 //    m_pConstrains = dynamic_cast<....Constrains*>(m_pBaseConstrains);
-//    m_pProblemScore = (ImoScore*)NULL;
+//    m_pProblemScore = (ImoScore*)nullptr;
 //    //m_pScoreProc = LENMUS_NEW lmHarmonyProcessor();
 //
 //    create_controls();
@@ -141,7 +141,7 @@ namespace lenmus
 //    //TODO: Create the dialog class and implement it. The uncomment following code:
 //    //wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
 //    //return LENMUS_NEW DlgCfgTheoHarmony(this, m_pConstrains, m_pConstrains->is_theory_mode());
-//    return (wxDialog*)NULL;
+//    return (wxDialog*)nullptr;
 //}
 //
 //void TheoHarmonyCtrol::set_new_problem()

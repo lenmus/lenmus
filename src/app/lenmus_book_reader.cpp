@@ -39,9 +39,9 @@ static int wxHtmlHelpIndexCompareFunc(BookIndexItem **a, BookIndexItem **b)
     BookIndexItem *ia = *a;
     BookIndexItem *ib = *b;
 
-    if (ia == NULL)
+    if (ia == nullptr)
         return -1;
-    if (ib == NULL)
+    if (ib == nullptr)
         return 1;
 
     if (ia->parent == ib->parent)
@@ -185,7 +185,7 @@ void BooksCollection::SetTempDir(const wxString& path)
 BookRecord* BooksCollection::add_book(const wxFileName& oFilename)
 {
     //Reads a book and loads its content
-    //Returns pointer to created book record, or NULL if errors
+    //Returns pointer to created book record, or nullptr if errors
 
     add_pages_to_list(oFilename);
     BookRecord* pBookr = add_book_toc(oFilename);
@@ -231,7 +231,7 @@ bool BooksCollection::add_pages_to_list(const wxFileName& oFilename)
 void BooksCollection::load_book_entries(wxZipInputStream& zip)
 {
     wxZipEntry* pEntry = zip.GetNextEntry();
-    while (pEntry != NULL)
+    while (pEntry != nullptr)
     {
         m_bookEntries[pEntry->GetInternalName()] = pEntry;
         pEntry = zip.GetNextEntry();
@@ -255,7 +255,7 @@ wxZipEntry* BooksCollection::find_entry(const wxString& name)
 	if (it != m_bookEntries.end())
         return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ void BooksCollection::determine_book_format(wxZipInputStream& WXUNUSED(zip))
 //---------------------------------------------------------------------------------------
 BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
 {
-    // Returns ptr to created book record if success, NULL if failure
+    // Returns ptr to created book record if success, nullptr if failure
 
 //    LOMSE_LOG_ERROR("Processing file %s",
 //                     oFilename.GetFullPath().ToStdString().c_str());
@@ -370,11 +370,11 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         //if (!zip.IsOk()) {
         //    LOMSE_LOG_ERROR("Loading eBook. Error: TOC file '%s' not found.",
         //        oFilename.GetFullPath().ToStdString().c_str());
-        //    return (BookRecord*) NULL;   //error
+        //    return (BookRecord*) nullptr;   //error
         //}
 
         //// call GetNextEntry() until the required internal name is found
-        //wxZipEntry* pEntry = (wxZipEntry*)NULL;
+        //wxZipEntry* pEntry = (wxZipEntry*)nullptr;
         //do {
         //    if (pEntry) delete pEntry;      //delete previous entry
         //    pEntry = zip.GetNextEntry();    //now we have ownership of object *pEntry
@@ -384,7 +384,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         if (!pEntry) {
             LOMSE_LOG_ERROR("Loading eBook. Error: TOC file '%s' not found.",
                             sFullName.ToStdString().c_str() );
-            return (BookRecord*) NULL;   //error
+            return (BookRecord*) nullptr;   //error
         }
 
         // open a new zip stream
@@ -393,7 +393,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         if (!zip.IsOk()) {
             LOMSE_LOG_ERROR("Loading eBook. Error: TOC file '%s' not found.",
                             oFilename.GetFullPath().ToStdString().c_str() );
-            return (BookRecord*) NULL;   //error
+            return (BookRecord*) nullptr;   //error
         }
 
         zip.OpenEntry(*pEntry);
@@ -406,7 +406,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         LOMSE_LOG_ERROR(
             "Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC.",
             oFilename.GetFullPath().ToStdString().c_str() );
-        return (BookRecord*) NULL;   //error
+        return (BookRecord*) nullptr;   //error
     }
 
     // load the XML file as tree of nodes
@@ -414,7 +414,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR("Loading eBook. Error parsing TOC file %s",
                         sFullName.ToStdString().c_str() );
-        return (BookRecord*) NULL;   //error
+        return (BookRecord*) nullptr;   //error
     }
 
     //Verify type of document. Must be <BookTOC>
@@ -425,7 +425,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR("Loading eBook. Error: First tag is not <%s> but <%s>",
                         sTag.ToStdString().c_str(), sElement.ToStdString().c_str() );
-        return (BookRecord*) NULL;   //error
+        return (BookRecord*) nullptr;   //error
     }
 
     // firts node: title
@@ -437,7 +437,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR("Loading eBook. Error: Expected tag <%s> but found <%s>",
                         sTag.ToStdString().c_str(), sElement.ToStdString().c_str() );
-        return (BookRecord*) NULL;   //error
+        return (BookRecord*) nullptr;   //error
     }
     sTitle = m_pParser->GetText(pNode);
 
@@ -450,7 +450,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR("Loading eBook. Error: Expected tag <%s> but found <%s>",
                         sTag.ToStdString().c_str(), sElement.ToStdString().c_str() );
-        return (BookRecord*) NULL;   //error
+        return (BookRecord*) nullptr;   //error
     }
     sPage = m_pParser->GetText(pNode);
 
@@ -484,9 +484,9 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
             LOMSE_LOG_ERROR("Loading eBook. Error: Expected tag <%s> but found <%s>",
                             sTag.ToStdString().c_str(), sElement.ToStdString().c_str() );
             delete pBookr;
-            return (BookRecord*) NULL;   //error
+            return (BookRecord*) nullptr;   //error
         }
-        if (!ProcessTOCEntry(pElement, pBookr, 1)) return (BookRecord*) NULL;   //error
+        if (!ProcessTOCEntry(pElement, pBookr, 1)) return (BookRecord*) nullptr;   //error
 
         // get next entry
         pNode = m_pParser->GetNextSibling(pNode);
@@ -697,7 +697,7 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 //{
 //    m_Data = data;
 //    m_Keyword = keyword;
-//    BookRecord* bookr = NULL;
+//    BookRecord* bookr = nullptr;
 //    if (book != "")
 //    {
 //        // we have to search in a specific book. Find it first
@@ -739,7 +739,7 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 //    //}
 //
 //    //m_Name = "";
-//    //m_CurItem = NULL;
+//    //m_CurItem = nullptr;
 //    //thepage = m_Data->m_contents[i].page;
 //
 //    //m_Active = (++m_CurIndex < m_MaxIndex);

@@ -63,7 +63,7 @@ public:
 
 private:
     wxString prepare_score(EClef nClef, ECadenceType nType, ImoScore** pProblemScore,
-                          ImoScore** pSolutionScore = NULL );
+                          ImoScore** pSolutionScore = nullptr );
     int DisplayButton(int iBt, ECadenceType iStartC, ECadenceType iEndC, wxString sButtonLabel);
 
         // member variables

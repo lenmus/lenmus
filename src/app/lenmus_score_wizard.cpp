@@ -397,7 +397,7 @@ void ScoreWizardLayout::CreateControls()
 	wxStaticBoxSizer* pLayoutSizer;
 	pLayoutSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select instruments and style") ), wxVERTICAL );
 
-	m_pLstEnsemble = new wxListBox( this, lmID_LIST_ENSEMBLE, wxDefaultPosition, wxSize( -1,-1 ), 0, NULL, 0 );
+	m_pLstEnsemble = new wxListBox( this, lmID_LIST_ENSEMBLE, wxDefaultPosition, wxSize( -1,-1 ), 0, nullptr, 0 );
 	pLayoutSizer->Add( m_pLstEnsemble, 1, wxALL|wxEXPAND, 5 );
 
 	pLeftColumnSizer->Add( pLayoutSizer, 1, wxEXPAND|wxALL, 5 );
@@ -491,7 +491,7 @@ static KeysData m_tMinorKeys[k_num_minor_keys];
 //---------------------------------------------------------------------------------------
 ScoreWizardKeyPage::ScoreWizardKeyPage()
     : WizardPage()
-    , m_pAppScope(NULL)
+    , m_pAppScope(nullptr)
 {
 }
 
@@ -554,7 +554,7 @@ void ScoreWizardKeyPage::CreateControls()
 
     m_pKeyList = new wxBitmapComboBox();
     m_pKeyList->Create(this, lmID_COMBO_KEY, wxEmptyString, wxDefaultPosition, wxSize(135, 68),
-                       0, NULL, wxCB_READONLY);
+                       0, nullptr, wxCB_READONLY);
 	pKeySizer->Add( m_pKeyList, 0, wxALL, 5 );
 
 	pLeftColumnSizer->Add( pKeySizer, 1, wxEXPAND|wxALL, 5 );

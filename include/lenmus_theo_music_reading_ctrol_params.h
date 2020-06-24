@@ -405,6 +405,8 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
             wxString::Format("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n",
                              sTimeSign.wx_str(), sFragment.wx_str())
         );
+        LOMSE_LOG_ERROR(m_sParamErrors);
+
         delete pTimeSigns;
         return true;
     }
@@ -428,12 +430,21 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
             wxString::Format("Invalid fragment. Old G syntax: '%s'\n",
                              sFragment.wx_str())
         );
+        LOMSE_LOG_ERROR(m_sParamErrors);
         delete pTimeSigns;
         return true;
     }
 
     // build the entry
     m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);
+
+    //BUG-BYPASS --------------------------------------------------------------------
+    //Without doing something with sTimeSign the fragments table fails later in GCC (why ???)
+    //The funny thing is that sTimeSign is not needed here!
+    stringstream msg;
+    msg << to_std_string(sTimeSign);
+    //-------------------------------------------------------------------------------
+
 
     delete pTimeSigns;
     return false;   //no error

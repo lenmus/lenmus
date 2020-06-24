@@ -106,7 +106,7 @@ void GeneralProperties::CreateControls()
             {
                 int value = m_pImo->get_int_attribute(data.attrb);
                 pt2Function funct = get_function_for_names(data.attrb);
-                if (funct != NULL)
+                if (funct != nullptr)
                 {
                     wxChoice* ctrl = new wxChoice(this, idCtrl);
                     for (int i=data.minimum; i <= data.maximum; ++i)
@@ -202,7 +202,7 @@ pt2Function GeneralProperties::get_function_for_names(int attrb)
         case k_attr_barline:        return &get_barline_name;
         case k_attr_stem_type:      return &get_stem_name;
         default:
-            return NULL;
+            return nullptr;
     }
 }
 
@@ -252,7 +252,7 @@ void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool WXUNUS
             {
                 int oldInt = m_pImo->get_int_attribute(item.attrb);
                 pt2Function funct = get_function_for_names(item.attrb);
-                if (item.ctrlType == k_ctrl_choice && funct != NULL)
+                if (item.ctrlType == k_ctrl_choice && funct != nullptr)
                 {
                     if (iValue != oldInt)
                         pExecuter->change_attribute(m_pImo, item.attrb, iValue);

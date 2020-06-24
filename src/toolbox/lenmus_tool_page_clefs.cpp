@@ -221,7 +221,7 @@ void GrpClefType::create_controls_in_group(wxBoxSizer* pMainSizer)
     //bitmap combo box to select the clef
     m_pClefList = new wxBitmapComboBox();
     m_pClefList->Create(this, k_id_clef_list, wxEmptyString, wxDefaultPosition,
-                        wxSize(135, 72), 0, NULL, wxCB_READONLY);
+                        wxSize(135, 72), 0, nullptr, wxCB_READONLY);
 	pCtrolsSizer->Add( m_pClefList, 0, wxALL, 5 );
 
     LoadClefList();
@@ -454,7 +454,7 @@ void GrpKeyType::create_controls_in_group(wxBoxSizer* pMainSizer)
     //bitmap combo box to select the key signature
     m_pKeyList = new wxBitmapComboBox();
     m_pKeyList->Create(this, k_id_key_list, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
-                       0, NULL, wxCB_READONLY);
+                       0, nullptr, wxCB_READONLY);
 
 	pCtrolsSizer->Add( m_pKeyList, 0, wxALL, 5 );
 

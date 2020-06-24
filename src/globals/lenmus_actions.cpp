@@ -287,7 +287,7 @@ AppAction* KeyTranslator::find(int code)
         if ((*it)->code() == code)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -299,7 +299,7 @@ AppAction* KeyTranslator::find(const Shortcut& s)
         if ((*it)->shortcut_is(s))
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -311,7 +311,7 @@ AppAction* KeyTranslator::find(const wxString& description)
         if ((*it)->description() == description)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------

@@ -167,7 +167,8 @@ wxString EarCompareIntvCtrol::set_new_problem()
     //create the two single-interval scores
     for (int i=0; i<2; i++)
     {
-        m_pScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+        AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+        m_pScore[i] = score.internal_object();
         ImoInstrument* pInstr = m_pScore[i]->add_instrument();
             // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
         ImoSystemInfo* pInfo = m_pScore[i]->get_first_system_info();

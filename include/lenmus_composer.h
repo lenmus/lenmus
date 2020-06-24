@@ -54,6 +54,7 @@ class Composer
 {
 protected:
     Document*           m_pDoc;
+    ADocument           m_doc;
     int                 m_midiVoice;        //midiVoice: 0..255
     ETimeSignature      m_nTimeSign;
     EClef               m_nClef;
@@ -64,7 +65,7 @@ protected:
     FPitch      m_fpMinPitch, m_fpMaxPitch;   // the valid range of notes to generate
 
 public:
-    Composer(Document* pDoc);
+    Composer(ADocument doc);
     ~Composer();
 
     //settings

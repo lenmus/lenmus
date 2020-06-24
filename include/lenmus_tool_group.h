@@ -246,7 +246,7 @@ public:
     ToolButtonsGroup(wxPanel* pParent, EGroupType nGroupType, int nNumButtons,
                        bool fAllowNone, wxBoxSizer* pMainSizer, int nFirstButtonEventID,
                        EToolID nFirstButtonToolID,
-                       ToolboxTheme* pColours = (ToolboxTheme*)NULL,
+                       ToolboxTheme* pColours = (ToolboxTheme*)nullptr,
                        int nValidMouseModes = 0xFFFF);
     ~ToolButtonsGroup();
 

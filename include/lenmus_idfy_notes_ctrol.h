@@ -72,7 +72,7 @@ public:
 
 protected:
     void prepare_score(EClef nClef, const string& sNotePitch,
-                       ImoScore** pProblemScore, ImoScore** pSolutionScore = NULL );
+                       ImoScore** pProblemScore, ImoScore** pSolutionScore = nullptr );
     int get_first_octave_for_clef(EClef nClef);
     void prepare_score_with_all_notes();
     void set_initial_state();

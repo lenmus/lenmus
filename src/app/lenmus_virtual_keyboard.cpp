@@ -63,7 +63,7 @@ void VirtualKeyboard::create_buttons()
 
 	wxBoxSizer* mainSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* hSizer = NULL;
+	wxBoxSizer* hSizer = nullptr;
 	int i;
     for(i=0; i < k_num_buttons; i++)
     {
@@ -89,7 +89,7 @@ wxBitmap VirtualKeyboard::create_bitmap(int WXUNUSED(i))
 {
 //    return generate_bitmap_for_clef_ctrol(m_appScope, m_tClefs[i].sClefName,
 //                                          m_tClefs[i].nClefType);
-    return wxBitmap();  //NULL;
+    return wxBitmap();  //nullptr;
 }
 
 //---------------------------------------------------------------------------------------

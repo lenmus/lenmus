@@ -347,7 +347,7 @@ public:
     int get_num_actions() { return int(m_actions.size()); }
 
     inline AppAction* get_action(int i) {
-        return i >=0 && i < int(m_actions.size()) ? m_actions[i] : NULL;
+        return i >=0 && i < int(m_actions.size()) ? m_actions[i] : nullptr;
     }
     AppAction* find(int code);
     AppAction* find(const Shortcut& s);
