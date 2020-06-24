@@ -37,8 +37,7 @@ using namespace lomse;
 #include <sstream>
 using namespace std;
 
-#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
-    //for getenv(), getpwuid() and getuid()
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)     //for getenv(), getpwuid() and getuid()
     #include <unistd.h>
     #include <sys/types.h>
     #include <pwd.h>
@@ -211,7 +210,7 @@ void Paths::initialize()
 
     //2. Non-modificable data, shared among all users on the computer (SHARED_DIR)
     //      /usr/local/share/lenmus/x.x.x/ (unless on a Mac).
-#if __APPLE__
+#if (LENMUS_PLATFORM_MAC == 1)
     //On a Mac, if bundling LenMus in an app, SHARED_DIR should be
     // <app-location>/lenmus.app/Contents/Resources/
     //where <app-location> is the directory the app is installed in (usually "/Applications", but it

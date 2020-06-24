@@ -2413,7 +2413,7 @@ wxMenu* DocumentWindow::get_contextual_menu(bool fInitialize)
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
 
-#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
     pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Cut, _("&Cut"));
     pItem->SetBitmap( wxArtProvider::GetBitmap("tool_cut", wxART_TOOLBAR, nIconSize) );
     m_pContextualMenu->Append(pItem);

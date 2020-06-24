@@ -79,7 +79,7 @@ using namespace std;
 #endif
 
 //For finding executable path on MacOS:
-#ifdef __APPLE__
+#if (LENMUS_PLATFORM_MAC == 1)
 #include <mach-o/dyld.h>
 #endif
 
@@ -309,7 +309,7 @@ wxString TheApp::determine_exec_path()
     #endif // __linux__ && !__ANDROID__
     
     //A method for MacOS:
-    #ifdef __APPLE__
+#elif (LENMUS_PLATFORM_MAC == 1)
          char macPathName[PATH_MAX];
          uint32_t execSize = sizeof(macPathName);
          if(_NSGetExecutablePath(macPathName, &execSize ) == 0){
@@ -317,7 +317,6 @@ wxString TheApp::determine_exec_path()
                 return wxPathOnly(wxString(execPathName));
             }
          }
-    #endif // macOS
 
 #endif
 

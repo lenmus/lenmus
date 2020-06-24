@@ -114,7 +114,7 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
         }
 
         //wxString sUrl = "http://localhost/sw/UpdateData.xml";
-#if (LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
         wxString sUrl = "http://www.lenmus.org/sw/UpdateData.xml";
 #else
         wxString sUrl = "http://www.lenmus.org/sw/UpdateData-linux.xml";
@@ -251,7 +251,7 @@ may be down. Please, try again later.");
 //---------------------------------------------------------------------------------------
 bool Updater::CheckInternetConnection()
 {
-#ifndef __APPLE__
+#if (LENMUS_PLATFORM_MAC == 0)
     bool fConnected = false;    //assume not connected
 
     // check connection
