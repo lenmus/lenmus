@@ -52,7 +52,7 @@ wxEND_EVENT_TABLE()
 DlgExerciseMode::DlgExerciseMode(wxWindow* parent, int* pMode,
                                  ExerciseOptions* pConstrains)
     : wxDialog(parent, wxID_ANY, _("Choose the operation mode"),
-#if (LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
                //BUG BYPASS: In linux doesn't auto-resize. I don't know why
                wxDefaultPosition, wxSize(700, 520),
 #else

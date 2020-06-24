@@ -41,7 +41,7 @@ wxBEGIN_EVENT_TABLE(SplashFrame, wxFrame)
     EVT_TIMER(wxSPLASH_TIMER_ID, SplashFrame::OnNotify)
     EVT_CLOSE(SplashFrame::OnCloseWindow)
 
-#if (LENMUS_PLATFORM_UNIX == 1)
+#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
     EVT_WINDOW_CREATE(SplashFrame::OnWindowCreate)
 #endif
 
