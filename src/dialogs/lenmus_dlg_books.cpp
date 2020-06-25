@@ -195,9 +195,10 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
     //study guide
     if (sLocation == "lenmus#study-guide")
     {
-        HelpSystem* pHelp = m_appScope.get_help_controller();
-        pHelp->display_section(10101);    //study-guide
-        //show_html_document("study-guide.htm");
+//        HelpSystem* pHelp = m_appScope.get_help_controller();
+//        pHelp->display_section(10101);    //study-guide
+        show_html_document("study-guide.htm");
+        EndModal(wxID_CANCEL);
         return;
     }
 
