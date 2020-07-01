@@ -11,31 +11,90 @@ Music is normally divided into equal parts named 'measures'
 On the staff, the end of each measure is marked with a thin vertical line, drawn from the
 top line to the bottom line of the staff. This line is called a bar line:
 </para>
+<para> </para>
 
-<!-- bar lines -->
+<!-- measure 01. bar lines -->
 <score>
     <music>
-        (score (vers 1.5)
+        (score (vers 2.0)
+         (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt normal) (color #0000AA))
+         (defineStyle ''Green'' (font ''Liberation Sans'' 10pt normal) (color #007700))
          (instrument
-          (musicData (clef G)(key C)
+          (musicData
+            (clef G
+              (line (startPoint dx:-20 dy:50)(endPoint dx:-10 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:-10 dy:65)(endPoint dx:122 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:122 dy:65)(endPoint dx:132 dy:50)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text _''measure'' (style ''Blue'') dx:20 dy:90)
+            )
+            (key C)
             (time 2 4 noVisible)
-            (spacer 70)
-            (barline simple)
-            (text _''barline'' dx:-30 dy:-10)
-            (text _''measure'' dx:30 dy:70)
-            (spacer 70)
-            (barline simple)
-            (text _''barline'' dx:-30 dy:-10)
-            (text _''measure'' dx:30 dy:70)
-            (spacer 70)
-            (barline simple)
-            (text _''barline'' dx:-30 dy:-10)
-            (spacer 70)
+            (spacer 100)
+            (barline simple
+              (line (startPoint dx:0 dy:-10)(endPoint dx:30 dy:-75)(width 1.0000)
+                    (color #007700)(lineStyle solid)(lineCapStart arrowhead)
+                    (lineCapEnd none)
+              )
+              (text _''barline'' (style ''Green'') dx:30 dy:-80)
+              (line (startPoint dx:0 dy:50)(endPoint dx:10 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:10 dy:65)(endPoint dx:120 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:120 dy:65)(endPoint dx:130 dy:50)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text _''measure'' (style ''Blue'') dx:20 dy:90)
+            )
+            (spacer 130)
+            (barline simple
+              (line (startPoint dx:0 dy:-10)(endPoint dx:20 dy:-50)(width 1.0000)
+                    (color #007700)(lineStyle solid)(lineCapStart arrowhead)
+                    (lineCapEnd none)
+              )
+              (text _''barline'' (style ''Green'') dx:20 dy:-55)
+              (line (startPoint dx:0 dy:50)(endPoint dx:10 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:10 dy:65)(endPoint dx:120 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:120 dy:65)(endPoint dx:130 dy:50)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text _''measure'' (style ''Blue'') dx:20 dy:90)
+            )
+            (spacer 130)
+            (barline simple
+              (line (startPoint dx:0 dy:-10)(endPoint dx:7 dy:-25)(width 1.0000)
+                    (color #007700)(lineStyle solid)(lineCapStart arrowhead)
+                    (lineCapEnd none)
+              )
+              (text _''barline'' (style ''Green'') dx:7 dy:-30)
+            )
+            (spacer 130)
             (barline end noVisible)
         )))
     </music>
 </score>
 
+<para> </para>
 
 <para>
 There are different
@@ -46,27 +105,28 @@ one thick. The thin double bar line (two thin lines) is used to mark sections wi
 piece of music.
 </para>
 
-<!-- bar lines -->
+<!-- measure 02. bar lines -->
 <score>
     <music>
-        (score (vers 1.5)
+        (score (vers 2.0)
+         (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt normal) (color #000000))
          (instrument
           (musicData (clef G)(key C)
-            (spacer 30)(barline simple)
-            (graphic line -20 -5 10 -20)
-            (text _''simple barline'' dx:15 dy:-20)
-            (spacer 30)(barline simple)
-            (spacer 30)(barline simple)
-            (spacer 30)
+            (spacer 70)(barline simple)
+            (graphic line 0 -5 30 -20)
+            (text _''simple barline'' (style ''Blue'') dx:35 dy:-20)
+            (spacer 70)(barline simple)
+            (spacer 70)(barline simple)
+            (spacer 70)
             (barline double)
-            (graphic line -20 45 10 60)
-            (text _''double barline'' dx:15 dy:80)
-            (spacer 30)(barline simple)
-            (spacer 30)(barline simple)
-            (spacer 30)(barline simple)
-            (spacer 30)
+            (graphic line 0 45 30 60)
+            (text _''double barline'' (style ''Blue'') dx:35 dy:80)
+            (spacer 70)(barline simple)
+            (spacer 70)(barline simple)
+            (spacer 70)(barline simple)
+            (spacer 70)
             (graphic line 10 -5 40 -20)
-            (text _''final barline'' dx:45 dy:-20)
+            (text _''final barline'' (style ''Blue'') dx:45 dy:-20)
             (barline end)
         )))
     </music>
