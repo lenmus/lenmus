@@ -438,15 +438,6 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
     // build the entry
     m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);
 
-    //BUG-BYPASS --------------------------------------------------------------------
-    //Without doing something with sTimeSign the fragments table fails later (why ???)
-    //The funny thing is that sTimeSign is not needed here!
-    stringstream msg;
-    msg << to_std_string(sTimeSign);
-    //-------------------------------------------------------------------------------
-
-
-    delete pTimeSigns;
     return false;   //no error
 
 }

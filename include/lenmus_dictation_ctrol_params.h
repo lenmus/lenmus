@@ -447,7 +447,6 @@ bool DictationCtrolParams::AnalyzeFragments(wxString sLine)
     // build the entry
     m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);
 
-    delete pTimeSigns;
     return false;   //no error
 
 }
