@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2010-2015 LenMus project
+//    Copyright (c) 2010-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -73,7 +73,7 @@ public:
 
     //implementation of virtual pure in parent DynControl
     void generate_content(ADynamic dyn, ADocument doc) override;
-    virtual void handle_event(SpEventInfo pEvent) override;
+    void handle_event(SpEventInfo pEvent) override;
 
     virtual void get_ctrol_options_from_params() = 0;
     virtual void initialize_ctrol() = 0;
@@ -249,9 +249,11 @@ public:
 
 
 protected:
-    //virtual methods implemented in this class
-    void create_answer_buttons(LUnits height, LUnits spacing);
-    virtual void initialize_strings();
+    //implementation of virtual methods from  ExerciseCtrol
+    void create_answer_buttons(LUnits height, LUnits spacing) override;
+
+    //implementation of virtual methods from EBookCtrol
+    void initialize_strings() override;
 
 protected:
     // member variables
@@ -270,19 +272,20 @@ public:
     CompareScoresCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
     virtual ~CompareScoresCtrol();
 
-    //implementation of virtual event handlers
-    virtual void on_debug_show_source_score();
-    virtual void on_debug_show_midi_events();
+    //implementation of virtual methods from EBookCtrol
+    void on_debug_show_source_score() override;
+    void on_debug_show_midi_events() override;
+
     virtual void on_end_of_playback();
 
 protected:
-    //implementation of some virtual methods
-    void play(bool fVisualTracking=true);
-    void play_specific_sound(int WXUNUSED(nButton)) {}
-    void display_solution();
-    void display_problem_score();
-    void delete_scores();
-    void stop_sounds();
+    //implementation of virtual methods from ExerciseCtrol
+    void play(bool fVisualTracking=true) override;
+    void play_specific_sound(int WXUNUSED(nButton)) override {}
+    void display_solution() override;
+    void display_problem_score() override;
+    void delete_scores() override;
+    void stop_sounds() override;
 
 
 protected:
@@ -313,9 +316,10 @@ protected:
 public:
     virtual ~OneScoreCtrol();
 
-    //implementation of virtual event handlers
-    virtual void on_debug_show_source_score();
-    virtual void on_debug_show_midi_events();
+    //implementation of virtual methods from EBookCtrol
+    void on_debug_show_source_score() override;
+    void on_debug_show_midi_events() override;
+
     virtual void on_end_of_playback();
 
 protected:
@@ -326,13 +330,13 @@ protected:
     virtual bool is_play_again_message_allowed();
     virtual bool remove_problem_text_when_displaying_solution();
 
-    //implementation of some virtual methods
-    virtual void play(bool fVisualTracking=true);
-    void play_specific_sound(int nButton);
-    void display_solution();
-    void display_problem_score();
-    void delete_scores();
-    void stop_sounds();
+    //implementation of virtual methods from ExerciseCtrol
+    void play(bool fVisualTracking=true) override;
+    void play_specific_sound(int nButton) override;
+    void display_solution() override;
+    void display_problem_score() override;
+    void delete_scores() override;
+    void stop_sounds() override;
 
         // member variables
 
@@ -355,18 +359,18 @@ protected:
 //    // event handlers
 //    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
 //
-//    //implementation of virtual event handlers
-//    virtual void on_debug_show_source_score() {}
-//    virtual void on_debug_show_midi_events() {}
+//    //implementation of virtual methods from EBookCtrol
+//    void on_debug_show_source_score() override {}
+//    void on_debug_show_midi_events() override {}
 //
 //protected:
-//    //implementation of some virtual methods
-//    virtual void play();
-//    void play_specific_sound(int nButton) {}
-//    void display_solution();
-//    void display_problem_score();
-//    void delete_scores() {}
-//    void stop_sounds();
+//    //implementation of virtual methods from ExerciseCtrol
+//    void play() override;
+//    void play_specific_sound(int nButton) override {}
+//    void display_solution() override;
+//    void display_problem_score() override;
+//    void delete_scores() override {}
+//    void stop_sounds() override;
 //
 //protected:
 //    void PlaySound(int iSound);
@@ -429,8 +433,8 @@ public:
     virtual ~FullEditorCtrol();
 
     //implementation of virtual pure in parent EBookCtrol
-    virtual void on_debug_show_source_score();
-    virtual void on_debug_show_midi_events();
+    void on_debug_show_source_score() override;
+    void on_debug_show_midi_events() override;
 
     //specific
 
