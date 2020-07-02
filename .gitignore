@@ -47,7 +47,6 @@ books/src/L1_Dictation/
 books/src/L1_MusicReading/syllabus.txt
 books/src/L1_MusicReading/figures/fail*
 books/src/L3_MusicReading/
-books/src/TestingNewExercises/
 
 #docs
 docs/en/**/build

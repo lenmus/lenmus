@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
+
+<theme id="NameNotes">
+<title>Naming notes</title>
+
+<para>
+This is a text for introducing the exercise. It is not part of the control but something be written on
+the book page in which the exercise is embedded. And blah, blah, blah.
+</para>
+
+<exercise type="NameNotes">
+    <control_go_back>ch0</control_go_back>
+    <control_play />
+    <clef>G;a3;c6</clef>
+    <key>C</key>
+</exercise>
+
+</theme>
+
+</content>

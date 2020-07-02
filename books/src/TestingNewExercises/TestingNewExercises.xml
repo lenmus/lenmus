@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book [
+    <!ENTITY ch1 SYSTEM "TestingNewExercises_RhythmicDictation.xml">
+    <!ENTITY ch2 SYSTEM "TestingNewExercises_MelodicDictation.xml">
+    <!ENTITY ch3 SYSTEM "TestingNewExercises_HarmonicDictation.xml">
+    <!ENTITY ch4 SYSTEM "TestingNewExercises_NameNotes.xml">
+    <!ENTITY ch5 SYSTEM "TestingNewExercises_CompleteMeasures.xml">
+]>
+
+<book id="TestingNewExercises">
+<info>
+    <title>Exercises in development</title>
+    <abstract>This book contains exercises under development, so that they can be tested.</abstract>
+    <copyright>
+        <year>2002-2020</year>
+        <holder>LenMus project</holder>
+    </copyright>
+    <legalnotice>
+        <para>Permission is granted to copy, distribute and/or modify this document
+        under the terms of the Creative Commons Attribution-Share-Alike License 3.0
+        or later, with the exceptions of those pages where another author or group
+        of authors has been clearly marked. The text of the licence is available at
+        <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
+        http://creativecommons.org/licenses/by-sa/3.0/</ulink>
+        </para>
+        <para role='center'>
+        <imagedata fileref='cc-by-sa.png' />
+        </para>
+    </legalnotice>
+</info>
+
+
+<theme id="ch0">
+<titleabbrev>Contents</titleabbrev>
+<title>Introduction to these exercises</title>
+
+<para>This book contains exercises under development, so that they can be tested.</para>
+
+<part>
+<title>Exercises in development</title>
+
+<itemizedlist>
+<listitem><link linkend="RhythmicDictation">Rhythmic dictation</link></listitem>
+<listitem><link linkend="MelodicDictation">Melodic dictation</link></listitem>
+<listitem><link linkend="HarmonicDictation">Harmonic dictation</link></listitem>
+<listitem><link linkend="NameNotes">Naming notes</link></listitem>
+<listitem><link linkend="CompleteMeasures">Completing measures</link></listitem>
+</itemizedlist>
+
+</part>
+
+</theme>
+
+<chapter id='other'>
+<title>Exercises in development</title>
+    &ch1;
+    &ch2;
+    &ch3;
+    &ch4;
+    &ch5;
+</chapter>
+
+
+</book>

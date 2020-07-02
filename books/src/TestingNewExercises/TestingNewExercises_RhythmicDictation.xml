@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
+
+<theme id="RhythmicDictation">
+<title>Rhythmic dictation</title>
+
+<para>
+This is a text for introducing the exrecise. It is not part of the control but something be written on
+the book page in which the exercise is embedded. And blah, blah, blah.
+</para>
+
+<exercise type="RhythmicDictation">
+    <control_go_back>ch0</control_go_back>
+    <control_play />
+    <control_solfa />
+    <clef>G;e4;g4</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(r q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(r q)(n * q)</fragment>
+</exercise>
+
+</theme>
+
+</content>

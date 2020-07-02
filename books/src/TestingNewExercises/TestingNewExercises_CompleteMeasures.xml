@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
+
+<theme id="CompleteMeasures">
+<title>Completing measures</title>
+
+<para>
+This is a text for introducing the exrecise. It is not part of the control but something be written on
+the book page in which the exercise is embedded. And blah, blah, blah.
+</para>
+
+<exercise type="CompleteMeasures">
+    <control_go_back>ch0</control_go_back>
+    <control_play />
+    <clef>G;e4;g4</clef>
+    <key>C</key>
+    <time>22</time>
+    <fragment>22;(n * q)(n * q)</fragment>
+    <fragment>22;(n * e)(n * e)(n * q)</fragment>
+    <fragment>22;(r q)(n * e)(n * e)</fragment>
+    <fragment>22;(n * e)(n * s)(n * s)(n * e)(r e)</fragment>
+</exercise>
+
+</theme>
+
+</content>

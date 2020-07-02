@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
+
+<theme id="MelodicDictation">
+<title>Melodic dictation</title>
+
+<para>
+You will be allowed to play the fragments one after the other, a maximum of three times each fragment. Once the last fragment is played by third time, you will be allowed just to hear the full dictation one time.
+</para>
+
+<exercise type="MelodicDictation">
+    <control_go_back>ch0</control_go_back>
+    <control_play />
+    <control_solfa />
+    <clef>G;e4;g4</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(r q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(r q)(n * q)</fragment>
+</exercise>
+
+</theme>
+
+</content>
