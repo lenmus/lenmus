@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2010-2015 LenMus project
+//    Copyright (c) 2010-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -52,7 +52,7 @@ namespace lenmus
 //
 //protected:
 //    void do_final_settings();
-//    void process(ImoParamInfo* pParam);
+//    void process(ImoParamInfo* pParam) override;
 //
 //    wxString parse_cadences(wxString sParamValue, wxString sFullParam, bool* pfValidCadences);
 //    ECadenceType CadenceNameToType(wxString sCadence);

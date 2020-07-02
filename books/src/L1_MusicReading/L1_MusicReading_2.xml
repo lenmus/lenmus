@@ -17,7 +17,7 @@ The following score shows a half note and a half rest:
 
 <score>
     <music>
-        (score (vers 1.5)
+        (score (vers 2.0)
          (instrument
           (musicData (clef G)(key C)
             (time 4 4 noVisible)
@@ -34,12 +34,12 @@ in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measu
 
 <score>
     <music>
-        (score (vers 1.5)
+        (score (vers 2.0)
          (instrument
           (musicData (clef G)(key C)
            (time 2 4)
-           (n * q)(n * q)(barline simple)
-           (n * h)(barline simple)
+           (n a4 q)(n a4 q)(barline simple)
+           (n a4 h)(barline simple)
            (r h)(barline end)
         )))
     </music>
@@ -57,10 +57,10 @@ same pitch</emphasis>. For example:
 
 <score>
     <music>
-        (score (vers 1.5)
+        (score (vers 2.0)
          (instrument
           (musicData (clef G)(key C)
-           (time 2 4)(n * q l)(n * q)(barline end)
+           (time 2 4)(n a4 q l)(n a4 q)(barline end)
         )))
     </music>
 </score>

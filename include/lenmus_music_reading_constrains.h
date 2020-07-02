@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -56,11 +56,8 @@ public:
     }
 
     inline ScoreConstrains* GetScoreConstrains() { return m_pScoreConstrains; }
-    inline void SetScoreConstrains(ScoreConstrains* pConstrains) {
-        m_pScoreConstrains = pConstrains;
-    }
 
-    void save_settings();
+    void save_settings() override;
 
 
     bool        fPlayCtrol;             //Instert "Play" link
@@ -75,7 +72,7 @@ public:
 
 private:
     void set_labels(wxString& sLabel, wxString* pStart, wxString* pStop);
-    void load_settings();
+    void load_settings() override;
 
     ScoreConstrains*  m_pScoreConstrains;
 

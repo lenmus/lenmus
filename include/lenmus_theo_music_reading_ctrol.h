@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -56,23 +56,23 @@ public:
     ~TheoMusicReadingCtrol();
 
     //implementation of virtual pure in parent EBookCtrol
-    void get_ctrol_options_from_params();
+    void get_ctrol_options_from_params() override;
     void on_settings_changed() {}
-    void set_problem_space();
+    void set_problem_space() override;
 
     //implementation of virtual methods
     void initialize_strings() {}
-    void initialize_ctrol();
-    void create_answer_buttons(LUnits WXUNUSED(height), LUnits WXUNUSED(spacing)) {}
+    void initialize_ctrol() override;
+    void create_answer_buttons(LUnits WXUNUSED(height), LUnits WXUNUSED(spacing)) override {}
     ImoScore* prepare_aux_score(int WXUNUSED(nButton)) { return nullptr; }
-    wxString set_new_problem();
+    wxString set_new_problem() override;
     wxDialog* get_settings_dialog();
 
     //overrides of virtual methods
-    void create_controls();
+    void create_controls() override;
 
     //overrides to change exercises default behaviour
-    bool is_play_button_initially_enabled() { return true; }
+    bool is_play_button_initially_enabled() override { return true; }
     bool is_play_again_message_allowed() { return false; }
 
     //overrides of PlayerNoGui for using check boxes
