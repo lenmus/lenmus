@@ -280,7 +280,7 @@ enum
 
 //---------------------------------------------------------------------------------------
 // other constants
-const int VIEW_TYPE = k_view_single_page;
+const int VIEW_TYPE = k_view_vertical_book;
 
 //---------------------------------------------------------------------------------------
 // events table
