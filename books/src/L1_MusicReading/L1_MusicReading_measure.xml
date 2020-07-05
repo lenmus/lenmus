@@ -19,6 +19,7 @@ top line to the bottom line of the staff. This line is called a bar line:
         (score (vers 2.0)
          (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt normal) (color #0000AA))
          (defineStyle ''Green'' (font ''Liberation Sans'' 10pt normal) (color #007700))
+         (opt Score.Center true)
          (instrument
           (musicData
             (clef G
@@ -110,6 +111,7 @@ piece of music.
     <music>
         (score (vers 2.0)
          (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt normal) (color #000000))
+         (opt Score.Center true)
          (instrument
           (musicData (clef G)(key C)
             (spacer 70)(barline simple)
