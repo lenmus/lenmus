@@ -71,9 +71,8 @@ public:
     DocumentLoader(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
     virtual ~DocumentLoader() {}
 
-    wxWindow* create_canvas(const string& filename,
-                                   int viewType = k_view_vertical_book);
-    wxWindow* create_canvas_and_new_document(int viewType = k_view_vertical_book);
+    wxWindow* create_canvas(const string& filename, int viewType);
+    wxWindow* create_canvas_and_new_document(int viewType);
 
 };
 
@@ -90,9 +89,11 @@ protected:
     BooksCollection* m_pBooksData;
     wxString m_bookPath;
     int m_sppliterPos;
+    int m_viewType;
 
 public:
-    DocumentFrame(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
+    DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
+                  LomseDoorway& lomse, int viewType);
     virtual ~DocumentFrame();
 
     //creation

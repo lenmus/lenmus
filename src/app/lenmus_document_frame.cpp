@@ -170,7 +170,7 @@ wxWindow* DocumentLoader::create_canvas(const string& filename, int viewType)
     if (fIsBook)
     {
         DocumentFrame* pCanvas =
-            LENMUS_NEW DocumentFrame(m_pContentWindow, m_appScope, m_lomse);
+            LENMUS_NEW DocumentFrame(m_pContentWindow, m_appScope, m_lomse, viewType);
         m_pContentWindow->add_canvas(pCanvas, document.GetName());
         pCanvas->display_document(filename, viewType);
         return pCanvas;
@@ -190,6 +190,7 @@ wxWindow* DocumentLoader::create_canvas_and_new_document(int viewType)
 {
     static int number = 1;
     wxString name = wxString::Format("document-%d.lmd", number++);
+
     DocumentCanvas* pCanvas =
         LENMUS_NEW DocumentCanvas(m_pContentWindow, m_appScope, m_lomse);
     m_pContentWindow->add_canvas(pCanvas, name);
@@ -208,7 +209,7 @@ wxBEGIN_EVENT_TABLE(DocumentFrame, wxSplitterWindow)
 wxEND_EVENT_TABLE()
 
 DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
-                             LomseDoorway& lomse)
+                             LomseDoorway& lomse, int viewType)
     : wxSplitterWindow(parent, wxNewId(), wxDefaultPosition,
                        wxDefaultSize, wxSP_3D, "Canvas")
     , CanvasInterface(parent)
@@ -218,6 +219,7 @@ DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
     , m_right(nullptr)
     , m_pBooksData(nullptr)
     , m_sppliterPos(100)
+    , m_viewType(viewType)
 {
 }
 
@@ -406,15 +408,13 @@ void DocumentFrame::load_page(const string& filename)
     {
         if (filename.find(".lmd"))
         {
-            int viewType = k_view_vertical_book;
-            m_right->display_document(filename, viewType);
+            m_right->display_document(filename, m_viewType);
         }
         else
         {
             LdpZipReader reader(filename);
-            int viewType = k_view_vertical_book;
             string title = "test";
-            m_right->display_document(reader, viewType, title);
+            m_right->display_document(reader, m_viewType, title);
         }
     }
 }

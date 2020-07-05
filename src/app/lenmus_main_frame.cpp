@@ -279,6 +279,10 @@ enum
 };
 
 //---------------------------------------------------------------------------------------
+// other constants
+const int VIEW_TYPE = k_view_single_page;
+
+//---------------------------------------------------------------------------------------
 // events table
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
@@ -1198,7 +1202,7 @@ void MainFrame::on_file_new(wxCommandEvent& WXUNUSED(event))
 {
     LomseDoorway& lib = m_appScope.get_lomse();
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    loader.create_canvas_and_new_document(k_view_vertical_book);
+    loader.create_canvas_and_new_document(VIEW_TYPE);
 
     //enable edition
     m_editMenu->Check(k_menu_edit_enable_edition, true);
@@ -1274,11 +1278,9 @@ void MainFrame::on_open_book(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_file_reload(wxCommandEvent& WXUNUSED(event))
 {
-    //TODO: viewType is harcoded here and in other places. Refactor
-    int viewType = k_view_vertical_book;
     DocumentWindow* pWnd = dynamic_cast<DocumentWindow*>( get_active_canvas() );
     if (pWnd)
-        pWnd->display_document(to_std_string(pWnd->get_full_filename()), viewType); //m_lastOpenFile, viewType);
+        pWnd->display_document(to_std_string(pWnd->get_full_filename()), VIEW_TYPE);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1291,8 +1293,7 @@ void MainFrame::load_file(const string& filename)
 
     //create canvas and show document
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    int viewType = k_view_vertical_book;
-    loader.create_canvas(filename, viewType);
+    loader.create_canvas(filename, VIEW_TYPE);
     m_lastOpenFile = filename;
 
     //show errors, if any
