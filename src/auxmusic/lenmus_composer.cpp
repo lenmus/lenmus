@@ -753,7 +753,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
 //            ImoNote* pNote = static_cast<ImoNote*>(pSO);
             int pos = k_off_beat;
             if (pTS)
-                pos = get_beat_position(cursor.time(), pTS, cursor.anacrusis_missing_time());
+                pos = get_beat_position(cursor.time(), pTS, cursor.anacruxis_missing_time());
 
             if(pos != k_off_beat)
                 nNumPoints++;   // on beat note
@@ -828,10 +828,10 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                 int pos = k_off_beat;
                 ImoTimeSignature* pTS = cursor2.get_applicable_time_signature();
                 if (pTS)
-                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacrusis_missing_time());
+                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacruxis_missing_time());
                 #if (TRACE_PITCH == 1)
                     LOMSE_LOG_INFO("note %d, pos=%d, time=%f, anacrux.time=%f",
-                        numNotes, pos, cursor2.time(), cursor2.anacrusis_missing_time());
+                        numNotes, pos, cursor2.time(), cursor2.anacruxis_missing_time());
                 #endif
                 if (pos != k_off_beat)
                 {
