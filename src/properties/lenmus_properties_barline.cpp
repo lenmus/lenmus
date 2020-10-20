@@ -126,7 +126,7 @@ BarlineProperties::~BarlineProperties()
 }
 
 //---------------------------------------------------------------------------------------
-void BarlineProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool fCurrentPage)
+void BarlineProperties::OnAcceptChanges(CommandGenerator* UNUSED(pExecuter), bool UNUSED(fCurrentPage))
 {
 //	int iB = m_pBarlinesList->GetSelection();
 //    EBarline nType = tBarlinesDB[iB].nBarlineType;
