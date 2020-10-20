@@ -215,6 +215,8 @@ enum
     k_menu_debug_draw_shape_bounds,
     k_menu_debug_draw_anchor_objects,
     k_menu_debug_draw_anchor_lines,
+    k_menu_debug_draw_slur_ctrol_points,
+    k_menu_debug_draw_vertical_profile,
 	k_menu_debug_dump_gmodel,
 	k_menu_debug_dump_imodel,
     k_menu_see_ldp_source,
@@ -280,7 +282,7 @@ enum
 
 //---------------------------------------------------------------------------------------
 // other constants
-const int VIEW_TYPE = k_view_vertical_book;
+const int VIEW_TYPE = k_view_vertical_book; //k_view_half_page;
 
 //---------------------------------------------------------------------------------------
 // events table
@@ -444,6 +446,8 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU (k_menu_debug_draw_shape_bounds, MainFrame::on_debug_draw_shape_bounds)
     EVT_MENU (k_menu_debug_draw_anchor_objects, MainFrame::on_debug_draw_anchor_objects)
     EVT_MENU (k_menu_debug_draw_anchor_lines, MainFrame::on_debug_draw_anchor_lines)
+    EVT_MENU (k_menu_debug_draw_slur_ctrol_points, MainFrame::on_debug_draw_slur_ctrol_points)
+    EVT_MENU (k_menu_debug_draw_vertical_profile, MainFrame::on_debug_draw_vertical_profile)
 
         //debug events requiring a score to be enabled
     EVT_MENU      (k_menu_see_ldp_source, MainFrame::on_debug_see_ldp_source)
@@ -929,6 +933,10 @@ void MainFrame::create_menu()
         "Draw a red line to show anchor objects", wxITEM_CHECK);
     create_menu_item(m_dbgMenu, k_menu_debug_draw_anchor_lines, "Draw anchor lines",
         "Draw a red line to show anchor line position", wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_draw_slur_ctrol_points, "Draw slur ctrol. points",
+        "Draw control points and reference points for slurs", wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_draw_vertical_profile, "Draw vertical profile",
+        "Draw the vertical profile for staves", wxITEM_CHECK);
     m_dbgMenu->AppendSeparator();   //dump tables ---------------------------------------
     create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, "See staffobjs table" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_document_ids, "See document ids" );
@@ -2634,6 +2642,30 @@ void MainFrame::on_debug_draw_anchor_lines(wxCommandEvent& WXUNUSED(event))
     LomseDoorway& lib = m_appScope.get_lomse();
     LibraryScope* pScope = lib.get_library_scope();
     pScope->set_draw_anchor_lines(fChecked);
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_draw_slur_ctrol_points(wxCommandEvent& WXUNUSED(event))
+{
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_slur_ctrol_points);
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_draw_slur_ctrol_points(fChecked);
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_draw_vertical_profile(wxCommandEvent& WXUNUSED(event))
+{
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_vertical_profile);
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_draw_vertical_profile(fChecked);
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
         pCanvas->on_document_updated();

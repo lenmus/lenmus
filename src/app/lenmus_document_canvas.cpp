@@ -142,6 +142,7 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_lomse(lomse)
     , m_pPresenter(nullptr)
     , m_buffer(nullptr)
+    , m_fInvalidBuffer(true)
     , m_filename("")
     , m_zoomMode(k_zoom_fit_width)
     , m_fIgnoreOnSize(false)
@@ -715,7 +716,7 @@ void DocumentWindow::on_size(wxSizeEvent& WXUNUSED(event))
         if(SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
         {
             if (!spInteractor.get()) return;
-            if (m_fIgnoreOnSize) return;
+            if (m_fIgnoreOnSize || m_fInvalidBuffer) return;
 
             adjust_scale_and_scrollbars();
         }
@@ -744,13 +745,18 @@ void DocumentWindow::on_paint(wxPaintEvent& WXUNUSED(event))
             {
                 m_fFirstPaint = false;
                 create_rendering_buffer();
+                if (m_fInvalidBuffer)
+                    return;
                 determine_scroll_space_size();
                 adjust_scale_and_scrollbars();
                 pInteractor->new_viewport(-m_xMargin, -m_yMargin, k_no_redraw);
             }
             update_rendering_buffer();
-            copy_buffer_on_dc(dc);
-            ::wxSetCursor(*wxSTANDARD_CURSOR);
+            if (!m_fInvalidBuffer)
+            {
+                copy_buffer_on_dc(dc);
+                ::wxSetCursor(*wxSTANDARD_CURSOR);
+            }
         }
     }
 }
@@ -962,7 +968,8 @@ void DocumentWindow::update_rendering_buffer()
         {
             if (!is_buffer_ok())
                 create_rendering_buffer();
-            pInteractor->redraw_bitmap();
+            if (!m_fInvalidBuffer)
+                pInteractor->redraw_bitmap();
         }
     }
 }
@@ -970,6 +977,9 @@ void DocumentWindow::update_rendering_buffer()
 //---------------------------------------------------------------------------------------
 bool DocumentWindow::is_buffer_ok()
 {
+    if (m_fInvalidBuffer)
+        return false;
+
     wxSize size = this->GetClientSize();
     int width = size.GetWidth();
     int height = size.GetHeight();
@@ -989,8 +999,6 @@ void DocumentWindow::delete_rendering_buffer()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::create_rendering_buffer()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
-
     //creates a bitmap of specified size and associates it to the rendering
     //buffer for the view. Any existing buffer is automatically deleted
 
@@ -1006,8 +1014,12 @@ void DocumentWindow::create_rendering_buffer()
     wxSize size = this->GetClientSize();
     int width = size.GetWidth();
     int height = size.GetHeight();
-    //wxLogMessage("create_rendering_buffer %s, w=%d, h=%d",
-    //             GetLabel().wx_str(), width, height);
+
+    LOMSE_LOG_DEBUG(Logger::k_mvc, "w=%d, h=%d", width, height);
+
+    m_fInvalidBuffer = (width <= 10 || height <= 10);
+    if (m_fInvalidBuffer)
+        return;
 
     // allocate a new rendering buffer
     delete m_buffer;            //delete any previous buffer

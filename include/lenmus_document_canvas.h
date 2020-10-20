@@ -188,6 +188,7 @@ protected:
     wxImage*            m_buffer;               //the image to serve as buffer
     unsigned char*      m_pdata;                //ptr to the real bytes buffer
     int                 m_nBufWidth, m_nBufHeight;      //size of the bitmap
+    bool                m_fInvalidBuffer;       //to avoid repaints when invalid size
 
     //some additinal variables
     wxString    m_filename;             //with extension but without path

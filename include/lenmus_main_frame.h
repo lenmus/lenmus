@@ -327,6 +327,8 @@ protected:
     void on_debug_draw_shape_bounds(wxCommandEvent& event);
     void on_debug_draw_anchor_objects(wxCommandEvent& event);
     void on_debug_draw_anchor_lines(wxCommandEvent& event);
+    void on_debug_draw_slur_ctrol_points(wxCommandEvent& event);
+    void on_debug_draw_vertical_profile(wxCommandEvent& event);
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_dump_imodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_spacing_data(wxCommandEvent& WXUNUSED(event));
