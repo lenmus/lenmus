@@ -201,6 +201,8 @@ public:
     //support for debugging and unit tests
     void dump_column_data(int iCol, ostream& outStream=dbgLogger);
     void delete_not_used_objects();
+    void delete_pendig_aux_objects();
+    void delete_system_boxes();
     void trace_column(int iCol, int level);
     ColumnData* get_column(int i);
 
@@ -348,7 +350,7 @@ public:
     //StaffObj shapes
     GmoShape* create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int iStaff,
                                     UPoint pos, int clefType=0, int octaveShift=0,
-                                    unsigned flags=0);
+                                    unsigned flags=0, StaffObjsCursor* pCursor=nullptr);
     GmoShape* create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iStaff,
                                   int idxStaff, VerticalProfile* pVProfile,
                                   GmoShape* pParentShape);

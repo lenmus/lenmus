@@ -701,11 +701,7 @@ void ScoreLayouter::delete_not_used_objects()
     //it is necessary to delete objects that, in normal processing, will be deleted
     //in other places
 
-    //pendig aux objects
-    std::list<PendingAuxObjs*>::iterator itPAO;
-    for (itPAO = m_pendingAuxObjs.begin(); itPAO != m_pendingAuxObjs.end(); ++itPAO)
-        delete *itPAO;
-    m_pendingAuxObjs.clear();
+    delete_pendig_aux_objects();
 
     //not used shapes
     for (int iCol = 0; iCol < get_num_columns(); ++iCol)
@@ -716,7 +712,31 @@ void ScoreLayouter::delete_not_used_objects()
     //not used engravers
     m_engravers.delete_engravers();
 
-    //system boxes
+    delete_system_boxes();
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::delete_pendig_aux_objects()
+{
+    //delete pendig aux objects
+    //Sanitizing method for unit tests. When the score layout process is not finished,
+    //it is necessary to delete objects that, in normal processing, will be deleted
+    //in other places
+
+    std::list<PendingAuxObjs*>::iterator itPAO;
+    for (itPAO = m_pendingAuxObjs.begin(); itPAO != m_pendingAuxObjs.end(); ++itPAO)
+        delete *itPAO;
+    m_pendingAuxObjs.clear();
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::delete_system_boxes()
+{
+    //delete system boxes
+    //Sanitizing method for unit tests. When the score layout process is not finished,
+    //it is necessary to delete objects that, in normal processing, will be deleted
+    //in other places
+
     std::vector<SystemLayouter*>::iterator it;
     for (it = m_sysLayouters.begin(); it != m_sysLayouters.end(); ++it)
     {
@@ -899,13 +919,13 @@ bool ColumnBreaker::feasible_break_before_this_obj(ImoStaffObj* pSO, TimeUnits r
     }
 
     //in clear-cuts mode, break at suitable note/rests
-    if (!fBreak && m_breakMode == k_clear_cuts && pSO->is_note_rest())
+    if (!fBreak && m_breakMode == k_clear_cuts && pSO->is_note_rest() && !pSO->is_grace_note())
     {
         fBreak = is_suitable_note_rest(pSO, rTime);
     }
 
     //save data
-    if (pSO->is_note_rest())
+    if (pSO->is_note_rest() && !pSO->is_grace_note())
     {
         ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pSO);
         m_beamed[iLine] = pNR->is_beamed() && !pNR->is_end_of_beam();
@@ -1060,7 +1080,7 @@ ShapesCreator::~ShapesCreator()
 //---------------------------------------------------------------------------------------
 GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int iStaff,
                                                UPoint pos, int clefType, int octaveShift,
-                                               unsigned flags)
+                                               unsigned flags, StaffObjsCursor* pCursor)
 {
     //factory method to create shapes for staffobjs
 
@@ -1098,13 +1118,15 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
             Color color = pImo->get_color();
             return engrv.create_shape(pImo, clefType, pos, color);
         }
-        case k_imo_note:
+        case k_imo_note_regular:
+        case k_imo_note_grace:
         {
             ImoNote* pImo = static_cast<ImoNote*>(pSO);
             NoteEngraver engrv(m_libraryScope, m_pScoreMeter, &m_engravers,
                                iInstr, iStaff);
             Color color = pImo->get_color();
-            GmoShape* pShape = engrv.create_shape(pImo, clefType, octaveShift, pos, color);
+            GmoShape* pShape = engrv.create_shape(pImo, clefType, octaveShift, pos,
+                                                  pCursor, color);
 
             //AWARE: Chords are an exception to the way relations are engraved. This
             //is because chords affect to note positions (reverse noteheads, shift

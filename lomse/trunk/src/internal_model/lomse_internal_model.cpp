@@ -444,7 +444,9 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_figured_bass] = "figured-bass";
         m_TypeToName[k_imo_go_back_fwd] = "go-back-fwd";
         m_TypeToName[k_imo_key_signature] = "key-signature";
-        m_TypeToName[k_imo_note] = "note";
+        m_TypeToName[k_imo_note_regular] = "note";
+        m_TypeToName[k_imo_note_grace] = "grace-note";
+        m_TypeToName[k_imo_note_cue] = "cue-note";
         m_TypeToName[k_imo_rest] = "rest";
         m_TypeToName[k_imo_system_break] = "system-break";
         m_TypeToName[k_imo_time_signature] = "time-signature";
@@ -555,6 +557,7 @@ const string& ImoObj::get_name(int type)
         // ImoRelObj (A)
         m_TypeToName[k_imo_beam] = "beam";
         m_TypeToName[k_imo_chord] = "chord";
+        m_TypeToName[k_imo_grace_relobj] = "grace-relobj";
         m_TypeToName[k_imo_octave_shift] = "octave-shift";
         m_TypeToName[k_imo_slur] = "slur";
         m_TypeToName[k_imo_tie] = "tie";
@@ -1044,7 +1047,6 @@ void ImoAuxRelObj::set_prev_ARO(ImoAuxRelObj* pPrev)
 //=======================================================================================
 ImoRelObj::~ImoRelObj()
 {
-    m_relatedObjects.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1509,6 +1511,30 @@ int ImoBeam::get_min_staff()
     return iStaff;
 }
 
+//---------------------------------------------------------------------------------------
+bool ImoBeam::contains_chords()
+{
+    list< pair<ImoStaffObj*, ImoRelDataObj*> >& notes = get_related_objects();
+    list< pair<ImoStaffObj*, ImoRelDataObj*> >::iterator it;
+    for (it=notes.begin(); it != notes.end(); ++it)
+    {
+        if ((*it).first->is_note())
+        {
+            ImoNote* pNote = static_cast<ImoNote*>((*it).first);
+            if (pNote->is_in_chord())
+                return true;
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------
+void ImoBeam::set_stems_direction(vector<int>* pStemsDir)
+{
+    delete m_pStemsDir;
+    m_pStemsDir = pStemsDir;
+}
+
 
 //=======================================================================================
 // ImoBezierInfo implementation
@@ -1817,8 +1843,59 @@ Color& ImoColorDto::set_from_string(const std::string& hex)
 
 
 //=======================================================================================
+// ImoChord implementation
+//=======================================================================================
+void ImoChord::update_cross_staff_data()
+{
+    m_fCrossStaff = false;
+    std::list< pair<ImoStaffObj*, ImoRelDataObj*> >::iterator it;
+    it = m_relatedObjects.begin();
+    ImoNote* pNote = static_cast<ImoNote*>((*it).first);
+    int staff = pNote->get_staff();
+
+    for (++it; it != m_relatedObjects.end(); ++it)
+    {
+        ImoNote* pNote = static_cast<ImoNote*>((*it).first);
+        if ((m_fCrossStaff = (pNote->get_staff() != staff) ))
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ImoChord::reorganize_after_object_deletion()
+{
+    update_cross_staff_data();
+}
+
+//---------------------------------------------------------------------------------------
+void ImoChord::push_back(ImoStaffObj* pSO, ImoRelDataObj* pData)
+{
+    ImoRelObj::push_back(pSO, pData);
+    update_cross_staff_data();
+}
+
+//---------------------------------------------------------------------------------------
+ImoNote* ImoChord::get_start_note()
+{
+    return static_cast<ImoNote*>(get_start_object());
+}
+
+//---------------------------------------------------------------------------------------
+ImoNote* ImoChord::get_end_note()
+{
+    return static_cast<ImoNote*>(get_end_object());
+}
+
+
+//=======================================================================================
 // ImoControl implementation
 //=======================================================================================
+ImoControl::~ImoControl()
+{
+    delete m_ctrol;
+}
+
+//---------------------------------------------------------------------------------------
 void ImoControl::attach_control(Control* ctrol)
 {
     m_ctrol = ctrol;
@@ -2466,6 +2543,19 @@ ImoDynamic::~ImoDynamic()
 
 
 //=======================================================================================
+// ImoGraceRelObj implementation
+//=======================================================================================
+void ImoGraceRelObj::reorganize_after_object_deletion()
+{
+    //A grace notes relobj involves the grace notes and their principal note.
+    //Thehe grace relationship must be deleted when the principal note
+    //is deleted (it should also delete the grace notes) or when the last grace note
+    //is deleted. In both cases, the grace relationship is automatically deleted when
+    //only one note remains in the relationship. So nothing to do here.
+}
+
+
+//=======================================================================================
 // ImoHeading implementation
 //=======================================================================================
 void ImoHeading::accept_visitor(BaseVisitor& v)
@@ -2522,6 +2612,13 @@ ImoInstrument::~ImoInstrument()
 
     delete m_pMeasures;
     delete m_pLastMeasureInfo;
+}
+
+//---------------------------------------------------------------------------------------
+void ImoInstrument::set_measures_table(ImMeasuresTable* pTable)
+{
+    delete m_pMeasures;
+    m_pMeasures = pTable;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3288,6 +3385,16 @@ ImoScore::~ImoScore()
 }
 
 //---------------------------------------------------------------------------------------
+void ImoScore::delete_text_styles()
+{
+    map<std::string, ImoStyle*>::const_iterator it;
+    for (it = m_nameToStyle.begin(); it != m_nameToStyle.end(); ++it)
+        delete it->second;
+
+    m_nameToStyle.clear();
+}
+
+//---------------------------------------------------------------------------------------
 string ImoScore::get_version_string()
 {
     stringstream v;
@@ -3405,16 +3512,6 @@ void ImoScore::set_staffobjs_table(ColStaffObjs* pColStaffObjs)
 {
     delete m_pColStaffObjs;
     m_pColStaffObjs = pColStaffObjs;
-}
-
-//---------------------------------------------------------------------------------------
-void ImoScore::delete_text_styles()
-{
-    map<std::string, ImoStyle*>::const_iterator it;
-    for (it = m_nameToStyle.begin(); it != m_nameToStyle.end(); ++it)
-        delete it->second;
-
-    m_nameToStyle.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -3773,7 +3870,7 @@ ImoStyle* ImoScore::create_default_style()
     pDefStyle->max_width( k_default_max_width );
     pDefStyle->width( k_default_width );
 
-    m_nameToStyle[pDefStyle->get_name()] = pDefStyle;
+//    m_nameToStyle[pDefStyle->get_name()] = pDefStyle;
     add_style(pDefStyle);
     return pDefStyle;
 }
@@ -3937,7 +4034,6 @@ ImoScorePlayer::ImoScorePlayer()
 //---------------------------------------------------------------------------------------
 ImoScorePlayer::~ImoScorePlayer()
 {
-    delete m_pPlayer;
 }
 
 //---------------------------------------------------------------------------------------
@@ -4070,6 +4166,11 @@ ImoMidiInfo* ImoSoundChange::get_midi_info(const string& soundId)
 //=======================================================================================
 // ImoStyle implementation
 //=======================================================================================
+ImoStyle::~ImoStyle()
+{
+}
+
+//---------------------------------------------------------------------------------------
 bool ImoStyle::is_default_style_with_default_values()
 {
     //returns true if it is a default style and contains default values
@@ -4819,6 +4920,16 @@ ImoStyles::~ImoStyles()
 }
 
 //---------------------------------------------------------------------------------------
+void ImoStyles::delete_text_styles()
+{
+    map<std::string, ImoStyle*>::const_iterator it;
+    for (it = m_nameToStyle.begin(); it != m_nameToStyle.end(); ++it)
+        delete it->second;
+
+    m_nameToStyle.clear();
+}
+
+//---------------------------------------------------------------------------------------
 void ImoStyles::accept_visitor(BaseVisitor& v)
 {
     Visitor<ImoObj>* vObj = nullptr;
@@ -5007,16 +5118,6 @@ void ImoStyles::create_default_styles()
     pStyle->margin_bottom(300);
     add_style(pStyle);
 
-}
-
-//---------------------------------------------------------------------------------------
-void ImoStyles::delete_text_styles()
-{
-    map<std::string, ImoStyle*>::const_iterator it;
-    for (it = m_nameToStyle.begin(); it != m_nameToStyle.end(); ++it)
-        delete it->second;
-
-    m_nameToStyle.clear();
 }
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2020. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -47,6 +47,9 @@ ImoNoteRest::ImoNoteRest(int objtype)
     , m_timeModifierTop(1)
     , m_timeModifierBottom(1)
     , m_duration(k_duration_quarter)
+    , m_playDuration(m_duration)
+    , m_eventDuration(m_duration)
+    , m_playTime(0.0)
 {
 }
 
@@ -110,6 +113,8 @@ void ImoNoteRest::set_time_modification(int numerator, int denominator)
 
     double modifier = double(m_timeModifierTop) / double(m_timeModifierBottom);
     m_duration = to_duration(m_nNoteType, m_nDots) * modifier;
+    m_playDuration = m_duration;
+    m_eventDuration = m_duration;
 }
 
 //---------------------------------------------------------------------------------------
@@ -118,6 +123,8 @@ void ImoNoteRest::set_note_type_and_dots(int noteType, int dots)
     m_nNoteType = noteType;
     m_nDots = dots;
     m_duration = to_duration(m_nNoteType, m_nDots);
+    m_playDuration = m_duration;
+    m_eventDuration = m_duration;
 }
 
 //---------------------------------------------------------------------------------------
@@ -126,6 +133,8 @@ void ImoNoteRest::set_type_dots_duration(int noteType, int dots, TimeUnits durat
     m_nNoteType = noteType;
     m_nDots = dots;
     m_duration = duration;
+    m_playDuration = m_duration;
+    m_eventDuration = m_duration;
 
     m_timeModifierTop = 1;
     m_timeModifierBottom = 1;
@@ -197,8 +206,8 @@ list<TIntAttribute> ImoNoteRest::get_supported_attributes()
 //=======================================================================================
 // ImoNote implementation
 //=======================================================================================
-ImoNote::ImoNote()
-    : ImoNoteRest(k_imo_note)
+ImoNote::ImoNote(int type)
+    : ImoNoteRest(type)
     , m_step(k_no_pitch)
     , m_octave(4)
     , m_actual_acc(k_acc_not_computed)
@@ -207,13 +216,14 @@ ImoNote::ImoNote()
     , m_stemDirection(k_stem_default)
     , m_pTieNext(nullptr)
     , m_pTiePrev(nullptr)
+    , m_computedStem(k_computed_stem_undecided)
 {
 }
 
 //---------------------------------------------------------------------------------------
 ImoNote::ImoNote(int step, int octave, int noteType, EAccidentals accidentals, int dots,
                  int staff, int voice, int stem)
-    : ImoNoteRest(k_imo_note)
+    : ImoNoteRest(k_imo_note_regular)
     , m_step(step)
     , m_octave(octave)
     , m_actual_acc(k_acc_not_computed)
@@ -266,6 +276,13 @@ bool ImoNote::is_end_of_chord()
 }
 
 //---------------------------------------------------------------------------------------
+bool ImoNote::is_cross_staff_chord()
+{
+    ImoChord* pChord = get_chord();
+    return pChord && pChord->is_cross_staff();
+}
+
+//---------------------------------------------------------------------------------------
 bool ImoNote::has_beam()
 {
     ImoChord* pChord = get_chord();
@@ -273,9 +290,15 @@ bool ImoNote::has_beam()
         return is_beamed();
     else
     {
-        ImoNote* pNote = static_cast<ImoNote*>(pChord->get_start_object());
+        ImoNote* pNote = pChord->get_start_note();
         return pNote->is_beamed();
     }
+}
+
+//---------------------------------------------------------------------------------------
+ImoGraceRelObj* ImoNote::get_grace_relobj()
+{
+    return static_cast<ImoGraceRelObj*>( find_relation(k_imo_grace_relobj) );
 }
 
 //---------------------------------------------------------------------------------------

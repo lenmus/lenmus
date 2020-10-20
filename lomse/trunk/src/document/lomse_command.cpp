@@ -133,7 +133,7 @@ void DocCommand::set_command_name(const string& name, ImoObj* pImo)
     int type = pImo->get_obj_type();
 //    switch(type)
 //    {
-//        case k_imo_note:        m_name.append("note");          break;
+//        case k_imo_note_regular:        m_name.append("note");          break;
 //        case k_imo_para:        m_name.append("paragraph");     break;
 //        case k_imo_rest:        m_name.append("rest");          break;
 //        default:
@@ -332,8 +332,10 @@ int DocCommandExecuter::execute(DocCursor* pCursor, DocCommand* pCmd,
             update_selection(pSelection, pCmd);
             m_pDoc->set_modified();
         }
-        else
+        else if (pCmd->is_reversible())
             delete pUE;
+        else
+            delete pCmd;
     }
     else
     {
@@ -342,6 +344,8 @@ int DocCommandExecuter::execute(DocCursor* pCursor, DocCommand* pCmd,
             m_error = "Command ignored. Can not set target";
         else
             m_error = error;
+
+        delete pCmd;
     }
 
     return result;
@@ -555,7 +559,7 @@ int CmdAddChordNote::perform_action(Document* pDoc, DocCursor* pCursor)
     ImoScore* pScore = pInstr->get_score();
 
     //create note to insert
-    ImoNote* pNewNote = static_cast<ImoNote*>( ImFactory::inject(k_imo_note, pDoc) );
+    ImoNote* pNewNote = static_cast<ImoNote*>( ImFactory::inject(k_imo_note_regular, pDoc) );
     pNewNote->set_note_type_and_dots(m_type, m_dots);
     pNewNote->set_voice(m_voice);
     pNewNote->set_notated_pitch(m_step, m_octave, m_accidentals);
@@ -2770,7 +2774,7 @@ int CmdTranspose::set_target(Document* UNUSED(pDoc),
 {
     if (pSelection && !pSelection->empty())
     {
-        m_notes = pSelection->filter(k_imo_note);
+        m_notes = pSelection->filter(k_imo_note_regular);
         m_keys = pSelection->filter(k_imo_key_signature);
         return k_success;
     }

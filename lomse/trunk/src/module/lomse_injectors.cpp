@@ -46,6 +46,7 @@
 #include "private/lomse_document_p.h"
 #include "lomse_font_storage.h"
 #include "lomse_graphic_view.h"
+#include "lomse_half_page_view.h"
 #include "lomse_interactor.h"
 #include "lomse_presenter.h"
 #include "lomse_doorway.h"
@@ -92,6 +93,8 @@ LibraryScope::LibraryScope(ostream& reporter, LomseDoorway* pDoorway)
     , m_fDrawAnchorObjects(false)
     , m_fDrawAnchorLines(false)
     , m_fShowShapeBounds(false)
+    , m_fDrawSlurCtrolPoints(false)
+    , m_fDrawVerticalProfile(false)
     , m_fUnitTests(false)
     , m_traceLinesBreaker(k_trace_breaks_off)
     , m_fUseDbgValues(false)
@@ -430,6 +433,13 @@ FreeFlowView* Injector::inject_FreeFlowView(LibraryScope& libraryScope, Document
 {
     return static_cast<FreeFlowView*>(
                         inject_View(libraryScope, k_view_free_flow, pDoc) );
+}
+
+//---------------------------------------------------------------------------------------
+HalfPageView* Injector::inject_HalfPageView(LibraryScope& libraryScope, Document* pDoc)
+{
+    return static_cast<HalfPageView*>(
+                        inject_View(libraryScope, k_view_half_page, pDoc) );
 }
 
 //---------------------------------------------------------------------------------------

@@ -3725,7 +3725,7 @@ public:
         else
         {
             pNote = static_cast<ImoNote*>(
-                          ImFactory::inject(k_imo_note, pDoc, get_node_id()) );
+                          ImFactory::inject(k_imo_note_regular, pDoc, get_node_id()) );
             pNR = pNote;
         }
 
@@ -6425,9 +6425,7 @@ LdpAnalyser::LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document
 LdpAnalyser::~LdpAnalyser()
 {
     delete_relation_builders();
-    m_lyrics.clear();
-    m_lyricIndex.clear();
-    m_lyricsPlacement.clear();
+    delete m_pMeasureInfo;      //in unit test could have been not used
 }
 
 //---------------------------------------------------------------------------------------

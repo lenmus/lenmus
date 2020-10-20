@@ -3050,7 +3050,7 @@ public:
         }
         else
         {
-            pNote = static_cast<ImoNote*>(ImFactory::inject(k_imo_note, pDoc));
+            pNote = static_cast<ImoNote*>(ImFactory::inject(k_imo_note_regular, pDoc));
             pNR = pNote;
         }
 
@@ -5824,7 +5824,6 @@ LmdAnalyser::LmdAnalyser(ostream& reporter, LibraryScope& libraryScope, Document
 LmdAnalyser::~LmdAnalyser()
 {
     delete_relation_builders();
-    m_NameToTag.clear();
 }
 
 //---------------------------------------------------------------------------------------
