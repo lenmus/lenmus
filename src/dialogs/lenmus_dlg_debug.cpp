@@ -63,7 +63,7 @@ IMPLEMENT_CLASS(DlgDebug, wxDialog)
 
 //---------------------------------------------------------------------------------------
 DlgDebug::DlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSave)
-    : wxDialog(parent, -1, sTitle, wxDefaultPosition, wxSize(800, 430),
+    : wxDialog(parent, -1, sTitle, wxDefaultPosition, wxSize(1000, 430),
                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
     , m_fSave(fSave)
 {
