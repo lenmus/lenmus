@@ -153,7 +153,6 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_pMenuOwner(nullptr)
 {
     Hide();     //keep hidden until necessary, to avoid useless repaints
-    set_edition_gui_mode(EditInterface::k_full_edition);
 }
 
 //---------------------------------------------------------------------------------------
@@ -652,13 +651,6 @@ void DocumentWindow::do_display(ostringstream& reporter)
 
         display_errors(reporter);
     }
-}
-
-//------------------------------------------------------------------------------------
-void DocumentWindow::set_edition_gui_mode(int mode)
-{
-    EditInterface* pEditGui  = m_appScope.get_edit_gui();
-    pEditGui->set_edition_gui_mode(this, mode);
 }
 
 //---------------------------------------------------------------------------------------

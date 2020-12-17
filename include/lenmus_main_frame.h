@@ -175,7 +175,6 @@ public:
     //mandatory overrides for public methods in EditInterface
     bool process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo);
     int translate_key(int key, int keyFlags);
-    void set_edition_gui_mode(DocumentWindow* pWnd, int mode);
 
 protected:
     void disable_tool(wxUpdateUIEvent &event);

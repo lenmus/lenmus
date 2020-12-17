@@ -111,7 +111,6 @@ public:
     void on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event, ToolBox* pToolBox);
     void on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event, ToolBox* pToolBox);
 //    inline const ToolBoxConfiguration& get_edition_gui_config() { return m_toolboxCfg; }
-    void set_edition_gui_mode(int mode);
     inline void force_edition_gui() { m_fEditionGuiForced = true; }
     inline void do_not_ask_to_save_modifications_when_closing() { m_fAskToSaveModifications = false; }
 
