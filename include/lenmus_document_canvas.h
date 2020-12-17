@@ -224,7 +224,6 @@ protected:
     //contextual menu
 	wxMenu*     m_pContextualMenu;
 	ImoObj*     m_pMenuOwner;		//contextual menu owner
-//	GmoObj*		m_pMenuGMO;			//graphic object who displayed the contextual menu
 
 
 

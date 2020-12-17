@@ -127,21 +127,8 @@ protected:
     DlgMetronome*     m_pMetronomeDlg;      //dialog for metronome settings
 
 
-    wxSpinCtrl*             m_pSpinMetronome;
-    wxBitmapComboBox*       m_pBeatNoteChoice;
-    wxComboBox*             m_pComboZoom;
-
     GlobalMetronome*        m_pMainMtr;   //independent metronome
     GlobalMetronome*        m_pMtr;       //metronome currently associated to frame metronome controls
-
-    // tool bars
-    wxToolBar*      m_pToolbar;         // main toolbar
-    wxToolBar*      m_pTbFile;          // file toolbar
-    wxToolBar*      m_pTbEdit;          // edit toolbar
-    wxToolBar*      m_pTbZoom;          // zoom toolbar
-    wxToolBar*      m_pTbPlay;          // play toolbar
-    wxToolBar*      m_pTbMtr;           // metronome toolbar
-    wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
 
     //Edit GUI
     ToolBox*                m_pToolBox;     //tool box window
@@ -156,7 +143,6 @@ protected:
     wxFileHistory   m_fileHistory;
 
     //global timer for carets
-//    wxTimer m_caretTimer;
     int m_nblinkTime;
 
 public:
@@ -172,7 +158,6 @@ public:
     static void wrapper_lomse_request(void* pThis, Request* pRequest);
 
     //commands from other places
-    void update_toolbars_layout();
     void open_file();
     void quit();
     void update_spacing_params(float force, float alpha, float dmin);
@@ -200,7 +185,6 @@ protected:
     void save_preferences();
     void create_metronome();
     void load_global_options();
-    void load_metronome_beat_notes(wxSize nSize);
 
     void create_menu();
     void set_lomse_callbacks();
@@ -226,11 +210,6 @@ protected:
 
     //welcome window
     bool is_welcome_page_displayed();
-
-    //toolbars
-    void show_toolbars_if_user_preferences();
-    void create_toolbars();
-    void delete_toolbars();
 
     //menu bar
     void create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
@@ -368,25 +347,13 @@ protected:
     void on_options(wxCommandEvent& WXUNUSED(event));
 
     //other even managers
-    void on_metronome_timer(wxTimerEvent& event);
-    void on_metronome_on_off(wxCommandEvent& WXUNUSED(event));
-    void on_metronome_update(wxSpinEvent& WXUNUSED(event));
-    void on_metronome_update_text(wxCommandEvent& WXUNUSED(event));
-    void on_metronome_beat(wxCommandEvent& WXUNUSED(event));
     void on_key_press(wxKeyEvent& event);
     void on_caret_timer_event(wxTimerEvent& WXUNUSED(event));
-//	void OnKeyF1(wxCommandEvent& event);
     void on_active_canvas_changing(wxAuiNotebookEvent& event);
-//    //textbook events and methods
-//    void OnDocumentFrame(wxCommandEvent& event);
-//    void OnDocumentFrameUpdateUI(wxUpdateUIEvent& event);
 
     //other events
     void on_close_frame(wxCloseEvent& WXUNUSED(event));
-    void on_size(wxSizeEvent& WXUNUSED(event));
     void on_edit_command(wxCommandEvent& event);
-    //void on_create_counters_panel(wxCommandEvent& WXUNUSED(event));
-    //void on_counters_event(CountersEvent& event);
     void on_tab_close(wxAuiManagerEvent& evt);
     void on_toolbox_tool_selected(ToolBoxToolSelectedEvent& event);
     void on_toolbox_page_changed(ToolBoxPageChangedEvent& event);

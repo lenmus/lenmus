@@ -57,7 +57,6 @@ enum EOptionsPanels
     eOptLanguage = 0,
     eOptSound,
     eOptColors,
-    eOptToolbars,
     eOptInternet,
     eOptShortcuts,
     eOptPlayback,

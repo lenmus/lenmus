@@ -172,7 +172,6 @@ enum
 
      // Menu View
     k_menu_view_rulers,
-    k_menu_view_toolBar,
     k_menu_view_page_margins,
     k_menu_view_welcome_page,
     k_menu_view_counters,
@@ -245,7 +244,6 @@ enum
 
     // Menu play
     k_menu_play_start,
-	k_menu_play_cursor_start,
     k_menu_play_stop,
     k_menu_play_pause,
     k_menu_play_countoff,
@@ -261,14 +259,6 @@ enum
     k_menu_help_search,
     k_menu_help_visit_website,
     k_menu_check_for_updates,
-
-    // Menu metronome
-    k_menu_metronome,
-
-  // controls IDs
-    k_id_combo_zoom,
-    k_id_spin_metronome,
-    k_id_metronome_beat,
 
   // other IDs
     k_id_timer_metronome,
@@ -286,7 +276,7 @@ const int VIEW_TYPE = k_view_vertical_book; //k_view_half_page;
 // events table
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
-    //File menu/toolbar
+    //File menu
     EVT_MENU(k_menu_file_quit, MainFrame::on_file_quit)
     EVT_MENU(k_menu_file_open, MainFrame::on_file_open)
     EVT_MENU      (k_menu_file_reload, MainFrame::on_file_reload)
@@ -304,11 +294,8 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU      (k_menu_file_new, MainFrame::on_file_new)
     EVT_UPDATE_UI (k_menu_file_export, MainFrame::disable_tool) //on_update_UI_file)
-//    EVT_MENU      (k_menu_file_export_MusicXML, MainFrame::OnExportMusicXML)
     EVT_UPDATE_UI (k_menu_file_export_MusicXML, MainFrame::disable_tool)    //on_update_UI_file)
-//    EVT_MENU      (k_menu_file_export_bmp, MainFrame::OnExportBMP)
     EVT_UPDATE_UI (k_menu_file_export_bmp, MainFrame::disable_tool) //on_update_UI_file)
-//    EVT_MENU      (k_menu_file_export_jpg, MainFrame::OnExportJPG)
     EVT_UPDATE_UI (k_menu_file_export_jpg, MainFrame::disable_tool) //on_update_UI_file)
 
     EVT_MENU      (wxID_PRINT_SETUP, MainFrame::on_print_setup)
@@ -321,7 +308,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::on_open_recent_file)
     EVT_MENU      (k_menu_open_books, MainFrame::on_open_books)
 
-    //Edit menu/toolbar
+    //Edit menu
     EVT_MENU      (k_menu_edit_enable_edition, MainFrame::on_edit_enable_edition)
     EVT_UPDATE_UI (k_menu_edit_enable_edition, MainFrame::on_update_UI_edit)
     EVT_MENU      (k_menu_edit_copy, MainFrame::on_edit_copy)
@@ -339,58 +326,43 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU      (k_menu_insert_score, MainFrame::on_edit_insert)
     EVT_UPDATE_UI (k_menu_edit_insert, MainFrame::on_update_UI_edit)
 
-    //View menu/toolbar
+    //View menu
     EVT_MENU      (k_menu_view_console, MainFrame::on_view_console)
     EVT_UPDATE_UI (k_menu_view_console, MainFrame::on_update_UI_view_console)
-//    EVT_MENU      (k_menu_view_rulers, MainFrame::OnViewRulers)
     EVT_UPDATE_UI (k_menu_view_rulers, MainFrame::disable_tool)   //OnViewRulersUI)
-    EVT_MENU      (k_menu_view_toolBar, MainFrame::on_view_tool_bar)
-    EVT_UPDATE_UI (k_menu_view_toolBar, MainFrame::on_update_UI_tool_bar)
     EVT_MENU      (k_menu_view_toc, MainFrame::on_view_hide_show_toc)
     EVT_UPDATE_UI (k_menu_view_toc, MainFrame::on_update_UI_view_toc)
-//    EVT_MENU      (k_menu_view_page_margins, MainFrame::OnViewPageMargins)
     EVT_UPDATE_UI (k_menu_view_page_margins, MainFrame::disable_tool)   //on_update_UI_edit)
     EVT_MENU      (k_menu_view_welcome_page, MainFrame::on_view_welcome_page)
     EVT_UPDATE_UI (k_menu_view_welcome_page, MainFrame::on_update_UI_welcome_page)
-    //EVT_MENU      (k_menu_view_counters, MainFrame::on_create_counters_panel)
     EVT_MENU      (k_menu_view_virtual_keyboard, MainFrame::on_view_virtual_keyboard)
     EVT_UPDATE_UI (k_menu_view_virtual_keyboard, MainFrame::on_update_UI_view_virtual_keyboard)
     EVT_MENU      (k_menu_view_voices_in_colours, MainFrame::on_view_voices_in_colours)
     EVT_UPDATE_UI (k_menu_view_voices_in_colours, MainFrame::on_update_UI_view_voices_in_colours)
 
-    //Score menu/toolbar
-//    EVT_MENU      (k_menu_score_titles, MainFrame::OnScoreTitles)
+    //Score menu
     EVT_UPDATE_UI (k_menu_score_titles, MainFrame::disable_tool)   //on_update_UI_edit)
 
     // Instrument menu
-//	EVT_MENU      (k_menu_instr_properties, MainFrame::OnInstrumentProperties)
     EVT_UPDATE_UI (k_menu_instr_properties, MainFrame::disable_tool)   //on_update_UI_edit)
 
-	//Zoom menu/toolbar
+	//Zoom menu
     EVT_MENU(k_menu_zoom_in, MainFrame::on_zoom_in)
     EVT_MENU(k_menu_zoom_out, MainFrame::on_zoom_out)
     EVT_MENU (k_menu_zoom_100, MainFrame::on_zoom_100)
     EVT_MENU (k_menu_zoom_other, MainFrame::on_zoom_other)
     EVT_MENU (k_menu_zoom_fit_full, MainFrame::on_zoom_fit_full)
     EVT_MENU (k_menu_zoom_fit_width, MainFrame::on_zoom_fit_width)
-    EVT_UPDATE_UI_RANGE (k_menu_zoom_in, k_menu_zoom_other, MainFrame::on_update_UI_zoom)
-    EVT_COMBOBOX  (k_id_combo_zoom, MainFrame::on_combo_zoom )
-    EVT_TEXT_ENTER(k_id_combo_zoom, MainFrame::on_combo_zoom )
-    EVT_UPDATE_UI (k_id_combo_zoom, MainFrame::on_update_UI_zoom)
 
-    //Sound menu/toolbar
+    //Sound menu
     EVT_MENU      (k_menu_sound_test, MainFrame::on_sound_test)
     EVT_MENU      (k_menu_sound_off, MainFrame::on_all_sounds_off)
     EVT_MENU      (k_menu_play_start, MainFrame::on_play_start)
     EVT_UPDATE_UI (k_menu_play_start, MainFrame::on_update_UI_sound)
-//    EVT_MENU      (k_menu_play_cursor_start, MainFrame::OnPlayCursorStart)
-    EVT_UPDATE_UI (k_menu_play_cursor_start, MainFrame::on_update_UI_sound)
     EVT_MENU      (k_menu_play_stop, MainFrame::on_play_stop)
     EVT_UPDATE_UI (k_menu_play_stop, MainFrame::on_update_UI_sound)
     EVT_MENU      (k_menu_play_pause, MainFrame::on_play_pause)
     EVT_UPDATE_UI (k_menu_play_pause, MainFrame::on_update_UI_sound)
-    EVT_MENU      (k_menu_metronome, MainFrame::on_metronome_on_off)
-    EVT_UPDATE_UI (k_menu_metronome, MainFrame::on_update_UI_sound)
 
     //Options menu
     EVT_MENU      (k_menu_preferences, MainFrame::on_options)
@@ -454,7 +426,6 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_see_mnx_source, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_see_checkpoint_data, MainFrame::on_debug_see_checkpoint_data)
     EVT_UPDATE_UI (k_menu_see_checkpoint_data, MainFrame::on_update_UI_document)
-//    EVT_MENU      (k_menu_debug_see_musicxml, MainFrame::on_debug_see_musicxml)
     EVT_UPDATE_UI (k_menu_debug_see_musicxml, MainFrame::disable_tool)   //on_update_UI_document)
     EVT_MENU      (k_menu_see_spacing_data, MainFrame::on_debug_see_spacing_data)
     EVT_UPDATE_UI (k_menu_see_spacing_data, MainFrame::on_update_UI_document)
@@ -476,21 +447,12 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_document)
 #endif
 
-    //metronome
-    EVT_SPINCTRL    (k_id_spin_metronome, MainFrame::on_metronome_update)
-    EVT_TEXT        (k_id_spin_metronome, MainFrame::on_metronome_update_text)
-    EVT_TIMER       (k_id_timer_metronome, MainFrame::on_metronome_timer)
-    EVT_COMBOBOX    (k_id_metronome_beat, MainFrame::on_metronome_beat)
-
     //other events
     EVT_TIMER   (k_id_caret_timer, MainFrame::on_caret_timer_event)
     EVT_CLOSE   (MainFrame::on_close_frame)
-    EVT_SIZE    (MainFrame::on_size)
-    //LM_EVT_COUNTERS_DLG(MainFrame::on_counters_event)
     EVT_AUI_PANE_CLOSE(MainFrame::on_tab_close)
     EVT_CHAR(MainFrame::on_key_press)
     EVT_COMMAND(k_id_check_for_updates, LM_EVT_CHECK_FOR_UPDATES, MainFrame::on_silently_check_for_updates)
-//	EVT_MENU(k_id_key_F1, MainFrame::OnKeyF1)
     EVT_COMMAND(k_id_open_book, LM_EVT_OPEN_BOOK, MainFrame::on_open_book)
     EVT_COMMAND(k_id_edit_command, LM_EVT_EDIT_COMMAND, MainFrame::on_edit_command)
     LM_EVT_TOOLBOX_TOOL_SELECTED(MainFrame::on_toolbox_tool_selected)
@@ -512,13 +474,6 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pVirtualKeyboard(nullptr)
     , m_pSpacingParamsDlg(nullptr)
     , m_pMetronomeDlg(nullptr)
-    , m_pToolbar(nullptr)
-    , m_pTbFile(nullptr)
-    , m_pTbEdit(nullptr)
-    , m_pTbZoom(nullptr)
-    , m_pTbPlay(nullptr)
-    , m_pTbMtr(nullptr)
-    , m_pTbTextBooks(nullptr)
     , m_pToolBox(nullptr)
     , m_pPrintData(nullptr)
     , m_pPageSetupData(nullptr)
@@ -815,8 +770,6 @@ void MainFrame::create_menu()
     // View menu -------------------------------------------------------------------
 
     wxMenu* pMenuView = LENMUS_NEW wxMenu;
-    create_menu_item(pMenuView, k_menu_view_toolBar, _("Tool bar"),
-                _("Hide/show the tools bar"), wxITEM_CHECK);
     create_menu_item(pMenuView, k_menu_view_toc, _("Table of content"),
                 _("Hide/show the TOC for current book"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
@@ -969,19 +922,12 @@ void MainFrame::create_menu()
     create_menu_item(pMenuSound, k_menu_play_start, _("play"),
                 _("Start/resume play back. From selection of full score"), wxITEM_NORMAL,
                 "tool_play");
-    create_menu_item(pMenuSound, k_menu_play_cursor_start, _("play from cursor"),
-                _("Start/resume play back. From cursor measure"), wxITEM_NORMAL,
-                "tool_play_cursor");
     create_menu_item(pMenuSound, k_menu_play_stop, _("Stop"),
                 _("Stop playing back"), wxITEM_NORMAL, "tool_stop");
     create_menu_item(pMenuSound, k_menu_play_pause, _("Pause"),
                 _("Pause playing back"), wxITEM_NORMAL, "tool_pause");
     create_menu_item(pMenuSound, k_menu_play_countoff, _("Do count off"),
                     _("Do count off before starting the play back"), wxITEM_CHECK);
-    pMenuSound->AppendSeparator();
-
-    create_menu_item(pMenuSound, k_menu_metronome, _("Metronome on"),
-                    _("Turn metronome on/off"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 
     create_menu_item(pMenuSound, k_menu_sound_test, _("Test sound"),
@@ -1086,7 +1032,6 @@ void MainFrame::create_menu()
 void MainFrame::create_controls()
 {
     m_layoutManager.SetManagedWindow(this);     //inform wxAUI which frame to use
-    show_toolbars_if_user_preferences();
 
     //create the ContentWindow (main pane, a notebook) for scores and other content
     long style = wxAUI_NB_CLOSE_ON_ACTIVE_TAB |     //put close button on the active tab
@@ -1262,64 +1207,6 @@ void MainFrame::load_file(const string& filename)
         dlg.ShowModal();
     }
     reporter.str(std::string());      //remove any previous content
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_size(wxSizeEvent& WXUNUSED(event))
-{
-    //Reorganize toolbar items in rows, to fit frame size
-
-    if (!m_pTbMtr) return;      //toolbars not yet created
-
-    //AS I can not measure the grip witdh I will use a good approx.: half toolbar height
-    int nGripWidth = m_pTbMtr->GetSize().GetHeight() / 2 + 1;
-
-    int nRow = 0;
-    int nPos = 0;
-    wxSize size = this->GetClientSize();
-    int nAvailable = size.x;
-
-    //Pointers, in presentation order:
-    wxToolBar* pTool[7];
-    pTool[0] = m_pTbFile;       //File tools
-    pTool[1] = m_pTbEdit;       //Edit tools
-    pTool[2] = m_pTbZoom;       //Zooming tools
-    pTool[3] = m_pToolbar;      //Main tools
-    pTool[4] = m_pTbPlay;       //play tools
-    pTool[5] = m_pTbMtr;        //Metronome tools
-    pTool[6] = m_pTbTextBooks;  //Textbooks
-
-    //determine longest toolbar panel
-    int nWidth = 0;
-    for (int i=0; i < 7; ++i)
-    {
-        if (pTool[i])
-            nWidth = max(nWidth, pTool[i]->GetSize().GetWidth());
-    }
-    nWidth += nGripWidth;
-
-    //check that there is enough space for the longest toolbar panel
-    if (nAvailable < nWidth)
-        return;
-
-    for (int i=0; i < 7; i++)
-    {
-        if (pTool[i])
-        {
-            nWidth = pTool[i]->GetSize().GetWidth() + nGripWidth;
-            if (nAvailable < nWidth)
-            {
-                ++nRow;
-                nPos = 0;
-                nAvailable = size.x;
-            }
-            nAvailable -= nWidth;
-            m_layoutManager.GetPane(pTool[i]).Top().Row(nRow).Position(nPos);
-        }
-    }
-
-    // tell the manager to "commit" all the changes just made
-    m_layoutManager.Update();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1555,411 +1442,6 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 
 #endif
 }
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_metronome_on_off(wxCommandEvent& WXUNUSED(event))
-{
-    if (m_pMtr->is_running())
-    {
-        m_pMtr->stop();
-        //TODO switch off metronome LED
-    }
-    else
-    {
-        m_pMtr->start();
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::update_toolbars_layout()
-{
-    // Recreate toolbars if visible. User has changed visualization options
-	if (m_pToolbar)
-    {
-		delete_toolbars();
-		create_toolbars();
-		wxSizeEvent event;  //initialization does not matter. It is not used
-		on_size(event);
-	}
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::show_toolbars_if_user_preferences()
-{
-    bool fToolBar = true;
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Read("/MainFrame/ViewToolBar", &fToolBar);
-    if (fToolBar)
-        create_toolbars();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::create_toolbars()
-{
-    if (m_pToolbar) return;
-
-    //prepare style
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-    long style = wxTB_FLAT | wxTB_NODIVIDER;
-    long nLabelsIndex = pPrefs->Read("/Toolbars/Labels", 0L);
-    if (nLabelsIndex == 1)
-        style |= wxTB_TEXT;
-    else if (nLabelsIndex == 2)
-        style |= wxTB_HORZ_TEXT;
-
-    //prepare icons size
-    long nIconSize = pPrefs->Read("/Toolbars/IconSize", 16);
-    wxSize nSize(nIconSize, nIconSize);
-    int nHeight = -1;   //nIconSize+14;     //ComboBox and ComboBitmap height
-
-    //create main tool bar
-    m_pToolbar = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pToolbar->SetToolBitmapSize(nSize);
-    m_pToolbar->AddTool(k_menu_preferences, "Preferences", wxArtProvider::GetBitmap("tool_options", wxART_TOOLBAR, nSize), _("Set user preferences"));
-    m_pToolbar->AddTool(k_menu_help_users_guide, "Help", wxArtProvider::GetBitmap("tool_help", wxART_TOOLBAR, nSize), _("Help button"));
-    m_pToolbar->Realize();
-
-    //File toolbar
-    m_pTbFile = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pTbFile->SetToolBitmapSize(nSize);
-    m_pTbFile->AddTool(k_menu_file_new, "New",
-            wxArtProvider::GetBitmap("tool_new", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_new_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("New document"));
-    m_pTbFile->AddTool(k_menu_file_open, "Open", wxArtProvider::GetBitmap("tool_open",
-            wxART_TOOLBAR, nSize), _("Open a score"));
-    m_pTbFile->AddTool(k_menu_open_books, "Books",
-            wxArtProvider::GetBitmap("tool_open_ebook", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_open_ebook_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Open the music books"));
-    m_pTbFile->AddTool(k_menu_file_save, "Save",
-            wxArtProvider::GetBitmap("tool_save", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_save_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Save current score to disk"));
-    m_pTbFile->AddTool(k_menu_print, "Print",
-            wxArtProvider::GetBitmap("tool_print", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_print_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Print document"));
-    m_pTbFile->Realize();
-
-    //Edit toolbar
-    m_pTbEdit = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pTbEdit->SetToolBitmapSize(nSize);
-    //m_pTbEdit->AddTool(k_menu_edit_copy, "Copy",
-    //        wxArtProvider::GetBitmap("tool_copy", wxART_TOOLBAR, nSize),
-    //        wxArtProvider::GetBitmap("tool_copy_dis", wxART_TOOLBAR, nSize),
-    //        wxITEM_NORMAL, _("Copy"));
-    //m_pTbEdit->AddTool(k_menu_edit_cut, "Cut",
-    //        wxArtProvider::GetBitmap("tool_cut", wxART_TOOLBAR, nSize),
-    //        wxArtProvider::GetBitmap("tool_cut_dis", wxART_TOOLBAR, nSize),
-    //        wxITEM_NORMAL, _("Cut"));
-    //m_pTbEdit->AddTool(k_menu_edit_paste, "Paste",
-    //        wxArtProvider::GetBitmap("tool_paste", wxART_TOOLBAR, nSize),
-    //        wxArtProvider::GetBitmap("tool_paste_dis", wxART_TOOLBAR, nSize),
-    //        wxITEM_NORMAL, _("Paste"));
-    m_pTbEdit->AddTool(k_menu_edit_undo, "Undo",
-            wxArtProvider::GetBitmap("tool_undo", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_undo_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Undo"));
-    m_pTbEdit->AddTool(k_menu_edit_redo, "Redo",
-            wxArtProvider::GetBitmap("tool_redo", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_redo_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Redo"));
-    //m_pTbEdit->AddSeparator();
-    //m_pTbEdit->AddTool(k_menu_view_page_margins, "Page margins",
-    //        wxArtProvider::GetBitmap("tool_page_margins", wxART_TOOLBAR, nSize),
-    //        wxArtProvider::GetBitmap("tool_page_margins", wxART_TOOLBAR, nSize),
-    //        wxITEM_CHECK, _("Show/hide page margins and spacers"));
-    m_pTbEdit->Realize();
-
-    //Zoom toolbar
-    m_pTbZoom = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pTbZoom->SetToolBitmapSize(nSize);
-    m_pTbZoom->AddTool(k_menu_view_toc, "Hide/show book TOC",
-            wxArtProvider::GetBitmap("tool_index_panel", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_index_panel_dis", wxART_TOOLBAR, nSize),
-            wxITEM_CHECK, _("Hide/show the Table Of Content for current book"));
-    m_pTbZoom->AddTool(k_menu_zoom_fit_full, "Fit full",
-            wxArtProvider::GetBitmap("tool_zoom_fit_full", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_zoom_fit_full_dis", wxART_TOOLBAR, nSize),
-            wxITEM_CHECK, _("Zoom so that the full page is displayed"));
-    m_pTbZoom->AddTool(k_menu_zoom_fit_width, "Fit width",
-            wxArtProvider::GetBitmap("tool_zoom_fit_width", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_zoom_fit_width_dis", wxART_TOOLBAR, nSize),
-            wxITEM_CHECK, _("Zoom so that page width equals window width"));
-    m_pTbZoom->AddTool(k_menu_zoom_in, "Zoom in",
-            wxArtProvider::GetBitmap("tool_zoom_in", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_zoom_in_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Enlarge image size"));
-    m_pTbZoom->AddTool(k_menu_zoom_out, "Zoom out",
-            wxArtProvider::GetBitmap("tool_zoom_out", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_zoom_out_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Reduce image size"));
-
-    m_pComboZoom = LENMUS_NEW wxComboBox(m_pTbZoom, k_id_combo_zoom, "",
-                                         wxDefaultPosition, wxSize(90, nHeight) );
-    m_pComboZoom->Append("25%");
-    m_pComboZoom->Append("50%");
-    m_pComboZoom->Append("75%");
-    m_pComboZoom->Append("90%");
-    m_pComboZoom->Append("100%");
-    m_pComboZoom->Append("110%");
-    m_pComboZoom->Append("120%");
-    m_pComboZoom->Append("133%");
-    m_pComboZoom->Append("150%");
-    m_pComboZoom->Append("175%");
-    m_pComboZoom->Append("200%");
-    m_pComboZoom->Append("300%");
-    m_pComboZoom->Append("400%");
-    m_pComboZoom->Append("800%");
-    m_pComboZoom->Append(_("Actual size"));         // tamaño real
-    m_pComboZoom->Append(_("Fit page full"));       // toda la página
-    m_pComboZoom->Append(_("Fit page width"));      // ancho de página
-    m_pComboZoom->SetSelection(3);
-    m_pTbZoom->AddControl(m_pComboZoom);
-    m_pTbZoom->Realize();
-
-    //play toolbar
-    m_pTbPlay = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pTbPlay->SetToolBitmapSize(nSize);
-    m_pTbPlay->AddTool(k_menu_play_start, "play",
-            wxArtProvider::GetBitmap("tool_play", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_play_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Start/resume play back. From selection of full score"));
-    m_pTbPlay->AddTool(k_menu_play_cursor_start, "play from cursor",
-            wxArtProvider::GetBitmap("tool_play_cursor", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_play_cursor_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Start/resume play back. From cursor measure"));
-    m_pTbPlay->AddTool(k_menu_play_stop, "Stop",
-            wxArtProvider::GetBitmap("tool_stop", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_stop_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Stop playing back"));
-    m_pTbPlay->AddTool(k_menu_play_pause, "Pause",
-            wxArtProvider::GetBitmap("tool_pause", wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap("tool_pause_dis", wxART_TOOLBAR, nSize),
-            wxITEM_NORMAL, _("Pause playing back"));
-    m_pTbPlay->Realize();
-
-    //Metronome toolbar
-    m_pTbMtr = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
-    m_pTbMtr->SetToolBitmapSize(nSize);
-        //metronome on/off button
-    m_pTbMtr->AddTool(k_menu_metronome, "Metronome",
-        wxArtProvider::GetBitmap("tool_metronome",
-        wxART_TOOLBAR, nSize), _("Turn metronome on/off"),
-        wxITEM_CHECK);
-        //metronome tempo
-    m_pSpinMetronome = LENMUS_NEW wxSpinCtrl(m_pTbMtr, k_id_spin_metronome, "", wxDefaultPosition,
-        wxSize(60, nHeight), wxSP_ARROW_KEYS | wxSP_WRAP, 1, 400);
-    m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
-    m_pTbMtr->AddControl(m_pSpinMetronome);
-        //metronome beat
-	m_pBeatNoteChoice = LENMUS_NEW
-        wxBitmapComboBox(m_pTbMtr, k_id_metronome_beat, wxEmptyString,
-                         wxDefaultPosition, wxSize(60, nHeight),
-                         0, nullptr, wxCB_READONLY);
-	load_metronome_beat_notes(wxSize(24,24));   //as ComboBoxes take some height, 24px images fit well when 16px icons are used
-    m_pTbMtr->AddControl(m_pBeatNoteChoice);
-    m_pTbMtr->Realize();
-
-
-    // add the toolbars to the manager
-#if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
-    //In gtk reverse creation order
-    m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
-                Name("Metronome").Caption(_("Metronome tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbPlay, wxAuiPaneInfo().
-                Name("play").Caption(_("play tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
-                Name("toolbar").Caption(_("Main tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbZoom, wxAuiPaneInfo().
-                Name("Zooming tools").Caption(_("Zooming tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbEdit, wxAuiPaneInfo().
-                Name("Edit tools").Caption(_("Edit tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbFile, wxAuiPaneInfo().
-                Name("File tools").Caption(_("File tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-
-#else
-    // row 1
-    m_layoutManager.AddPane(m_pTbFile, wxAuiPaneInfo().
-                Name("File tools").Caption(_("File tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbEdit, wxAuiPaneInfo().
-                Name("Edit tools").Caption(_("Edit tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbZoom, wxAuiPaneInfo().
-                Name("Zooming tools").Caption(_("Zooming tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
-                Name("toolbar").Caption(_("Main tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbPlay, wxAuiPaneInfo().
-                Name("play").Caption(_("play tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-    m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
-                Name("Metronome").Caption(_("Metronome tools")).
-                ToolbarPane().Top().
-                LeftDockable(false).RightDockable(false));
-
-#endif
-
-    // tell the manager to "commit" all the changes just made
-    m_layoutManager.Update();
-}
-//---------------------------------------------------------------------------------------
-void MainFrame::load_metronome_beat_notes(wxSize nSize)
-{
-    m_pBeatNoteChoice->Clear();
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_ts",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_whole",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_half_dotted",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_half",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_quarter_dotted",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_quarter",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_eighth_dotted",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_eighth",
-                                 wxART_TOOLBAR, nSize) );
-    m_pBeatNoteChoice->Append(wxEmptyString,
-                             wxArtProvider::GetBitmap("beat_sexteenth",
-                                 wxART_TOOLBAR, nSize) );
-
-    m_pBeatNoteChoice->SetSelection(0);
-}
-
-
-//---------------------------------------------------------------------------------------
-void MainFrame::delete_toolbars()
-{
-    // main toolbar
-    if (m_pToolbar)
-    {
-        m_layoutManager.DetachPane(m_pToolbar);
-        delete m_pToolbar;
-        m_pToolbar = (wxToolBar*)nullptr;
-    }
-
-    // file toolbar
-    if (m_pTbFile)
-    {
-        m_layoutManager.DetachPane(m_pTbFile);
-        delete m_pTbFile;
-        m_pTbFile = (wxToolBar*)nullptr;
-    }
-
-    // edit toolbar
-    if (m_pTbEdit)
-    {
-        m_layoutManager.DetachPane(m_pTbEdit);
-        delete m_pTbEdit;
-        m_pTbEdit = (wxToolBar*)nullptr;
-    }
-
-    // play toolbar
-    if (m_pTbPlay)
-    {
-        m_layoutManager.DetachPane(m_pTbPlay);
-        delete m_pTbPlay;
-        m_pTbPlay = (wxToolBar*)nullptr;
-    }
-
-    // metronome toolbar
-    if (m_pTbMtr)
-    {
-        m_layoutManager.DetachPane(m_pTbMtr);
-        delete m_pTbMtr;
-        m_pTbMtr = (wxToolBar*)nullptr;
-    }
-
-    // zoom toolbar
-    if (m_pTbZoom)
-    {
-        m_layoutManager.DetachPane(m_pTbZoom);
-        delete m_pTbZoom;
-        m_pTbZoom = (wxToolBar*)nullptr;
-    }
-
-    // Text books navigation toolbar
-    if (m_pTbTextBooks)
-    {
-        m_layoutManager.DetachPane(m_pTbTextBooks);
-        delete m_pTbTextBooks;
-        m_pTbTextBooks = (wxToolBar*)nullptr;
-    }
-
-    // tell the manager to "commit" all the changes just made
-    m_layoutManager.Update();
-}
-
-//void MainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow)
-//{
-//    m_pTbTextBooks = LENMUS_NEW wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
-//    m_pTbTextBooks->SetToolBitmapSize(nIconSize);
-//
-//    //add tools
-//    m_pTbTextBooks->AddTool(lmMENU_eBookPanel, "Index",
-//            wxArtProvider::GetBitmap("tool_index_panel", wxART_TOOLBAR, nIconSize),
-//            wxArtProvider::GetBitmap("tool_index_panel_dis", wxART_TOOLBAR, nIconSize),
-//            wxITEM_CHECK, _("Show/hide navigation panel") );
-//    m_pTbTextBooks->ToggleTool(lmMENU_eBookPanel, false);
-//
-//    m_pTbTextBooks->AddSeparator();
-//    m_pTbTextBooks->AddTool(lmMENU_eBook_PagePrev, "Back page",
-//            wxArtProvider::GetBitmap("tool_page_previous", wxART_TOOLBAR, nIconSize),
-//            wxArtProvider::GetBitmap("tool_page_previous_dis", wxART_TOOLBAR, nIconSize),
-//            wxITEM_NORMAL, _("Previous page of current eMusicBook") );
-//    m_pTbTextBooks->AddTool(lmMENU_eBook_PageNext, "Next page",
-//            wxArtProvider::GetBitmap("tool_page_next", wxART_TOOLBAR, nIconSize),
-//            wxArtProvider::GetBitmap("tool_page_next_dis", wxART_TOOLBAR, nIconSize),
-//            wxITEM_NORMAL, _("Next page of current eMusicBook") );
-//
-//    m_pTbTextBooks->AddSeparator();
-//    m_pTbTextBooks->AddTool(lmMENU_eBook_GoBack, "Go back",
-//            wxArtProvider::GetBitmap("tool_previous", wxART_TOOLBAR, nIconSize),
-//            _("Go to previous visited page"), wxITEM_NORMAL );
-//    m_pTbTextBooks->AddTool(lmMENU_eBook_GoForward, "Go forward",
-//            wxArtProvider::GetBitmap("tool_next", wxART_TOOLBAR, nIconSize),
-//            _("Go to next visited page"), wxITEM_NORMAL );
-//
-//    m_pTbTextBooks->Realize();
-//
-//    m_layoutManager.AddPane(m_pTbTextBooks, wxAuiPaneInfo().
-//                Name("Navigation").Caption(_("eBooks navigation tools")).
-//                ToolbarPane().Top().Row(nRow).
-//                LeftDockable(false).RightDockable(false));
-//
-//}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
@@ -2913,50 +2395,6 @@ void MainFrame::on_zoom_fit_full(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_update_UI_zoom(wxUpdateUIEvent &event)
-{
-    if (!m_pToolbar)
-        return;
-
-    DocumentWindow* pCanvas = get_active_document_window();
-    event.Enable(pCanvas != nullptr);
-
-    if (pCanvas)
-    {
-        //toolbar buttons
-        int zoomMode = pCanvas->get_zoom_mode();
-        if (zoomMode == DocumentWindow::k_zoom_fit_full)
-        {
-            m_pTbZoom->ToggleTool(k_menu_zoom_fit_full, true);
-            m_pTbZoom->ToggleTool(k_menu_zoom_fit_width, false);
-        }
-        else if (zoomMode == DocumentWindow::k_zoom_fit_width)
-        {
-            m_pTbZoom->ToggleTool(k_menu_zoom_fit_full, false);
-            m_pTbZoom->ToggleTool(k_menu_zoom_fit_width, true);
-        }
-        else    //k_zoom_user
-        {
-            m_pTbZoom->ToggleTool(k_menu_zoom_fit_full, false);
-            m_pTbZoom->ToggleTool(k_menu_zoom_fit_width, false);
-        }
-
-        //zoom combo box
-        Interactor* pInteractor = pCanvas->get_interactor();
-        if (pInteractor && m_pComboZoom)
-        {
-            double scale = pInteractor->get_scale();
-            m_pComboZoom->SetValue(wxString::Format("%.2f%%", scale * 100.0));
-        }
-    }
-    else
-    {
-        m_pTbZoom->ToggleTool(k_menu_zoom_fit_full, false);
-        m_pTbZoom->ToggleTool(k_menu_zoom_fit_width, false);
-    }
-}
-
-//---------------------------------------------------------------------------------------
 void MainFrame::on_zoom_other(wxCommandEvent& WXUNUSED(event))
 {
     Interactor* pInt = get_active_canvas_interactor();
@@ -2969,44 +2407,6 @@ void MainFrame::on_zoom_other(wxCommandEvent& WXUNUSED(event))
         if (nZoom != -1)    // -1 means invalid input or user canceled
             zoom_to( double(nZoom) / 100.0 );
     }
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_combo_zoom(wxCommandEvent& event)
-{
-    wxString sValue = event.GetString();
-    if (sValue == _("Fit page full"))
-    {
-        on_zoom_fit_full(event);
-    }
-    else if (sValue == _("Fit page width"))
-    {
-        on_zoom_fit_width(event);
-    }
-    else if (sValue == _("Actual size"))
-    {
-        zoom_to(1.0);
-    }
-    else
-    {
-        sValue.Replace("%", "");
-        sValue.Trim();
-        double rZoom;
-        if (!sValue.ToDouble(&rZoom))
-        {
-            wxMessageBox(wxString::Format(_("Invalid zooming factor '%s'"), sValue.wx_str()),
-                         _("Error message"), wxOK || wxICON_HAND );
-            return;
-        }
-        if (rZoom < 9.9 || rZoom > 801.0)
-        {
-            wxMessageBox(_("Zooming factor must be greater that 10% and lower than 800%"),
-                         _("Error message"), wxOK || wxICON_HAND );
-            return;
-        }
-        zoom_to(rZoom/100.0);
-    }
-	event.Skip();      //continue processing the  event
 }
 
 //---------------------------------------------------------------------------------------
@@ -3082,51 +2482,6 @@ void MainFrame::create_tool_box()
     m_pToolBox =  LENMUS_NEW ToolBox(this, wxID_ANY, m_appScope);
     m_pToolBox->SelectToolPage(k_page_notes);
     m_pToolBox->Hide();
-}
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnViewRulers(wxCommandEvent& event)
-//{
-//    lmScoreView* pView = GetActiveScoreView();
-//    pView->SetRulersVisible(event.IsChecked());
-//}
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
-//{
-//    //For now, always disabled in release versions
-//    if (m_appScope.is_release_behaviour()) {
-//        event.Enable(false);
-//    }
-//    else {
-//        lmTDIChildFrame* pChild = GetActiveChild();
-//        event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
-//    }
-//}
-
-////---------------------------------------------------------------------------------------
-//bool MainFrame::ShowRulers()
-//{
-//    return GetMenuBar()->IsChecked(k_menu_view_rulers);
-//}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_view_tool_bar(wxCommandEvent& WXUNUSED(event))
-{
-    if (!m_pToolbar)
-        create_toolbars();
-    else
-        delete_toolbars();
-
-    bool fToolBar = (m_pToolbar != nullptr);
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Write("/MainFrame/ViewToolBar", fToolBar);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_update_UI_tool_bar(wxUpdateUIEvent &event)
-{
-    event.Check(m_pToolbar != nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3663,24 +3018,12 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
     AScore score = get_active_score();
     switch (event.GetId())
     {
-		case k_menu_metronome:
-        {
-			event.Enable(true);
-			event.Check(m_pMtr->is_running());
-			if (m_pToolbar)
-                m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
-			break;
-        }
-
         case k_menu_play_start:
         {
             ScorePlayer* pPlayer = m_appScope.get_score_player();
             event.Enable( score.is_valid() && !pPlayer->is_playing());
             break;
         }
-        case k_menu_play_cursor_start:
-            event.Enable(false);        //for now, disabled
-            break;
 
         case k_menu_play_stop:
         case k_menu_play_pause:
@@ -3693,38 +3036,6 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
         default:
             // Other items: only enabled if a score is displayed
             event.Enable(score.is_valid());
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::update_metronome_beat()
-{
-    int beatType = m_pMtr->get_beat_type();
-    if (beatType == k_beat_implied)
-        m_pBeatNoteChoice->SetSelection(0);     //TS
-    else
-    {
-        TimeUnits duration = m_pMtr->get_beat_duration();
-        int sel;
-        if (is_equal_time(duration, TimeUnits(k_duration_whole)))
-            sel = 1;
-        else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
-            sel = 2;
-        else if(is_equal_time(duration, TimeUnits(k_duration_half)))
-            sel = 3;
-        else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
-            sel = 4;
-        else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
-            sel = 5;
-        else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
-            sel = 6;
-        else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
-            sel = 7;
-        else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
-            sel = 8;
-        else
-            sel = 5;    //quarter;
-        m_pBeatNoteChoice->SetSelection(sel);
     }
 }
 
@@ -3808,87 +3119,6 @@ void MainFrame::on_options(wxCommandEvent& WXUNUSED(event))
     dlg.CentreOnParent();
     dlg.ShowModal();
 }
-
-//bool MainFrame::IsCountOffChecked()
-//{
-//    return GetMenuBar()->IsChecked(k_menu_play_countoff);
-//}
-//void MainFrame::OnScoreTitles(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmScoreView* pView = GetActiveScoreView();
-//    pView->GetController()->AddTitle();
-//}
-//
-//void MainFrame::OnInstrumentProperties(wxCommandEvent& WXUNUSED(event))
-//{
-//    DocumentWindow* pController = GetActiveScoreView()->GetController();
-//    get_active_score()->OnInstrProperties(-1, pController);    //-1 = select instrument
-//}
-
-void MainFrame::on_metronome_timer(wxTimerEvent& WXUNUSED(event))
-{
-    //A metronome click has been produced, and this event is generated so that we
-    //can flash the metronome LED or do any other desired visual effect.
-    //Do not generate sounds as this is done by the Metronome object
-
-    //TODO flash metronome LED
-  //  Me.picMtrLEDOff.Visible = false;
-  //  Me.picMtrLEDRojoOn.Visible = true;
-//    ::wxMilliSleep(100);
-  //  Me.picMtrLEDOff.Visible = true;
-  //  Me.picMtrLEDRojoOn.Visible = false;
-
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_metronome_update(wxSpinEvent& WXUNUSED(event))
-{
-    int nMM = m_pSpinMetronome->GetValue();
-    if (m_pMtr)
-        m_pMtr->set_mm(nMM);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_metronome_beat(wxCommandEvent& WXUNUSED(event))
-{
-    TimeUnits duration = k_duration_quarter;
-    int beat = m_pBeatNoteChoice->GetSelection();
-    switch(beat)
-    {
-        case 0: duration = k_duration_quarter;          break;  //TS
-        case 1: duration = k_duration_whole;            break;
-        case 2: duration = k_duration_half_dotted;      break;
-        case 3: duration = k_duration_half;             break;
-        case 4: duration = k_duration_quarter_dotted;   break;
-        case 5: duration = k_duration_quarter;          break;
-        case 6: duration = k_duration_eighth_dotted;    break;
-        case 7: duration = k_duration_eighth;           break;
-        case 8: duration = k_duration_16th;             break;
-        default:
-            duration = k_duration_quarter;
-    }
-
-    int beatType = (beat == 0 ? k_beat_implied : k_beat_specified);
-    m_pMtr->set_beat_type(beatType, duration);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_metronome_update_text(wxCommandEvent& WXUNUSED(event))
-{
-    int nMM = m_pSpinMetronome->GetValue();
-    if (m_pMtr)
-        m_pMtr->set_mm(nMM);
-}
-
-//void MainFrame::OnViewPageMargins(wxCommandEvent& event)
-//{
-//    g_fShowMargins = event.IsChecked();
-//    if (GetActiveDoc())
-//    {
-//	    GetActiveDoc()->Modify(true);
-//        GetActiveDoc()->UpdateAllViews((wxView*)nullptr, LENMUS_NEW lmUpdateHint() );
-//    }
-//}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_view_hide_show_toc(wxCommandEvent& event)

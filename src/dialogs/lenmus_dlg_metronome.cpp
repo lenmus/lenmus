@@ -638,7 +638,6 @@ void DlgMetronome::set_beat_options()
         beatType = k_beat_implied;
 
     m_pMtr->set_beat_type(beatType, duration);
-    (static_cast<MainFrame*>(GetParent()))->update_metronome_beat();
 }
 
 //---------------------------------------------------------------------------------------

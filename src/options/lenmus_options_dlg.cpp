@@ -41,7 +41,6 @@
 #include "lenmus_other_opt_panel.h"
 #include "lenmus_playback_opt_panel.h"
 #include "lenmus_shortcuts_opt_panel.h"
-#include "lenmus_toolbar_opt_panel.h"
 #include "lenmus_sound_opt_panel.h"
 //TO_ADD: add here the LENMUS_NEW panel include file
 
@@ -174,11 +173,6 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
     //                eIconColors, eIconColors,
     //                LENMUS_NEW TreeItemData((long)eOptColors) );
 
-    // Toolbars options
-    wxTreeItemId ToolbarsId = m_pTreeCtrl->AppendItem(rootId, _("Toolbars"),
-                    eIconToolbars, eIconToolbars,
-                    LENMUS_NEW TreeItemData((long)eOptToolbars) );
-
     // Internet options
     wxTreeItemId InternetId = m_pTreeCtrl->AppendItem(rootId, _("Internet"),
                     eIconInternet, eIconInternet,
@@ -217,9 +211,6 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
         //case eOptColors:
         //    itemId = colorsId;
         //    break;
-        case eOptToolbars:
-            itemId = ToolbarsId;
-            break;
         case eOptInternet:
             itemId = InternetId;
             break;
@@ -339,8 +330,6 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
             return LENMUS_NEW SoundOptionsPanel(m_pSplitWindow, m_appScope);
         case eOptColors:
             return LENMUS_NEW ColorsOptPanel(m_pSplitWindow, m_appScope);
-        case eOptToolbars:
-            return LENMUS_NEW ToolbarsOptPanel(m_pSplitWindow, m_appScope);
         case eOptInternet:
             return LENMUS_NEW InternetOptPanel(m_pSplitWindow, m_appScope);
         case eOptShortcuts:
