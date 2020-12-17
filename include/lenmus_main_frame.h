@@ -107,7 +107,6 @@ enum {
 // Define the main frame for the GUI
 class MainFrame : public ContentFrame
                 , public PlayerGui
-                , public EditInterface
 {
 protected:
     ApplicationScope& m_appScope;
@@ -116,8 +115,6 @@ protected:
 
     //menus
     wxMenu* m_dbgMenu;
-	wxMenu* m_editMenu;
-    wxMenu* m_booksMenu;
 
     //controllers, special windows, and other controls
     Canvas*           m_pWelcomeWnd;        //welcome window
@@ -255,16 +252,6 @@ protected:
     void on_open_book(wxCommandEvent& event);
     void on_open_books(wxCommandEvent& event);
 
-    // Edit menu events
-    void on_edit_enable_edition(wxCommandEvent& WXUNUSED(event));
-    void on_edit_cut(wxCommandEvent& event);
-    void on_edit_copy(wxCommandEvent& event);
-    void on_edit_paste(wxCommandEvent& event);
-    void on_edit_undo(wxCommandEvent& event);
-    void on_edit_redo(wxCommandEvent& event);
-    void on_edit_insert(wxCommandEvent& event);
-    void on_update_UI_edit(wxUpdateUIEvent& event);
-
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     void on_debug_test_api(wxCommandEvent& WXUNUSED(event));
@@ -321,8 +308,6 @@ protected:
     void on_update_UI_view_toc(wxUpdateUIEvent& event);
     void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_welcome_page(wxUpdateUIEvent& event);
-    void on_view_voices_in_colours(wxCommandEvent& event);
-    void on_update_UI_view_voices_in_colours(wxUpdateUIEvent& event);
 
     // Sound menu events
     void on_update_UI_sound(wxUpdateUIEvent& event);
