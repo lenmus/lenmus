@@ -307,7 +307,7 @@ wxString TheApp::determine_exec_path()
             return wxPathOnly(wxString(execPathName));
 
     #endif // __linux__ && !__ANDROID__
-    
+
     //A method for MacOS:
 #elif (LENMUS_PLATFORM_MAC == 1)
          char macPathName[PATH_MAX];

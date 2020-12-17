@@ -37,7 +37,6 @@
 #include "lenmus_paths.h"
 #include "lenmus_options_dlg.h"
 #include "lenmus_generators.h"
-#include "lenmus_status_bar.h"
 #include "lenmus_updater.h"
 #include "lenmus_command_window.h"
 #include "lenmus_tool_box.h"
@@ -174,7 +173,6 @@ enum
      // Menu View
     k_menu_view_rulers,
     k_menu_view_toolBar,
-    k_menu_view_statusBar,
     k_menu_view_page_margins,
     k_menu_view_welcome_page,
     k_menu_view_counters,
@@ -348,8 +346,6 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_view_rulers, MainFrame::disable_tool)   //OnViewRulersUI)
     EVT_MENU      (k_menu_view_toolBar, MainFrame::on_view_tool_bar)
     EVT_UPDATE_UI (k_menu_view_toolBar, MainFrame::on_update_UI_tool_bar)
-    EVT_MENU      (k_menu_view_statusBar, MainFrame::on_view_status_bar)
-    EVT_UPDATE_UI (k_menu_view_statusBar, MainFrame::on_update_UI_status_bar)
     EVT_MENU      (k_menu_view_toc, MainFrame::on_view_hide_show_toc)
     EVT_UPDATE_UI (k_menu_view_toc, MainFrame::on_update_UI_view_toc)
 //    EVT_MENU      (k_menu_view_page_margins, MainFrame::OnViewPageMargins)
@@ -523,16 +519,13 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pTbPlay(nullptr)
     , m_pTbMtr(nullptr)
     , m_pTbTextBooks(nullptr)
-    , m_pStatusBar(nullptr)
     , m_pToolBox(nullptr)
     , m_pPrintData(nullptr)
     , m_pPageSetupData(nullptr)
     , m_fileHistory(9, wxID_FILE1)      //max files, id of first file)
-//    , m_caretTimer(this, k_id_caret_timer)
     , m_nblinkTime(500)     //milliseconds
 {
     create_menu();
-    show_status_bar_if_user_preferences();
     set_lomse_callbacks();
     load_global_options();
 
@@ -595,11 +588,8 @@ MainFrame::~MainFrame()
     // deinitialize the layout manager
     m_layoutManager.UnInit();
 
-//    delete m_pHelp;
-    delete_status_bar();
     delete m_pPrintData;
     delete m_pPageSetupData;
-//    delete m_pConsole;
 
     //delete document windows data
     m_docWindows.clear();
@@ -827,8 +817,6 @@ void MainFrame::create_menu()
     wxMenu* pMenuView = LENMUS_NEW wxMenu;
     create_menu_item(pMenuView, k_menu_view_toolBar, _("Tool bar"),
                 _("Hide/show the tools bar"), wxITEM_CHECK);
-    create_menu_item(pMenuView, k_menu_view_statusBar, _("Status bar"),
-                _("Hide/show the status bar"), wxITEM_CHECK);
     create_menu_item(pMenuView, k_menu_view_toc, _("Table of content"),
                 _("Hide/show the TOC for current book"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
@@ -1092,46 +1080,6 @@ void MainFrame::create_menu()
     wxMenuBar::MacSetCommonMenuBar(pMenuBar);
 #endif
     SetMenuBar(pMenuBar);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::show_status_bar_if_user_preferences()
-{
-    bool fStatusBar = true;
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Read("/MainFrame/ViewStatusBar", &fStatusBar);
-    if (!m_pStatusBar && fStatusBar)
-        create_status_bar();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::create_status_bar(int nType)
-{
-    //if the status bar exists and it is of same type, nothing to do
-    if (m_pStatusBar && m_pStatusBar->GetType() == nType)
-        return;
-
-    m_pStatusBar = LENMUS_NEW StatusBar(this, (EStatusBarLayout)nType, k_menu_view_statusBar);
-    SetStatusBar(m_pStatusBar);
-
-    //use status bar as status reporter & transfer ownership
-    m_appScope.set_status_reporter(m_pStatusBar);
-
-    //the status bar pane is used by wxWidgets to display menu and toolbar help.
-    //Using -1 disables help display.
-    SetStatusBarPane(-1);
-
-    SendSizeEvent();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::delete_status_bar()
-{
-    if (!m_pStatusBar) return;
-
-    m_pStatusBar = nullptr;
-    m_appScope.set_status_reporter(m_pStatusBar);   //this deletes status bar
-    SetStatusBar(m_pStatusBar);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2246,7 +2194,8 @@ void MainFrame::show_welcome_window()
 {
     if (!is_welcome_page_displayed())
     {
-        m_pWelcomeWnd = LENMUS_NEW WelcomeWindow(m_pContentWindow, m_appScope, &m_fileHistory, wxNewId());
+        //m_pWelcomeWnd = LENMUS_NEW WelcomeWindow(m_pContentWindow, m_appScope, &m_fileHistory, wxNewId());
+        m_pWelcomeWnd = LENMUS_NEW WelcomeWindow(m_pContentWindow, m_appScope, wxNewId());
         m_pContentWindow->add_canvas(m_pWelcomeWnd, _("Start page"));
     }
 }
@@ -2966,6 +2915,9 @@ void MainFrame::on_zoom_fit_full(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_zoom(wxUpdateUIEvent &event)
 {
+    if (!m_pToolbar)
+        return;
+
     DocumentWindow* pCanvas = get_active_document_window();
     event.Enable(pCanvas != nullptr);
 
@@ -3175,25 +3127,6 @@ void MainFrame::on_view_tool_bar(wxCommandEvent& WXUNUSED(event))
 void MainFrame::on_update_UI_tool_bar(wxUpdateUIEvent &event)
 {
     event.Check(m_pToolbar != nullptr);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_view_status_bar(wxCommandEvent& WXUNUSED(event))
-{
-    if (!m_pStatusBar)
-        create_status_bar();
-    else
-        delete_status_bar();
-
-    bool fStatusBar = (m_pStatusBar != nullptr);
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Write("/MainFrame/ViewStatusBar", fStatusBar);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_update_UI_status_bar(wxUpdateUIEvent &event)
-{
-    event.Check(m_pStatusBar != nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3734,7 +3667,8 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
         {
 			event.Enable(true);
 			event.Check(m_pMtr->is_running());
-            m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
+			if (m_pToolbar)
+                m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
 			break;
         }
 
@@ -4042,34 +3976,6 @@ bool MainFrame::is_welcome_page_displayed()
     return (m_pWelcomeWnd != nullptr);
 }
 
-////---------------------------------------------------------------------------------------
-//void MainFrame::on_tab_close(wxAuiManagerEvent& event)
-//{
-//    event.Skip();      //continue processing the  event
-//}
-//
-////---------------------------------------------------------------------------------------
-//void MainFrame::SetStatusBarMsg(const wxString& sText)
-//{
-//    if (m_pStatusBar)
-//        m_pStatusBar->report_status(sText);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void MainFrame::SetStatusBarMouseData(int nPage, float rTime, int nMeasure,
-//                                        lmUPoint uPos)
-//{
-//    if (m_pStatusBar)
-//        m_pStatusBar->report_mouse_data(nPage, rTime, nMeasure, uPos);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void MainFrame::SetStatusBarCaretData(int nPage, float rTime, int nMeasure)
-//{
-//    if (m_pStatusBar)
-//        m_pStatusBar->report_caret_data(nPage, rTime, nMeasure);
-//}
-
 //---------------------------------------------------------------------------------------
 void MainFrame::on_key_press(wxKeyEvent& WXUNUSED(event))
 {
@@ -4085,14 +3991,6 @@ void MainFrame::on_key_press(wxKeyEvent& WXUNUSED(event))
     wxMessageBox("[MainFrame::on_key_press] Key pressed!");
 #endif
 }
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnKeyF1(wxCommandEvent& event)
-//{
-////		int i = 1;
-//}
-//
-//
 
 //------------------------------------------------------------------------------------
 // mandatory overrides for PlayerGui

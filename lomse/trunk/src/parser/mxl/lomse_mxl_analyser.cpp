@@ -289,6 +289,7 @@ enum EMxlTag
     k_mxl_tag_tied,
     k_mxl_tag_time,
     k_mxl_tag_time_modification,
+    k_mxl_tag_transpose,
     k_mxl_tag_tuplet,
     k_mxl_tag_tuplet_actual,
     k_mxl_tag_tuplet_normal,
@@ -1594,7 +1595,7 @@ public:
         {
         }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         error_msg("Missing analyser for element '" + m_tag + "'. Node ignored.");
         return nullptr;
@@ -1610,7 +1611,7 @@ public:
                                      LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -1640,7 +1641,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNoteRest* pNR = nullptr;
         if (m_pAnchor && m_pAnchor->is_note_rest())
@@ -1856,8 +1857,10 @@ public:
         {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
+        ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+
         //In MusicXML. Clefs, time signatures and key signatures are
         //treated as attributes of a measure, not as objects and, therefore, ordering
         //is not important for MusicXML and this information is
@@ -1909,28 +1912,7 @@ public:
         while (get_optional("clef"))
             clefs.push_back( m_pAnalyser->analyse_node(&m_childToAnalyse, nullptr) );
 
-        // staff-details*
-        while (get_optional("staff-details"))
-            ; //TODO <staff-details>
-
-        // transpose*
-        while (get_optional("transpose"))
-            ; //TODO <transpose>
-
-        // directive*
-        while (get_optional("directive"))
-            ; //TODO <directive>
-
-        // measure-style*
-        while (get_optional("measure-style"))
-            ; //TODO <measure-style>
-//        <measure-style>
-//          <multiple-rest>1</multiple-rest>
-//        </measure-style>
-
-        error_if_more_elements();
-
-        //add elements to model, in right order
+        //add clefs, keys and time signatures to model, in right order
         vector<ImoObj*>::const_iterator it;
         for (it = clefs.begin(); it != clefs.end(); ++it)
         {
@@ -1947,6 +1929,29 @@ public:
             if (*it)
                 add_to_model(*it);
         }
+
+
+        // staff-details*
+        while (get_optional("staff-details"))
+            ; //TODO <staff-details>
+
+        // transpose*
+        while (get_optional("transpose"))
+            m_pAnalyser->analyse_node(&m_childToAnalyse, pMD);
+
+        // directive*
+        while (get_optional("directive"))
+            ; //TODO <directive>
+
+        // measure-style*
+        while (get_optional("measure-style"))
+            ; //TODO <measure-style>
+//        <measure-style>
+//          <multiple-rest>1</multiple-rest>
+//        </measure-style>
+
+        error_if_more_elements();
+
         return m_pAnchor;
     }
 
@@ -2002,7 +2007,7 @@ public:
     }
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
 
@@ -2268,7 +2273,7 @@ public:
                        LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -2304,7 +2309,7 @@ public:
     }
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoClef* pClef = static_cast<ImoClef*>( ImFactory::inject(k_imo_clef, pDoc) );
@@ -2363,44 +2368,69 @@ protected:
 
     int determine_clef_type()
     {
-        if (m_octaveChange==1 && !(m_sign == "F" || m_sign == "G"))
+        if (m_octaveChange != 0 && !(m_sign == "F" || m_sign == "G"))
         {
             error_msg("Warning: <clef-octave-change> only implemented for F and G keys. Ignored.");
             m_octaveChange=0;
         }
 
-        if (m_line < 1 || m_line > 5)
+        if (m_octaveChange > 2 || m_octaveChange < -2)
         {
-            //TODO
-            //error_msg("Warning: F clef only supported in lines 3, 4 or 5. Clef F in m_line " + m_line + "changed to F in m_line 4.");
-            m_line = 1;
+            error_msg("Warning: <clef-octave-change> only supported for up to two octaves. Ignored.");
+            m_octaveChange=0;
         }
 
         if (m_sign == "G")
         {
-            if (m_line==2)
-                return k_clef_G2;
-            else if (m_line==1)
+            if (m_line==1)
                 return k_clef_G1;
+            else if (m_line==2)
+            {
+                if (m_octaveChange==0)
+                    return k_clef_G2;
+                else if (m_octaveChange==1)
+                    return k_clef_8_G2;     //G2, 8ve. above
+                else if (m_octaveChange==2)
+                    return k_clef_15_G2;    //G2, 15 above
+                else if (m_octaveChange==-1)
+                    return k_clef_G2_8;     //G2, 8ve. below
+                else // must be m_octaveChange==-2
+                    return k_clef_G2_15;    //G2, 15 below
+            }
             else
             {
-                //TODO
-                //error_msg("Warning: G clef only supported in lines 1 or 2. Clef G in line " + m_line + "changed to G in line 2.");
+                stringstream msg;
+                msg << "Warning: G clef only supported in lines 1 or 2. Clef G"
+                    << m_line << " changed to G2.";
+                error_msg(msg.str());
                 return k_clef_G2;
             }
         }
         else if (m_sign == "F")
         {
             if (m_line==4)
-                return k_clef_F4;
+            {
+                if (m_octaveChange==0)
+                    return k_clef_F4;
+                else if (m_octaveChange==1)
+                    return k_clef_8_F4;     //F4 clef, 8ve. above
+                else if (m_octaveChange==2)
+                    return k_clef_15_F4;    //F4 clef, 15 above
+                else if (m_octaveChange==-1)
+                    return k_clef_F4_8;     //F4 clef, 8ve. below
+                else    //must be m_octaveChange==-2
+                    return k_clef_F4_15;    //F4 clef, 15 below
+            }
             else if (m_line==3)
                 return k_clef_F3;
             else if (m_line==5)
                 return k_clef_F5;
             else
             {
-                //TODO
-                //error_msg("Warning: F clef only supported in lines 3, 4 or 5. Clef F in line " + m_line + "changed to F in line 4.");
+                stringstream msg;
+                msg << "Warning: F clef only supported in lines 3, 4 or 5. Clef F"
+                    << m_line << " changed to F4.";
+                error_msg(msg.str());
                 return k_clef_F4;
             }
         }
@@ -2414,29 +2444,25 @@ protected:
                 return k_clef_C3;
             else if (m_line==4)
                 return k_clef_C4;
-            else
+            else if (m_line==5)
                 return k_clef_C5;
+            else
+            {
+                stringstream msg;
+                msg << "Warning: C clef only supported in lines 1 to 5. Clef C"
+                    << m_line << " changed to C1.";
+                error_msg(msg.str());
+                return k_clef_C1;
+            }
         }
 
-        //TODO
         else if (m_sign == "percussion")
             return k_clef_percussion;
-        else if (m_sign == "8_G")
-            return k_clef_8_G2;
-        else if (m_sign == "G_8")
-            return k_clef_G2_8;
-        else if (m_sign == "8_F4")
-            return k_clef_8_F4;
-        else if (m_sign == "F4_8")
-            return k_clef_F4_8;
-        else if (m_sign == "15_G")
-            return k_clef_15_G2;
-        else if (m_sign == "G_15")
-            return k_clef_G2_15;
-        else if (m_sign == "15_F4")
-            return k_clef_15_F4;
-        else if (m_sign == "F4_15")
-            return k_clef_F4_15;
+        else if (m_sign == "TAB")
+            return k_clef_TAB;
+        else if (m_sign == "none")
+            return k_clef_none;
+        //TODO: Other values: jianpu
         else
             return k_clef_undefined;
     }
@@ -2468,7 +2494,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -2492,7 +2518,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoDirection* pDirection = nullptr;
         if (m_pAnchor && m_pAnchor->is_direction())
@@ -2528,7 +2554,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -2544,7 +2570,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -2568,7 +2594,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoDirection* pDirection = static_cast<ImoDirection*>(
@@ -2652,9 +2678,9 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis() { return nullptr; }
+    ImoObj* do_analysis() override { return nullptr; }
 
-    bool do_analysis_bool()
+    bool do_analysis_bool() override
     {
         bool fSpanner = false;
         while (more_children_to_analyse())
@@ -2738,7 +2764,7 @@ public:
                         LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoStaffObj* pSO = nullptr;
         if (m_pAnchor && (m_pAnchor->is_note_rest() || m_pAnchor->is_direction()))
@@ -2835,7 +2861,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoBarline* pBarline = nullptr;
         if (m_pAnchor && m_pAnchor->is_barline())
@@ -2987,7 +3013,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -3020,7 +3046,7 @@ public:
                     ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNoteRest* pNR = nullptr;
         if (m_pAnchor && m_pAnchor->is_note_rest())
@@ -3106,7 +3132,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         bool fFwd = (m_analysedNode.name() == "forward");
         ImoStaffObj* pSO = nullptr;
@@ -3167,7 +3193,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -3183,7 +3209,7 @@ public:
                      LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -3234,7 +3260,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoKeySignature* pKey = static_cast<ImoKeySignature*>(
@@ -3396,7 +3422,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNote* pNote = nullptr;
         if (m_pAnchor && m_pAnchor->is_note())
@@ -3512,7 +3538,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoMusicData* pMD = nullptr;
         if (m_pAnchor && m_pAnchor->is_music_data())
@@ -3640,7 +3666,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         if (m_pAnchor == nullptr || !m_pAnchor->is_direction())
         {
@@ -3746,7 +3772,7 @@ public:
     }
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //anchor parent is ImoSounds when analysing <score-instrument> or
         //ImoSoundChange when analysing <sound>
@@ -3891,7 +3917,7 @@ public:
                               LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //anchor parent is ImoSounds when analysing <score-instrument> or
         //ImoSoundChange when analysing <sound>
@@ -4016,7 +4042,7 @@ public:
                      ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         // [{<xxxx>|<yyyy>|<zzzz>}*]    alternatives: zero or more
         while (more_children_to_analyse())
@@ -4081,7 +4107,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
             //attribs
 
@@ -4231,7 +4257,7 @@ public:
 
         pNR->set_visible(fVisible);
         add_to_model(pNR);
-        add_to_spanners(pNote);
+        add_to_spanners(pNR);
 
         //deal with grace notes
         ImoNote* pPrevNote = m_pAnalyser->get_last_note();
@@ -4569,9 +4595,9 @@ protected:
     }
 
     //----------------------------------------------------------------------------------
-    void add_to_spanners(ImoNote* pNote)
+    void add_to_spanners(ImoNoteRest* pNR)
     {
-        m_pAnalyser->add_to_open_octave_shifts(pNote);
+        m_pAnalyser->add_to_open_octave_shifts(pNR);
     }
 
     //----------------------------------------------------------------------------------
@@ -4635,7 +4661,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //attrb: id
         string id = get_optional_string_attribute("id", "");
@@ -4742,7 +4768,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoDirection* pDirection = nullptr;
         if (m_pAnchor && m_pAnchor->is_direction())
@@ -4871,7 +4897,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNoteRest* pNR = nullptr;
         if (m_pAnchor && m_pAnchor->is_note_rest())
@@ -5040,7 +5066,7 @@ public:
                          LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //attrb: number
         int number = get_attribute_as_integer("number", -1);
@@ -5211,7 +5237,7 @@ public:
     PartListMxlAnalyser(MxlAnalyser* pAnalyser, ostream& reporter, LibraryScope& libraryScope)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         // part-group*
         while (analyse_optional("part-group"));
@@ -5256,7 +5282,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //attrb: print-object
         string print = get_optional_string_attribute("print-object", "yes");
@@ -5303,7 +5329,7 @@ public:
                      LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -5319,7 +5345,7 @@ public:
                           LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -5338,7 +5364,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //anchor object is ImoNote
         ImoNote* pNote = nullptr;
@@ -5453,7 +5479,7 @@ public:
                             LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -5481,7 +5507,7 @@ public:
                      ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //TODO: Finish this
 
@@ -5571,7 +5597,7 @@ public:
                          LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -5605,7 +5631,7 @@ public:
                                LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoInstrument* pInstr = dynamic_cast<ImoInstrument*>(m_pAnchor);
         if (!pInstr)
@@ -5682,7 +5708,7 @@ public:
     ScorePartMxlAnalyser(MxlAnalyser* pAnalyser, ostream& reporter, LibraryScope& libraryScope)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         //attrb: id
         string id = get_mandatory_string_attribute("id", "", "score-part");
@@ -5772,7 +5798,7 @@ public:
     ScorePartwiseMxlAnalyser(MxlAnalyser* pAnalyser, ostream& reporter, LibraryScope& libraryScope)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoDocument* pImoDoc = nullptr;
 
@@ -5937,7 +5963,7 @@ public:
                           LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -5961,7 +5987,7 @@ public:
                      LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoDirection* pDirection = nullptr;
         if (m_pAnchor && m_pAnchor->is_direction())
@@ -5997,7 +6023,7 @@ public:
                            LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
 		//TODO
         return nullptr;
@@ -6021,7 +6047,7 @@ public:
                         LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNoteRest* pNR = nullptr;
         if (m_pAnchor && m_pAnchor->is_note_rest())
@@ -6152,7 +6178,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNote* pNote = nullptr;
         if (m_pAnchor && m_pAnchor->is_note())
@@ -6301,7 +6327,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoSoundChange* pSC = static_cast<ImoSoundChange*>(
@@ -6493,7 +6519,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoLyricsTextInfo* pParent = nullptr;
         if (m_pAnchor && m_pAnchor->is_lyrics_text_info())
@@ -6564,7 +6590,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNote* pNote = nullptr;
         if (m_pAnchor && m_pAnchor->is_note())
@@ -6698,7 +6724,7 @@ public:
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoTimeSignature* pTime = static_cast<ImoTimeSignature*>(
@@ -6766,7 +6792,7 @@ public:
         {
         }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         if (m_pAnchor && m_pAnchor->is_note_rest())
             m_pNR = static_cast<ImoNote*>(m_pAnchor);
@@ -6837,6 +6863,67 @@ protected:
     }
 };
 
+//---------------------------------------------------------------------------------------
+//@ <!ELEMENT transpose
+//@ 	(diatonic?, chromatic, octave-change?, double?)>
+//@ <!ATTLIST transpose
+//@     number CDATA #IMPLIED
+//@     %optional-unique-id;
+//@ >
+//@ <!ELEMENT diatonic (#PCDATA)>
+//@ <!ELEMENT chromatic (#PCDATA)>
+//@ <!ELEMENT octave-change (#PCDATA)>
+//@ <!ELEMENT double EMPTY>
+//@
+class TransposeMxlAnalyser : public MxlElementAnalyser
+{
+public:
+    TransposeMxlAnalyser(MxlAnalyser* pAnalyser, ostream& reporter,
+                         LibraryScope& libraryScope, ImoObj* pAnchor)
+        : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor)
+        {
+        }
+
+    ImoObj* do_analysis() override
+    {
+        // attrib: number CDATA #IMPLIED
+        int iStaff = get_attribute_as_integer("number", -1);
+        if (iStaff > 0)
+            --iStaff;
+
+        // attrib: %optional-unique-id;
+            //TODO
+
+
+        //elements
+
+        //diatonic?
+        int diatonic = analyze_optional_child_pcdata_int("diatonic", -7, +7, 0);
+
+        //chromatic
+        int chromatic = 0;
+        if (get_mandatory("chromatic"))
+            chromatic = get_child_pcdata_int("chromatic", -12, +12, 0);
+
+        //octave-change?
+        int octaves = analyze_optional_child_pcdata_int("octave-change", -8, +8, 0);
+
+        //double?
+        bool doubled = get_optional("double");
+
+        error_if_more_elements();
+
+        Document* pDoc = m_pAnalyser->get_document_being_analysed();
+        ImoTranspose* pSO = static_cast<ImoTranspose*>(
+                                ImFactory::inject(k_imo_transpose, pDoc));
+        pSO->init(iStaff, chromatic, diatonic, octaves, doubled);
+
+        add_to_model(pSO);
+        return pSO;
+    }
+
+protected:
+};
 
 //---------------------------------------------------------------------------------------
 //@ <!ELEMENT tuplet (tuplet-actual?, tuplet-normal?)>
@@ -6864,7 +6951,7 @@ public:
         {
         }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoNoteRest* pNR = nullptr;
         if (m_pAnchor && m_pAnchor->is_note_rest())
@@ -7063,7 +7150,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         if (m_pAnchor && m_pAnchor->is_tuplet_dto())
             m_pInfo = static_cast<ImoTupletDto*>(m_pAnchor);
@@ -7111,7 +7198,7 @@ public:
                                  LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoSoundInfo* pInfo = dynamic_cast<ImoSoundInfo*>(m_pAnchor);
         //ImoInstrument* pInstr = dynamic_cast<ImoInstrument*>(m_pAnchor);
@@ -7165,7 +7252,7 @@ public:
     {
     }
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoDirection* pDirection = nullptr;
         if (m_pAnchor && m_pAnchor->is_direction())
@@ -7294,7 +7381,7 @@ public:
                      LibraryScope& libraryScope, ImoObj* pAnchor)
         : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
 
-    ImoObj* do_analysis()
+    ImoObj* do_analysis() override
     {
         ImoDirection* pDirection = nullptr;
         if (m_pAnchor && m_pAnchor->is_direction())
@@ -7487,6 +7574,7 @@ MxlAnalyser::MxlAnalyser(ostream& reporter, LibraryScope& libraryScope, Document
     m_NameToEnum["tied"] = k_mxl_tag_tied;
     m_NameToEnum["time"] = k_mxl_tag_time;
     m_NameToEnum["time-modification"] = k_mxl_tag_time_modification;
+    m_NameToEnum["transpose"] = k_mxl_tag_transpose;
     m_NameToEnum["tuplet"] = k_mxl_tag_tuplet;
     m_NameToEnum["tuplet-actual"] = k_mxl_tag_tuplet_actual;
     m_NameToEnum["tuplet-normal"] = k_mxl_tag_tuplet_normal;
@@ -8022,6 +8110,7 @@ MxlElementAnalyser* MxlAnalyser::new_analyser(const string& name, ImoObj* pAncho
         case k_mxl_tag_tied:                 return LOMSE_NEW TiedMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_time:                 return LOMSE_NEW TimeMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_time_modification:    return LOMSE_NEW TimeModificationXmlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+        case k_mxl_tag_transpose:            return LOMSE_NEW TransposeMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_tuplet:               return LOMSE_NEW TupletMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_tuplet_actual:        return LOMSE_NEW TupletNumbersMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_tuplet_normal:        return LOMSE_NEW TupletNumbersMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
@@ -8327,7 +8416,7 @@ void MxlWedgesBuilder::add_relation_to_staffobjs(ImoWedgeDto* pEndDto)
 void MxlOctaveShiftBuilder::add_relation_to_staffobjs(ImoOctaveShiftDto* pEndDto)
 {
     ImoOctaveShiftDto* pStartDto = m_matches.front();
-    ImoNote* pStartNote = pStartDto->get_staffobj();
+    ImoNoteRest* pStartNR = pStartDto->get_staffobj();
     m_matches.push_back(pEndDto);
     Document* pDoc = m_pAnalyser->get_document_being_analysed();
 
@@ -8348,22 +8437,22 @@ void MxlOctaveShiftBuilder::add_relation_to_staffobjs(ImoOctaveShiftDto* pEndDto
     std::list<ImoOctaveShiftDto*>::iterator it;
     for (it = m_matches.begin(); it != m_matches.end(); ++it)
     {
-        ImoNote* pNote = (*it)->get_staffobj();
-        if ((*it)->is_end_of_relation() && pNote==nullptr)
+        ImoNoteRest* pNR = (*it)->get_staffobj();
+        if ((*it)->is_end_of_relation() && pNR==nullptr)
         {
             int iStaff = (*it)->get_staff();
-            pNote = m_pAnalyser->get_last_note_for(iStaff);
-            (*it)->set_staffobj(pNote);
-            if (pStartNote != pNote)
-                pNote->include_in_relation(pDoc, pOctave, nullptr);
+            pNR = m_pAnalyser->get_last_note_for(iStaff);
+            (*it)->set_staffobj(pNR);
+            if (pStartNR != pNR)
+                pNR->include_in_relation(pDoc, pOctave, nullptr);
         }
         else
-            pNote->include_in_relation(pDoc, pOctave, nullptr);
+            pNR->include_in_relation(pDoc, pOctave, nullptr);
     }
 }
 
 //---------------------------------------------------------------------------------------
-void MxlOctaveShiftBuilder::add_to_open_octave_shifts(ImoNote* pNote)
+void MxlOctaveShiftBuilder::add_to_open_octave_shifts(ImoNoteRest* pNR)
 {
     if (m_pendingItems.size() > 0)
     {
@@ -8373,10 +8462,10 @@ void MxlOctaveShiftBuilder::add_to_open_octave_shifts(ImoNote* pNote)
             ImoOctaveShiftDto* pInfo = *it;
             if (pInfo->is_start_of_relation()
                 && pInfo->get_staffobj() == nullptr
-                && pInfo->get_staff() == pNote->get_staff()
+                && pInfo->get_staff() == pNR->get_staff()
                )
             {
-                pInfo->set_staffobj(pNote);
+                pInfo->set_staffobj(pNR);
             }
         }
     }

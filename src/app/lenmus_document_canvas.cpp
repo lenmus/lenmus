@@ -27,7 +27,6 @@
 #include "lenmus_midi_server.h"
 #include "lenmus_dyncontrol.h"
 #include "lenmus_standard_header.h"
-#include "lenmus_status_reporter.h"
 #include "lenmus_dlg_debug.h"
 #include "lenmus_edit_interface.h"
 #include "lenmus_command_window.h"      //to be replaced by lomse command parser
@@ -414,21 +413,6 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
         wxBitmap bitmap(*m_buffer);
         dc.DrawBitmap(bitmap, 0, 0, false /* don't use mask */);
 
-        //DEBUG: info about rendering time -------------------------------------
-        spInteractor->timing_repaint_done();
-        double* pTimes = spInteractor->get_elapsed_times();
-        wxString msg = wxString::Format(
-            "gm=%.1f vf=%.1f render=%.1f paint=%.1f ms ",
-            *(pTimes + Interactor::k_timing_gmodel_draw_time),
-            *(pTimes + Interactor::k_timing_visual_effects_draw_time),
-            *(pTimes + Interactor::k_timing_total_render_time),
-            *(pTimes + Interactor::k_timing_repaint_time) );
-
-        StatusReporter* pStatus = m_appScope.get_status_reporter();
-        pStatus->report_status(msg);
-        LOMSE_LOG_DEBUG(Logger::k_mvc, msg.ToStdString());
-        //END DEBUG ------------------------------------------------------------
-
         SetFocus();
     }
 }
@@ -466,21 +450,6 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
 //            dc.DrawLine(x1, y1, x1, y2);
 //            //END DEBUG -------------------------------------------------------
         }
-
-        //DEBUG: info about rendering time -------------------------------------
-        spInteractor->timing_repaint_done();
-        double* pTimes = spInteractor->get_elapsed_times();
-        wxString msg = wxString::Format(
-            "gm=%.1f vf=%.1f render=%.1f paint=%.1f ms sz(%d,%d) ",
-            *(pTimes + Interactor::k_timing_gmodel_draw_time),
-            *(pTimes + Interactor::k_timing_visual_effects_draw_time),
-            *(pTimes + Interactor::k_timing_total_render_time),
-            *(pTimes + Interactor::k_timing_repaint_time),
-            damagedRect.width, damagedRect.height );
-
-        StatusReporter* pStatus = m_appScope.get_status_reporter();
-        pStatus->report_status(msg);
-        //END DEBUG ------------------------------------------------------------
 
         SetFocus();
     }
@@ -667,6 +636,8 @@ void DocumentWindow::do_display(ostringstream& reporter)
         //determine_scroll_space_size();
         //spInteractor->new_viewport(-m_xMargin, -m_yMargin, k_no_redraw);
         //adjust_scale_and_scrollbars();
+//        spInteractor->set_view_background(Color(255,255,255));
+
 
         //AWARE: after creating a pane and loading content on it, wxAuiNotebook / wxFrame
         //will issue an on_size() followed by an on_paint. Therefore, do not force a
@@ -847,9 +818,6 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
             int nPage = 0;  //TODO
             TimeUnits rTime = 0.0;  //TODO
             int nMeasure = 0;   //TODO
-            StatusReporter* pStatus = m_appScope.get_status_reporter();
-            pStatus->report_mouse_data(nPage, rTime, nMeasure, uPos);
-
             pInteractor->on_mouse_move(pos.x, pos.y, flags);
         }
     }
@@ -999,6 +967,8 @@ void DocumentWindow::delete_rendering_buffer()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::create_rendering_buffer()
 {
+    //LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
+
     //creates a bitmap of specified size and associates it to the rendering
     //buffer for the view. Any existing buffer is automatically deleted
 
@@ -1015,7 +985,7 @@ void DocumentWindow::create_rendering_buffer()
     int width = size.GetWidth();
     int height = size.GetHeight();
 
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "w=%d, h=%d", width, height);
+    //LOMSE_LOG_DEBUG(Logger::k_mvc, "w=%d, h=%d", width, height);
 
     m_fInvalidBuffer = (width <= 10 || height <= 10);
     if (m_fInvalidBuffer)
@@ -1114,7 +1084,6 @@ void DocumentWindow::exec_lomse_command(DocCommand* pCmd, bool fShowBusy)
         if (fShowBusy)
             ::wxBeginBusyCursor();
         spInteractor->exec_command(pCmd);
-        update_status_bar_caret_timepos();
         if (fShowBusy)
             ::wxEndBusyCursor();
     }
@@ -1354,7 +1323,6 @@ wxString DocumentWindow::exec_command(const string& cmd)
             {
                 ::wxBeginBusyCursor();
                 spInteractor->exec_undo();
-                update_status_bar_caret_timepos();
                 ::wxEndBusyCursor();
                 return wxEmptyString;
             }
@@ -1366,7 +1334,6 @@ wxString DocumentWindow::exec_command(const string& cmd)
             if (is_edition_enabled())
             {
                 spInteractor->exec_redo();
-                update_status_bar_caret_timepos();
                 return wxEmptyString;
             }
             m_errorCode = 1;
@@ -1494,19 +1461,6 @@ string DocumentWindow::dump_selection()
     }
     else
         return "dump_cursor(): Error. No access to Interactor!";
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::update_status_bar_caret_timepos()
-{
-    if (is_edition_enabled())
-    {
-        if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-        {
-            StatusReporter* pStatus = m_appScope.get_status_reporter();
-            pStatus->report_caret_time( spInteractor->get_caret_timecode() );
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------

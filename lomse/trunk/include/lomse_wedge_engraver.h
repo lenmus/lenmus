@@ -57,6 +57,7 @@ protected:
     int m_numShapes;
     ImoWedge* m_pWedge;
     bool m_fWedgeAbove;
+    bool m_fFirstShapeAtSystemStart = false;
     LUnits m_uPrologWidth;
 
     ImoDirection* m_pStartDirection;
@@ -84,7 +85,10 @@ public:
 
     //RelObjEngraver mandatory overrides
     void set_prolog_width(LUnits width) override;
-    GmoShape* create_first_or_intermediate_shape(Color color=Color(0,0,0)) override;
+    GmoShape* create_first_or_intermediate_shape(LUnits xStaffLeft, LUnits xStaffRight,
+                                                 LUnits yStaffTop, LUnits prologWidth,
+                                                 VerticalProfile* pVProfile,
+                                                 Color color=Color(0,0,0)) override;
     GmoShape* create_last_shape(Color color=Color(0,0,0)) override;
 
 protected:

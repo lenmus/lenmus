@@ -524,15 +524,8 @@ void CommandEventHandler::process_tool_event(EToolID toolID, ToolBox* pToolBox)
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::common_tasks_for_toolbox_event(ToolBox* pToolBox)
 {
-//    SpInteractor spInteractor = m_pController->get_interactor_shared_ptr();
     m_toolsInfo.update_toolbox_info(pToolBox);
     pToolBox->synchronize_tools(m_selection, m_cursor);
-
-//    //determine valid areas and change icons
-//    UpdateValidAreasAndMouseIcons();
-//
-//    //update status bar: mouse mode and selected tool
-//    UpdateStatusBarToolBox(); --> update_status_bar_toolbox_data();
 }
 
 //---------------------------------------------------------------------------------------

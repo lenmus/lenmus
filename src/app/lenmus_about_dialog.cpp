@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2010-2015 LenMus project
+//    Copyright (c) 2010-2020 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -429,6 +429,8 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("German") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         "<td>Undine Peters</td></tr>"
+        "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
+        L"<td>Daniel Schär</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'><b><i>" + _("Greek") + "</i></b></td></tr>"
         "<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>"
         L"<td>Avgeris Tsironis (Αυγέρης Τσιρώνης)</td></tr>"

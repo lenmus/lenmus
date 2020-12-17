@@ -60,7 +60,6 @@ class Paths;
 class MidiServer;
 //class Logger;
 class Colors;
-class StatusReporter;
 class WavePlayer;
 class EditInterface;
 class KeyTranslator;
@@ -102,7 +101,6 @@ protected:
     LibraryScope* m_pLomseScope;
     Colors* m_pColors;
     Metronome* m_pMetronome;
-    StatusReporter* m_pStatus;
     wxSQLite3Database* m_pDB;
     ProxySettings* m_pProxySettings;
     WavePlayer* m_pWavePlayer;
@@ -138,7 +136,6 @@ public:
     void create_preferences_object();
     void create_logger();
     void open_database();
-    void set_status_reporter(StatusReporter* reporter);
     void inform_lomse_about_fonts_path();
     inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
     inline void set_edit_gui(EditInterface* pGui) { m_pEditGui = pGui; }
@@ -151,7 +148,6 @@ public:
     MidiServer* get_midi_server();
     ScorePlayer* get_score_player();
     Colors* get_colors();
-    inline StatusReporter* get_status_reporter() { return m_pStatus; }
     inline wxSQLite3Database* get_database() { return m_pDB; }
     ProxySettings* get_proxy_settings();
     inline Metronome* get_metronome() { return m_pMetronome; }

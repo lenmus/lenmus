@@ -266,7 +266,9 @@ enum EClef
     k_clef_G2_15,           ///< G clef on second line, 15 below
     k_clef_15_F4,           ///< F clef on fourth line, 15 above
     k_clef_F4_15,           ///< F clef on fourth line, 15 below
-
+    //clefs for supporting MusicXML
+    k_clef_TAB,             ///< Tablature scores
+    k_clef_none,            ///< none displayed, but behave as G2
     k_max_clef,             ///< Last element, for loops and checks
 };
 
@@ -732,6 +734,7 @@ enum EImoObjType
     k_imo_sound_change,     ///< &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Playback parameters
     k_imo_system_break,     ///< &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System break
     k_imo_time_signature,   ///< &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Time signature
+    k_imo_transpose,        ///< &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Transposition information
     k_imo_staffobj_last,
 
     // ImoAuxObj (A)
@@ -1341,7 +1344,7 @@ public:
     }
 
     //required by Visitable parent class
-    virtual void accept_visitor(BaseVisitor& v);
+    virtual void accept_visitor(BaseVisitor& v) override;
     virtual bool has_visitable_children()
     {
         return has_children();
@@ -1550,6 +1553,7 @@ public:
     inline bool is_tie_dto() { return m_objtype == k_imo_tie_dto; }
     inline bool is_time_signature() { return m_objtype == k_imo_time_signature; }
     inline bool is_time_modification_dto() { return m_objtype == k_imo_time_modification_dto; }
+    inline bool is_transpose() { return m_objtype == k_imo_transpose; }
     inline bool is_tuplet() { return m_objtype == k_imo_tuplet; }
     inline bool is_tuplet_dto() { return m_objtype == k_imo_tuplet_dto; }
     inline bool is_volta_bracket() { return m_objtype == k_imo_volta_bracket; }
@@ -2355,12 +2359,12 @@ public:
     ImoAuxObj* find_attachment(int type);
 
     //overrides for Observable children
-    EventNotifier* get_event_notifier();
-    void add_event_handler(int eventType, EventHandler* pHandler);
+    EventNotifier* get_event_notifier() override;
+    void add_event_handler(int eventType, EventHandler* pHandler) override;
     void add_event_handler(int eventType, void* pThis,
-                           void (*pt2Func)(void* pObj, SpEventInfo event) );
+                           void (*pt2Func)(void* pObj, SpEventInfo event) ) override;
     void add_event_handler(int eventType,
-                           void (*pt2Func)(SpEventInfo event) );
+                           void (*pt2Func)(SpEventInfo event) ) override;
 
     //style
     virtual ImoStyle* get_style(bool fInherit=true);
@@ -2388,15 +2392,15 @@ public:
     }
 
     //IM attributes interface
-    void set_int_attribute(TIntAttribute attrib, int value);
-    int get_int_attribute(TIntAttribute attrib);
-    void set_bool_attribute(TIntAttribute attrib, bool value);
-    bool get_bool_attribute(TIntAttribute attrib);
-    void set_double_attribute(TIntAttribute attrib, double value);
-    double get_double_attribute(TIntAttribute attrib);
-    void set_string_attribute(TIntAttribute attrib, const std::string& value);
-    std::string get_string_attribute(TIntAttribute attrib);
-    list<TIntAttribute> get_supported_attributes();
+    void set_int_attribute(TIntAttribute attrib, int value) override;
+    int get_int_attribute(TIntAttribute attrib) override;
+    void set_bool_attribute(TIntAttribute attrib, bool value) override;
+    bool get_bool_attribute(TIntAttribute attrib) override;
+    void set_double_attribute(TIntAttribute attrib, double value) override;
+    double get_double_attribute(TIntAttribute attrib) override;
+    void set_string_attribute(TIntAttribute attrib, const std::string& value) override;
+    std::string get_string_attribute(TIntAttribute attrib) override;
+    list<TIntAttribute> get_supported_attributes() override;
 
 };
 
@@ -2438,11 +2442,8 @@ public:
     virtual ~ImoRelations();
 
     //overrides, to traverse this special node
-    void accept_visitor(BaseVisitor& v);
-    bool has_visitable_children()
-    {
-        return get_num_items() > 0;
-    }
+    void accept_visitor(BaseVisitor& v) override;
+    bool has_visitable_children() override { return get_num_items() > 0; }
 
     //contents
     ImoRelObj* get_item(int iItem);   //iItem = 0..n-1
@@ -2706,11 +2707,11 @@ public:
     inline void set_color(Color color) { m_color = color; }
 
     //IM attributes interface
-    void set_int_attribute(TIntAttribute attrib, int value);
-    int get_int_attribute(TIntAttribute attrib);
-    void set_color_attribute(TIntAttribute attrib, Color value);
-    Color get_color_attribute(TIntAttribute attrib);
-    list<TIntAttribute> get_supported_attributes();
+    void set_int_attribute(TIntAttribute attrib, int value) override;
+    int get_int_attribute(TIntAttribute attrib) override;
+    void set_color_attribute(TIntAttribute attrib, Color value) override;
+    Color get_color_attribute(TIntAttribute attrib) override;
+    list<TIntAttribute> get_supported_attributes() override;
 
 
 };
@@ -2761,9 +2762,9 @@ public:
     ImoScore* get_score();
 
     //IM attributes interface
-    virtual void set_int_attribute(TIntAttribute attrib, int value);
-    virtual int get_int_attribute(TIntAttribute attrib);
-    virtual list<TIntAttribute> get_supported_attributes();
+    virtual void set_int_attribute(TIntAttribute attrib, int value) override;
+    virtual int get_int_attribute(TIntAttribute attrib) override;
+    virtual list<TIntAttribute> get_supported_attributes() override;
 
 };
 
@@ -3665,7 +3666,7 @@ public:
     virtual ~ImoAnonymousBlock() {}
 
     //required by Visitable parent class
-    virtual void accept_visitor(BaseVisitor& v);
+    virtual void accept_visitor(BaseVisitor& v) override;
 };
 
 //---------------------------------------------------------------------------------------
@@ -3720,12 +3721,12 @@ public:
     inline void set_measure_info(TypeMeasureInfo* pInfo) { m_pMeasureInfo = pInfo; }
 
     //overrides: barlines always in staff 0
-    void set_staff(int UNUSED(staff)) { m_staff = 0; }
+    void set_staff(int UNUSED(staff)) override { m_staff = 0; }
 
     //IM attributes interface
-    virtual void set_int_attribute(TIntAttribute attrib, int value);
-    virtual int get_int_attribute(TIntAttribute attrib);
-    virtual list<TIntAttribute> get_supported_attributes();
+    virtual void set_int_attribute(TIntAttribute attrib, int value) override;
+    virtual int get_int_attribute(TIntAttribute attrib) override;
+    virtual list<TIntAttribute> get_supported_attributes() override;
 
 };
 
@@ -3966,10 +3967,7 @@ public:
     }
 
     //properties
-    bool can_generate_secondary_shapes()
-    {
-        return true;
-    }
+    bool can_generate_secondary_shapes() override { return true; }
 
 };
 
@@ -4769,6 +4767,57 @@ public:
 };
 
 //---------------------------------------------------------------------------------------
+/** ImoTranspose staffobj represents what must be added to the written pitch to get the
+    correct sounding pitch. The transposition is represented by:
+
+    - m_chromatic: the number of semitones needed to get from written to sounding
+        pitch. It does not include octaves
+    - m_octaveChange: how many octaves to add to get from written pitch to sounding pitch.
+    - m_diatonic: number of steps, for correct spelling of enharmonic transpositions.
+    - m_doubled: if @TRUE indicates that the music is doubled one octave down from what
+        is currently written (as is the case for mixed cello / bass parts in
+        orchestral literature).
+    - m_numStaff. If -1, this transposition applies to all staves in the instrument.
+      Otherwise, it applies only to the specified staff (0..n-1)
+*/
+class ImoTranspose : public ImoStaffObj
+{
+protected:
+    int m_numStaff;
+    int m_diatonic;
+    int m_chromatic;
+    int m_octaveChange;
+    bool m_doubled;
+
+    friend class ImFactory;
+    ImoTranspose()
+        : ImoStaffObj(k_imo_transpose)
+    {
+        init(-1, 0, 0, 0, false);
+    }
+
+public:
+    virtual ~ImoTranspose() {}
+
+    inline int get_applicable_staff() { return m_numStaff; }
+    inline int get_diatonic() { return m_diatonic; }
+    inline int get_chromatic() { return m_chromatic; }
+    inline int get_octave_change() { return m_octaveChange; }
+    inline bool get_doubled() { return m_doubled; }
+
+protected:
+    friend class TransposeMxlAnalyser;
+    void init(int iStaff, int chromatic, int diatonic, int octaves, bool doubled)
+    {
+        m_numStaff = iStaff;
+        m_diatonic = diatonic;
+        m_chromatic = chromatic;
+        m_octaveChange = octaves;
+        m_doubled = doubled;
+    }
+};
+
+//---------------------------------------------------------------------------------------
 class ImoTextRepetitionMark : public ImoScoreText
 {
 protected:
@@ -5152,16 +5201,10 @@ public:
     void transpose(const int semitones);
 
     //overrides: key signatures always in staff 0
-    void set_staff(int UNUSED(staff))
-    {
-        m_staff = 0;
-    }
+    void set_staff(int UNUSED(staff)) override { m_staff = 0; }
 
     //properties
-    bool can_generate_secondary_shapes()
-    {
-        return true;
-    }
+    bool can_generate_secondary_shapes() override { return true; }
 
 };
 
@@ -5488,7 +5531,7 @@ public:
     virtual ~ImoParagraph() {}
 
     //required by Visitable parent class
-    virtual void accept_visitor(BaseVisitor& v);
+    virtual void accept_visitor(BaseVisitor& v) override;
 };
 
 //---------------------------------------------------------------------------------------
@@ -5555,7 +5598,7 @@ public:
     }
 
     //required by Visitable parent class
-    virtual void accept_visitor(BaseVisitor& v);
+    virtual void accept_visitor(BaseVisitor& v) override;
 
 };
 
@@ -5893,7 +5936,7 @@ public:
     SoundEventsTable* get_midi_table();
 
     //required by Visitable parent class
-    void accept_visitor(BaseVisitor& v);
+    void accept_visitor(BaseVisitor& v) override;
 
     //instruments
     void add_instrument(ImoInstrument* pInstr, const std::string& partId="");
@@ -6289,11 +6332,8 @@ public:
     virtual ~ImoStyles();
 
     //overrides, to traverse this special node
-    void accept_visitor(BaseVisitor& v);
-    bool has_visitable_children()
-    {
-        return m_nameToStyle.size() > 0;
-    }
+    void accept_visitor(BaseVisitor& v) override;
+    bool has_visitable_children() override { return m_nameToStyle.size() > 0; }
 
     //styles
     void add_style(ImoStyle* pStyle);
@@ -6774,16 +6814,10 @@ public:
     }
 
     //overrides: time signatures always in staff 0
-    void set_staff(int UNUSED(staff))
-    {
-        m_staff = 0;
-    }
+    void set_staff(int UNUSED(staff)) override { m_staff = 0; }
 
     //properties
-    bool can_generate_secondary_shapes()
-    {
-        return true;
-    }
+    bool can_generate_secondary_shapes() override { return true; }
 
     //other
     bool is_compound_meter();
@@ -7246,7 +7280,7 @@ protected:
     bool m_fStart;
     int m_steps;
     int m_octaveShiftNum;
-    ImoNote* m_pNote;
+    ImoNoteRest* m_pNR;
     Color m_color;
     int m_lineNum;
     int m_iStaff;
@@ -7257,7 +7291,7 @@ public:
         , m_fStart(true)
         , m_steps(0)
         , m_octaveShiftNum(0)
-        , m_pNote(nullptr)
+        , m_pNR(nullptr)
         , m_color(Color(0,0,0))
         , m_lineNum(0)
         , m_iStaff(0)
@@ -7267,7 +7301,7 @@ public:
 
     //setters
     inline void set_line_number(int value) { m_lineNum = value; }
-    inline void set_staffobj(ImoNote* pNote) { m_pNote = pNote; }
+    inline void set_staffobj(ImoNoteRest* pNR) { m_pNR = pNR; }
     inline void set_shift_steps(int value) { m_steps = value; }
     inline void set_start(bool value) { m_fStart = value; }
     inline void set_octave_shift_number(int value) { m_octaveShiftNum = value; }
@@ -7286,7 +7320,7 @@ public:
     inline int get_item_number() { return get_octave_shift_number(); }
     bool is_start_of_relation() { return is_start(); }
     bool is_end_of_relation() { return !is_start(); }
-    inline ImoNote* get_staffobj() { return m_pNote; }
+    inline ImoNoteRest* get_staffobj() { return m_pNR; }
 };
 
 

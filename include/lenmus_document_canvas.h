@@ -270,9 +270,6 @@ protected:
     void do_display(ostringstream& reporter);
     void display_errors(ostringstream& reporter);
 
-    //caret
-    void update_status_bar_caret_timepos();
-
     //access to information
     string generate_ldp_source();
     string generate_lmd_source(int scoreFormat);

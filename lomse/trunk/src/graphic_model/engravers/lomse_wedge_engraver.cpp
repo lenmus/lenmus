@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2020. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -106,9 +106,16 @@ void WedgeEngraver::decide_placement()
 }
 
 //---------------------------------------------------------------------------------------
-GmoShape* WedgeEngraver::create_first_or_intermediate_shape(Color color)
+GmoShape* WedgeEngraver::create_first_or_intermediate_shape(LUnits UNUSED(xStaffLeft),
+                                    LUnits UNUSED(xStaffRight), LUnits yStaffTop,
+                                    LUnits prologWidth, VerticalProfile* pVProfile,
+                                    Color color)
 {
     m_color = color;
+    m_uStaffTop = yStaffTop;
+    m_pVProfile = pVProfile;
+    m_uPrologWidth = prologWidth;
+
     if (m_numShapes == 0)
     {
         decide_placement();
@@ -152,6 +159,16 @@ GmoShape* WedgeEngraver::create_first_shape()
 {
     //first shape when there are more than one, or single shape
 
+    LUnits minLength = tenths_to_logical(20.0f);
+    if (!m_fFirstShapeAtSystemStart
+        && m_pInstrEngrv->get_staves_right() - m_pStartDirectionShape->get_left() < minLength)
+    {
+        //first shape starts at end of system and will be too short. Better move it
+        //to next system start.
+        m_fFirstShapeAtSystemStart = true;
+        return nullptr;
+    }
+
     LUnits thickness = tenths_to_logical(LOMSE_WEDGE_LINE_THICKNESS);
 
     compute_first_shape_position();
@@ -179,6 +196,12 @@ void WedgeEngraver::compute_first_shape_position()
     {
         m_points[0].x = m_pStartDirectionShape->get_left();    //xLeft at Direction tag
         m_points[1].x = m_pInstrEngrv->get_staves_right();     //xRight at end of staff
+    }
+    else if (m_fFirstShapeAtSystemStart)
+    {
+        m_points[0].x = m_pInstrEngrv->get_staves_left()+ m_uPrologWidth
+                        - tenths_to_logical(10.0f);           //xLeft at start of system
+        m_points[1].x = m_pEndDirectionShape->get_left();
     }
     else
     {
@@ -333,7 +356,7 @@ LUnits WedgeEngraver::determine_center_line_of_shape(LUnits startSpread, LUnits 
 //---------------------------------------------------------------------------------------
 void WedgeEngraver::set_prolog_width(LUnits width)
 {
-    m_uPrologWidth += width;
+    m_uPrologWidth = width;
 }
 
 

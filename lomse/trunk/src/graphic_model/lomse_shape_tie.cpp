@@ -121,29 +121,19 @@ void GmoShapeSlurTie::compute_bounds()
 {
     //TODO: Improve bounds computation.
     //For now, I just take a rectangle based on center point
-    //compute center point
-    LUnits xc = (m_points[0].x + m_points[1].x + 3.0f * (m_points[2].x + m_points[3].x)) / 8.0f;
     LUnits yc = (m_points[0].y + m_points[1].y + 3.0f * (m_points[2].y + m_points[3].y)) / 8.0f;
 
     m_origin.x = m_points[ImoBezierInfo::k_start].x;
-//    m_origin.x = min(m_origin.x, m_points[ImoBezierInfo::k_ctrol1].x);
-//    m_origin.x = min(m_origin.x, m_points[ImoBezierInfo::k_ctrol2].x);
     m_origin.x = min(m_origin.x, m_points[ImoBezierInfo::k_end].x);
 
     m_origin.y = m_points[ImoBezierInfo::k_start].y;
-//    m_origin.y = min(m_origin.y, m_points[ImoBezierInfo::k_ctrol1].y);
-//    m_origin.y = min(m_origin.y, m_points[ImoBezierInfo::k_ctrol2].y);
     m_origin.y = min(m_origin.y, m_points[ImoBezierInfo::k_end].y);
     m_origin.y = min(m_origin.y, yc);
 
     LUnits max_x = m_points[ImoBezierInfo::k_start].x;
-//    max_x = max(max_x, m_points[ImoBezierInfo::k_ctrol1].x);
-//    max_x = max(max_x, m_points[ImoBezierInfo::k_ctrol2].x);
     max_x = max(max_x, m_points[ImoBezierInfo::k_end].x);
 
     LUnits max_y = m_points[ImoBezierInfo::k_start].y;
-//    max_y = max(max_y, m_points[ImoBezierInfo::k_ctrol1].y);
-//    max_y = max(max_y, m_points[ImoBezierInfo::k_ctrol2].y);
     max_y = max(max_y, m_points[ImoBezierInfo::k_end].y);
     max_y = max(max_y, yc);
 

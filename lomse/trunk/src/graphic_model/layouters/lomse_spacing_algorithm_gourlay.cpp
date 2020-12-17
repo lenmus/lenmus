@@ -168,6 +168,7 @@ void SpAlgGourlay::include_object(ColStaffObjsEntry* pCurEntry, int iCol, int iI
             case k_imo_go_back_fwd:
             case k_imo_figured_bass:
             case k_imo_sound_change:
+            case k_imo_transpose:
             case k_imo_system_break:
                 curType = TimeSlice::k_non_timed;
                 break;
@@ -420,7 +421,7 @@ void SpAlgGourlay::do_spacing(int iCol, bool fTrace)
     {
         dbgLogger << endl << to_simple_string(chrono::system_clock::now(), true)
                   << " ******************* Before spacing" << endl;
-        m_columns[iCol]->dump(dbgLogger);
+        m_columns[iCol]->dump(logger.get_stream());
     }
 
     //apply optimum force to get an initial estimation for columns width

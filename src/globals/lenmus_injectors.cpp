@@ -25,7 +25,6 @@
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
 #include "lenmus_colors.h"
-#include "lenmus_status_reporter.h"
 #include "lenmus_string.h"
 #include "lenmus_version.h"
 #include "lenmus_wave_player.h"
@@ -62,6 +61,7 @@ wxString ApplicationScope::m_language;
 //=======================================================================================
 ApplicationScope::ApplicationScope(ostream& reporter)
     : m_reporter(reporter)
+//    , m_lomse(&lomse::nullLogger, &lomse::nullLogger)
     , m_pPaths(nullptr)            //lazzy instantiation. Singleton scope.
     , m_pPrefs(nullptr)            //lazzy instantiation. Singleton scope.
     , m_pMidi(nullptr)             //lazzy instantiation. Singleton scope.
@@ -69,7 +69,6 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pLomseScope(nullptr)
     , m_pColors(nullptr)
     , m_pMetronome(nullptr)
-    , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
     , m_pDB(nullptr)
     , m_pProxySettings(nullptr)
     , m_pWavePlayer(nullptr)
@@ -101,7 +100,6 @@ ApplicationScope::~ApplicationScope()
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
     delete m_pColors;
-    delete m_pStatus;
     delete m_pProxySettings;
     delete m_pWavePlayer;
     delete m_pKeyTranslator;
@@ -198,16 +196,6 @@ WavePlayer* ApplicationScope::get_wave_player()
     if (!m_pWavePlayer)
         m_pWavePlayer = LENMUS_NEW WavePlayer(*this);
     return m_pWavePlayer;
-}
-
-//---------------------------------------------------------------------------------------
-void ApplicationScope::set_status_reporter(StatusReporter* reporter)
-{
-    delete m_pStatus;
-    if (reporter)
-        m_pStatus = reporter;
-    else
-        m_pStatus = LENMUS_NEW DefaultStatusReporter();
 }
 
 //---------------------------------------------------------------------------------------
@@ -398,7 +386,7 @@ HelpSystem* ApplicationScope::get_help_controller()
 }
 
 //---------------------------------------------------------------------------------------
-void ApplicationScope::initialize_help(wxWindow* pParent)
+void ApplicationScope::initialize_help(wxWindow* UNUSED(pParent))
 {
     //TODO: Un-comment when the Help system is again needed
 //    m_pHelp = LENMUS_NEW HelpSystem(pParent, *this);

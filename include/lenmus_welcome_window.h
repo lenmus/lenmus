@@ -21,6 +21,8 @@
 #ifndef __LENMUS_WELCOME_WINDOW_H__        //to avoid nested includes
 #define __LENMUS_WELCOME_WINDOW_H__
 
+#if (0)   //0=old windows , 1=new window
+
 //lenmus headers
 #include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
@@ -91,6 +93,86 @@ private:
 
     wxDECLARE_EVENT_TABLE();
 };
+
+#else
+//lenmus headers
+#include "lenmus_standard_header.h"
+#include "lenmus_injectors.h"
+#include "lenmus_canvas.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include <wx/dialog.h>
+#include <wx/button.h>
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+class WelcomeWindow : public wxScrolledWindow
+                    , public CanvasInterface
+{
+protected:
+    ApplicationScope&   m_appScope;
+
+public:
+    WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
+                  wxWindowID id = wxID_ANY);
+    ~WelcomeWindow();
+
+protected:
+    //event handlers
+    void on_button_exercises(wxCommandEvent& event);
+    void on_button_book_1(wxCommandEvent& UNUSED(event));
+    void on_button_book_2(wxCommandEvent& UNUSED(event));
+    void on_button_book_3(wxCommandEvent& UNUSED(event));
+    void on_button_study_guide(wxCommandEvent& UNUSED(event));
+
+    void open_book(const wxString& filename);
+
+private:
+    void create_controls();
+    void show_document(const wxString& sDocName);
+
+    //controls on dialog
+    wxStaticBitmap* m_logo;
+    wxStaticText* m_txtWelcome;
+    wxStaticText* m_txtVersion;
+    wxStaticText* m_txtWhatToDo;
+
+    wxStaticBitmap* m_bmpGuide;
+    wxStaticText* m_txtGuide;
+    wxStaticText* m_txtGuideText;
+    wxButton* m_btnGuide;
+
+    wxStaticBitmap* m_bmpTrain;
+    wxStaticText* m_txtTrain;
+    wxStaticText* m_txtTrainText;
+    wxButton* m_btnTrain;
+
+    wxStaticBitmap* m_bmpCollaborate;
+    wxStaticText* m_txtCollaborate;
+    wxStaticText* m_txtCollaborateText;
+    wxButton* m_btnCollaborate;
+
+    wxStaticBitmap* m_bmpBooks;
+    wxStaticText* m_txtBooks;
+    wxStaticText* m_txtBooksText;
+    wxStaticText* m_txtLevel1;
+    wxButton* m_btnLevel1;
+    wxStaticText* m_txtLevel2;
+    wxButton* m_btnLevel2;
+    wxStaticText* m_txtLevel3;
+    wxButton* m_btnLevel3;
+
+    wxStaticText* m_txtUCA;
+    wxStaticBitmap* m_logoUCA;
+
+    wxDECLARE_EVENT_TABLE();
+};
+
+#endif  //old or new version
 
 
 }   //namespace lenmus

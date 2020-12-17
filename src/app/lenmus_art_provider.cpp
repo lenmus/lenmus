@@ -223,6 +223,10 @@ wxFileName ArtProvider::get_filepath(const wxArtID& id, const wxArtClient& clien
         sFile = "logo50x67";
 		sSize = ".png";
     }
+    else if (id == "logoUCA") {
+        sFile = "logoUCA-3";
+		sSize = ".png";
+    }
     else if (id == "preview") {
         sFile = "preview";
 		sSize = ".png";

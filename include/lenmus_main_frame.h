@@ -79,7 +79,6 @@ class DocumentFrame;
 class WelcomeWindow;
 class DlgCounters;
 class ProblemManager;
-class StatusBar;
 class GlobalMetronome;
 class CommandWindow;
 class ToolBox;
@@ -143,9 +142,6 @@ protected:
     wxToolBar*      m_pTbPlay;          // play toolbar
     wxToolBar*      m_pTbMtr;           // metronome toolbar
     wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
-
-    // status bar
-    StatusBar*    m_pStatusBar;
 
     //Edit GUI
     ToolBox*                m_pToolBox;     //tool box window
@@ -235,7 +231,6 @@ protected:
     void show_toolbars_if_user_preferences();
     void create_toolbars();
     void delete_toolbars();
-//    void CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow);
 
     //menu bar
     void create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
@@ -246,14 +241,6 @@ protected:
     void create_menu_item(wxMenu* pMenu, int menuId, int actionId,
                           const wxString& sLabel, const wxString& sIconName,
                           wxItemKind nKind, bool dots=false);
-
-    //status bar
-    void show_status_bar_if_user_preferences();
-    void create_status_bar(int nType=0);
-    void delete_status_bar();
-//    void SetStatusBarMsg(const wxString& sText);
-//    void SetStatusBarMouseData(int nPage, TimeUnits rTime, int nMeasure, lmUPoint uPos);
-//    void SetStatusBarCaretData(int nPage, TimeUnits rTime, int nMeasure);
 
     //ToolBox
 	inline ToolBox* get_active_toolbox() { return m_pToolBox; }
@@ -272,9 +259,6 @@ protected:
     void hide_virtual_keyboard();
     VirtualKeyboard* create_virtual_keyboard();
 
-//    // metronome
-//    GlobalMetronome* GetMetronome() { return m_pMtr; }
-
     // File menu events
     void on_file_quit(wxCommandEvent& event);
     void on_file_open(wxCommandEvent& WXUNUSED(event));
@@ -285,15 +269,11 @@ protected:
     void on_file_save_as(wxCommandEvent& event);
     void on_file_convert(wxCommandEvent& event);
     void on_file_new(wxCommandEvent& WXUNUSED(event));
-//	void OnExportMusicXML(wxCommandEvent& WXUNUSED(event));
-//	void OnExportBMP(wxCommandEvent& WXUNUSED(event));
-//    void OnExportJPG(wxCommandEvent& WXUNUSED(event));
     void on_print_setup(wxCommandEvent& WXUNUSED(event));
     void on_print(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_file(wxUpdateUIEvent& event);
     void on_open_recent_file(wxCommandEvent& event);
     void on_open_book(wxCommandEvent& event);
-//    void ExportAsImage(int nImgType);
     void on_open_books(wxCommandEvent& event);
 
     // Edit menu events
@@ -305,12 +285,6 @@ protected:
     void on_edit_redo(wxCommandEvent& event);
     void on_edit_insert(wxCommandEvent& event);
     void on_update_UI_edit(wxUpdateUIEvent& event);
-
-//	// Score Menu events
-//	void OnScoreTitles(wxCommandEvent& WXUNUSED(event));
-//
-//	// Instrument menu events
-//	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
@@ -364,8 +338,6 @@ protected:
     void on_update_UI_view_virtual_keyboard(wxUpdateUIEvent &event);
     void on_view_console(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_view_console(wxUpdateUIEvent& event);
-    void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_status_bar(wxUpdateUIEvent& event);
     void on_view_hide_show_toc(wxCommandEvent& event);
     void on_update_UI_view_toc(wxUpdateUIEvent& event);
     void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
