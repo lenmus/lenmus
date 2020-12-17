@@ -241,10 +241,6 @@ protected:
     void on_file_reload(wxCommandEvent& WXUNUSED(event));
     void on_file_close(wxCommandEvent& event);
     void on_file_close_all(wxCommandEvent& WXUNUSED(event));
-    void on_file_save(wxCommandEvent& event);
-    void on_file_save_as(wxCommandEvent& event);
-    void on_file_convert(wxCommandEvent& event);
-    void on_file_new(wxCommandEvent& WXUNUSED(event));
     void on_print_setup(wxCommandEvent& WXUNUSED(event));
     void on_print(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_file(wxUpdateUIEvent& event);

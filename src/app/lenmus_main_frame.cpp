@@ -86,8 +86,6 @@ using namespace lomse;
 namespace lenmus
 {
 
-#define LENMUS_INCLUDE_EDITOR   0
-
 DEFINE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES)
 DEFINE_EVENT_TYPE(LM_EVT_OPEN_BOOK)
 DEFINE_EVENT_TYPE(LM_EVT_EDIT_COMMAND)
@@ -143,17 +141,9 @@ enum
 
 
     // Menu File
-    k_menu_file_new = k_menu_last_public_id,
-    k_menu_file_reload,
+    k_menu_file_reload = k_menu_last_public_id,
     k_menu_file_close,
     k_menu_file_close_all,
-    k_menu_file_save,
-    k_menu_file_save_as,
-    k_menu_file_convert,
-    k_menu_file_export,
-    k_menu_file_export_MusicXML,
-    k_menu_file_export_bmp,
-    k_menu_file_export_jpg,
     k_menu_print,
     //k_menu_print_setup,    wxID_PRINT_SETUP is used instead
 
@@ -266,26 +256,11 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_file_close, MainFrame::on_update_UI_file)
     EVT_MENU      (k_menu_file_close_all, MainFrame::on_file_close_all)
     EVT_UPDATE_UI (k_menu_file_close_all, MainFrame::on_update_UI_file)
-    EVT_MENU      (k_menu_file_save, MainFrame::on_file_save)
-    EVT_UPDATE_UI (k_menu_file_save, MainFrame::on_update_UI_file)
-    EVT_MENU      (k_menu_file_save_as, MainFrame::on_file_save_as)
-    EVT_UPDATE_UI (k_menu_file_save_as, MainFrame::on_update_UI_file)
-    EVT_MENU      (k_menu_file_convert, MainFrame::on_file_convert)
-    EVT_UPDATE_UI (k_menu_file_convert, MainFrame::on_update_UI_file)
-
-    EVT_MENU      (k_menu_file_new, MainFrame::on_file_new)
-    EVT_UPDATE_UI (k_menu_file_export, MainFrame::disable_tool) //on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_export_MusicXML, MainFrame::disable_tool)    //on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_export_bmp, MainFrame::disable_tool) //on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_export_jpg, MainFrame::disable_tool) //on_update_UI_file)
 
     EVT_MENU      (wxID_PRINT_SETUP, MainFrame::on_print_setup)
     EVT_UPDATE_UI (wxID_PRINT_SETUP, MainFrame::on_update_UI_file)
     EVT_MENU      (k_menu_print, MainFrame::on_print)
     EVT_UPDATE_UI (k_menu_print, MainFrame::on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_save, MainFrame::on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_save_as, MainFrame::on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_new, MainFrame::on_update_UI_file)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::on_open_recent_file)
     EVT_MENU      (k_menu_open_books, MainFrame::on_open_books)
 
@@ -608,43 +583,12 @@ void MainFrame::create_menu()
     // file menu --------------------------------------------------------------------------
 
     wxMenu* pMenuFile = LENMUS_NEW wxMenu;
-#if (LENMUS_INCLUDE_EDITOR)
-    create_menu_item(pMenuFile, k_menu_file_new, k_cmd_file_new,
-                     _("New"), "tool_new", wxITEM_NORMAL);
-#endif
     create_menu_item(pMenuFile, k_menu_file_open, k_cmd_file_open,
                      _("Open"), "tool_open", wxITEM_NORMAL, true /*dots*/);
     create_menu_item(pMenuFile, k_menu_file_reload, k_cmd_file_reload,
                      _("Reload"), "", wxITEM_NORMAL);
     create_menu_item(pMenuFile, k_menu_open_books, k_cmd_open_books,
                      _("Open books"), "tool_open_ebook", wxITEM_NORMAL, true /*dots*/);
-
-    ////-- export submenu --
-    //wxMenu* pSubmenuExport = LENMUS_NEW wxMenu;
-    //create_menu_item(pSubmenuExport, k_menu_file_export_MusicXML, _("MusicXML format"),
-    //                _("Save score as a MusicXML file"), wxITEM_NORMAL);
-    //create_menu_item(pSubmenuExport, k_menu_file_export_bmp, _("As bmp image"),
-    //                _("Save score as BMP images"), wxITEM_NORMAL, "tool_save_as_bmp");
-    //create_menu_item(pSubmenuExport, k_menu_file_export_jpg, _("As jpg image"),
-    //                _("Save score as JPG images"), wxITEM_NORMAL, "tool_save_as_jpg");
-
-    //////wxMenuItem* pItem = LENMUS_NEW wxMenuItem(pMenuFile, k_menu_file_export, _("Export ..."),
-    //                      _("Save score in other formats"), wxITEM_NORMAL, pSubmenuExport);
-    //pItem->SetBitmap( wxArtProvider::GetBitmap("empty", wxART_TOOLBAR, nIconSize) );
-    //pMenuFile->Append(pItem);
-//    k_cmd_file_export,
-//    k_cmd_file_export_MusicXML,
-//    k_cmd_file_export_bmp,
-//    k_cmd_file_export_jpg,
-
-    //-- end of export submenu --
-
-    create_menu_item(pMenuFile, k_menu_file_save, k_cmd_file_save,
-                     _("Save"), "tool_save", wxITEM_NORMAL);
-    create_menu_item(pMenuFile, k_menu_file_save_as, k_cmd_file_save_as,
-                     _("Save as"), "", wxITEM_NORMAL, true /*dots*/);
-    create_menu_item(pMenuFile, k_menu_file_convert, k_cmd_file_convert,
-                     _("Convert"), "", wxITEM_NORMAL);
     create_menu_item(pMenuFile, k_menu_file_close, k_cmd_file_close,
                      _("Close"), "", wxITEM_NORMAL);
     create_menu_item(pMenuFile, k_menu_file_close_all, k_cmd_file_close_all,
@@ -954,14 +898,6 @@ void MainFrame::on_about(wxCommandEvent& WXUNUSED(event))
 {
     AboutDialog dlg(this, m_appScope);
     dlg.ShowModal();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_file_new(wxCommandEvent& WXUNUSED(event))
-{
-    LomseDoorway& lib = m_appScope.get_lomse();
-    DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    loader.create_canvas_and_new_document(VIEW_TYPE);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1569,74 +1505,6 @@ void MainFrame::on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event))
     Updater oUpdater(m_appScope);
     oUpdater.check_for_updates(this, true /*silently*/);
 }
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnExportMusicXML(wxCommandEvent& WXUNUSED(event))
-//{
-//	//TODO Export as MusicXML
-//}
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnExportBMP(wxCommandEvent& WXUNUSED(event))
-//{
-//    ExportAsImage(wxBITMAP_TYPE_BMP);
-//}
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnExportJPG(wxCommandEvent& WXUNUSED(event))
-//{
-//    ExportAsImage(wxBITMAP_TYPE_JPEG);
-//}
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::ExportAsImage(int nImgType)
-//{
-//    wxString sExt;
-//    wxString sFilter = "*.";
-//
-//    if (nImgType == wxBITMAP_TYPE_BMP) {
-//        sExt = "bmp";
-//    }
-//    else if (nImgType == wxBITMAP_TYPE_JPEG) {
-//        sExt = "jpg";
-//    }
-//    else if (nImgType == wxBITMAP_TYPE_PNG) {
-//        sExt = "png";
-//    }
-//    else if (nImgType == wxBITMAP_TYPE_PCX) {
-//        sExt = "pcx";
-//    }
-//    else if (nImgType == wxBITMAP_TYPE_PNM) {
-//        sExt = "pnm";
-//    }
-//    else
-//    {
-//        wxASSERT(false);
-//    }
-//
-//    sFilter += sExt;
-//
-//    // ask for the name to give to the exported file
-//    wxFileDialog dlg(this,
-//                     _("Name for the exported file"),
-//                     "",    //default path
-//                     "",    //default filename
-//                     sFilter,
-//                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);        //flags
-//
-//    if (dlg.ShowModal() == wxID_CANCEL)
-//        return;
-//
-//    wxString sFilename = dlg.GetFilename();
-//    if ( !sFilename.empty() )
-//    {
-//        //remove extension including dot
-//        wxString sName = sFilename.Left( sFilename.length() - sExt.length() - 1 );
-//        lmScoreView* pView = GetActiveScoreView();
-//        pView->SaveAsImage(sName, sExt, nImgType);
-//    }
-//
-//}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_open_help(wxCommandEvent& event)
@@ -2501,61 +2369,6 @@ bool MainFrame::close_active_document_window()
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_file_save(wxCommandEvent& WXUNUSED(event))
-{
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas)
-        pCanvas->save_document();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_file_save_as(wxCommandEvent& WXUNUSED(event))
-{
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas == nullptr)
-        return;
-
-    //display file selector
-    Paths* pPaths = m_appScope.get_paths();
-    wxString defaultDir = pPaths->GetScoresPath();
-    wxString sFilename = wxFileSelector(_("Save as"),
-            defaultDir,                         //default path to save the file
-            "lenmus-document.lmd",          //default name for the file
-            "lmd",                          //default ext for the file
-            "LenMus files|*.lmd",           //filter
-            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-    if (sFilename.empty())
-        return;   //save operation cancelled by user
-
-    pCanvas->save_document_as(sFilename);
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_file_convert(wxCommandEvent& WXUNUSED(event))
-{
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas == nullptr)
-        return;
-
-    //display file selector
-    Paths* pPaths = m_appScope.get_paths();
-    wxString defaultDir = pPaths->GetScoresPath();
-    wxString sFilename = wxFileSelector(_("Save as"),
-            defaultDir,                         //default path to save the file
-            "lenmus-document.lmd",          //default name for the file
-            "lmd",                          //default ext for the file
-            "LenMus files|*.lmd",           //filter
-            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-    if (sFilename.empty())
-        return;   //save operation cancelled by user
-
-    pCanvas->save_document_as(sFilename);
-    load_file( to_std_string(sFilename) );
-}
-
-//---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 {
     DocumentWindow* pCanvas = get_active_document_window();
@@ -2566,26 +2379,13 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 
     switch (event.GetId())
     {
-        // Convert & Print related commands: enabled if DocumentFrame visible
-        case k_menu_file_convert:
-            event.Enable(fEnable);
-            break;
-
+        //Print related commands: enabled if DocumentFrame visible
         case wxID_PRINT_SETUP:
             event.Enable(fEnable);
             break;
 
         case k_menu_print:
             event.Enable(fEnable);
-            break;
-
-        // Save related commands: enabled if edition enabled
-        case k_menu_file_save_as:
-            event.Enable(fEdit);
-            break;
-
-        case k_menu_file_save:
-            event.Enable(fEdit && pCanvas && pCanvas->is_document_modified());
             break;
 
         //commands enabled if a page is displayed
@@ -2599,38 +2399,10 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
             event.Enable(fEnable && fSimpleDocument);
             break;
 
-
-
-//        case k_menu_file_export:
-//            event.Enable(fEditFrame);
-//            break;
-//		case k_menu_file_export_MusicXML:
-//			event.Enable(fEditFrame);
-//			break;
-//        case k_menu_file_export_bmp:
-//            event.Enable(fEditFrame);
-//            break;
-//        case k_menu_file_export_jpg:
-//            event.Enable(fEditFrame);
-//            break;
-
-        case k_menu_file_new:
-            event.Enable( m_appScope.are_experimental_features_enabled() );
-            break;
-
         // Other commands: always enabled
         default:
             event.Enable(true);
     }
-
-//    if (m_appScope.is_release_behaviour()) {
-//        switch (event.GetId())
-//        {
-//            case k_menu_file_export_MusicXML:
-//                event.Enable(false);
-//                break;
-//        }
-//    }
 
 }
 
