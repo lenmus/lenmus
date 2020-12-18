@@ -28,8 +28,6 @@
 #include "lenmus_dlg_debug.h"
 #include "lenmus_events.h"
 #include "lenmus_metronome.h"
-#include "lenmus_edit_interface.h"
-#include "lenmus_tool_box_events.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -42,7 +40,6 @@
 #include <wx/dc.h>
 #include <wx/dcmemory.h>
 #include <wx/event.h>
-//#include <wx/stopwatch.h>
 #include <wx/aui/aui.h>
 #include <wx/timer.h>           //to use wxTimer
 #include <wx/spinctrl.h>        //to use spin control
@@ -80,25 +77,16 @@ class WelcomeWindow;
 class DlgCounters;
 class ProblemManager;
 class GlobalMetronome;
-class CommandWindow;
-class ToolBox;
-class VirtualKeyboard;
 class DlgSpacingParams;
 class DlgMetronome;
 
 
-DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
 DECLARE_EVENT_TYPE(LM_EVT_OPEN_BOOK, -1)
-DECLARE_EVENT_TYPE(LM_EVT_EDIT_COMMAND, -1)
 
 //public identifiers for commands/events sent to MainFrame
 enum {
-    k_id_check_for_updates = 10000,
-    k_id_open_book,
-    k_id_edit_command,
-    k_menu_open_books,
+    k_id_open_book = 10000,
     k_menu_help_study_guide,
-    k_menu_help_editor_quick,
 
     k_menu_last_public_id,
 };
@@ -118,8 +106,6 @@ protected:
 
     //controllers, special windows, and other controls
     Canvas*           m_pWelcomeWnd;        //welcome window
-    CommandWindow*    m_pConsole;           //command console window
-    VirtualKeyboard*  m_pVirtualKeyboard;
     DlgSpacingParams* m_pSpacingParamsDlg;  //dialog for spacing params
     DlgMetronome*     m_pMetronomeDlg;      //dialog for metronome settings
 
@@ -127,20 +113,12 @@ protected:
     GlobalMetronome*        m_pMainMtr;   //independent metronome
     GlobalMetronome*        m_pMtr;       //metronome currently associated to frame metronome controls
 
-    //Edit GUI
-    ToolBox*                m_pToolBox;     //tool box window
-    vector<DocumentWindow*>         m_docWindows;
-    vector<ToolBoxConfiguration*>   m_toolsCfg;
-
     //to remember print settings during the session
     wxPrintData* m_pPrintData;
     wxPageSetupDialogData* m_pPageSetupData;
 
     //filehistory
     wxFileHistory   m_fileHistory;
-
-    //global timer for carets
-    int m_nblinkTime;
 
 public:
     MainFrame(ApplicationScope& appScope, const wxPoint& pos = wxDefaultPosition,
@@ -169,12 +147,8 @@ public:
     int get_play_mode();
     int get_metronome_mm();
     Metronome* get_metronome();
-    bool countoff_status();
+    bool countoff_status() { return false; }
     bool metronome_status();
-
-    //mandatory overrides for public methods in EditInterface
-    bool process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo);
-    int translate_key(int key, int keyFlags);
 
 protected:
     void disable_tool(wxUpdateUIEvent &event);
@@ -213,26 +187,6 @@ protected:
                           wxItemKind nKind = wxITEM_NORMAL,
                           const wxString& sIconName = "empty",
                           const wxString& sShortcut = "" );
-    void create_menu_item(wxMenu* pMenu, int menuId, int actionId,
-                          const wxString& sLabel, const wxString& sIconName,
-                          wxItemKind nKind, bool dots=false);
-
-    //ToolBox
-	inline ToolBox* get_active_toolbox() { return m_pToolBox; }
-	bool is_toolbox_visible();
-	void show_tool_box(bool fShow);
-    void create_tool_box();
-    void show_tool_box();
-    void hide_tool_box();
-    void set_toolbox_for_active_page();
-    void save_toolbox_for(DocumentWindow* pWnd);
-    void restore_toolbox_for(DocumentWindow* pWnd);
-    ToolBoxConfiguration* get_toolbox_cfg_for(DocumentWindow* pWnd);
-
-    //virtual keyboard
-    void show_virtual_keyboard();
-    void hide_virtual_keyboard();
-    VirtualKeyboard* create_virtual_keyboard();
 
     // File menu events
     void on_file_quit(wxCommandEvent& event);
@@ -245,7 +199,6 @@ protected:
     void on_update_UI_file(wxUpdateUIEvent& event);
     void on_open_recent_file(wxCommandEvent& event);
     void on_open_book(wxCommandEvent& event);
-    void on_open_books(wxCommandEvent& event);
 
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
@@ -293,12 +246,6 @@ protected:
     void on_update_UI_zoom(wxUpdateUIEvent& event);
 
     // View menu events
-    void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_tool_bar(wxUpdateUIEvent& event);
-    void on_view_virtual_keyboard(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_view_virtual_keyboard(wxUpdateUIEvent &event);
-    void on_view_console(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_view_console(wxUpdateUIEvent& event);
     void on_view_hide_show_toc(wxCommandEvent& event);
     void on_update_UI_view_toc(wxUpdateUIEvent& event);
     void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
@@ -317,11 +264,8 @@ protected:
 
     //Help menu
     void on_about(wxCommandEvent& event);
-    void on_open_help(wxCommandEvent& event);
-    void on_check_for_updates(wxCommandEvent& WXUNUSED(event));
-    void on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event));
+    void on_show_study_guide(wxCommandEvent& event);
     void on_visit_website(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_help(wxUpdateUIEvent& event);
 
     // Options menu
     void on_options(wxCommandEvent& WXUNUSED(event));
@@ -335,17 +279,6 @@ protected:
     void on_close_frame(wxCloseEvent& WXUNUSED(event));
     void on_edit_command(wxCommandEvent& event);
     void on_tab_close(wxAuiManagerEvent& evt);
-    void on_toolbox_tool_selected(ToolBoxToolSelectedEvent& event);
-    void on_toolbox_page_changed(ToolBoxPageChangedEvent& event);
-
-    // other methods
-    void exec_command(const string& cmd);
-    void hide_console();
-    void show_console();
-
-    //DlgCounters* create_counters_dlg(int mode, ProblemManager* pManager);
-    //wxPoint get_counters_position();
-
 
     wxDECLARE_EVENT_TABLE();
 };

@@ -155,13 +155,7 @@ bool TheApp::OnInit()
     ::wxBeginBusyCursor();
     wait_and_destroy_splash();
     show_welcome_window();
-//    RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
-
-    check_for_updates();
-//    #if (LENMUS_DEBUG_BUILD == 1)
-//        m_frame->RunUnitTests();
-//    #endif
 
     return true;
 }
@@ -584,92 +578,6 @@ void TheApp::show_welcome_window()
     m_frame->show_welcome_window();
 }
 
-////---------------------------------------------------------------------------------------
-//void TheApp::RecoverScoreIfPreviousCrash()
-//{
-//    //open any existing score being edited before a crash
-//    wxString sUserId = ::wxGetUserId();
-//    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + "_score.lmb";
-//    if (::wxFileExists(sLogScore))
-//    {
-//        wxString sQuestion =
-//            _("An score being edited before a program crash has been detected!");
-//        sQuestion += "\n\n";
-//        sQuestion += _("Should the program attempt to recover it?");
-//        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
-//            //labels (2 per button: button text + explanation)
-//            _("Yes"), _("Yes, try to recover the score"),
-//            _("No"), _("No, forget about that score")
-//        );
-//        int nAnswer = oQB.ShowModal();
-//
-//		if (nAnswer == 0)       //'Yes' button
-//            m_frame->OpenScore(sLogScore, true);    //true: as LENMUS_NEW file
-//    }
-//}
-
-//---------------------------------------------------------------------------------------
-void TheApp::check_for_updates()
-{
-    //check for updates if this option is set up. Default: do check
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-    wxString sCheckFreq = pPrefs->Read("/Options/CheckForUpdates/Frequency", "Weekly" );
-    if (sCheckFreq != "Never")
-    {
-        //get date of last sucessful check
-        bool fDoCheck = false;
-        wxString sLastCheckDate =
-            pPrefs->Read("/Options/CheckForUpdates/LastCheck", "");
-        if (sLastCheckDate == "")
-        {
-            fDoCheck = true;
-        }
-        else
-        {
-            wxDateTime dtLastCheck, dtNextCheck;
-            wxDateSpan dsSpan;
-            const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
-            if ( !p )
-            {
-                LOMSE_LOG_ERROR("Error parsing the last check for updates date '%s'.",
-                                to_std_string(sLastCheckDate).c_str());
-                fDoCheck = true;
-            }
-            else
-            {
-                //verify elapsed time
-                if (sCheckFreq == "Daily")
-                    dsSpan = wxDateSpan::Days(1);
-                else if (sCheckFreq == "Weekly")
-                    dsSpan = wxDateSpan::Weeks(1);
-                else
-                    dsSpan = wxDateSpan::Months(1);
-
-                dtNextCheck = dtLastCheck;
-                dtNextCheck.Add(dsSpan);
-                fDoCheck = (dtNextCheck <= wxDateTime::Now());
-            }
-
-            wxString sDoCheck = fDoCheck ? "True" : "False";
-            LOMSE_LOG_INFO("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', "
-                           "sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"
-                , to_std_string(dtLastCheck.Format("%x")).c_str()
-                , to_std_string(sCheckFreq).c_str()
-                , dsSpan.GetTotalDays()
-                , to_std_string(dtNextCheck.Format("%x")).c_str()
-                , to_std_string(sDoCheck).c_str() );
-        }
-
-        // if time for another check, do it
-        if (fDoCheck)
-        {
-            wxCommandEvent event(LM_EVT_CHECK_FOR_UPDATES, k_id_check_for_updates);
-            //wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, k_id_silently_check_for_updates);
-            wxPostEvent(m_frame, event);
-        }
-    }
-}
-
 //---------------------------------------------------------------------------------------
 void TheApp::do_application_cleanup()
 {
@@ -1032,35 +940,6 @@ wxString TheApp::get_installer_language()
 //---------------------------------------------------------------------------------------
 int TheApp::FilterEvent(wxEvent& WXUNUSED(event))
 {
-//#if (LENMUS_DEBUG_BUILD == 1)
-//	if (event.GetEventType()==wxEVT_KEY_DOWN)
-//	{
-////		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1 && m_frame
-////			&& m_frame->IsToolBoxVisible())
-//		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1)
-//		{
-//            wxMessageBox("[TheApp::FilterEvent] Key pressed!");
-////			lmController* pController = m_frame->GetActiveController();
-////			if (pController)
-////			{
-////                lmToolBox* pTB = m_frame->GetActiveToolBox();
-////                if (pTB)
-////                {
-////				    pTB->OnKeyPress((wxKeyEvent&)event);
-////				    return true;	        //true: the event had been already processed
-////                }
-////                else
-////	                return -1;		//process the event normally
-////			}
-////
-////			//m_frame->OnHelpF1( (wxKeyEvent&)event );
-//			return true;	//true: the event had been already processed
-//							//false: the event is not going to be processed at all
-//							//-1: process the event normally
-//		}
-//	}
-//#endif
-
 	return -1;		//process the event normally
 }
 

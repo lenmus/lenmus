@@ -225,7 +225,7 @@ void WelcomeWindow::create_controls()
 	sizerGridBooks->SetFlexibleDirection( wxHORIZONTAL );
 	sizerGridBooks->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_txtLevel1 = new wxStaticText( this, wxID_ANY, _("Elementos del Lenguaje Musical I"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLevel1 = new wxStaticText( this, wxID_ANY, _("Music Reading I"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtLevel1->Wrap( -1 );
 	m_txtLevel1->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
@@ -234,7 +234,7 @@ void WelcomeWindow::create_controls()
 	m_btnLevel1 = new wxButton( this, k_id_book_1, _("Start"), wxDefaultPosition, wxDefaultSize, 0 );
 	sizerGridBooks->Add( m_btnLevel1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_txtLevel2 = new wxStaticText( this, wxID_ANY, _("Elementos del Lenguaje Musical II"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLevel2 = new wxStaticText( this, wxID_ANY, _("Music Reading II"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtLevel2->Wrap( -1 );
 	m_txtLevel2->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
@@ -243,7 +243,7 @@ void WelcomeWindow::create_controls()
 	m_btnLevel2 = new wxButton( this, k_id_book_2, _("Start"), wxDefaultPosition, wxDefaultSize, 0 );
 	sizerGridBooks->Add( m_btnLevel2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_txtLevel3 = new wxStaticText( this, wxID_ANY, wxT("Ejercicios de Lectura Rítmica"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_txtLevel3 = new wxStaticText( this, wxID_ANY, wxT("Theory & Harmony"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtLevel3->Wrap( -1 );
 	m_txtLevel3->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 

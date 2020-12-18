@@ -56,9 +56,6 @@ enum EOptionsPanels
 {
     eOptLanguage = 0,
     eOptSound,
-    eOptColors,
-    eOptInternet,
-    eOptShortcuts,
     eOptPlayback,
     eOptOther,
     //TO_ADD: Add, before this line, a new eOptXXXXXX code for the new options panel

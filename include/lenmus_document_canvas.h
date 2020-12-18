@@ -26,9 +26,6 @@
 #include "lenmus_canvas.h"
 #include "lenmus_injectors.h"
 #include "lenmus_events.h"
-#include "lenmus_tool_box_events.h"
-#include "lenmus_command_event_handler.h"
-#include "lenmus_tool_box.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -78,8 +75,6 @@ public:
     //callback wrappers
     static void wrapper_update_window(void* pThis, SpEventInfo pEvent);
     static void wrapper_play_score(void* pThis, SpEventInfo pEvent);
-    static void wrapper_on_click_event(void* pThis, SpEventInfo pEvent);
-    static void wrapper_on_action_event(void* pThis, SpEventInfo pEvent);
 
     //commands from main frame
     void display_document(const string& filename, int viewType);
@@ -92,50 +87,25 @@ public:
     void zoom_to(double scale);
     inline void scroll_line_up() { scroll_line(true); }
     inline void scroll_line_down() { scroll_line(false); }
-    wxString exec_command(const string& cmd);
-    inline int get_last_error_code() { return m_errorCode; }
     void play_active_score(PlayerGui* pGUI);
     void play_pause();
     void play_stop();
-    void enable_edition(bool value);
-    void save_document_as(const wxString& sFilename);
-    void save_document();
     void set_rendering_option(int option, bool value);
-    void insert_new_top_level(int type);
 
     void on_document_updated();
     void update_window(VRect damagedRect = VRect(0,0,0,0));
-    void on_window_closing(wxCloseEvent& WXUNUSED(event));
-
-    //toolbox event messages from MainFrame and related
-    void on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event, ToolBox* pToolBox);
-    void on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event, ToolBox* pToolBox);
-//    inline const ToolBoxConfiguration& get_edition_gui_config() { return m_toolboxCfg; }
-    inline void force_edition_gui() { m_fEditionGuiForced = true; }
-    inline void do_not_ask_to_save_modifications_when_closing() { m_fAskToSaveModifications = false; }
-
-    //void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
     AScore get_active_score();
     Interactor* get_interactor() const;
     SpInteractor get_interactor_shared_ptr() const;
     inline LibraryScope& get_library_scope() { return *m_lomse.get_library_scope(); }
-    inline bool is_edition_gui_forced() { return m_fEditionGuiForced; }
-
-    //info
-    bool should_enable_edit_undo();
-    bool should_enable_edit_redo();
-    bool is_document_modified();
-    bool is_document_editable();
 
     ADocument get_document() const;
     inline wxString& get_filename() { return m_filename; }
     inline wxString& get_full_filename() { return m_fullNameWithPath; }
     inline int get_zoom_mode() const { return m_zoomMode; }
-    bool is_edition_enabled();
     inline bool is_loading_document() { return m_fLoadingDocument; }
-//    inline bool is_mouse_data_entry_mode() { return m_mouseMode == k_mouse_mode_data_entry; }
 
     //printing
     void do_print(wxDC* pDC, int page, int paperWidthPixels, int paperHeightPixels);
@@ -147,12 +117,6 @@ public:
         k_zoom_user,
     };
     inline void set_zoom_mode(int zoomMode) { m_zoomMode = zoomMode; }
-
-    //support for CommandEventHandler
-    void exec_lomse_command(DocCommand* pCmd, bool fShowBusy = k_show_busy);
-    DiatonicPitch get_pitch_at(Pixels x, Pixels y);
-//    void change_mouse_mode(EMouseMode mode);
-    void edit_top_level(int type);
 
     //support for playback in exercises
     void customize_playback(SpInteractor spInteractor);
@@ -210,21 +174,8 @@ protected:
     int m_xMinViewport, m_yMinViewport;
     int m_xMaxViewport, m_yMaxViewport;
 
-    //edition
-    int m_errorCode;            //for last executed command
-    ToolsInfo m_toolsInfo;              //current tools options
-    //ToolBoxConfiguration m_toolboxCfg;  //current ToolBox configuration
-    bool m_fEditionGuiForced;           //toolbox always displayed
-    bool m_fAskToSaveModifications;     //to avoid asking to save full editor exercises
-
     //other
     bool m_fLoadingDocument;
-
-    //contextual menu
-	wxMenu*     m_pContextualMenu;
-	ImoObj*     m_pMenuOwner;		//contextual menu owner
-
-
 
     // wxWidgets event handlers
     void on_paint(wxPaintEvent& WXUNUSED(event));
@@ -234,7 +185,6 @@ protected:
     void on_visual_tracking(lmVisualTrackingEvent& event);
     void on_update_viewport(lmUpdateViewportEvent& event);
     void on_end_of_playback(lmEndOfPlaybackEvent& event);
-    void on_show_contextual_menu(lmShowContextualMenuEvent& event);
     void on_scroll(wxScrollWinEvent& event);
     void on_key_down(wxKeyEvent& event);
     void on_timer_event(wxTimerEvent& WXUNUSED(event));
@@ -246,8 +196,6 @@ protected:
     //Lomse events
     void on_play_score(SpEventInfo pEvent);
     void play_score(SpEventInfo pEvent);
-    void on_click_event(SpEventInfo pEvent);
-    void on_action_event(SpEventInfo pEvent);
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);
@@ -275,17 +223,6 @@ protected:
     string generate_checkpoint_data();
     string dump_cursor();
     string dump_selection();
-    wxString help_for_console_commands();
-
-	//contextual menus
-	wxMenu* get_contextual_menu(bool fInitialize = true);
-
-	//event handlers for contextual menus
-	void on_popup_cut(wxCommandEvent& event);
-    void on_popup_properties(wxCommandEvent& event);
-
-    //other
-    void clear_document_modified_flag();
 
     wxDECLARE_EVENT_TABLE();
 };

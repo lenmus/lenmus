@@ -28,14 +28,9 @@
 #include "lenmus_dyncontrol.h"
 #include "lenmus_standard_header.h"
 #include "lenmus_dlg_debug.h"
-#include "lenmus_edit_interface.h"
-#include "lenmus_command_window.h"      //to be replaced by lomse command parser
-#include "lenmus_command_event_handler.h"
-#include "lenmus_dlg_properties.h"
 #include "lenmus_art_provider.h"
-#include "lenmus_tool_box.h"            //enum for mouse modes
 #include "lenmus_score_wizard.h"
-#include "lenmus_text_editor.h"
+//#include "lenmus_text_editor.h"
 #include "lenmus_msg_box.h"
 #include "lenmus_colors.h"
 
@@ -106,29 +101,7 @@ wxBEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
     LM_EVT_SCORE_HIGHLIGHT(DocumentWindow::on_visual_tracking)
     EVT_ERASE_BACKGROUND(DocumentWindow::on_erase_background)
     LM_EVT_END_OF_PLAYBACK(DocumentWindow::on_end_of_playback)
-    LM_EVT_SHOW_CONTEXTUAL_MENU(DocumentWindow::on_show_contextual_menu)
     LM_EVT_UPDATE_VIEWPORT(DocumentWindow::on_update_viewport)
-
-	//events for contextual menus
-	EVT_MENU	(k_popup_menu_Cut, DocumentWindow::on_popup_cut)
-//	EVT_MENU	(k_popup_menu_Copy, DocumentWindow::OnCopy)
-//	EVT_MENU	(k_popup_menu_Paste, DocumentWindow::OnPaste)
-//	EVT_MENU	(k_popup_menu_Color, DocumentWindow::OnColor)
-	EVT_MENU	(k_popup_menu_Properties, DocumentWindow::on_popup_properties)
-//	EVT_MENU	(k_popup_menu_DeleteTiePrev, DocumentWindow::OnDeleteTiePrev)
-//	EVT_MENU	(k_popup_menu_AttachText, DocumentWindow::OnAttachText)
-//	EVT_MENU	(k_popup_menu_Score_Titles, DocumentWindow::OnScoreTitles)
-//	EVT_MENU	(k_popup_menu_View_Page_Margins, DocumentWindow::OnViewPageMargins)
-//	EVT_MENU	(k_popup_menu_ToggleStem, DocumentWindow::OnToggleStem)
-//#ifdef (LOMSE_DEBUG == 1)
-//	EVT_MENU	(k_popup_menu_DumpShape, DocumentWindow::OnDumpShape)
-//#endif
-//  EVT_MENU	(lmTOOL_VOICE_SOPRANO, DocumentWindow::OnToolPopUpMenuEvent)
-//	EVT_MENU	(lmTOOL_VOICE_ALTO, DocumentWindow::OnToolPopUpMenuEvent)
-//	EVT_MENU	(lmTOOL_VOICE_TENOR, DocumentWindow::OnToolPopUpMenuEvent)
-//	EVT_MENU	(lmTOOL_VOICE_BASS, DocumentWindow::OnToolPopUpMenuEvent)
-    EVT_CLOSE   (DocumentWindow::on_window_closing)
-
 wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
@@ -146,11 +119,7 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_zoomMode(k_zoom_fit_width)
     , m_fIgnoreOnSize(false)
     , m_fFirstPaint(true)
-    , m_fEditionGuiForced(false)
-    , m_fAskToSaveModifications(true)
     , m_fLoadingDocument(false)
-    , m_pContextualMenu(nullptr)
-    , m_pMenuOwner(nullptr)
 {
     Hide();     //keep hidden until necessary, to avoid useless repaints
 }
@@ -167,7 +136,6 @@ DocumentWindow::~DocumentWindow()
     //just atempting to delete one view, not the document and all its views.
 
     delete_rendering_buffer();
-    delete m_pContextualMenu;
 }
 
 //---------------------------------------------------------------------------------------
@@ -271,12 +239,6 @@ void DocumentWindow::play_stop()
 {
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
     pPlayer->stop();
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        spInteractor->set_operating_mode(is_edition_enabled() ? Interactor::k_mode_edition
-                                                              : Interactor::k_mode_read_only);
-    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -284,52 +246,6 @@ void DocumentWindow::play_pause()
 {
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
     pPlayer->pause();
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::wrapper_on_click_event(void* pThis, SpEventInfo pEvent)
-{
-    static_cast<DocumentWindow*>(pThis)->on_click_event(pEvent);
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_click_event(SpEventInfo pEvent)
-{
-    //wxMessageBox("DocumentWindow::on_click_event");
-    SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
-    if (!pEv->is_still_valid())
-        return;
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
-        handler.process_on_click_event(pEv);
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::wrapper_on_action_event(void* pThis, SpEventInfo pEvent)
-{
-    static_cast<DocumentWindow*>(pThis)->on_action_event(pEvent);
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_action_event(SpEventInfo pEvent)
-{
-//    wxMessageBox("DocumentWindow::on_command_event");
-    SpEventAction pEv( static_pointer_cast<EventAction>(pEvent) );
-    if (!pEv->is_still_valid())
-        return;
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
-        handler.process_action_event(pEv);
-    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -477,26 +393,10 @@ void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
         LOMSE_LOG_TRACE(lomse::Logger::k_events | lomse::Logger::k_score_player,
                         "Interactor is valid");
         spInteractor->on_end_of_play_event(pEv->get_score(), pEv->get_player());
-        spInteractor->set_operating_mode(is_edition_enabled() ? Interactor::k_mode_edition
-                                                              : Interactor::k_mode_read_only);
     }
     else
         LOMSE_LOG_TRACE(lomse::Logger::k_events | lomse::Logger::k_score_player,
                         "Event is obsolete");
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_show_contextual_menu(lmShowContextualMenuEvent& event)
-{
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events, string(""));
-
-    SpEventMouse pEvent = event.get_lomse_event();
-    if (pEvent->is_still_valid() && is_edition_enabled())
-    {
-        m_pMenuOwner = pEvent->get_imo_object();
-        get_contextual_menu(true);
-        PopupMenu(m_pContextualMenu, pEvent->get_x(), pEvent->get_y());
-    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -625,29 +525,15 @@ void DocumentWindow::do_display(ostringstream& reporter)
         spInteractor->add_event_handler(k_do_play_score_event, this, wrapper_play_score);
         spInteractor->add_event_handler(k_pause_score_event, this, wrapper_play_score);
         spInteractor->add_event_handler(k_stop_playback_event, this, wrapper_play_score);
-        spInteractor->add_event_handler(k_control_point_moved_event, this, wrapper_on_action_event);
-        Document* pDoc = m_pPresenter->get_document_raw_ptr();
-        pDoc->add_event_handler(k_on_click_event, this, wrapper_on_click_event);
 
         //set viewport and scale
         m_fFirstPaint = true;
-        //create_rendering_buffer();
-        //determine_scroll_space_size();
-        //spInteractor->new_viewport(-m_xMargin, -m_yMargin, k_no_redraw);
-        //adjust_scale_and_scrollbars();
-//        spInteractor->set_view_background(Color(255,255,255));
 
 
         //AWARE: after creating a pane and loading content on it, wxAuiNotebook / wxFrame
         //will issue an on_size() followed by an on_paint. Therefore, do not force a
         //a repaint here as it will be redundant with the coming events
         Refresh(false /* don't erase background */);
-
-//        spInteractor->set_operating_mode(m_fEditionEnabled ? Interactor::k_mode_edition
-//                                                           : Interactor::k_mode_read_only);
-        ////ensure that the rendering buffer is created
-        //if (m_nBufWidth == 0 || m_nBufHeight == 0)
-        //    create_rendering_buffer();
 
         display_errors(reporter);
     }
@@ -806,73 +692,11 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
 
         else if (nEventType == wxEVT_MOTION)
         {
-            UPoint uPos = pInteractor->screen_point_to_model_point(pos.x, pos.y);
-            int nPage = 0;  //TODO
-            TimeUnits rTime = 0.0;  //TODO
-            int nMeasure = 0;   //TODO
+            pInteractor->screen_point_to_model_point(pos.x, pos.y);
             pInteractor->on_mouse_move(pos.x, pos.y, flags);
         }
     }
 }
-
-//---------------------------------------------------------------------------------------
-// ToolBox events:
-//      * Click on tool
-//      * Change tool page
-//TODO:* These methods imply that DocumentWindow knows about the existence and
-//       behavior of ToolBox object. Should be changed to use EditInterface
-//---------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_page_changed_in_toolbox(ToolBoxPageChangedEvent& WXUNUSED(event),
-                                                ToolBox* pToolBox)
-{
-    //pToolBox->save_configuration(&m_toolboxCfg);
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
-        handler.process_page_changed_in_toolbox_event(pToolBox);
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event,
-                                                 ToolBox* pToolBox)
-{
-    if (!is_edition_enabled())
-        return;
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
-        //AWARE: Information provided by toolbox refers to options groups, not to clicks
-        //on a command group. Therefore, it is necessary to pass information from event
-        handler.process_tool_event(EToolID(event.GetToolID()), pToolBox);
-    }
-}
-
-
-////---------------------------------------------------------------------------------------
-//void DocumentWindow::on_hyperlink_event(SpEventInfo pEvent)
-//{
-//    SpEventMouse pEv = static_pointer_cast<EventMouse>(pEvent);
-//    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
-//    string& url = pLink->get_url();
-//    wxString msg = wxString::Format("[DocumentWindow::on_hyperlink_event] link='%s'",
-//                                    to_wx_string(url).wx_str() );
-//    wxMessageBox(msg);
-//
-////    //extract filename
-////    //#LenMusPage/L1_MusicReading_mr1_thm12_E1.lms
-////    string ebook = "/datos/cecilio/Desarrollo_wx/lenmus/locale/en/books/GeneralExercises.lmb#zip:";
-////    string page = "GeneralExercises_ClefsReading.lms";
-////    display_document(ebook + page, k_view_vertical_book);
-//}
 
 //---------------------------------------------------------------------------------------
 unsigned DocumentWindow::get_mouse_flags(wxMouseEvent& event)
@@ -1018,22 +842,6 @@ void DocumentWindow::process_key(wxKeyEvent& event)
         //check for document scroll commands
         if (process_document_navigation_commands(event))
             return;
-
-        //check if it is a command for ToolBox
-        EditInterface* pEditGui  = m_appScope.get_edit_gui();
-        if (is_edition_enabled() && pEditGui
-            && pEditGui->process_key_in_toolbox(event, &m_toolsInfo) )
-        {
-            return;
-        }
-
-        //check if it is a command on document
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
-        handler.process_key_event(event);
-        if (handler.event_processed())
-            return;
     }
 
     //If a key down (EVT_KEY_DOWN) event is caught and the event handler does not
@@ -1063,35 +871,6 @@ bool DocumentWindow::process_document_navigation_commands(wxKeyEvent& event)
             fEventProcessed = false;
     }
     return fEventProcessed;
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::exec_lomse_command(DocCommand* pCmd, bool fShowBusy)
-{
-    if (!m_pPresenter)
-        return;
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        if (fShowBusy)
-            ::wxBeginBusyCursor();
-        spInteractor->exec_command(pCmd);
-        if (fShowBusy)
-            ::wxEndBusyCursor();
-    }
-}
-
-//---------------------------------------------------------------------------------------
-DiatonicPitch DocumentWindow::get_pitch_at(Pixels x, Pixels y)
-{
-    if (m_pPresenter)
-    {
-        if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-        {
-            return spInteractor->get_pitch_at(x, y);
-        }
-    }
-    return DiatonicPitch(k_no_pitch);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1212,186 +991,6 @@ void DocumentWindow::zoom_fit_full()
         m_zoomMode = k_zoom_fit_full;
         adjust_scrollbars();
     }
-}
-
-////---------------------------------------------------------------------------------------
-//void DocumentWindow::change_mouse_mode(EMouseMode mode)
-//{
-//    if (!m_pPresenter)
-//        return;
-//
-//    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-//    {
-//        switch(mode)
-//        {
-//            case k_mouse_mode_data_entry:
-//                spInteractor->switch_task(TaskFactory::k_task_data_entry);
-//                break;
-//
-//            case k_mouse_mode_pointer:
-//            default:
-//                spInteractor->switch_task(TaskFactory::k_task_selection);
-//                spInteractor->show_drag_image(false);
-//        }
-//        m_mouseMode = mode;
-//    }
-//}
-
-//---------------------------------------------------------------------------------------
-wxString DocumentWindow::exec_command(const string& cmd)
-{
-    LOMSE_LOG_INFO(cmd);
-
-    m_errorCode = 0;    //assume no error
-    const wxString errorMsg = "Unknown command.";
-    static string m_lastChk = "";
-
-    if (cmd == "help")
-        return help_for_console_commands();
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        //debug commands
-        if (cmd == "cmp")   //generate checkpoint data and compare with last "s chk" command issued
-        {
-            Document* pDoc = m_pPresenter->get_document_raw_ptr();
-            string newChk = pDoc->get_checkpoint_data();
-            size_t start1 = m_lastChk.find("-->");
-            size_t start2 = newChk.find("-->");
-            if (m_lastChk.substr(start1) == newChk.substr(start2))
-                return "OK. Both are equal";
-            else
-            {
-                m_errorCode = 1;
-                return "Checkpoint data is different!";
-            }
-        }
-
-        //selection commands
-        if (cmd.substr(0, 5) == "sel ?" || cmd.substr(0, 4) == "sel?")
-        {
-            return to_wx_string( dump_selection() );
-        }
-
-        //show data commands
-        if (cmd.substr(0, 2) == "s ")
-        {
-            if (cmd == "s lmd")             //display source code in LMD format
-            {
-                return to_wx_string( generate_lmd_source(LmdExporter::k_format_lmd) );
-            }
-            else if (cmd == "s ldp")        //display source code in LDP format
-            {
-                return to_wx_string( generate_ldp_source() );
-            }
-            else if (cmd == "s chk")        //display checkpoint data
-            {
-                m_lastChk = generate_checkpoint_data();
-                return to_wx_string(m_lastChk);
-            }
-            m_errorCode = 1;
-            return errorMsg;
-        }
-        else if (cmd == "c ?" || cmd == "c?")
-        {
-            wxString msg = to_wx_string( dump_cursor() );
-            if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-            {
-                DocCursor* pCursor = spInteractor->get_cursor();
-                ImoObj* pImo = pCursor->get_pointee();
-                if (pImo)
-                {
-                    msg += wxString::Format("Obj.%d:  ", pImo->get_id());
-                    msg += to_wx_string( pImo->to_string() );
-                }
-            }
-            return msg;
-        }
-
-        //edition commands
-        else if (cmd == "undo")
-        {
-            if (is_edition_enabled())
-            {
-                ::wxBeginBusyCursor();
-                spInteractor->exec_undo();
-                ::wxEndBusyCursor();
-                return wxEmptyString;
-            }
-            m_errorCode = 1;
-            return "Document is protected. Edition is not allowed!";
-        }
-        else if (cmd == "redo")
-        {
-            if (is_edition_enabled())
-            {
-                spInteractor->exec_redo();
-                return wxEmptyString;
-            }
-            m_errorCode = 1;
-            return "Document is protected. Edition is not allowed!";
-        }
-        else
-        {
-            CommandParser parser;
-            if (DocCommand* pCmd = parser.create_command(cmd))
-            {
-                if (is_edition_enabled())
-                {
-                    exec_lomse_command(pCmd);
-                    return wxEmptyString;
-                }
-                delete pCmd;
-                m_errorCode = 1;
-                return "Document is protected. Edition is not allowed!";
-            }
-            else
-            {
-                m_errorCode = 1;
-                return( to_wx_string(parser.get_last_error()) );
-            }
-        }
-    }
-    m_errorCode = 1;
-    return "No valid Interactor!";
-}
-
-//---------------------------------------------------------------------------------------
-wxString DocumentWindow::help_for_console_commands()
-{
-    return  "Available commands:\n\n"
-            "Show info commands:\n"
-            "\t s lmd   \t\t\t Display source code in LMD format\n"
-            "\t s ldp   \t\t\t Display source code in LDP format\n"
-            "\t s chk   \t\t\t Display checkpoint data\n"
-            "\n"
-            "Cursor commands:\n"
-            "\t c+      \t\t\t Cursor: move next\n"
-            "\t c-      \t\t\t Cursor: move back\n"
-            "\t cin     \t\t\t Cursor: enter into element\n"
-            "\t cout    \t\t\t Cursor: move out of element\n"
-            "\t c?      \t\t\t Cursor: dump cursor\n"
-            "\n"
-            "Insert commands:\n"
-            "\t ih <text> \t\t Insert section title (header)\n"
-            "\t ip <text> \t\t Insert paragraph\n"
-            "\t is      \t\t\t Insert empty score\n"
-            "\t i so <ldp> \t\t Insert staffobj. i.e. 'i so (n c4 q)'\n"
-            "\t i mso <ldp>\t Insert many staffobjs. i.e. 'i mso (n c4 e g+)(n d4 e g-)'\n"
-            "\t i blo <ldp>\t Insert top level object (block)\n"
-            "\n"
-            "Delete commands:\n"
-            "\t d       \t\t\t Delete block level object\n"
-            "\n"
-            "Miscellaneous commands:\n"
-            "\t undo    \t\t\t Undo one step\n"
-            "\t redo    \t\t\t Redo one step\n"
-            "\t quit | exit \t\t\t Close console\n"
-            "\n"
-            "Debug commands:\n"
-            "\t cmp    \t\t\t Generate checkpoint data and compare it with\n"
-            "        \t\t\t\t data from last 's chk' issued command."
-            "\n";
 }
 
 //---------------------------------------------------------------------------------------
@@ -2124,402 +1723,6 @@ void DocumentWindow::debug_display_document_ids()
         dlg.ShowModal();
     }
 }
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::enable_edition(bool value)
-{
-    if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
-    {
-        spIntor->set_operating_mode(value ? Interactor::k_mode_edition
-                                          : Interactor::k_mode_read_only);
-        bool fEditionEnabled = is_edition_enabled();
-        if (value && !fEditionEnabled)
-        {
-            wxMessageBox(_("The document contains scores created with a "
-                           "previous version. You must convert the "
-                           "document to current format (Menu > File > Convert) "
-                           "and edit the converted document."));
-        }
-        m_toolsInfo.enable_tools(fEditionEnabled);
-        spIntor->select_voice(m_toolsInfo.voice);
-    }
-}
-
-//---------------------------------------------------------------------------------------
-bool DocumentWindow::is_edition_enabled()
-{
-    if (!m_pPresenter)
-        return false;
-
-    if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
-        return spIntor->get_operating_mode() == Interactor::k_mode_edition;
-    else
-        return false;
-}
-
-//---------------------------------------------------------------------------------------
-bool DocumentWindow::is_document_editable()
-{
-    if (!m_pPresenter)
-        return false;
-
-    if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
-        return spIntor->is_document_editable();
-    else
-        return false;
-}
-
-//---------------------------------------------------------------------------------------
-bool DocumentWindow::should_enable_edit_undo()
-{
-    if (m_pPresenter && is_edition_enabled())
-    {
-        if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-            return spInteractor->should_enable_edit_undo();
-    }
-    return false;
-}
-
-//---------------------------------------------------------------------------------------
-bool DocumentWindow::should_enable_edit_redo()
-{
-    if (m_pPresenter && is_edition_enabled())
-    {
-        if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-            return spInteractor->should_enable_edit_redo();
-    }
-    return false;
-}
-
-//---------------------------------------------------------------------------------------
-bool DocumentWindow::is_document_modified()
-{
-    ADocument doc = get_document();
-    return doc.internal_object()->is_modified();
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::save_document_as(const wxString& sFilename)
-{
-    ofstream outfile;
-    wxCharBuffer name = sFilename.ToUTF8();
-    outfile.open( name.data() );
-    outfile << generate_lmd_source(LmdExporter::k_format_ldp);
-    outfile.close();
-
-    clear_document_modified_flag();
-
-    m_fullNameWithPath = sFilename;
-    wxFileName oFN(m_fullNameWithPath);
-    m_filename = oFN.GetFullName();
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::save_document()
-{
-    ofstream outfile;
-    wxCharBuffer name = m_fullNameWithPath.ToUTF8();
-    outfile.open( name.data() );
-    outfile << generate_lmd_source(LmdExporter::k_format_ldp);
-    outfile.close();
-
-    clear_document_modified_flag();
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::clear_document_modified_flag()
-{
-    if (m_pPresenter)
-    {
-        Document* pDoc = m_pPresenter->get_document_raw_ptr();
-        pDoc->clear_modified();
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
-{
-    if (is_document_modified() && m_fAskToSaveModifications)
-    {
-        wxString msg = wxString::Format(
-                _("Document %s has been modified. Would you like "
-                  "to save it before closing?"), m_filename.wx_str());
-        QuestionBox dlg(msg, 2,     //msg, num buttons,
-            //labels (2 per button: button text + explanation)
-            _("Save the file before closing").wx_str(), "",
-            _("Close without saving the file").wx_str(), ""
-        );
-        int nAnswer = dlg.ShowModal();
-
-		if (nAnswer == 0)       //'Save' button
-            save_document();
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::insert_new_top_level(int type)
-{
-    switch (type)
-    {
-        case k_imo_heading:
-        {
-            TextEditor dlg(this, _("Header"));
-            if (dlg.ShowModal() == wxID_OK)
-            {
-                stringstream cmd;
-                cmd << "ih " << to_std_string(dlg.get_text());
-                exec_command(cmd.str());
-            }
-        }
-        break;
-
-        case k_imo_para:
-        {
-            TextEditor dlg(this, _("Paragraph"));
-            if (dlg.ShowModal() == wxID_OK)
-            {
-                stringstream cmd;
-                cmd << "ip " << to_std_string(dlg.get_text());
-                exec_command(cmd.str());
-            }
-        }
-        break;
-
-        case k_imo_score:
-        {
-            ScoreWizard wizard(this, m_appScope);
-            wizard.Run();
-            wxString score = wizard.get_score();
-            if (score != wxEmptyString)
-            {
-                stringstream cmd;
-                cmd << "i blo " << "<ldpmusic>" << to_std_string(score) << "</ldpmusic>";
-                exec_command(cmd.str());
-            }
-        }
-        break;
-
-        default:
-            ;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::edit_top_level(int type)
-{
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        DocCursor* cursor = spInteractor->get_cursor();
-        Document* pDoc = m_pPresenter->get_document_raw_ptr();
-        switch (type)
-        {
-            case k_imo_heading:
-            {
-                TextEditor dlg(this, _("Header"));
-                if (dlg.ShowModal() == wxID_OK)
-                {
-                    stringstream cmd;
-                    cmd << "ih " << to_std_string(dlg.get_text());
-                    exec_command(cmd.str());
-                }
-            }
-            break;
-
-            case k_imo_para:
-            {
-                TextEditor dlg(this, _("Paragraph"));
-                ImoParagraph* pImo = static_cast<ImoParagraph*>( cursor->get_pointee() );
-                dlg.load_paragraph(pDoc, pImo);
-                if (dlg.ShowModal() == wxID_OK)
-                {
-                    //TODO: for undo/redo these two commands should be a single one.
-                    //       See commented code below.
-                    exec_command("d ");     //deletes current top level
-                    stringstream cmd;
-                    cmd << "ip " << to_std_string(dlg.get_text());
-                    exec_command(cmd.str());
-                }
-            }
-            break;
-
-            case k_imo_score:
-                exec_lomse_command( LENMUS_NEW CmdCursor(CmdCursor::k_enter),
-                                    k_no_show_busy );
-                break;
-
-            default:
-                wxString msg = wxString::Format("Edition for '%s' not yet implemented",
-                                                to_wx_string(ImoObj::get_name(type)).wx_str() );
-                wxMessageBox(msg);
-        }
-    }
-}
-
-//=======================================================================================
-//contextual menu and related
-//=======================================================================================
-
-//---------------------------------------------------------------------------------------
-wxMenu* DocumentWindow::get_contextual_menu(bool fInitialize)
-{
-	delete m_pContextualMenu;
-	m_pContextualMenu = new wxMenu();
-
-	if (!fInitialize)
-		return m_pContextualMenu;
-
-    wxMenuItem* pItem;
-    wxSize nIconSize(16, 16);
-
-#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
-    pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Cut, _("&Cut"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap("tool_cut", wxART_TOOLBAR, nIconSize) );
-    m_pContextualMenu->Append(pItem);
-
-    //pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Copy, _("&Copy"));
-    //pItem->SetBitmap( wxArtProvider::GetBitmap("tool_copy", wxART_TOOLBAR, nIconSize) );
-    //m_pContextualMenu->Append(pItem);
-
-    //pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Paste, _("&Paste"));
-    //pItem->SetBitmap( wxArtProvider::GetBitmap("tool_paste", wxART_TOOLBAR, nIconSize) );
-    //m_pContextualMenu->Append(pItem);
-
-	m_pContextualMenu->AppendSeparator();
-
-    //pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Color, _("Colour"));
-    //pItem->SetBitmap( wxArtProvider::GetBitmap("opt_colors", wxART_TOOLBAR, nIconSize) );
-    //m_pContextualMenu->Append(pItem);
-
-    pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Properties, _("Edit"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap("tool_properties", wxART_TOOLBAR, nIconSize) );
-    m_pContextualMenu->Append(pItem);
-
-	//m_pContextualMenu->AppendSeparator();
-
-#else
-	m_pContextualMenu->Append(k_popup_menu_Cut, _("&Cut"));
-//	//m_pContextualMenu->Append(k_popup_menu_Copy, _("&Copy"));
-//	//m_pContextualMenu->Append(k_popup_menu_Paste, _("&Paste"));
-	m_pContextualMenu->AppendSeparator();
-//	//m_pContextualMenu->Append(k_popup_menu_Color, _("Colour"));
-    m_pContextualMenu->Append(k_popup_menu_Properties, _("Edit"));
-#endif
-
-
-//#ifdef _LM_DEBUG_
-//
-//	//m_pContextualMenu->AppendSeparator();
-//    m_pContextualMenu->Append(k_popup_menu_DumpShape, "Dump shape");
-//#endif
-
-	return m_pContextualMenu;
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_popup_cut(wxCommandEvent& WXUNUSED(event))
-{
-	WXUNUSED(event);
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandGenerator executer(this, selection, cursor);
-        executer.delete_selection();
-    }
-}
-
-////---------------------------------------------------------------------------------------
-//void DocumentWindow::OnCopy(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//}
-//
-//void DocumentWindow::OnPaste(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//}
-//
-//void DocumentWindow::OnColor(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_popup_properties(wxCommandEvent& WXUNUSED(event))
-{
-	WXUNUSED(event);
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        SelectionSet* selection = spInteractor->get_selection_set();
-        DocCursor* cursor = spInteractor->get_cursor();
-        CommandGenerator executer(this, selection, cursor);
-        DlgProperties dlg(this, m_appScope, &executer);
-        dlg.add_specific_panels_for(m_pMenuOwner);
-        dlg.Layout();
-        dlg.ShowModal();
-    }
-}
-
-////---------------------------------------------------------------------------------------
-//void DocumentWindow::OnDeleteTiePrev(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//	wxASSERT(m_pMenuOwner->IsComponentObj());
-//    wxASSERT( ((lmComponentObj*)m_pMenuOwner)->IsStaffObj());
-//    wxASSERT( ((lmStaffObj*)m_pMenuOwner)->IsNote());
-//
-//    DeleteTie( (lmNote*)m_pMenuOwner );
-//}
-//
-//void DocumentWindow::OnToggleStem(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//
-//    ToggleStem();
-//}
-//
-//void DocumentWindow::OnAttachText(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//	wxASSERT(m_pMenuOwner->IsComponentObj());
-//
-//    AttachNewText( (lmComponentObj*)m_pMenuOwner );
-//}
-//
-//void DocumentWindow::OnScoreTitles(wxCommandEvent& event)
-//{
-//	WXUNUSED(event);
-//	AddTitle();
-//}
-//
-//void DocumentWindow::OnViewPageMargins(wxCommandEvent& event)
-//{
-//    g_fShowMargins = !g_fShowMargins;
-//    lmDocument* pDoc = GetMainFrame()->GetActiveDoc();
-//    if (pDoc)
-//    {
-//	    pDoc->Modify(true);
-//        pDoc->UpdateAllViews((wxView*)nullptr, new lmUpdateHint() );
-//    }
-//}
-//
-////#ifdef _LM_DEBUG_
-////void DocumentWindow::OnDumpShape(wxCommandEvent& event)
-////{
-////	WXUNUSED(event);
-////    lmDlgDebug dlg(this, "GMObject dump", m_pMenuGMO->Dump(0));
-////    dlg.ShowModal();
-////}
-////#endif
-//
-//void DocumentWindow::OnToolPopUpMenuEvent(wxCommandEvent& event)
-//{
-//    //redirect the event to the menu owner page
-//
-//	lmToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-//	wxASSERT(pToolBox);
-//	pToolBox->OnPopUpMenuEvent(event);
-//}
 
 
 }   //namespace lenmus

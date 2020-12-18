@@ -28,9 +28,6 @@
 #include "lenmus_string.h"
 #include "lenmus_version.h"
 #include "lenmus_wave_player.h"
-#include "lenmus_tool_page.h"       //KeyTranslator
-#include "lenmus_help_system.h"
-#include "lenmus_actions.h"
 
 //lomse
 #include <lomse_logger.h>
@@ -72,9 +69,6 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pDB(nullptr)
     , m_pProxySettings(nullptr)
     , m_pWavePlayer(nullptr)
-    , m_pEditGui(nullptr)
-    , m_pKeyTranslator(nullptr)
-    , m_pHelp(nullptr)
     , m_sAppName(LENMUS_APP_NAME)
     , m_sVendorName(LENMUS_VENDOR_NAME)
     , m_fAnswerSoundsEnabled(true)
@@ -102,8 +96,6 @@ ApplicationScope::~ApplicationScope()
     delete m_pColors;
     delete m_pProxySettings;
     delete m_pWavePlayer;
-    delete m_pKeyTranslator;
-    delete m_pHelp;
     delete m_pPaths;    //*AFTER* all others, to allow its use in
                         //m_pMidi::save_user_preferences()
     //database
@@ -121,8 +113,6 @@ ApplicationScope::~ApplicationScope()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::on_language_changed(wxString lang)
 {
-    delete m_pHelp;
-    m_pHelp = nullptr;
     m_language = lang;
 }
 
@@ -253,14 +243,6 @@ MidiServer* ApplicationScope::get_midi_server()
 }
 
 //---------------------------------------------------------------------------------------
-KeyTranslator* ApplicationScope::get_key_translator()
-{
-    if (!m_pKeyTranslator)
-        m_pKeyTranslator = LENMUS_NEW KeyTranslator(*this);
-    return m_pKeyTranslator;
-}
-
-//---------------------------------------------------------------------------------------
 ScorePlayer* ApplicationScope::get_score_player()
 {
     if (!m_pPlayer)
@@ -377,20 +359,6 @@ ProxySettings* ApplicationScope::get_proxy_settings()
         m_pProxySettings->sProxyPassword = pPrefs->Read("/Internet/Password", "");
     }
     return m_pProxySettings;
-}
-
-//---------------------------------------------------------------------------------------
-HelpSystem* ApplicationScope::get_help_controller()
-{
-    return m_pHelp;
-}
-
-//---------------------------------------------------------------------------------------
-void ApplicationScope::initialize_help(wxWindow* UNUSED(pParent))
-{
-    //TODO: Un-comment when the Help system is again needed
-//    m_pHelp = LENMUS_NEW HelpSystem(pParent, *this);
-//    m_pHelp->initialize();
 }
 
 
