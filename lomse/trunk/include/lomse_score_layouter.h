@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2020. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -75,7 +75,7 @@ class GmoShapeNote;
 
 //---------------------------------------------------------------------------------------
 // helper struct to store data about aux objs to be engraved when the system is ready
-struct PendingAuxObjs
+struct PendingAuxObj
 {
     ImoStaffObj* m_pSO;
     GmoShape* m_pMainShape;
@@ -86,7 +86,7 @@ struct PendingAuxObjs
     int m_iLine;
     int m_idxStaff;
 
-    PendingAuxObjs(ImoStaffObj* pSO, GmoShape* pMainShape, int iInstr, int iStaff,
+    PendingAuxObj(ImoStaffObj* pSO, GmoShape* pMainShape, int iInstr, int iStaff,
                    int iCol, int iLine, ImoInstrument* pInstr, int idxStaff)
         : m_pSO(pSO)
         , m_pMainShape(pMainShape)
@@ -127,8 +127,14 @@ struct PendingLyrics
 
 };
 
+// some helper typedefs
+typedef std::pair<ImoRelObj*, PendingAuxObj*> PendingRelObj;
+typedef std::pair<std::string, PendingAuxObj*> PendingLyricsObj;
+
 
 //---------------------------------------------------------------------------------------
+// Algorithm to layout an score
+//
 class ScoreLayouter : public Layouter
 {
 protected:
@@ -179,9 +185,9 @@ public:
                   LibraryScope& libraryScope);
     virtual ~ScoreLayouter();
 
-    void prepare_to_start_layout();
-    void layout_in_box();
-    void create_main_box(GmoBox* pParentBox, UPoint pos, LUnits width, LUnits height);
+    void prepare_to_start_layout() override;
+    void layout_in_box() override;
+    void create_main_box(GmoBox* pParentBox, UPoint pos, LUnits width, LUnits height) override;
 
     //info
     virtual int get_num_columns();
@@ -199,7 +205,7 @@ public:
     void finish_measure(int iInstr, GmoShapeBarline* pBarlineShape);
 
     //support for debugging and unit tests
-    void dump_column_data(int iCol, ostream& outStream=dbgLogger);
+    void dump_column_data(int iCol, ostream& outStream=logger.get_stream());
     void delete_not_used_objects();
     void delete_pendig_aux_objects();
     void delete_system_boxes();
@@ -274,7 +280,14 @@ protected:
     LUnits space_used_by_prolog(int iSystem);
     LUnits distance_to_top_of_system(int iSystem, bool fFirstInPage);
 
-    std::list<PendingAuxObjs*> m_pendingAuxObjs;
+    //AuxObjs and RelObjs pending to be engraved
+    std::list<PendingAuxObj*> m_pendingAuxObjs;
+
+    //RelObjs that continue in next system
+    std::list<PendingRelObj> m_notFinishedRelObj;
+
+    //Lyrics that continue in next system
+    std::list<PendingLyricsObj> m_notFinishedLyrics;
 
 
     //---------------------------------------------------------------
@@ -372,7 +385,9 @@ public:
                                  int iSystem, int iCol, int iLine, LUnits prologWidth,
                                  ImoInstrument* pInstr, int idxStaff,
                                  VerticalProfile* pVProfile);
-    GmoShape* create_first_or_intermediate_shape(ImoRelObj* pRO);
+    GmoShape* create_first_or_intermediate_shape(ImoRelObj* pRO, int iInstr, int iStaff,
+                                                 LUnits prologWidth,
+                                                 VerticalProfile* pVProfile);
     GmoShape* create_last_shape(ImoRelObj* pRO);
 
     //AuxRelObj shapes
@@ -437,7 +452,7 @@ public:
                        SpacingAlgorithm* pSpAlgorithm, std::vector<int>& breaks);
     virtual ~LinesBreakerSimple() {}
 
-    void decide_line_breaks();
+    void decide_line_breaks() override;
 };
 
 
@@ -450,10 +465,10 @@ public:
                         SpacingAlgorithm* pSpAlgorithm, std::vector<int>& breaks);
     virtual ~LinesBreakerOptimal() {}
 
-    void decide_line_breaks();
+    void decide_line_breaks() override;
 
     //support for debug and tests
-    void dump_entries(ostream& outStream=dbgLogger);
+    void dump_entries(ostream& outStream=logger.get_stream());
 
 protected:
     struct Entry

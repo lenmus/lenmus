@@ -1,6 +1,8 @@
 # This file contains a list of patterns which git will check against on each
 # 'git add' command and will ignore any matching files and folders.
 
+.gitignore 
+
 # Compiled object files
 *.o
 *.obj
@@ -41,6 +43,7 @@ lenmus.ini
 zz_*
 z_*
 x_*
+xx_*
 
 #books
 books/src/L1_Dictation/
@@ -60,6 +63,9 @@ docs/en/hacking/advanced-math-guide.pdf
 docs/en/hacking/short-math-guide.pdf
 docs/en/hacking/source/help-guidelines.txt
 docs/en/hacking/sphinx-markup-quick-guide.txt
+docs/en/hacking/lenmus-hacking-guide.ctb
+docs/en/hacking/ejercicios y metodo leitner.pdf
+docs/en/hacking/lenmus-overview.odt
 docs/en/help/Makefile.new
 docs/html/composer-algorithm-pitch-images/draft/
 docs/html/composer-algorithm-pitch-images/problem1.png

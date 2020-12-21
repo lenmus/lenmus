@@ -21,10 +21,6 @@
 #ifndef __LENMUS_INJECTORS_H__
 #define __LENMUS_INJECTORS_H__
 
-// define this to 1 to use external help controller. 0 for wxHtmlHelpController (htb format)
-#define LENMUS_USE_EXT_HELP 1
-
-
 //lenmus
 #include "lenmus_standard_header.h"
 
@@ -39,11 +35,6 @@ using namespace lomse;
 //#include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/config.h>
-#if LENMUS_USE_EXT_HELP
-#include "wx/generic/helpext.h"
-#else
-#include <wx/html/helpctrl.h>
-#endif
 #undef system                   //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 
 #include <iostream>
@@ -58,14 +49,9 @@ namespace lenmus
 //forward declarations
 class Paths;
 class MidiServer;
-//class Logger;
 class Colors;
-class StatusReporter;
 class WavePlayer;
-class EditInterface;
-class KeyTranslator;
 class HelpSystem;
-class KeyTranslator;
 
 //---------------------------------------------------------------------------------------
 struct ProxySettings
@@ -102,13 +88,9 @@ protected:
     LibraryScope* m_pLomseScope;
     Colors* m_pColors;
     Metronome* m_pMetronome;
-    StatusReporter* m_pStatus;
     wxSQLite3Database* m_pDB;
     ProxySettings* m_pProxySettings;
     WavePlayer* m_pWavePlayer;
-    EditInterface* m_pEditGui;
-    KeyTranslator* m_pKeyTranslator;
-    HelpSystem* m_pHelp;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -138,11 +120,8 @@ public:
     void create_preferences_object();
     void create_logger();
     void open_database();
-    void set_status_reporter(StatusReporter* reporter);
     void inform_lomse_about_fonts_path();
     inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
-    inline void set_edit_gui(EditInterface* pGui) { m_pEditGui = pGui; }
-    void initialize_help(wxWindow* pParent);
     void on_language_changed(wxString lang);
 
     //access to global objects/variables
@@ -151,16 +130,11 @@ public:
     MidiServer* get_midi_server();
     ScorePlayer* get_score_player();
     Colors* get_colors();
-    inline StatusReporter* get_status_reporter() { return m_pStatus; }
     inline wxSQLite3Database* get_database() { return m_pDB; }
     ProxySettings* get_proxy_settings();
     inline Metronome* get_metronome() { return m_pMetronome; }
     WavePlayer* get_wave_player();
-    inline EditInterface* get_edit_gui() { return m_pEditGui; }
-    KeyTranslator* get_key_translator();
-    HelpSystem* get_help_controller();
 
-//    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }
     inline ostringstream& get_lomse_reporter() { return m_lomseReporter; }
 

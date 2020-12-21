@@ -417,7 +417,8 @@ wxString BookContentBox::FormatItem(int nTree) const
     sLine += " titlenum='" + m_aTree[nTree].sTitlenum + "'>";
 
     // add the title only if no image
-    if ((m_aTree[nTree].sImage).IsEmpty()) {
+//    if ((m_aTree[nTree].sImage).IsEmpty())
+    {
         bool fTitleBold = (m_aTree[nTree].nLevel == 0) && m_aTree[nTree].fHasChildren;
         if (fTitleBold) sLine += "<b>";
         sLine += m_aTree[nTree].sTitle;

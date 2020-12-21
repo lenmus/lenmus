@@ -25,13 +25,9 @@
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
 #include "lenmus_colors.h"
-#include "lenmus_status_reporter.h"
 #include "lenmus_string.h"
 #include "lenmus_version.h"
 #include "lenmus_wave_player.h"
-#include "lenmus_tool_page.h"       //KeyTranslator
-#include "lenmus_help_system.h"
-#include "lenmus_actions.h"
 
 //lomse
 #include <lomse_logger.h>
@@ -62,6 +58,7 @@ wxString ApplicationScope::m_language;
 //=======================================================================================
 ApplicationScope::ApplicationScope(ostream& reporter)
     : m_reporter(reporter)
+//    , m_lomse(&lomse::nullLogger, &lomse::nullLogger)
     , m_pPaths(nullptr)            //lazzy instantiation. Singleton scope.
     , m_pPrefs(nullptr)            //lazzy instantiation. Singleton scope.
     , m_pMidi(nullptr)             //lazzy instantiation. Singleton scope.
@@ -69,13 +66,9 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pLomseScope(nullptr)
     , m_pColors(nullptr)
     , m_pMetronome(nullptr)
-    , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
     , m_pDB(nullptr)
     , m_pProxySettings(nullptr)
     , m_pWavePlayer(nullptr)
-    , m_pEditGui(nullptr)
-    , m_pKeyTranslator(nullptr)
-    , m_pHelp(nullptr)
     , m_sAppName(LENMUS_APP_NAME)
     , m_sVendorName(LENMUS_VENDOR_NAME)
     , m_fAnswerSoundsEnabled(true)
@@ -101,11 +94,8 @@ ApplicationScope::~ApplicationScope()
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
     delete m_pColors;
-    delete m_pStatus;
     delete m_pProxySettings;
     delete m_pWavePlayer;
-    delete m_pKeyTranslator;
-    delete m_pHelp;
     delete m_pPaths;    //*AFTER* all others, to allow its use in
                         //m_pMidi::save_user_preferences()
     //database
@@ -123,8 +113,6 @@ ApplicationScope::~ApplicationScope()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::on_language_changed(wxString lang)
 {
-    delete m_pHelp;
-    m_pHelp = nullptr;
     m_language = lang;
 }
 
@@ -201,16 +189,6 @@ WavePlayer* ApplicationScope::get_wave_player()
 }
 
 //---------------------------------------------------------------------------------------
-void ApplicationScope::set_status_reporter(StatusReporter* reporter)
-{
-    delete m_pStatus;
-    if (reporter)
-        m_pStatus = reporter;
-    else
-        m_pStatus = LENMUS_NEW DefaultStatusReporter();
-}
-
-//---------------------------------------------------------------------------------------
 void ApplicationScope::initialize_lomse()
 {
     // Lomse knows nothing about windows. It renders everything on bitmaps and the
@@ -262,14 +240,6 @@ MidiServer* ApplicationScope::get_midi_server()
     if (!m_pMidi)
         m_pMidi = LENMUS_NEW MidiServer(*this);
     return m_pMidi;
-}
-
-//---------------------------------------------------------------------------------------
-KeyTranslator* ApplicationScope::get_key_translator()
-{
-    if (!m_pKeyTranslator)
-        m_pKeyTranslator = LENMUS_NEW KeyTranslator(*this);
-    return m_pKeyTranslator;
 }
 
 //---------------------------------------------------------------------------------------
@@ -389,20 +359,6 @@ ProxySettings* ApplicationScope::get_proxy_settings()
         m_pProxySettings->sProxyPassword = pPrefs->Read("/Internet/Password", "");
     }
     return m_pProxySettings;
-}
-
-//---------------------------------------------------------------------------------------
-HelpSystem* ApplicationScope::get_help_controller()
-{
-    return m_pHelp;
-}
-
-//---------------------------------------------------------------------------------------
-void ApplicationScope::initialize_help(wxWindow* pParent)
-{
-    //TODO: Un-comment when the Help system is again needed
-//    m_pHelp = LENMUS_NEW HelpSystem(pParent, *this);
-//    m_pHelp->initialize();
 }
 
 

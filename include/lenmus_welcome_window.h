@@ -31,12 +31,6 @@
 #include <wx/wx.h>
 #include <wx/dialog.h>
 #include <wx/button.h>
-#include <wx/wxhtml.h>
-
-//forward declarations
-class wxHyperlinkCtrl;
-class wxHyperlinkEvent;
-class wxFileHistory;
 
 namespace lenmus
 {
@@ -46,48 +40,60 @@ class WelcomeWindow : public wxScrolledWindow
                     , public CanvasInterface
 {
 protected:
-    ApplicationScope& m_appScope;
-    wxHtmlWindow*   m_pHtmlWindow;
-    wxString        m_sHeader;          //html code to start a page
-    wxString        m_sVersionNumber;   //version number in format "x.x"
+    ApplicationScope&   m_appScope;
 
 public:
     WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
-                  wxFileHistory* pHistory, wxWindowID id = wxID_ANY);
+                  wxWindowID id = wxID_ANY);
     ~WelcomeWindow();
 
 protected:
     //event handlers
-    void OnNewInLenmus(wxHyperlinkEvent& event);
-    void OnNewScore(wxHyperlinkEvent& event);
-    void OnQuickGuide(wxHyperlinkEvent& event);
-    void OnOpenEBooks(wxHyperlinkEvent& event);
-    void OnOpenRecent(wxHyperlinkEvent& event);
-    void OnInstructions(wxHyperlinkEvent& event);
+    void on_button_exercises(wxCommandEvent& event);
+    void on_button_book_1(wxCommandEvent& UNUSED(event));
+    void on_button_book_2(wxCommandEvent& UNUSED(event));
+    void on_button_book_3(wxCommandEvent& UNUSED(event));
+    void on_button_study_guide(wxCommandEvent& UNUSED(event));
+
+    void open_book(const wxString& filename);
 
 private:
-    void CreateControls(wxFileHistory* pHistory);
-    void ShowDocument(wxString& sDocName);
+    void create_controls();
+    void show_document(const wxString& sDocName);
 
     //controls on dialog
-	wxStaticBitmap*     m_pBmpLeftBanner;
-	wxStaticText*       m_pTxtTitle;
-    wxStaticText*       m_pTxtVersion;
-	wxStaticText*       m_pLearnTitle;
-	wxStaticBitmap*     m_pLearnIcon;
-	wxHyperlinkCtrl*    m_pLinkNewInLenmus;
-	wxHyperlinkCtrl*    m_pLinkVisitWebsite;
-	wxHyperlinkCtrl*    m_pLinkReportError;
-	wxStaticText*       m_pPhonascusTitle;
-	wxStaticBitmap*     m_pPhonascusIcon;
-	wxHyperlinkCtrl*    m_pLinkInstructions;
-	wxHyperlinkCtrl*    m_pLinkOpenEBooks;
-    wxHyperlinkCtrl*    m_pLinkQuickGuide;
-	wxStaticText*       m_pScoreTitle;
-	wxStaticBitmap*     m_pScoreIcon;
-	wxHyperlinkCtrl*    m_pLinkNewScore;
-	wxStaticText*       m_pRecentScoresTitle;
-	wxHyperlinkCtrl*    m_pLinkRecent[9];
+    wxStaticBitmap* m_logo;
+    wxStaticText* m_txtWelcome;
+    wxStaticText* m_txtVersion;
+    wxStaticText* m_txtWhatToDo;
+
+    wxStaticBitmap* m_bmpGuide;
+    wxStaticText* m_txtGuide;
+    wxStaticText* m_txtGuideText;
+    wxButton* m_btnGuide;
+
+    wxStaticBitmap* m_bmpTrain;
+    wxStaticText* m_txtTrain;
+    wxStaticText* m_txtTrainText;
+    wxButton* m_btnTrain;
+
+    wxStaticBitmap* m_bmpCollaborate;
+    wxStaticText* m_txtCollaborate;
+    wxStaticText* m_txtCollaborateText;
+    wxButton* m_btnCollaborate;
+
+    wxStaticBitmap* m_bmpBooks;
+    wxStaticText* m_txtBooks;
+    wxStaticText* m_txtBooksText;
+    wxStaticText* m_txtLevel1;
+    wxButton* m_btnLevel1;
+    wxStaticText* m_txtLevel2;
+    wxButton* m_btnLevel2;
+    wxStaticText* m_txtLevel3;
+    wxButton* m_btnLevel3;
+
+    wxStaticText* m_txtUCA;
+    wxStaticBitmap* m_logoUCA;
 
     wxDECLARE_EVENT_TABLE();
 };

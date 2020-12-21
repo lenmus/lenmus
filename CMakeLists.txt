@@ -941,21 +941,16 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_art_provider.cpp
     ${SRC_DIR}/app/lenmus_book_reader.cpp
     ${SRC_DIR}/app/lenmus_canvas.cpp
-    ${SRC_DIR}/app/lenmus_command_event_handler.cpp
-    ${SRC_DIR}/app/lenmus_command_window.cpp
     ${SRC_DIR}/app/lenmus_content_box.cpp
     ${SRC_DIR}/app/lenmus_content_box_ctrol.cpp
     ${SRC_DIR}/app/lenmus_document_canvas.cpp
     ${SRC_DIR}/app/lenmus_document_frame.cpp
     ${SRC_DIR}/app/lenmus_events.cpp
-    ${SRC_DIR}/app/lenmus_help_system.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
     ${SRC_DIR}/app/lenmus_score_wizard.cpp
     ${SRC_DIR}/app/lenmus_splash_frame.cpp
-    ${SRC_DIR}/app/lenmus_status_bar.cpp
     ${SRC_DIR}/app/lenmus_string.cpp
-    ${SRC_DIR}/app/lenmus_virtual_keyboard.cpp
     ${SRC_DIR}/app/lenmus_welcome_window.cpp
     ${SRC_DIR}/app/lenmus_zip_reader.cpp
 )
@@ -972,12 +967,9 @@ set(AUXMUSIC_FILES
 )
 
 set(DIALOGS_FILES
-    ${SRC_DIR}/dialogs/lenmus_dlg_books.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
-    ${SRC_DIR}/dialogs/lenmus_dlg_clefs.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_metronome.cpp
-    ${SRC_DIR}/dialogs/lenmus_text_editor.cpp
 )
 
 set(EXERCISES_FILES
@@ -987,10 +979,7 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/constrains/lenmus_cadences_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_chords_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_constrains.cpp
-    ${SRC_DIR}/exercises/constrains/lenmus_dictation_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_ear_intervals_constrains.cpp
-    ${SRC_DIR}/exercises/constrains/lenmus_figured_bass_constrains.cpp
-    ${SRC_DIR}/exercises/constrains/lenmus_harmony_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_key_sign_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_music_reading_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_notes_constrains.cpp
@@ -1000,13 +989,10 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/constrains/lenmus_tonality_constrains.cpp
 
     ${SRC_DIR}/exercises/ctrols/lenmus_dyncontrol.cpp
-    ${SRC_DIR}/exercises/ctrols/lenmus_dictation_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_ear_compare_intv_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_exercise_ctrol.cpp
-    ${SRC_DIR}/exercises/ctrols/lenmus_figured_bass_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_generators.cpp
-    ${SRC_DIR}/exercises/ctrols/lenmus_harmony_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp
@@ -1030,52 +1016,24 @@ set(EXERCISES_FILES
 )
 
 set(GLOBALS_FILES
-    ${SRC_DIR}/globals/lenmus_actions.cpp
     ${SRC_DIR}/globals/lenmus_colors.cpp
     ${SRC_DIR}/globals/lenmus_injectors.cpp
     ${SRC_DIR}/globals/lenmus_paths.cpp
 )
 
 set(OPTIONS_FILES
-    ${SRC_DIR}/options/lenmus_colors_opt_panel.cpp
-    ${SRC_DIR}/options/lenmus_internet_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_lang_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_languages.cpp
     ${SRC_DIR}/options/lenmus_options_dlg.cpp
     ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
-    ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_playback_opt_panel.cpp
-    ${SRC_DIR}/options/lenmus_shortcuts_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_sound_opt_panel.cpp
-    ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
-)
-
-set(PROPERTIES_FILES
-    ${SRC_DIR}/properties/lenmus_dlg_properties.cpp
-    ${SRC_DIR}/properties/lenmus_properties_barline.cpp
-    ${SRC_DIR}/properties/lenmus_properties_general.cpp
 )
 
 set(SOUND_FILES
     ${SRC_DIR}/sound/lenmus_metronome.cpp
     ${SRC_DIR}/sound/lenmus_midi_server.cpp
     ${SRC_DIR}/sound/lenmus_wave_player.cpp
-)
-
-set(TOOLBOX_FILES
-    ${SRC_DIR}/toolbox/lenmus_time_signature_properties.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_box.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_box_events.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_box_theme.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_group.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_barlines.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_clefs.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_notes.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_rhythmic_dictation.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_selector.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_symbols.cpp
-    ${SRC_DIR}/toolbox/lenmus_tool_page_top_level.cpp
 )
 
 set(XML_PARSER_FILES
@@ -1100,11 +1058,6 @@ set(LENMUS_PACKAGESS_FILES
     ${PACKAGES_DIR}/wxSQLite3/src/wxsqlite3.cpp
 )
 
-set(UPDATER_FILES
-    ${SRC_DIR}/updater/lenmus_updater.cpp
-    ${SRC_DIR}/updater/lenmus_updater_dlg.cpp
-)
-
 set(WIDGETS_FILES
     ${SRC_DIR}/widgets/lenmus_msg_box.cpp
     ${SRC_DIR}/widgets/lenmus_button.cpp
@@ -1113,9 +1066,8 @@ set(WIDGETS_FILES
 
 set(ALL_LENMUS_SOURCES 
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
-    ${GLOBALS_FILES} ${OPTIONS_FILES} ${PROPERTIES_FILES}
-    ${SOUND_FILES} ${TOOLBOX_FILES} ${XML_PARSER_FILES} ${TEST_FILES}
-    ${LENMUS_PACKAGESS_FILES} ${UPDATER_FILES} ${WIDGETS_FILES}
+    ${GLOBALS_FILES} ${OPTIONS_FILES} ${SOUND_FILES} ${XML_PARSER_FILES}
+    ${TEST_FILES} ${LENMUS_PACKAGESS_FILES} ${WIDGETS_FILES}
 )
 
 # Add folders for Visual Studio and other IDEs supporting it
@@ -1125,12 +1077,9 @@ source_group( "dialogs"         FILES ${DIALOGS_FILES} )
 source_group( "exercises"       FILES ${EXERCISES_FILES} )
 source_group( "globals"         FILES ${GLOBALS_FILES} )
 source_group( "options"         FILES ${OPTIONS_FILES} )
-source_group( "properties"      FILES ${PROPERTIES_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
 source_group( "packages"        FILES ${LENMUS_PACKAGESS_FILES} )
-source_group( "toolbox"         FILES ${TOOLBOX_FILES} )
-source_group( "updater"         FILES ${UPDATER_FILES} )
 source_group( "widgets"         FILES ${WIDGETS_FILES} )
 if (${LENMUS_ENABLE_UNIT_TESTS})
     source_group( "tests"           FILES ${TEST_FILES} )
@@ -1214,7 +1163,7 @@ target_link_libraries ( ${LENMUS_APP}
 # Target properties for macOS bundle
 if(APPLE)
     set_target_properties(${LENMUS_APP} PROPERTIES
-           MACOSX_BUNDLE_EXECUTABLE_NAME ${LENMUS_APP}
+        MACOSX_BUNDLE_EXECUTABLE_NAME ${LENMUS_APP}
         MACOSX_BUNDLE_GUI_IDENTIFIER "org.lenmus.lenmus"
         MACOSX_BUNDLE_BUNDLE_NAME "LenMus Phonascus"
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${LENMUS_VERSION}
