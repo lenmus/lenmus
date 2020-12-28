@@ -17,13 +17,16 @@ developing publicly available knowledge, methods and algorithms related to all
 these areas and, at the same time, to provide free quality software for music
 students, amateurs, and teachers.
 
-You are welcome to [contribute](https://github.com/lenmus/lenmus/blob/master/CONTRIBUTING.md) to this project and to join the team!
+You are welcome to [contribute](CONTRIBUTING.md) to this project and to join the team!
+
 
 ## Downloads and installation
 
-Installation packages are available, as well as detailed instructions for building from source code.
+Installation [packages](http://www.lenmus.org/en/phonascus/downloads) are available, as well as detailed instructions for building from source code.
 
-Please visit [this page](http://www.lenmus.org/en/phonascus/downloads)
+- [Linux](docs/building/linux-build-instructions.md) build instructions
+- [macOS](docs/building/macOS-build-instructions.md) build instructions
+- [Windows](docs/building/windows-build-instructions.md) build instructions
 
 
 ## License
@@ -35,7 +38,7 @@ or (at your option) any later version. [See license text](https://www.gnu.org/li
 
 By contributing to LenMus through pull-requests, comments,
 or otherwise, you accept to release your contribution to the
-license terms as described in the [LICENSE](https://github.com/lenmus/lenmus/blob/master/LICENSE).
+license terms as described in the [LICENSE](LICENSE).
 
 LenMus uses a shared copyright model: each contributor holds copyright over
 their contributions. The project versioning records all such
@@ -52,7 +55,7 @@ Feel free to ask any question in the [lenmus issues tracker](https://github.com/
 
 
 ## More info
-* [Contributing](https://github.com/lenmus/lenmus/blob/master/CONTRIBUTING.md)
+* [Contributing](CONTRIBUTING.md)
 * [LenMus homepage](http://www.lenmus.org/)
 * [LenMus PPA](https://launchpad.net/~lenmus-phonascus/+archive/ubuntu/ppa)
 * [Installation](http://www.lenmus.org/en/phonascus/downloads)
