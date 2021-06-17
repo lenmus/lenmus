@@ -45,34 +45,34 @@ extern int split_ldp_pattern(const wxString& sSource);
 extern bool ldp_pattern_is_rest(const wxString& sElement);
 
 
-//---------------------------------------------------------------------------------------
-// Utility global definitions and functions related to barlines
-//---------------------------------------------------------------------------------------
-
-//info about barlines, to centralize data about barlines
-class BarlinesDBEntry
-{
-public:
-    BarlinesDBEntry()
-        : sBarlineName(wxEmptyString)
-        , nBarlineType(k_barline_unknown)
-    {
-    }
-    BarlinesDBEntry(wxString name, EBarline type)
-        : sBarlineName(name)
-        , nBarlineType(type)
-    {
-    }
-
-    wxString sBarlineName;
-    EBarline nBarlineType;
-};
-
-extern void load_barlines_bitmap_combobox(ApplicationScope& appScope,
-                                          wxBitmapComboBox* pCtrol,
-                                          BarlinesDBEntry tBarlines[]);
-extern void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType);
-extern const wxString get_barline_name(int barlineType);
+////---------------------------------------------------------------------------------------
+//// Utility global definitions and functions related to barlines
+////---------------------------------------------------------------------------------------
+//
+////info about barlines, to centralize data about barlines
+//class BarlinesDBEntry
+//{
+//public:
+//    BarlinesDBEntry()
+//        : sBarlineName(wxEmptyString)
+//        , nBarlineType(k_barline_unknown)
+//    {
+//    }
+//    BarlinesDBEntry(wxString name, EBarline type)
+//        : sBarlineName(name)
+//        , nBarlineType(type)
+//    {
+//    }
+//
+//    wxString sBarlineName;
+//    EBarline nBarlineType;
+//};
+//
+//extern void load_barlines_bitmap_combobox(ApplicationScope& appScope,
+//                                          wxBitmapComboBox* pCtrol,
+//                                          BarlinesDBEntry tBarlines[]);
+//extern void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType);
+//extern const wxString get_barline_name(int barlineType);
 
 
 //---------------------------------------------------------------------------------------
@@ -88,22 +88,22 @@ extern const wxString get_barline_name(int barlineType);
 
 extern const wxString& get_key_signature_name(EKeySignature nKeySignature);
 
-//---------------------------------------------------------------------------------------
-// Utility global definitions and functions related to images generation
-//---------------------------------------------------------------------------------------
-
-extern wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
-                                                  wxString& sName, EBarline type);
-extern wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
-                                               wxString& sName, EClef type);
-extern wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
-                                              wxString& sName, EKeySignature type);
+////---------------------------------------------------------------------------------------
+//// Utility global definitions and functions related to images generation
+////---------------------------------------------------------------------------------------
+//
+//extern wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
+//                                                  wxString& sName, EBarline type);
+//extern wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
+//                                               wxString& sName, EClef type);
+//extern wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
+//                                              wxString& sName, EKeySignature type);
 
 
 //---------------------------------------------------------------------------------------
 // Utility global functions related to names for property values
 //---------------------------------------------------------------------------------------
-extern const wxString get_stem_name(int stemType);
+//extern const wxString get_stem_name(int stemType);
 
 
 

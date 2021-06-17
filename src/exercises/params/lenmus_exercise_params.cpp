@@ -347,7 +347,7 @@ void EBookCtrolParams::parse_scales(const string& value, bool* pfValidScales)
 //---------------------------------------------------------------------------------------
 void EBookCtrolParams::parse_clef(const string& value, EClef* pClef)
 {
-    // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
+    // clef       'G | F4 | F3 | C4 | C3 | C2 | C1 | none'
 
     if (value == "G")
         *pClef = k_clef_G2;
@@ -363,8 +363,10 @@ void EBookCtrolParams::parse_clef(const string& value, EClef* pClef)
         *pClef = k_clef_C3;
     else if (value == "C4")
         *pClef = k_clef_C4;
+    else if (value == "none")
+        *pClef = k_clef_percussion;
     else
-        error_invalid_param("clef", value, "G | F4 | F3 | C4 | C3 | C2 | C1");
+        error_invalid_param("clef", value, "G | F4 | F3 | C4 | C3 | C2 | C1 | none");
 }
 
 

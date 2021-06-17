@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
+<theme id="thm210">
+<titleabbrev>Tema %d</titleabbrev>
+<title>Nota ligada a corchea con puntillo +semicorchea</title>
+<tocimage>img10.png</tocimage>
+
+<para>En este tema se introduce el patrón de corchea con puntillo en ritmos de subdivisión binaria:</para>
+
+<score>
+    <music>
+    (score (vers 2.0)
+      (opt Render.SpacingFactor 0.2)
+      (opt Render.SpacingFopt 2.5)
+      (instrument
+        (musicData
+        (clef G)(time 2 4 noVisible)
+        (n a4 e. g+)(n a4 s g-)(barline double)
+        (n a4 q l)(n a4 e. g+)(n a4 s g-)(barline double)
+        (n a4 e g+)(n a4 e l g-)(n a4 e. g+)(n a4 s g-)(barline end)
+    )))
+    </music>
+</score>
+
+<part>
+<title>Escucha y observa las diferencias</title>
+<para>Observa cómo el ritmo de corchea con puntillo resulta del ritmo de corchea y dos semicorcheas, ya estudiado, al ligar la corchea. A su vez, el ritmo de cochea y dos semicorcheas puede obtenerse del de cuatro semicorcheas al ligar las dos primeras.</para>
+
+<para>Como siempre que tengas alguna dificultad con un ritmo, trata de descomponerlo en otros mas sencillos suprimiendo ligaduras.</para>
+
+
+<score>
+    <control_play />
+    <control_measures />
+    <music>
+    (score (vers 2.0)
+      (opt Render.SpacingFactor 0.2)
+      (opt Render.SpacingFopt 2.5)
+      (instrument
+        (musicData
+        (clef G)(key C)(time 2 4)
+        (n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 e l g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s l g+)(n a4 s)(n a4 s)(n a4 s g-)(barline)
+        (n a4 e g+)(n a4 s)(n a4 s g-)(barline end)
+    )))
+    </music>
+</score>
+
+<para>De forma similar, puedes obtener y aprender los otros dos patrones de esta lección:</para>
+
+<score>
+    <control_play />
+    <control_measures />
+    <music>
+    (score (vers 2.0)
+      (opt Render.SpacingFactor 0.2)
+      (opt Render.SpacingFopt 2.5)
+      (instrument
+        (musicData
+        (clef G)(key C)(time 2 4)
+        (n a4 q)(n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 q l)(n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 e g+)(n a4 e g-)(n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 e g+)(n a4 e l g-)(n a4 e. g+)(n a4 s g-)(barline end)
+    )))
+    </music>
+</score>
+</part>
+
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="thm210_E1a">Ejercicio 1a</link> - Lectura rítmica. Practica la negra ligada a la corchea con puntillo.</para>
+
+<para>
+<link linkend="thm210_E1b">Ejercicio 1b</link> - Lectura melodico-rítmica. Practica la negra ligada a la corchea con puntillo.</para>
+
+<para>
+<link linkend="thm210_E2a">Ejercicio 2a</link> - Lectura rítmica. Practica la corchea ligada a la corchea con puntillo.</para>
+
+<para>
+<link linkend="thm210_E2b">Ejercicio 2b</link> - Lectura melodico-rítmica. Practica la corchea ligada a la corchea con puntillo.</para>
+
+<para>
+<link linkend="thm210_E3">Ejercicio 3</link> - Lee ejemplos que contienen ritmos estudiados en esta lección.</para>
+
+</part>
+
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 1a                                                                  -->
+<!-- ============================================================================ -->
+
+<theme id="thm210_E1a" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>La negra ligada a la corchea con puntillo</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm210</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e. g+)(n * s g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * s)(n * s g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(r q)</fragment>
+    <clef>none;a4;a4</clef>
+    <time>24,34,44</time>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
+</exercise>
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 1b                                                                  -->
+<!-- ============================================================================ -->
+
+<theme id="thm210_E1b" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>La negra ligada a la corchea con puntillo</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm210</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e. g+)(n * s g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * s)(n * s g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * q l)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-),(r q)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
+    <time>24,34,44</time>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
+</exercise>
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 2a                                                                  -->
+<!-- ============================================================================ -->
+
+<theme id="thm210_E2a" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>La corchea ligada a la corchea con puntillo</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm210</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e. g+)(n * s g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(r q)</fragment>
+    <clef>none;a4;a4</clef>
+    <time>24,34,44</time>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
+</exercise>
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 2b                                                                  -->
+<!-- ============================================================================ -->
+
+<theme id="thm210_E2b" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>La corchea ligada a la corchea con puntillo</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm210</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e. g+)(n * s g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * e. g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-),(r q)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
+    <time>24,34,44</time>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
+</exercise>
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 3                                                                   -->
+<!-- ============================================================================ -->
+
+<theme id="thm210_E3" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>Nota ligada a corchea con puntillo + semicorchea</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm210</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(r e)(n * e),(n * e g+)(n * e l g-),(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+)(n * e l g-),(n * e. g+)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e l g-),(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e)(n * q)(n * e),(n * e. g+)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(r e)(n * e),(n * q l),(n * e. g+)(n * s g-),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * q l),(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * q.)(n * e),(n * s g+)(n * s)(n * s)(n * s g-),(n * e. g+)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(r e)(n * e g+)(n * e)(n * e g-),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * e. g+)(n * s g-),(n * e)(n * q)(n * e),(n * q)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
+    <time>24,34,44</time>
+    <key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key><key>E</key><key>c+</key><key>A-</key><key>f</key>
+</exercise>
+</theme>
+
+</content>

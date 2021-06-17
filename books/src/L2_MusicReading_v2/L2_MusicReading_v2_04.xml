@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
+<theme id="thm204">
+<titleabbrev>Tema %d</titleabbrev>
+<title>Corchea ligada entre partes</title>
+<tocimage>img04.png</tocimage>
+
+<para>En este tema se introduce un nuevo patrón rítmico, resultante de ligar un grupo de dos semicorcheas y corchea con otro de corchea y dos semicorcheas. Observa que puede escribirse también con una negra:</para>
+<score>
+    <music>
+    (score (vers 2.0)
+      (opt Render.SpacingFactor 0.2)
+      (opt Render.SpacingFopt 2.5)
+      (instrument
+        (musicData
+        (clef G)(time 2 4 noVisible)
+        (n a4 s g+)(n a4 s)(n a4 e l g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s g-)(n a4 q)(n a4 s g+)(n a4 s g-)(barline end)
+    )))
+    </music>
+</score>
+
+<part>
+<title>Escucha y observa las diferencias</title>
+<para>Observa la diferencia entre el primer y el segundo compás. Observa cómo éste se obtiene al ligar los dos grupos del primer compás.</para>
+
+<score>
+    <control_play />
+    <control_measures />
+    <music>
+    (score (vers 2.0)
+      (opt Render.SpacingFactor 0.2)
+      (opt Render.SpacingFopt 2.5)
+      (instrument
+        (musicData
+        (clef G)(key C)(time 2 4)(n a4 s g+)(n a4 s)(n a4 e g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 e l g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s g-)(n a4 q)(n a4 s g+)(n a4 s g-)(barline end)
+    )))
+    </music>
+</score>
+</part>
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="thm204_E1a">Ejercicio 1a</link> - Lectura rítmica. Practica los ritmos estudiados en esta lección.</para>
+<para>
+<link linkend="thm204_E1b">Ejercicio 1b</link> - Lectura melodico-rítmica. Practica los ritmos estudiados en esta lección.</para>
+
+<para>
+<link linkend="thm204_E2">Ejercicio 2</link> - Lee ejemplos que contienen ritmos estudiados en esta lección.</para>
+
+</part>
+
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 1a                                                                  -->
+<!-- ============================================================================ -->
+
+<theme id="thm204_E1a" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>Corchea ligada entre partes</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm204</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <clef>none;a4;a4</clef>
+    <time>24,34,44</time>
+    <key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key>
+</exercise>
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 1b                                                                  -->
+<!-- ============================================================================ -->
+
+<theme id="thm204_E1b" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>Corchea ligada entre partes</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm204</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
+    <fragment>24,34,44;(r q),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
+    <time>24,34,44</time>
+    <key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key>
+</exercise>
+</theme>
+
+<!-- ============================================================================ -->
+<!-- Ejercicio 2                                                                   -->
+<!-- ============================================================================ -->
+
+<theme id="thm204_E2" toc="no">
+<titleabbrev>Ejercicios</titleabbrev>
+<title>Corchea ligada entre partes</title>
+<para>Pulsa 'Tocar' y escucha. Entrena el oido y practica la lectura.</para>
+<exercise type='TheoMusicReading'>
+    <control_go_back>thm204</control_go_back>
+    <control_play />
+    <control_solfa />
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e)(n * q)(n * e),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * q)</fragment>
+    <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>24,34,44;(n * q l),(n * e g+)(n * e g-),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e),(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>24,34,44;(n * q.)(n * e),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(r e)(n * e),(r e)(n * e),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e l g-),(n * q)</fragment>
+    <fragment>24,34,44;(r e)(n * e),(n * q.)(n * s g+)(n * s g-),(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e g-),(n * e)(n * q)(n * e)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
+    <time>24,34,44</time>
+    <key>G</key><key>e</key><key>F</key><key>d</key><key>D</key><key>b</key><key>B-</key><key>g</key><key>A</key><key>f+</key><key>E-</key><key>c</key>
+</exercise>
+</theme>
+
+</content>

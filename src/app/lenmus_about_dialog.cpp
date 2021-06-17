@@ -221,7 +221,7 @@ void AboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         "<center>"
         "<h3>" + _("License") + "</h3></center><p>"
         "LenMus " + m_sVersionNumber + " " +
-        "Copyright &copy; 2010-2020 Cecilio Salmer&oacute;n." +
+        "Copyright &copy; 2010-2021 Cecilio Salmer&oacute;n." +
         "</p><p>" +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -370,6 +370,29 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "<tr><td colspan='3'>&nbsp;</td></tr>"
         //
     "<tr><td colspan='3'><b>" +
+        _("Pedagogical and musical direction:") + "</b></td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Fernando Barrera Ram&iacute;rez</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Elena Carrera P&eacute;rez</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Marcelino D&iacute;ez Mart&iacute;nez</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>D&aacute;cil Gonz&aacute;lez Mesa</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Sara Rom&aacute;n Garc&iacute;a</td></tr>"
+    "<tr><td colspan='3'>&nbsp;</td></tr>"
+        //
+    "<tr><td colspan='3'><b>" +
+        _("Music advice:") + "</b></td></tr>"
+    "<tr><td colspan='3'>" +
+    "  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Luc&iacute;a Escoto Castro</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Pedro Garrido Fernandez</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Sergio Mac&iacute;as Ortiz</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Emilio Mes&iacute;as</td></tr>"
+    "  <tr><td>&nbsp;</td><td colspan='2'>Ana Romero Dom&iacute;nguez</td></tr>"
+    "</td></tr>"
+    "<tr><td colspan='3'>&nbsp;</td></tr>"
+        //
+    "<tr><td colspan='3'><b>" +
         _("Programming:") + "</b></td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'>Carlos De La Fuente</td></tr>"
@@ -384,16 +407,6 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     "<tr><td colspan='3'><b>" +
         _("macOS package:") + "</b></td></tr>"
     "  <tr><td>&nbsp;</td><td colspan='2'>Bob Byerly</td></tr>"
-    "<tr><td colspan='3'>&nbsp;</td></tr>"
-        //
-    "<tr><td colspan='3'><b>" +
-        _("Music advice:") + "</b></td></tr>"
-    "<tr><td colspan='3'>" +
-    "  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>"
-    "  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>"
-    "  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>"
-    "  <tr><td>&nbsp;</td><td colspan='2'>Emilio Mes&iacute;as</td></tr>"
-    "</td></tr>"
     "<tr><td colspan='3'>&nbsp;</td></tr>"
         //
     "<tr><td colspan='3'><b>" +

@@ -234,24 +234,22 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
         }
 
+        // item text
+        m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
+        ParseInner(tag);
+
         // item image
         // Only drawn in final items
         bool fDrawImage = (sImage != wxEmptyString && sIcon == "page");
         if (fDrawImage) {
+            m_WParser->OpenContainer();
+            m_WParser->GetContainer()->SetIndent(nIndent+5, wxHTML_INDENT_LEFT);
             m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
-            m_WParser->SetSourceAndSaveState("<img src='" + sImage + "' height='36' />");
+            m_WParser->SetSourceAndSaveState("<img src='" + sImage + "' />"); //"' height='40' />");
             m_WParser->DoParsing();
             m_WParser->RestoreState();
-        }
-
-        // item text
-        if (fDrawImage) {
             m_WParser->CloseContainer();
-            m_WParser->OpenContainer();
-            m_WParser->GetContainer()->SetIndent(nIndent+25, wxHTML_INDENT_LEFT);
         }
-        m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
-        ParseInner(tag);
 
         //close link to item page
         m_WParser->SetLink(oldlnk);

@@ -29,9 +29,7 @@
 #include "lenmus_standard_header.h"
 #include "lenmus_dlg_debug.h"
 #include "lenmus_art_provider.h"
-#include "lenmus_score_wizard.h"
-//#include "lenmus_text_editor.h"
-#include "lenmus_msg_box.h"
+//#include "lenmus_msg_box.h"
 #include "lenmus_colors.h"
 
 //lomse
@@ -202,9 +200,8 @@ void DocumentWindow::play_active_score(PlayerGui* pGUI)
         AScore score = get_active_score();
         if (score.is_valid())
         {
-            ImoScore* pScore = score.internal_object();
             ScorePlayer* pPlayer  = m_appScope.get_score_player();
-            pPlayer->load_score(pScore, pGUI);
+            pPlayer->load_score(score, pGUI);
             customize_playback(spInteractor);
             pPlayer->play(k_do_visual_tracking, 0, spInteractor.get());
         }
@@ -517,9 +514,6 @@ void DocumentWindow::do_display(ostringstream& reporter)
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        //connect the View with the window buffer
-        spInteractor->set_rendering_buffer(&m_rbuf_window);
-
         //register to receive desired events
         spInteractor->add_event_handler(k_update_window_event, this, wrapper_update_window);
         spInteractor->add_event_handler(k_do_play_score_event, this, wrapper_play_score);
@@ -795,28 +789,28 @@ void DocumentWindow::create_rendering_buffer()
     //pixel of the first row, and so on until the end of the first row,
     //with second row following after it and so on.
 
-    #define BYTES_PP 3      // Bytes per pixel
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        wxSize size = this->GetClientSize();
+        int width = size.GetWidth();
+        int height = size.GetHeight();
 
-    wxSize size = this->GetClientSize();
-    int width = size.GetWidth();
-    int height = size.GetHeight();
+        //LOMSE_LOG_DEBUG(Logger::k_mvc, "w=%d, h=%d", width, height);
 
-    //LOMSE_LOG_DEBUG(Logger::k_mvc, "w=%d, h=%d", width, height);
+        m_fInvalidBuffer = (width <= 10 || height <= 10);
+        if (m_fInvalidBuffer)
+            return;
 
-    m_fInvalidBuffer = (width <= 10 || height <= 10);
-    if (m_fInvalidBuffer)
-        return;
+        // allocate a new rendering buffer
+        delete m_buffer;            //delete any previous buffer
+        m_nBufWidth = width;
+        m_nBufHeight = height;
+        m_buffer = LENMUS_NEW wxImage(width, height);
 
-    // allocate a new rendering buffer
-    delete m_buffer;            //delete any previous buffer
-    m_nBufWidth = width;
-    m_nBufHeight = height;
-    m_buffer = LENMUS_NEW wxImage(width, height);
+        unsigned char* pdata = m_buffer->GetData();   //ptr to the real bytes buffer
 
-    int stride = m_nBufWidth * BYTES_PP;        //number of bytes per row
-
-    m_pdata = m_buffer->GetData();
-    m_rbuf_window.attach(m_pdata, m_nBufWidth, m_nBufHeight, stride);
+        spInteractor->set_rendering_buffer(pdata, m_nBufWidth, m_nBufHeight);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -1108,14 +1102,9 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
 #if 0   //1=print in a single bitmap, 0-print in tiles. Both solutions tested and both work
 
         //allocate print buffer
-        RenderingBuffer rbuf_print;
-        unsigned char* pdata;                   //ptr to the real bytes buffer
-        #define BYTES_PP 3                      // Bytes per pixel
         wxImage* buffer = LENMUS_NEW wxImage(paperWidthPixels, paperHeightPixels);
-        int stride = paperWidthPixels * BYTES_PP;          //number of bytes per row
-        pdata = buffer->GetData();
-        rbuf_print.attach(pdata, paperWidthPixels, paperHeightPixels, stride);
-        spInteractor->set_print_buffer(&rbuf_print);
+        unsigned char* pdata = buffer->GetData();       //ptr to the real bytes buffer
+        spInteractor->set_print_buffer(pdata, paperWidthPixels, paperHeightPixels);
 
         //print page
         spInteractor->print_page(page-1);
@@ -1159,15 +1148,9 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
 //            paperWidthPixels, paperHeightPixels, tileW, tileH, lastW, lastH, cols, rows));
 
         //allocate tile buffer
-        RenderingBuffer rbuf_print;
-        wxImage* buffer;                        //the image to serve as buffer
-        unsigned char* pdata;                   //ptr to the real bytes buffer
-        #define BYTES_PP 3                      // Bytes per pixel
-        buffer = LENMUS_NEW wxImage(width, height);    // allocate the rendering buffer
-        int stride = width * BYTES_PP;          //number of bytes per row
-        pdata = buffer->GetData();
-        rbuf_print.attach(pdata, width, height, stride);
-        spInteractor->set_print_buffer(&rbuf_print);
+        wxImage* buffer = LENMUS_NEW wxImage(width, height);
+        unsigned char* pdata = buffer->GetData();       //ptr to the real bytes buffer
+        spInteractor->set_print_buffer(pdata, width, height);
 
         //loop to print tiles.
         wxMemoryDC memoryDC;

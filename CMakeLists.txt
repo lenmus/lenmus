@@ -948,7 +948,6 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_events.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
-    ${SRC_DIR}/app/lenmus_score_wizard.cpp
     ${SRC_DIR}/app/lenmus_splash_frame.cpp
     ${SRC_DIR}/app/lenmus_string.cpp
     ${SRC_DIR}/app/lenmus_welcome_window.cpp
@@ -960,9 +959,7 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_chord.cpp
     ${SRC_DIR}/auxmusic/lenmus_composer.cpp
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
-    ${SRC_DIR}/auxmusic/lenmus_images_creator.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
-    ${SRC_DIR}/auxmusic/lenmus_score_corrector.cpp
     ${SRC_DIR}/auxmusic/lenmus_utilities.cpp
 )
 
@@ -1046,7 +1043,6 @@ if (${LENMUS_ENABLE_UNIT_TESTS})
         ${SRC_DIR}/tests/lenmus_test_cadence.cpp
         ${SRC_DIR}/tests/lenmus_test_composer.cpp
         ${SRC_DIR}/tests/lenmus_test_mainframe.cpp
-        ${SRC_DIR}/tests/lenmus_test_score_corrector.cpp
         ${SRC_DIR}/tests/lenmus_test_tokenizer.cpp
         ${SRC_DIR}/tests/lenmus_test_runner.cpp
     )
@@ -1058,16 +1054,10 @@ set(LENMUS_PACKAGESS_FILES
     ${PACKAGES_DIR}/wxSQLite3/src/wxsqlite3.cpp
 )
 
-set(WIDGETS_FILES
-    ${SRC_DIR}/widgets/lenmus_msg_box.cpp
-    ${SRC_DIR}/widgets/lenmus_button.cpp
-    ${SRC_DIR}/widgets/lenmus_wizard.cpp
-)
-
 set(ALL_LENMUS_SOURCES 
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
     ${GLOBALS_FILES} ${OPTIONS_FILES} ${SOUND_FILES} ${XML_PARSER_FILES}
-    ${TEST_FILES} ${LENMUS_PACKAGESS_FILES} ${WIDGETS_FILES}
+    ${TEST_FILES} ${LENMUS_PACKAGESS_FILES}
 )
 
 # Add folders for Visual Studio and other IDEs supporting it
@@ -1080,7 +1070,6 @@ source_group( "options"         FILES ${OPTIONS_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
 source_group( "packages"        FILES ${LENMUS_PACKAGESS_FILES} )
-source_group( "widgets"         FILES ${WIDGETS_FILES} )
 if (${LENMUS_ENABLE_UNIT_TESTS})
     source_group( "tests"           FILES ${TEST_FILES} )
 endif()

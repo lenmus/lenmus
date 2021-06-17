@@ -22,7 +22,6 @@
 #include "lenmus_utilities.h"
 
 #include "lenmus_string.h"
-#include "lenmus_images_creator.h"
 #include "lenmus_injectors.h"
 
 //wxWidgets
@@ -255,93 +254,93 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 // global functions related to barlines
 //=======================================================================================
 
-void load_barlines_bitmap_combobox(ApplicationScope& appScope,
-                                   wxBitmapComboBox* pCtrol,
-                                   BarlinesDBEntry tBarlines[])
-{
-    pCtrol->Clear();
-    int i=0;
-	while (tBarlines[i].nBarlineType != k_barline_unknown)
-    {
-        pCtrol->Append(wxEmptyString,
-                       generate_bitmap_for_barline_ctrol(appScope,
-                                                         tBarlines[i].sBarlineName,
-                                                         tBarlines[i].nBarlineType),
-					   (void*)(&tBarlines[i]) );
-		i++;
-    }
-	if (i > 0)
-		pCtrol->SetSelection(0);
-}
+//void load_barlines_bitmap_combobox(ApplicationScope& appScope,
+//                                   wxBitmapComboBox* pCtrol,
+//                                   BarlinesDBEntry tBarlines[])
+//{
+//    pCtrol->Clear();
+//    int i=0;
+//	while (tBarlines[i].nBarlineType != k_barline_unknown)
+//    {
+//        pCtrol->Append(wxEmptyString,
+//                       generate_bitmap_for_barline_ctrol(appScope,
+//                                                         tBarlines[i].sBarlineName,
+//                                                         tBarlines[i].nBarlineType),
+//					   (void*)(&tBarlines[i]) );
+//		i++;
+//    }
+//	if (i > 0)
+//		pCtrol->SetSelection(0);
+//}
+//
+////---------------------------------------------------------------------------------------
+//void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType)
+//{
+//	//select received barline type in the barlines combo box
+//	int nMax = pCtrol->GetCount();
+//	for (int iB=0; iB < nMax; iB++)
+//	{
+//		if (nType == ((BarlinesDBEntry*)pCtrol->GetClientData(iB))->nBarlineType)
+//		{
+//			//wxLogMessage("[select_barline_in_bitmap_combobox] nType=%d, iB=%d, nMax=%d", nType, iB, nMax);
+//			pCtrol->SetSelection(iB);
+//			return;
+//		}
+//	}
+//}
 
-//---------------------------------------------------------------------------------------
-void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType)
-{
-	//select received barline type in the barlines combo box
-	int nMax = pCtrol->GetCount();
-	for (int iB=0; iB < nMax; iB++)
-	{
-		if (nType == ((BarlinesDBEntry*)pCtrol->GetClientData(iB))->nBarlineType)
-		{
-			//wxLogMessage("[select_barline_in_bitmap_combobox] nType=%d, iB=%d, nMax=%d", nType, iB, nMax);
-			pCtrol->SetSelection(iB);
-			return;
-		}
-	}
-}
+////---------------------------------------------------------------------------------------
+//const wxString get_barline_name(int barlineType)
+//{
+//    static wxString m_name[k_max_barline];
+//    static wxString m_language = "??";
+//
+//    if (m_language != ApplicationScope::get_language())
+//    {
+//        //language dependent strings. Can not be statically initialized because
+//        //then they do not get translated
+//        m_name[k_barline_simple] =                  _("Simple barline");
+//        m_name[k_barline_double] =                  _("Double barline");
+//        m_name[k_barline_end] =                     _("Final barline");
+//        m_name[k_barline_start_repetition] =        _("Start repetition");
+//        m_name[k_barline_end_repetition] =          _("End repetition");
+//        m_name[k_barline_start] =                   _("Start barline");
+//        m_name[k_barline_double_repetition] =       _("Double repetition");
+//        m_name[k_barline_double_repetition_alt] =   _("Double repetition alt.");
+//
+//        m_language = ApplicationScope::get_language();
+//    }
+//
+//    if (barlineType <= 0 || barlineType >= k_max_barline)
+//        return "Invalid barline";
+//    else
+//        return m_name[barlineType];
+//}
 
-//---------------------------------------------------------------------------------------
-const wxString get_barline_name(int barlineType)
-{
-    static wxString m_name[k_max_barline];
-    static wxString m_language = "??";
-
-    if (m_language != ApplicationScope::get_language())
-    {
-        //language dependent strings. Can not be statically initialized because
-        //then they do not get translated
-        m_name[k_barline_simple] =                  _("Simple barline");
-        m_name[k_barline_double] =                  _("Double barline");
-        m_name[k_barline_end] =                     _("Final barline");
-        m_name[k_barline_start_repetition] =        _("Start repetition");
-        m_name[k_barline_end_repetition] =          _("End repetition");
-        m_name[k_barline_start] =                   _("Start barline");
-        m_name[k_barline_double_repetition] =       _("Double repetition");
-        m_name[k_barline_double_repetition_alt] =   _("Double repetition alt.");
-
-        m_language = ApplicationScope::get_language();
-    }
-
-    if (barlineType <= 0 || barlineType >= k_max_barline)
-        return "Invalid barline";
-    else
-        return m_name[barlineType];
-}
-
-//---------------------------------------------------------------------------------------
-const wxString get_stem_name(int stemType)
-{
-    static wxString m_name[5];
-    static wxString m_language = "??";
-
-    if (m_language != ApplicationScope::get_language())
-    {
-        //language dependent strings. Can not be statically initialized because
-        //then they do not get translated
-        m_name[k_stem_default] =    _("Default stem");
-        m_name[k_stem_up] =         _("Stem up");
-        m_name[k_stem_down] =       _("Stem down");
-        m_name[k_stem_double] =     _("Stem double");
-        m_name[k_stem_none] =       _("Stem none");
-
-        m_language = ApplicationScope::get_language();
-    }
-
-    if (stemType < 0 || stemType > 4)
-        return "Invalid stem";
-    else
-        return m_name[stemType];
-}
+////---------------------------------------------------------------------------------------
+//const wxString get_stem_name(int stemType)
+//{
+//    static wxString m_name[5];
+//    static wxString m_language = "??";
+//
+//    if (m_language != ApplicationScope::get_language())
+//    {
+//        //language dependent strings. Can not be statically initialized because
+//        //then they do not get translated
+//        m_name[k_stem_default] =    _("Default stem");
+//        m_name[k_stem_up] =         _("Stem up");
+//        m_name[k_stem_down] =       _("Stem down");
+//        m_name[k_stem_double] =     _("Stem double");
+//        m_name[k_stem_none] =       _("Stem none");
+//
+//        m_language = ApplicationScope::get_language();
+//    }
+//
+//    if (stemType < 0 || stemType > 4)
+//        return "Invalid stem";
+//    else
+//        return m_name[stemType];
+//}
 
 //=======================================================================================
 // global functions related to clefs
@@ -400,171 +399,171 @@ const wxString& get_key_signature_name(EKeySignature type)
 }
 
 
-//=======================================================================================
-// global functions related to rendering scores
-//=======================================================================================
-
-wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
-                                       wxString& sName, EKeySignature type)
-{
-    //create a document
-    LomseDoorway& lomse = appScope.get_lomse();
-    ImagesCreator creator(lomse);
-    Document* pDoc = creator.get_empty_document();
-
-    //remove page margins
-    ImoPageInfo* pPageInfo = pDoc->get_page_info();
-    pPageInfo->set_top_margin(0);
-    pPageInfo->set_left_margin(0);
-    pPageInfo->set_right_margin(0);
-
-    //create the score
-    ImoScore* pScore = pDoc->add_score();
-	pScore->set_bool_option("Staff.DrawLeftBarline", false);
-    ImoInstrument* pInstr = pScore->add_instrument();
-    ImoSystemInfo* pInfo = pScore->get_first_system_info();
-    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
-    pPageInfo = pScore->get_page_info();
-    pPageInfo->set_top_margin( 0 );
-    pPageInfo->set_left_margin( 0 );
-    pPageInfo->set_right_margin( 0 );
-
-    //add spacer with attached text
-    if (sName != "")
-    {
-        string text = "(spacer 10 (text \"";
-        text.append( to_std_string(sName) );
-        text.append( "\" (dx -10)(dy 75)))" );
-        pInstr->add_object(text);
-    }
-    else
-        pInstr->add_spacer(10);       // 1 line
-
-    //add key signature and some additional space
-    pInstr->add_clef(k_clef_G2, 1, k_no_visible);
-    pInstr->add_key_signature(type);
-    pInstr->add_spacer(20);       // 2 lines
-    pInstr->add_barline(k_barline_simple, k_no_visible);
-
-    pScore->end_of_changes();
-
-    //render the document
-    wxImage image(108, 64);
-    creator.create_image_for_document(&image, 0.80);
-
-    image.SaveFile("keys.jpg", wxBITMAP_TYPE_JPEG);
-
-    wxBitmap bmp(image);
-    return bmp;
-}
-
-//---------------------------------------------------------------------------------------
-wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
-                                        wxString& sName, EClef type)
-{
-    //create a document
-    LomseDoorway& lomse = appScope.get_lomse();
-    ImagesCreator creator(lomse);
-    Document* pDoc = creator.get_empty_document();
-
-    //remove page margins
-    ImoPageInfo* pPageInfo = pDoc->get_page_info();
-    pPageInfo->set_top_margin(0);
-    pPageInfo->set_left_margin(0);
-    pPageInfo->set_right_margin(0);
-
-    //create the score
-    ImoScore* pScore = pDoc->add_score();
-	pScore->set_bool_option("Staff.DrawLeftBarline", false);
-    ImoInstrument* pInstr = pScore->add_instrument();
-    ImoSystemInfo* pInfo = pScore->get_first_system_info();
-    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
-    pPageInfo = pScore->get_page_info();
-    pPageInfo->set_top_margin( 0 );
-    pPageInfo->set_left_margin( 0 );
-    pPageInfo->set_right_margin( 0 );
-
-    //add spacer with attached text
-    if (sName != "")
-    {
-        string text = "(spacer 10 (text \"";
-        text.append( to_std_string(sName) );
-        text.append( "\" (dx -10)(dy 75)))" );
-        pInstr->add_object(text);
-    }
-    else
-        pInstr->add_spacer(10);       // 1 line
-
-    //add clef and some additional space
-    pInstr->add_clef(type);
-    pInstr->add_spacer(20);       // 2 lines
-    pInstr->add_barline(k_barline_simple, k_no_visible);
-
-    pScore->end_of_changes();
-
-    //render the document
-    wxImage image(108, 64);
-    creator.create_image_for_document(&image, 0.80);
-
-    //image.SaveFile("clefs.jpg", wxBITMAP_TYPE_JPEG);
-
-    wxBitmap bmp(image);
-    return bmp;
-}
-
-//---------------------------------------------------------------------------------------
-wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
-                                           wxString& sName, EBarline type)
-{
-    //create a document
-    LomseDoorway& lomse = appScope.get_lomse();
-    ImagesCreator creator(lomse);
-    Document* pDoc = creator.get_empty_document();
-
-    //remove page margins
-    ImoPageInfo* pPageInfo = pDoc->get_page_info();
-    pPageInfo->set_top_margin(0);
-    pPageInfo->set_left_margin(0);
-    pPageInfo->set_right_margin(0);
-
-    //create the score
-    ImoScore* pScore = pDoc->add_score();
-	pScore->set_bool_option("Staff.DrawLeftBarline", false);
-    ImoInstrument* pInstr = pScore->add_instrument();
-    ImoSystemInfo* pInfo = pScore->get_first_system_info();
-    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
-    pPageInfo = pScore->get_page_info();
-    pPageInfo->set_top_margin( 0 );
-    pPageInfo->set_left_margin( 0 );
-    pPageInfo->set_right_margin( 0 );
-
-    //add spacer with attached text
-    if (sName != "")
-    {
-        string text = "(spacer 30 (text \"";
-        text.append( to_std_string(sName) );
-        text.append( "\" (dx -25)(dy 65)))" );
-        pInstr->add_object(text);
-    }
-    else
-        pInstr->add_spacer(20);       // 2 lines
-
-    //add barline and some additional space
-    pInstr->add_barline(type);
-    pInstr->add_spacer(20);       // 2 lines
-    pInstr->add_barline(k_barline_simple, k_no_visible);
-
-    pScore->end_of_changes();
-
-    //render the document
-    wxImage image(108, 64);
-    creator.create_image_for_document(&image, 0.80);
-
-    //image.SaveFile("barlines.jpg", wxBITMAP_TYPE_JPEG);
-
-    wxBitmap bmp(image);
-    return bmp;
-}
+////=======================================================================================
+//// global functions related to rendering scores
+////=======================================================================================
+//
+//wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
+//                                       wxString& sName, EKeySignature type)
+//{
+//    //create a document
+//    LomseDoorway& lomse = appScope.get_lomse();
+//    ImagesCreator creator(lomse);
+//    Document* pDoc = creator.get_empty_document();
+//
+//    //remove page margins
+//    ImoPageInfo* pPageInfo = pDoc->get_page_info();
+//    pPageInfo->set_top_margin(0);
+//    pPageInfo->set_left_margin(0);
+//    pPageInfo->set_right_margin(0);
+//
+//    //create the score
+//    ImoScore* pScore = pDoc->add_score();
+//	pScore->set_bool_option("Staff.DrawLeftBarline", false);
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+//    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
+//    pPageInfo = pScore->get_page_info();
+//    pPageInfo->set_top_margin( 0 );
+//    pPageInfo->set_left_margin( 0 );
+//    pPageInfo->set_right_margin( 0 );
+//
+//    //add spacer with attached text
+//    if (sName != "")
+//    {
+//        string text = "(spacer 10 (text \"";
+//        text.append( to_std_string(sName) );
+//        text.append( "\" (dx -10)(dy 75)))" );
+//        pInstr->add_object(text);
+//    }
+//    else
+//        pInstr->add_spacer(10);       // 1 line
+//
+//    //add key signature and some additional space
+//    pInstr->add_clef(k_clef_G2, 1, k_no_visible);
+//    pInstr->add_key_signature(type);
+//    pInstr->add_spacer(20);       // 2 lines
+//    pInstr->add_barline(k_barline_simple, k_no_visible);
+//
+//    pScore->end_of_changes();
+//
+//    //render the document
+//    wxImage image(108, 64);
+//    creator.create_image_for_document(&image, 0.80);
+//
+//    image.SaveFile("keys.jpg", wxBITMAP_TYPE_JPEG);
+//
+//    wxBitmap bmp(image);
+//    return bmp;
+//}
+//
+////---------------------------------------------------------------------------------------
+//wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
+//                                        wxString& sName, EClef type)
+//{
+//    //create a document
+//    LomseDoorway& lomse = appScope.get_lomse();
+//    ImagesCreator creator(lomse);
+//    Document* pDoc = creator.get_empty_document();
+//
+//    //remove page margins
+//    ImoPageInfo* pPageInfo = pDoc->get_page_info();
+//    pPageInfo->set_top_margin(0);
+//    pPageInfo->set_left_margin(0);
+//    pPageInfo->set_right_margin(0);
+//
+//    //create the score
+//    ImoScore* pScore = pDoc->add_score();
+//	pScore->set_bool_option("Staff.DrawLeftBarline", false);
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+//    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
+//    pPageInfo = pScore->get_page_info();
+//    pPageInfo->set_top_margin( 0 );
+//    pPageInfo->set_left_margin( 0 );
+//    pPageInfo->set_right_margin( 0 );
+//
+//    //add spacer with attached text
+//    if (sName != "")
+//    {
+//        string text = "(spacer 10 (text \"";
+//        text.append( to_std_string(sName) );
+//        text.append( "\" (dx -10)(dy 75)))" );
+//        pInstr->add_object(text);
+//    }
+//    else
+//        pInstr->add_spacer(10);       // 1 line
+//
+//    //add clef and some additional space
+//    pInstr->add_clef(type);
+//    pInstr->add_spacer(20);       // 2 lines
+//    pInstr->add_barline(k_barline_simple, k_no_visible);
+//
+//    pScore->end_of_changes();
+//
+//    //render the document
+//    wxImage image(108, 64);
+//    creator.create_image_for_document(&image, 0.80);
+//
+//    //image.SaveFile("clefs.jpg", wxBITMAP_TYPE_JPEG);
+//
+//    wxBitmap bmp(image);
+//    return bmp;
+//}
+//
+////---------------------------------------------------------------------------------------
+//wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
+//                                           wxString& sName, EBarline type)
+//{
+//    //create a document
+//    LomseDoorway& lomse = appScope.get_lomse();
+//    ImagesCreator creator(lomse);
+//    Document* pDoc = creator.get_empty_document();
+//
+//    //remove page margins
+//    ImoPageInfo* pPageInfo = pDoc->get_page_info();
+//    pPageInfo->set_top_margin(0);
+//    pPageInfo->set_left_margin(0);
+//    pPageInfo->set_right_margin(0);
+//
+//    //create the score
+//    ImoScore* pScore = pDoc->add_score();
+//	pScore->set_bool_option("Staff.DrawLeftBarline", false);
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+//    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
+//    pPageInfo = pScore->get_page_info();
+//    pPageInfo->set_top_margin( 0 );
+//    pPageInfo->set_left_margin( 0 );
+//    pPageInfo->set_right_margin( 0 );
+//
+//    //add spacer with attached text
+//    if (sName != "")
+//    {
+//        string text = "(spacer 30 (text \"";
+//        text.append( to_std_string(sName) );
+//        text.append( "\" (dx -25)(dy 65)))" );
+//        pInstr->add_object(text);
+//    }
+//    else
+//        pInstr->add_spacer(20);       // 2 lines
+//
+//    //add barline and some additional space
+//    pInstr->add_barline(type);
+//    pInstr->add_spacer(20);       // 2 lines
+//    pInstr->add_barline(k_barline_simple, k_no_visible);
+//
+//    pScore->end_of_changes();
+//
+//    //render the document
+//    wxImage image(108, 64);
+//    creator.create_image_for_document(&image, 0.80);
+//
+//    //image.SaveFile("barlines.jpg", wxBITMAP_TYPE_JPEG);
+//
+//    wxBitmap bmp(image);
+//    return bmp;
+//}
 
 
 
