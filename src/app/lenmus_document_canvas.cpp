@@ -1088,16 +1088,8 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         pDC->SetBackground(*wxWHITE_BRUSH);
         pDC->Clear();
 
-        ADocument doc = get_document();
-        float scale = doc.page_content_scale();
-        pDC->SetUserScale(scale, scale);
-        paperWidthPixels = int(float(paperWidthPixels) / scale);
-        paperHeightPixels = int(float(paperHeightPixels) / scale);
-
-
-        //set print resolution
-        wxSize dpi = pDC->GetPPI();
-        spInteractor->set_print_ppi( double( max(dpi.x, dpi.y) ) );
+        //inform Lomse about printer resolution
+        spInteractor->set_print_page_size(paperWidthPixels, paperHeightPixels);
 
 #if 0   //1=print in a single bitmap, 0-print in tiles. Both solutions tested and both work
 
