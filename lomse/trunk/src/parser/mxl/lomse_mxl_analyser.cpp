@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2020. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2021. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -1100,6 +1100,60 @@ protected:
             noteType = k_eighth;
         }
         return noteType;
+    }
+
+    //-----------------------------------------------------------------------------------
+    int mxl_step_to_step(const string& step, int nDefault=k_step_C)
+    {
+        switch (step[0])
+        {
+            case 'A':	return k_step_A;
+            case 'B':	return k_step_B;
+            case 'C':	return k_step_C;
+            case 'D':	return k_step_D;
+            case 'E':	return k_step_E;
+            case 'F':	return k_step_F;
+            case 'G':	return k_step_G;
+            default:
+            {
+                if (nDefault == k_step_C)
+                    error_msg2("Unknown note step '" + step + "'. Replaced by 'C'.");
+                else
+                    error_msg2("Unknown note step '" + step + "'. Ignored.");
+
+                return nDefault;
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------------------
+    int mxl_octave_to_octave(const string& octave, int nDefault=4)
+    {
+        //@ MusicXML octaves are represented by the numbers 0 to 9, where 4
+        //@ indicates the octave started by middle C.
+
+        switch (octave[0])
+        {
+            case '0':	return 0;
+            case '1':	return 1;
+            case '2':	return 2;
+            case '3':	return 3;
+            case '4':	return 4;
+            case '5':	return 5;
+            case '6':	return 6;
+            case '7':	return 7;
+            case '8':	return 8;
+            case '9':	return 9;
+            default:
+            {
+                if (nDefault == 4)
+                    error_msg2( "Unknown octave '" + octave + "'. Replaced by '4'.");
+                else
+                    error_msg2( "Unknown octave '" + octave + "'. Ignored.");
+
+                return nDefault;
+            }
+        }
     }
 
 };
@@ -2779,9 +2833,12 @@ public:
         ImoDynamicsMark* pImo = static_cast<ImoDynamicsMark*>(
                                 ImFactory::inject(k_imo_dynamics_mark, pDoc) );
 
-        // attrib: placement
-        if (has_attribute("placement"))
-            set_placement(pImo);
+        // attrib: %placement;
+        pImo->set_placement(get_attribute_placement());
+
+        //inherit placement from parent <direction> if not set in this <dynamics>
+        if (pImo->get_placement() == k_placement_default && m_pAnchor->is_direction())
+            pImo->set_placement( (static_cast<ImoDirection*>(m_pAnchor))->get_placement() );
 
         //content
         while (more_children_to_analyse())
@@ -2803,25 +2860,14 @@ public:
         error_if_more_elements();
 
         pSO->add_attachment(pDoc, pImo);
+
+        if (!pSO->is_note_rest())
+            m_pAnalyser->add_pending_dynamics_mark(pImo);
+
         return pImo;
     }
 
 protected:
-
-    //-----------------------------------------------------------------------------------
-    void set_placement(ImoDynamicsMark* pImo)
-    {
-        string value = get_attribute(&m_childToAnalyse, "placement");
-        if (value == "above")
-            pImo->set_placement(k_placement_above);
-        else if (value == "below")
-            pImo->set_placement(k_placement_below);
-        else
-        {
-            report_msg(m_pAnalyser->get_line_number(&m_childToAnalyse),
-                "Unknown placement attrib. '" + value + "'. Ignored.");
-        }
-    }
 
 };
 
@@ -3021,24 +3067,12 @@ public:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <fermata> = (fermata <placement>[<componentOptions>*])
-//@ <placement> = { above | below }
-//<!--
-//    Fermata and wavy-line elements can be applied both to
-//    notes and to measures. Wavy
-//    lines are one way to indicate trills; when used with a
-//    measure element, they should always have type="continue"
-//    set. The fermata text content represents the shape of the
-//    fermata sign and may be normal, angled, or square.
-//    An empty fermata element represents a normal fermata.
-//    The fermata type is upright if not specified.
-//-->
-//<!ELEMENT fermata  (#PCDATA)>
-//<!ATTLIST fermata
-//    type (upright | inverted) #IMPLIED
-//    %print-style;
-//>
-
+//@<!ELEMENT fermata  (#PCDATA)>
+//@<!ATTLIST fermata
+//@    type (upright | inverted) #IMPLIED
+//@    %print-style;
+//@    %optional-unique-id;
+//@>
 class FermataMxlAnalyser : public MxlElementAnalyser
 {
 public:
@@ -3149,7 +3183,7 @@ public:
             int voice = get_child_value_integer( m_pAnalyser->get_current_voice() );
 
             // staff?
-            int staff = 1;
+            int staff = 0;
             if (get_optional("staff"))
                 staff = get_child_value_integer(1) - 1;
 
@@ -4086,6 +4120,19 @@ protected:
 //@ - Grace notes do not have a duration element.
 //@ - Cue notes have a duration element, as do forward elements, but no tie elements.
 //@
+//@ <!ATTLIST note
+//@     %print-style;
+//@     %printout;
+//@     print-leger %yes-no; #IMPLIED
+//@     dynamics CDATA #IMPLIED
+//@     end-dynamics CDATA #IMPLIED
+//@     attack CDATA #IMPLIED
+//@     release CDATA #IMPLIED
+//@     %time-only;
+//@     pizzicato %yes-no; #IMPLIED
+//@     %optional-unique-id;
+//@ >
+//@
 
 class NoteRestMxlAnalyser : public MxlElementAnalyser
 {
@@ -4114,13 +4161,16 @@ public:
         //attrb: print-object
         bool fVisible = get_optional_yes_no_attribute("print-object", "yes");
 
+        //attrb: print-spacing
+        bool fTakesSpace = get_optional_yes_no_attribute("print-spacing", "yes");
+
+        if (!fTakesSpace)
+            return nullptr;     //ignore
+
             //elements
 
         // [<cue>]
         bool fIsCue = get_optional("cue");
-        //for now, ignore cue notes
-        if (fIsCue)
-            return nullptr;
 
         // [<grace>]
         bool fIsGrace = get_optional("grace");
@@ -4150,11 +4200,12 @@ public:
             fIsRest = true;
             pRest = static_cast<ImoRest*>(ImFactory::inject(k_imo_rest, pDoc));
             pNR = pRest;
-            pRest->mark_as_full_measure( analyse_rest() );
+            m_pAnalyser->analyse_node(&m_childToAnalyse, pRest);
         }
         else
         {
-            int type = (fIsGrace ? k_imo_note_grace : k_imo_note_regular);
+            int type = (fIsGrace ? k_imo_note_grace
+                                 : (fIsCue ? k_imo_note_cue : k_imo_note_regular));
             pNote = static_cast<ImoNote*>(ImFactory::inject(type, pDoc));
             pNR = pNote;
             if (get_optional("unpitched"))
@@ -4257,6 +4308,7 @@ public:
 
         pNR->set_visible(fVisible);
         add_to_model(pNR);
+        attach_pending_dynamics_marks(pNR);
         add_to_spanners(pNR);
 
         //deal with grace notes
@@ -4323,24 +4375,6 @@ public:
     }
 
 protected:
-
-    //----------------------------------------------------------------------------------
-    bool analyse_rest()
-    {
-        //@ <!ELEMENT rest ((display-step, display-octave)?)>
-        //@ <!ATTLIST rest
-        //@      measure %yes-no; #IMPLIED
-        //@ >
-
-        //returns value of measure attrib. (true or false)
-        if (has_attribute(&m_childToAnalyse, "measure"))
-        {
-            const string& measure = m_childToAnalyse.attribute_value("measure");
-            return measure == "yes";
-        }
-        else
-            return false;
-    }
 
     //----------------------------------------------------------------------------------
     void set_type_duration(ImoNoteRest* pNR, const string& type, int dots,
@@ -4592,6 +4626,12 @@ protected:
             m_pBeamInfo->set_note_rest(pNR);
             m_pAnalyser->add_relation_info(m_pBeamInfo);
         }
+    }
+
+    //----------------------------------------------------------------------------------
+    void attach_pending_dynamics_marks(ImoNoteRest* pNR)
+    {
+        m_pAnalyser->attach_pending_dynamics_marks(pNR);
     }
 
     //----------------------------------------------------------------------------------
@@ -5396,54 +5436,6 @@ public:
 
 protected:
 
-    int mxl_step_to_step(const string& step)
-    {
-        switch (step[0])
-        {
-            case 'A':	return k_step_A;
-            case 'B':	return k_step_B;
-            case 'C':	return k_step_C;
-            case 'D':	return k_step_D;
-            case 'E':	return k_step_E;
-            case 'F':	return k_step_F;
-            case 'G':	return k_step_G;
-            default:
-            {
-                //report_msg(m_pAnalyser->get_line_number(&m_analysedNode),
-                error_msg2(
-                    "Unknown note step '" + step + "'. Replaced by 'C'.");
-                return k_step_C;
-            }
-        }
-    }
-
-    int mxl_octave_to_octave(const string& octave)
-    {
-        //@ MusicXML octaves are represented by the numbers 0 to 9, where 4
-        //@ indicates the octave started by middle C.
-
-        switch (octave[0])
-        {
-            case '0':	return 0;
-            case '1':	return 1;
-            case '2':	return 2;
-            case '3':	return 3;
-            case '4':	return 4;
-            case '5':	return 5;
-            case '6':	return 6;
-            case '7':	return 7;
-            case '8':	return 8;
-            case '9':	return 9;
-            default:
-            {
-                //report_msg(m_pAnalyser->get_line_number(&m_analysedNode),
-                error_msg2(
-                    "Unknown octave '" + octave + "'. Replaced by '4'.");
-                return 4;
-            }
-        }
-    }
-
     float mxl_alter_to_accidentals(const string& accidentals)
     {
         //@ The <alter> element is needed for the sounding pitch, whether the
@@ -5954,6 +5946,66 @@ protected:
 
 };
 
+
+//@--------------------------------------------------------------------------------------
+//@ <!ELEMENT rest ((display-step, display-octave)?)>
+//@ <!ATTLIST rest
+//@      measure %yes-no; #IMPLIED
+//@ >
+//@
+class RestMxlAnalyser : public MxlElementAnalyser
+{
+public:
+    RestMxlAnalyser(MxlAnalyser* pAnalyser, ostream& reporter,
+                    LibraryScope& libraryScope, ImoObj* pAnchor)
+        : MxlElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
+
+    ImoObj* do_analysis() override
+    {
+        ImoRest* pRest = nullptr;
+        if (m_pAnchor && m_pAnchor->is_rest())
+            pRest = static_cast<ImoRest*>(m_pAnchor);
+        else
+        {
+            LOMSE_LOG_ERROR("pAnchor is nullptr or it is not ImoRest");
+            return nullptr;
+        }
+
+		//attrb: measure %yes-no
+        pRest->mark_as_full_measure( get_optional_yes_no_attribute(&m_childToAnalyse, "measure", false) );
+
+        // <display-step>
+        if (get_optional("display-step"))
+        {
+            pRest->set_step( analyse_display_step() );
+
+            // <display-octave>
+            if (get_mandatory("display-octave"))
+                pRest->set_octave( analyse_display_octave() );
+        }
+
+        error_if_more_elements();
+
+
+
+        return pRest;
+    }
+
+protected:
+
+    int analyse_display_step()
+    {
+        return mxl_step_to_step(get_child_value_string(), k_step_undefined);
+    }
+
+    int analyse_display_octave()
+    {
+        return mxl_octave_to_octave(get_child_value_string(), k_octave_undefined);
+    }
+
+};
+
+
 //@--------------------------------------------------------------------------------------
 //@ <scordatura>
 class ScordaturaMxlAnalyser : public MxlElementAnalyser
@@ -6212,9 +6264,24 @@ public:
 //        if (get_mandatory(k_number))
 //            pInfo->set_slur_number( get_child_value_integer(0) );
 
-//        // attrib: %placement;
-//        if (get_mandatory(k_number))
-//            pInfo->set_slur_number( get_child_value_integer(0) );
+        // attrib: %placement;
+        //TODO: Clarify contradictions between placement and orientation
+        //m_pInfo1->set_placement(get_attribute_placement());
+        if (has_attribute("placement"))
+        {
+            string value = get_attribute("placement");
+
+            //AWARE: must be type == "start"
+            if (value == "above")
+                m_pInfo1->set_orientation(k_orientation_over);
+            else if (value == "below")
+                m_pInfo1->set_orientation(k_orientation_under);
+            else
+            {
+                error_msg("Invalid placement attribute. Value '" +
+                          value + "' ignored.");
+            }
+        }
 
         // attrib: %orientation;
         if (has_attribute("orientation"))
@@ -6224,8 +6291,13 @@ public:
             //AWARE: must be type == "start"
             if (orientation == "over")
                 m_pInfo1->set_orientation(k_orientation_over);
-            else
+            else if (orientation == "under")
                 m_pInfo1->set_orientation(k_orientation_under);
+            else
+            {
+                error_msg("Invalid orientation attribute. Value '" +
+                          orientation + "' ignored.");
+            }
         }
 
 //        // attrib: %bezier;
@@ -6259,28 +6331,31 @@ protected:
         if (value == "start")
         {
             m_pInfo1->set_start(true);
-            int slurId =  m_pAnalyser->new_slur_id(num);
+            int slurId =  m_pAnalyser->get_slur_id(num);
+            if (slurId != 0)    //not 0 when stop found before start
+                slurId =  m_pAnalyser->get_slur_id_and_close(num);
+            else
+                slurId =  m_pAnalyser->new_slur_id(num);
             m_pInfo1->set_slur_number(slurId);
         }
         else if (value == "stop")
         {
             m_pInfo1->set_start(false);
-            int slurId =  m_pAnalyser->get_slur_id_and_close(num);
+            int slurId =  m_pAnalyser->get_slur_id(num);
+            if (slurId == 0)    //stop found before start
+                slurId =  m_pAnalyser->new_slur_id(num);
+            else
+                slurId =  m_pAnalyser->get_slur_id_and_close(num);
             m_pInfo1->set_slur_number(slurId);
         }
         else if (value == "continue")
         {
-            m_pInfo1->set_start(false);
-            int slurId =  m_pAnalyser->get_slur_id_and_close(num);
-            m_pInfo1->set_slur_number(slurId);
-
-            Document* pDoc = m_pAnalyser->get_document_being_analysed();
-            m_pInfo2 = static_cast<ImoSlurDto*>(
-                                ImFactory::inject(k_imo_slur_dto, pDoc));
-            m_pInfo2->set_start(true);
-            m_pInfo2->set_line_number( m_pAnalyser->get_line_number(&m_analysedNode) );
-            slurId =  m_pAnalyser->new_slur_id(num);
-            m_pInfo2->set_slur_number(slurId);
+            //"continue" slurs are just intermediate points (e.g. to add a second
+            //bezier curve or to mark system start and system end). As layout
+            //is done by Lomse (required for free flow) all "continue" elements
+            //will be ignored
+            delete m_pInfo1;
+            m_pInfo1 = nullptr;
         }
         else
         {
@@ -7741,7 +7816,7 @@ void MxlAnalyser::add_relation_info(ImoObj* pDto)
     else if (pDto->is_tie_dto())
         m_pTiesBuilder->add_item_info(static_cast<ImoTieDto*>(pDto));
     else if (pDto->is_slur_dto())
-        m_pSlursBuilder->add_item_info(static_cast<ImoSlurDto*>(pDto));
+        m_pSlursBuilder->add_item_info_reversed_valid(static_cast<ImoSlurDto*>(pDto));
     else if (pDto->is_tuplet_dto())
         m_pTupletsBuilder->add_item_info(static_cast<ImoTupletDto*>(pDto));
     else if (pDto->is_volta_bracket_dto())
@@ -7765,6 +7840,23 @@ void MxlAnalyser::clear_pending_relations()
 
     m_lyrics.clear();
     m_lyricIndex.clear();
+    m_pendingDynamicsMarks.clear();
+}
+
+//---------------------------------------------------------------------------------------
+void MxlAnalyser::attach_pending_dynamics_marks(ImoNoteRest* pNR)
+{
+    for (ImoDynamicsMark* pDynamics : m_pendingDynamicsMarks)
+    {
+        ImoContentObj* pOldParent = pDynamics->get_contentobj_parent();
+
+        if (pOldParent)
+            pOldParent->remove_but_not_delete_attachment(pDynamics);
+
+        pNR->add_attachment(m_pDoc, pDynamics);
+    }
+
+    m_pendingDynamicsMarks.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -7939,7 +8031,7 @@ int MxlAnalyser::new_wedge_id(int numWedge)
 //---------------------------------------------------------------------------------------
 bool MxlAnalyser::wedge_id_exists(int numWedge)
 {
-    return numWedge <= m_wedgeNum && m_wedgeIds[numWedge] != -1;
+    return m_wedgeIds[numWedge] > 0;
 }
 
 //---------------------------------------------------------------------------------------
@@ -7966,7 +8058,7 @@ int MxlAnalyser::new_octave_shift_id(int num)
 //---------------------------------------------------------------------------------------
 bool MxlAnalyser::octave_shift_id_exists(int num)
 {
-    return num <= m_octaveShiftNum && m_octaveShiftIds[num] != -1;
+    return m_octaveShiftIds[num] > 0;
 }
 
 //---------------------------------------------------------------------------------------
@@ -8097,6 +8189,7 @@ MxlElementAnalyser* MxlAnalyser::new_analyser(const string& name, ImoObj* pAncho
 //        case k_mxl_tag_principal_voice:      return LOMSE_NEW PrincipalVoiceMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_print:                return LOMSE_NEW PrintMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
 //        case k_mxl_tag_rehearsal:            return LOMSE_NEW RehearsalMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+        case k_mxl_tag_rest:                 return LOMSE_NEW RestMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
 //        case k_mxl_tag_scordatura:           return LOMSE_NEW ScordaturaMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_score_instrument:     return LOMSE_NEW ScoreInstrumentMxlAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_mxl_tag_score_part:           return LOMSE_NEW ScorePartMxlAnalyser(this, m_reporter, m_libraryScope);
@@ -8194,21 +8287,32 @@ void MxlTiesBuilder::error_notes_can_not_be_tied(ImoTieDto* pEndInfo)
 //=======================================================================================
 // MxlSlursBuilder implementation
 //=======================================================================================
-void MxlSlursBuilder::add_relation_to_staffobjs(ImoSlurDto* pEndInfo)
+void MxlSlursBuilder::add_relation_to_staffobjs(ImoSlurDto* pEndDto)
 {
-    m_matches.push_back(pEndInfo);
+    //start and end coud be reversed if end was defined before start
+    m_matches.push_back(pEndDto);
+    ImoSlurDto* pStartDto = m_matches.front();
+    if (pEndDto->is_start_of_relation())
+    {
+        ImoSlurDto* pSave = pStartDto;
+        pStartDto = pEndDto;
+        pEndDto = pSave;
+    }
+
     Document* pDoc = m_pAnalyser->get_document_being_analysed();
 
     ImoSlur* pSlur = static_cast<ImoSlur*>(ImFactory::inject(k_imo_slur, pDoc));
-    pSlur->set_slur_number( pEndInfo->get_slur_number() );
+    pSlur->set_slur_number( pEndDto->get_slur_number() );
+    if (pStartDto->get_orientation() != k_orientation_default)
+        pSlur->set_orientation( pStartDto->get_orientation() );
 
-    std::list<ImoSlurDto*>::iterator it;
-    for (it = m_matches.begin(); it != m_matches.end(); ++it)
-    {
-        ImoNote* pNote = (*it)->get_note();
-        ImoSlurData* pData = ImFactory::inject_slur_data(pDoc, *it);
-        pNote->include_in_relation(pDoc, pSlur, pData);
-    }
+    ImoNote* pNote = pStartDto->get_note();
+    ImoSlurData* pData = ImFactory::inject_slur_data(pDoc, pStartDto);
+    pNote->include_in_relation(pDoc, pSlur, pData);
+
+    pNote = pEndDto->get_note();
+    pData = ImFactory::inject_slur_data(pDoc, pEndDto);
+    pNote->include_in_relation(pDoc, pSlur, pData);
 }
 
 

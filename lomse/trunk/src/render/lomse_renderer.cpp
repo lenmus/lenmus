@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2021. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -40,7 +40,9 @@
 //---------------------------------------------------------------------------------------
 
 #include "lomse_renderer.h"
+#include "lomse_logger.h"
 
+#include <sstream>
 using namespace std;
 
 namespace lomse
@@ -136,7 +138,13 @@ Renderer* RendererFactory::create_renderer(LibraryScope& libraryScope,
         //    return LOMSE_NEW RendererTemplate<PixFormat_bgra64>(libraryScope.get_screen_ppi(),
         //                                                 attr_storage, path);
         default:
-            return nullptr;
+        {
+            stringstream s;
+            s << "[RendererFactory::create_renderer] Pixel format '" << pixelFmt
+              << "' not yet supported. Aborting.";
+            LOMSE_LOG_ERROR(s.str());
+            throw runtime_error(s.str());
+        }
     }
 }
 
@@ -216,6 +224,49 @@ void Renderer::reset()
 {
     m_path.remove_all();
     m_attr_storage.remove_all();
+}
+
+//---------------------------------------------------------------------------------------
+int Renderer::bytesPerPixel(int pixFmt)
+{
+    switch(pixFmt)
+    {
+        case k_pix_format_gray8:     // Simple 256 level grayscale
+            return 1;
+        case k_pix_format_gray16:    // Simple 65535 level grayscale
+        case k_pix_format_rgb555:    // 15 bit rgb. Architecture dependent due to byte ordering!
+        case k_pix_format_rgb565:    // 16 bit rgb. Architecture dependent due to byte ordering!
+            return 2;
+        case k_pix_format_rgb24:     // R-G-B, one byte per color component
+        case k_pix_format_bgr24:     // B-G-R, native win32 BMP format
+            return 3;
+        case k_pix_format_rgbAAA:    // 30 bit rgb. Architecture dependent due to byte ordering!
+        case k_pix_format_rgbBBA:    // 32 bit rgb. Architecture dependent due to byte ordering!
+        case k_pix_format_bgrAAA:    // 30 bit bgr. Architecture dependent due to byte ordering!
+        case k_pix_format_bgrABB:    // 32 bit bgr. Architecture dependent due to byte ordering!
+        case k_pix_format_rgba32:    // R-G-B-A, one byte per color component
+        case k_pix_format_argb32:    // A-R-G-B, native MAC format
+        case k_pix_format_abgr32:    // A-B-G-R, one byte per color component
+        case k_pix_format_bgra32:    // B-G-R-A, native win32 BMP format
+            return 4;
+        case k_pix_format_rgb48:     // R-G-B, 16 bits per color component
+        case k_pix_format_bgr48:     // B-G-R, native win32 BMP format
+            return 6;
+        case k_pix_format_rgba64:    // R-G-B-A, 16 bits byte per color component
+        case k_pix_format_argb64:    // A-R-G-B, native MAC format
+        case k_pix_format_abgr64:    // A-B-G-R, one byte per color component
+        case k_pix_format_bgra64:    // B-G-R-A, native win32 BMP format
+            return 8;
+
+        default:
+        {
+            stringstream s;
+            s << "[Renderer::bytesPerPixel] Program bug: No data for pixel format '"
+              << pixFmt << "'. Aborting.";
+            LOMSE_LOG_ERROR(s.str());
+            throw runtime_error(s.str());
+        }
+    }
 }
 
 

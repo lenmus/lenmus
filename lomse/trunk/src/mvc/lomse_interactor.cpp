@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2021. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -52,6 +52,7 @@
 #include "lomse_score_utilities.h"
 #include "lomse_shape_staff.h"
 #include "lomse_score_algorithms.h"
+#include "lomse_renderer.h"
 
 #include <sstream>
 #include <chrono>
@@ -82,6 +83,7 @@ Interactor::Interactor(LibraryScope& libraryScope, WpDocument wpDoc, View* pView
     , m_pCursor(nullptr)
     , m_pSelections(nullptr)
     , m_pExec(pExec)
+//    , m_pPrintBuf(nullptr)
     , m_grefLastMouseOver(k_no_gmo_ref)
     , m_operatingMode(k_mode_read_only)
     , m_fEditionEnabled(false)
@@ -117,6 +119,7 @@ Interactor::~Interactor()
     delete m_pView;
     delete m_pCursor;
     delete m_pSelections;
+//    delete m_pPrintBuf;
     LOMSE_LOG_DEBUG(Logger::k_mvc, "Interactor is deleted");
 }
 
@@ -1035,9 +1038,30 @@ void Interactor::set_viewport_at_page_center(Pixels screenWidth)
 //---------------------------------------------------------------------------------------
 void Interactor::set_rendering_buffer(RenderingBuffer* rbuf)
 {
+    //DEPRECATED method jan/2021
+
     GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
     if (pGView)
         pGView->set_rendering_buffer(rbuf);
+}
+
+//---------------------------------------------------------------------------------------
+void Interactor::set_rendering_buffer(unsigned char* buf, unsigned width, unsigned height)
+{
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (pGView)
+    {
+        pGView->set_rendering_buffer(buf, width, height);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void Interactor::set_view_area(unsigned width, unsigned height, unsigned xShift,
+                               unsigned yShift)
+{
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (pGView)
+        pGView->set_view_area(width, height, xShift, yShift);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1323,11 +1347,11 @@ void Interactor::screen_point_to_page_point(double* x, double* y)
 }
 
 //---------------------------------------------------------------------------------------
-void Interactor::model_point_to_screen(double* x, double* y, int iPage)
+void Interactor::model_point_to_device(double* x, double* y, int iPage)
 {
     GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
     if (pGView)
-        pGView->model_point_to_screen(x, y, iPage);
+        pGView->model_point_to_device(x, y, iPage);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1488,17 +1512,39 @@ void Interactor::select_voice(int voice)
 //---------------------------------------------------------------------------------------
 void Interactor::set_print_buffer(RenderingBuffer* rbuf)
 {
+    //DEPRECATED method Jan/2021
+
     GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
     if (pGView)
-        pGView->set_print_buffer(rbuf);
+        pGView->set_print_buffer(rbuf);    //DEPRECATED method Jan/2021
+}
+
+//---------------------------------------------------------------------------------------
+void Interactor::set_print_buffer(unsigned char* buf, unsigned width, unsigned height)
+{
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (pGView)
+    {
+        pGView->set_print_buffer(buf, width, height);
+    }
 }
 
 //---------------------------------------------------------------------------------------
 void Interactor::set_print_ppi(double ppi)
 {
+    //DEPRECATED method Jan/2021
+
     GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
     if (pGView)
         pGView->set_print_ppi(ppi);
+}
+
+//---------------------------------------------------------------------------------------
+void Interactor::set_print_page_size(Pixels width, Pixels height)
+{
+    GraphicView* pGView = dynamic_cast<GraphicView*>(m_pView);
+    if (pGView)
+        pGView->set_print_page_size(width, height);
 }
 
 //---------------------------------------------------------------------------------------
