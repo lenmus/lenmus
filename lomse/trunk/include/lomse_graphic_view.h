@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2019. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2021. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -50,7 +50,7 @@ namespace lomse
 ///@endcond
 
 //forward declarations
-class ScreenDrawer;
+class BitmapDrawer;
 class Drawer;
 class Interactor;
 class GraphicModel;
@@ -106,6 +106,14 @@ typedef std::shared_ptr<GmoShape>  SpGmoShape;
         a single page having the required height to contain the full document. Is a kind
         of %k_view_vertical_book but without gaps in the content for separting pages.
         As with %k_view_vertical_book the user will have to scroll down for advancing.
+    - @b k_view_free_flow is for rendering documents in a single page as high
+        as necessary. It is similar to how an HTML page with unconstrained body width
+        is displayed in a browser.
+    - @b k_view_half_page is a view that has a double behaviour. In normal mode
+        (no playback) it behaves as SinglePageView, that is the score is rendered on
+        a single page as high as necessary to contain all the score. But when in
+        playback mode, the bitmap to be rendered in the application window is
+        split horizontally in two halves. See HalfPageView for detail.
 
     @#include <lomse_graphic_view.h>
 */
@@ -130,7 +138,7 @@ public:
     virtual ~ViewFactory();
 
     static View* create_view(LibraryScope& libraryScope, int viewType,
-                             ScreenDrawer* pDrawer);
+                             Drawer* pDrawer, Drawer* pPrintDrawer);
 
 };
 
@@ -158,10 +166,9 @@ class GraphicView : public View
 {
 protected:
     LibraryScope& m_libraryScope;
-    ScreenDrawer* m_pDrawer;
-    std::vector<RenderingBuffer*> m_pPages;
+    Drawer* m_pDrawer;                //owned by GraphicView
+    BitmapDrawer* m_pPrintDrawer;     //owned by GraphicView
     RenderOptions m_options;
-    RenderingBuffer* m_pRenderBuf;
     OverlaysGenerator* m_pOverlaysGenerator;
 
     //renderization parameters
@@ -174,6 +181,7 @@ protected:
     Pixels m_vxOrg, m_vyOrg;
     VSize  m_viewportSize;
     std::mutex m_viewportMutex;
+    bool m_fUpdateGModel = false;
 
     //caret and other visual effects
     Caret*              m_pCaret;
@@ -190,8 +198,7 @@ protected:
     //bounds for each displayed page
     std::list<URect> m_pageBounds;
 
-    //for printing
-    RenderingBuffer* m_pPrintBuf;
+    //for printing (deprecated variable, to be removed when deprecated methods are removed)
     double           m_print_ppi;     //printer resolution in pixels per inch
 
     //options
@@ -201,14 +208,12 @@ public:
 ///@cond INTERNALS
 //excluded from public API because the View methods are managed from Interactor
 
-    virtual ~GraphicView();
+    ~GraphicView() override;
 
     /// @name View settings
     ///@{
-
     void new_viewport(Pixels x, Pixels y) override;
     void get_viewport(Pixels* x, Pixels* y) override { *x = m_vxOrg; *y = m_vyOrg; }
-    void set_rendering_buffer(RenderingBuffer* rbuf);
     void set_viewport_at_page_center(Pixels screenWidth);
     virtual void set_viewport_for_page_fit_full(Pixels screenWidth) = 0;
     LUnits get_viewport_width();
@@ -216,8 +221,18 @@ public:
     void use_selection_set(SelectionSet* pSelectionSet);
     void add_visual_effect(VisualEffect* pEffect);
     virtual void on_mode_changed(int mode);
-
     ///@}    //View settings
+
+
+    /// @name Interface with the Drawer
+    ///@{
+    void set_rendering_buffer(unsigned char* buf, unsigned width, unsigned height);
+    void set_view_area(unsigned width, unsigned height, unsigned xShift, unsigned yShift);
+
+    //Deprecated, but needed until removed from Interactor
+    void set_rendering_buffer(RenderingBuffer* rbuf);
+
+    ///@}    //Interface with the Drawer
 
 
     /// @name Renderization related
@@ -233,7 +248,6 @@ public:
     void draw_selected_objects();
     void draw_handler(Handler* pHandler);
     void set_background(Color color) { m_backgroundColor = color; }
-
     ///@}    //Renderization related
 
 
@@ -381,7 +395,7 @@ public:
     /// @name Coordinates conversion
     ///@{
     void screen_point_to_page_point(double* x, double* y);
-    void model_point_to_screen(double* x, double* y, int iPage);
+    void model_point_to_device(double* x, double* y, int iPage);
     UPoint screen_point_to_model_point(Pixels x, Pixels y);
     virtual int page_at_screen_point(double x, double y);
     virtual bool trim_rectangle_to_be_on_pages(double* xLeft, double* yTop,
@@ -427,9 +441,13 @@ public:
 
     /// @name Support for printing
     ///@{
-    void set_print_buffer(RenderingBuffer* rbuf) { m_pPrintBuf = rbuf; }
-    void set_print_ppi(double ppi) { m_print_ppi = ppi; }
+    virtual void set_print_page_size(Pixels width, Pixels height);
+    void set_print_buffer(unsigned char* buf, unsigned width, unsigned height);
     virtual void print_page(int page, VPoint viewport);
+
+    //Deprecated methods, to be removed when the method is removed from Interactor
+    void set_print_buffer(RenderingBuffer* rbuf);
+    void set_print_ppi(double ppi) { m_print_ppi = ppi; }
 
     ///@}    //Support for printing
 
@@ -443,7 +461,7 @@ public:
 ///@endcond
 
 protected:
-    GraphicView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
+    GraphicView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
 
     virtual void draw_all();
     void draw_graphic_model();
@@ -525,8 +543,8 @@ class LOMSE_EXPORT SimpleView : public GraphicView
 {
 public:
 
-    SimpleView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
-    virtual ~SimpleView() {}
+    SimpleView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
+    ~SimpleView() override {}
 
     int page_at_screen_point(double x, double y) override;
     void set_viewport_for_page_fit_full(Pixels screenWidth) override;
@@ -551,8 +569,8 @@ public:
 ///@cond INTERNALS
 //excluded from public API because the View methods are managed from Interactor
 
-    VerticalBookView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
-    virtual ~VerticalBookView() {}
+    VerticalBookView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
+    ~VerticalBookView() override {}
 
     void set_viewport_for_page_fit_full(Pixels screenWidth) override;
     void get_view_size(Pixels* xWidth, Pixels* yHeight) override;
@@ -579,8 +597,8 @@ public:
 ///@cond INTERNALS
 //excluded from public API because the View methods are managed from Interactor
 
-    HorizontalBookView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
-    virtual ~HorizontalBookView() {}
+    HorizontalBookView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
+    ~HorizontalBookView() override {}
 
     void set_viewport_for_page_fit_full(Pixels screenWidth) override;
     void get_view_size(Pixels* xWidth, Pixels* yHeight) override;
@@ -629,7 +647,6 @@ protected:
         m_pPresenter = lomse.open_document(k_view_single_system, filename);
         if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
         {
-            spInteractor->set_rendering_buffer(&m_rbuf_window);
             spInteractor->set_view_background( Color(255,255,255) );  //white
             ...
     @endcode
@@ -647,8 +664,8 @@ public:
 ///@cond INTERNALS
 //excluded from public API because the View methods are managed from Interactor
 
-    SingleSystemView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
-    virtual ~SingleSystemView() {}
+    SingleSystemView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
+    ~SingleSystemView() override {}
 
     int page_at_screen_point(double x, double y) override;
     void set_viewport_for_page_fit_full(Pixels screenWidth) override;
@@ -698,8 +715,8 @@ public:
 ///@cond INTERNALS
 //excluded from public API because the View methods are managed from Interactor
 
-    SinglePageView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
-    virtual ~SinglePageView() {}
+    SinglePageView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
+    ~SinglePageView() override {}
 
     int page_at_screen_point(double x, double y) override;
     void set_viewport_for_page_fit_full(Pixels screenWidth) override;
@@ -749,8 +766,8 @@ public:
 ///@cond INTERNALS
 //excluded from public API because the View methods are managed from Interactor
 
-    FreeFlowView(LibraryScope& libraryScope, ScreenDrawer* pDrawer);
-    virtual ~FreeFlowView() {}
+    FreeFlowView(LibraryScope& libraryScope, Drawer* pDrawer, BitmapDrawer* pPrintDrawer);
+    ~FreeFlowView() override {}
 
     //overrides for SinglePageView
     int get_layout_constrains() override { return k_use_viewport_width | k_infinite_height; }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book [
+    <!ENTITY chapter01 SYSTEM "L2_MusicReading_v2_01.xml">
+    <!ENTITY chapter02 SYSTEM "L2_MusicReading_v2_02.xml">
+    <!ENTITY chapter03 SYSTEM "L2_MusicReading_v2_03.xml">
+    <!ENTITY chapter04 SYSTEM "L2_MusicReading_v2_04.xml">
+    <!ENTITY chapter05 SYSTEM "L2_MusicReading_v2_05.xml">
+    <!ENTITY chapter06 SYSTEM "L2_MusicReading_v2_06.xml">
+    <!ENTITY chapter07 SYSTEM "L2_MusicReading_v2_07.xml">
+    <!ENTITY chapter08 SYSTEM "L2_MusicReading_v2_08.xml">
+    <!ENTITY chapter09 SYSTEM "L2_MusicReading_v2_09.xml">
+    <!ENTITY chapter10 SYSTEM "L2_MusicReading_v2_10.xml">
+    <!ENTITY chapter11 SYSTEM "L2_MusicReading_v2_11.xml">
+    <!ENTITY chapter12 SYSTEM "L2_MusicReading_v2_12.xml">
+    <!ENTITY chapter13 SYSTEM "L2_MusicReading_v2_13.xml">
+    <!ENTITY chapter14 SYSTEM "L2_MusicReading_v2_14.xml">
+    <!ENTITY chapter15 SYSTEM "L2_MusicReading_v2_15.xml">
+    <!ENTITY chapter16 SYSTEM "L2_MusicReading_v2_16.xml">
+    <!ENTITY chapter17 SYSTEM "L2_MusicReading_v2_17.xml">
+    <!ENTITY chapter18 SYSTEM "L2_MusicReading_v2_18.xml">
+    <!ENTITY chapter19 SYSTEM "L2_MusicReading_v2_19.xml">
+]>
+
+<book id="L2_Nuevo">
+<bookinfo>
+    <title>Ejercicios de lectura musical</title>
+    <abstract>Este libro está orientado a la práctica de la lectura musical, proporcionando explicaciones y ejercicios adecuados para ir avanzando progresivamente y dominar la lectura.</abstract>
+    <copyright>
+        <year>2002-2021</year>
+        <holder>Proyecto LenMus</holder>
+    </copyright>
+    <legalnotice>
+        <para>Se concede permiso para copiar, distribuir y/o modificar este libro bajo los términos de la licencia Creative Commons Attribution-Share-Alike, versión 3.0 o posterior, con las excepción de aquellas páginas en las que otro autor o grupo de autores haya sido claramente señalado. El texto de la licencia Creative Commons Attribution-Share-Alike está disponible en <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
+        http://creativecommons.org/licenses/by-sa/3.0/</ulink>
+        </para>
+        <para role='center'>
+        <imagedata fileref='cc-by-sa.png' />
+        </para>
+    </legalnotice>
+</bookinfo>
+
+&chapter01;
+&chapter02;
+&chapter03;
+&chapter04;
+&chapter05;
+&chapter06;
+&chapter07;
+&chapter08;
+&chapter09;
+&chapter10;
+&chapter11;
+&chapter12;
+&chapter13;
+&chapter14;
+&chapter15;
+&chapter16;
+&chapter17;
+&chapter18;
+&chapter19;
+
+</book>

@@ -73,7 +73,7 @@ class Interactor;
 class Presenter;
 class LomseDoorway;
 class Drawer;
-class ScreenDrawer;
+class BitmapDrawer;
 class Task;
 class Request;
 class ScorePlayer;
@@ -125,6 +125,7 @@ protected:
     bool m_fShowShapeBounds;        //draw a box around each shape
     bool m_fDrawSlurCtrolPoints;    //draw ctrol.points in slurs and ties
     bool m_fDrawVerticalProfile;    //draw vertical profile
+    bool m_fDrawChordsColoured = false; //draw flag, link and start chord notes in colors
     bool m_fUnitTests;              //library is running for Unit Tests
     int m_traceLinesBreaker;        //trace level for lines breaker algorithm
 
@@ -224,10 +225,12 @@ public:
     inline bool draw_anchor_lines() { return m_fDrawAnchorLines; }
     inline void set_draw_shape_bounds(bool value) { m_fShowShapeBounds = value; }
     inline bool draw_shape_bounds() { return m_fShowShapeBounds; }
-    inline bool draw_slur_ctrol_points() { return m_fDrawSlurCtrolPoints; }
     inline void set_draw_slur_ctrol_points(bool value) { m_fDrawSlurCtrolPoints = value; }
-    inline bool draw_vertical_profile() { return m_fDrawVerticalProfile; }
+    inline bool draw_slur_ctrol_points() { return m_fDrawSlurCtrolPoints; }
     inline void set_draw_vertical_profile(bool value) { m_fDrawVerticalProfile = value; }
+    inline bool draw_vertical_profile() { return m_fDrawVerticalProfile; }
+    inline void set_draw_chords_coloured(bool value) { m_fDrawChordsColoured = value; }
+    inline bool draw_chords_coloured() { return m_fDrawChordsColoured; }
     inline void set_unit_test(bool value) { m_fUnitTests = value; }
     inline bool is_unit_test() { return m_fUnitTests; }
     inline void set_trace_level_for_lines_breaker(int level) {
@@ -287,24 +290,22 @@ public:
     static ModelBuilder* inject_ModelBuilder(DocumentScope& documentScope);
     static Document* inject_Document(LibraryScope& libraryScope,
                                      ostream& reporter = cout);
-    static ScreenDrawer* inject_ScreenDrawer(LibraryScope& libraryScope);
-    static View* inject_View(LibraryScope& libraryScope, int viewType, Document* pDoc);
-    static SimpleView* inject_SimpleView(LibraryScope& libraryScope, Document* pDoc);
-    static VerticalBookView* inject_VerticalBookView(LibraryScope& libraryScope,
-                                                     Document* pDoc);
-    static HorizontalBookView* inject_HorizontalBookView(LibraryScope& libraryScope,
-                                                         Document* pDoc);
-    static SingleSystemView* inject_SingleSystemView(LibraryScope& libraryScope,
-                                                     Document* pDoc);
-    static SinglePageView* inject_SinglePageView(LibraryScope& libraryScope, Document* pDoc);
-    static FreeFlowView* inject_FreeFlowView(LibraryScope& libraryScope, Document* pDoc);
-    static HalfPageView* inject_HalfPageView(LibraryScope& libraryScope, Document* pDoc);
+    static BitmapDrawer* inject_BitmapDrawer(LibraryScope& libraryScope);
+
+    static View* inject_View(LibraryScope& libraryScope, int viewType);
+    static View* inject_View(LibraryScope& libraryScope, int viewType,
+                             Drawer* screenDrawer, Drawer* printDrawer);
 
     static Interactor* inject_Interactor(LibraryScope& libraryScope,
                                          WpDocument wpDoc, View* pView,
                                          DocCommandExecuter* pExec);
+
     static Presenter* inject_Presenter(LibraryScope& libraryScope,
                                        int viewType, Document* pDoc);
+    static Presenter* inject_Presenter(LibraryScope& libraryScope,
+                                       int viewType, Document* pDoc,
+                                       Drawer* screenDrawer, Drawer* printDrawer);
+
     static Task* inject_Task(int taskType, Interactor* pIntor);
     static ScorePlayer* inject_ScorePlayer(LibraryScope& libraryScope,
                                            MidiServerBase* pSoundServer);

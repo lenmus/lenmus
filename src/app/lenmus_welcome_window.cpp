@@ -66,6 +66,15 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
 
 	create_controls();
 
+	//set eBooks name
+    Paths* pPaths = m_appScope.get_paths();
+    if (pPaths->GetLanguageCode() == "es")
+    {
+	    m_txtLevel1->SetLabel("Elementos del lenguaje musical I");
+    	m_txtLevel2->SetLabel("Elementos del lenguaje musical II");
+        m_txtLevel3->SetLabel("Ejercicios de lectura");
+    }
+
     //load icons
     m_logoUCA->SetBitmap( wxArtProvider::GetIcon("logoUCA", wxART_OTHER) );
 
@@ -221,10 +230,11 @@ void WelcomeWindow::create_controls()
 	sizerRight->Add( m_txtBooksText, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxFlexGridSizer* sizerGridBooks;
-	sizerGridBooks = new wxFlexGridSizer( 3, 2, 0, 0 );
+	sizerGridBooks = new wxFlexGridSizer( 4, 2, 0, 0 );
 	sizerGridBooks->SetFlexibleDirection( wxHORIZONTAL );
 	sizerGridBooks->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
+	//------- book 1
 	m_txtLevel1 = new wxStaticText( this, wxID_ANY, _("Music Reading I"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtLevel1->Wrap( -1 );
 	m_txtLevel1->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
@@ -234,6 +244,7 @@ void WelcomeWindow::create_controls()
 	m_btnLevel1 = new wxButton( this, k_id_book_1, _("Start"), wxDefaultPosition, wxDefaultSize, 0 );
 	sizerGridBooks->Add( m_btnLevel1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
+	//------- book 2
 	m_txtLevel2 = new wxStaticText( this, wxID_ANY, _("Music Reading II"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtLevel2->Wrap( -1 );
 	m_txtLevel2->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
@@ -243,7 +254,8 @@ void WelcomeWindow::create_controls()
 	m_btnLevel2 = new wxButton( this, k_id_book_2, _("Start"), wxDefaultPosition, wxDefaultSize, 0 );
 	sizerGridBooks->Add( m_btnLevel2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_txtLevel3 = new wxStaticText( this, wxID_ANY, wxT("Theory & Harmony"), wxDefaultPosition, wxDefaultSize, 0 );
+	//------- book 3
+	m_txtLevel3 = new wxStaticText( this, wxID_ANY, _("Theory and Harmony"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_txtLevel3->Wrap( -1 );
 	m_txtLevel3->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
 
@@ -253,40 +265,44 @@ void WelcomeWindow::create_controls()
 	sizerGridBooks->Add( m_btnLevel3, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
+
 	sizerRight->Add( sizerGridBooks, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
 
+	    // close content
+
+	sizerContent->Add( sizerRight, 0, 0, 5 );
+
+    //margin at right
+	sizerContent->Add( 0, 0, 1, wxEXPAND, 5 );
+	sizerMain->Add( sizerContent, 0, wxEXPAND, 5 );
+
+
+	    //UCA block
+
 	//Block: UCA Logo
-    sizerRight->Add( 0, 140, 0, 0, 5 );       //space between this block and next block
+    sizerRight->Add( 0, 40, 0, 0, 5 );       //space between this block and next block
 
 	wxBoxSizer* sizerUCABox;
 	sizerUCABox = new wxBoxSizer( wxHORIZONTAL );
 
-	sizerUCABox->Add( 0, 0, 1, 0, 5 );  //spacer, to align right
+	sizerUCABox->Add( 0, 0, 1, 0, 5 );  //spacer, to center
 
 	m_txtUCA = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	//m_txtUCA->SetLabel( "\n" + _("Colabora:") );
 	m_txtUCA->SetLabel( "\n" + _("Acknowledgments:") );
 	m_txtUCA->Wrap( -1 );
 	m_txtUCA->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	sizerUCABox->Add( m_txtUCA, 0, wxALL, 5 );
+	sizerUCABox->Add( m_txtUCA, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_logoUCA = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-	sizerUCABox->Add( m_logoUCA, 0, wxALL, 5 );
+	sizerUCABox->Add( m_logoUCA, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-	sizerRight->Add( sizerUCABox, 1, wxEXPAND, 5 );
-
-
+	sizerUCABox->Add( 0, 0, 1, 0, 5 );  //spacer, to center
 
 
-	    // close all
 
-	sizerContent->Add( sizerRight, 0, 0, 5 );
-
-    //margin at right
-	sizerContent->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	sizerMain->Add( sizerContent, 0, wxEXPAND, 5 );
+	sizerMain->Add( sizerUCABox, 0, wxEXPAND, 5 );
 
 
 
@@ -308,19 +324,34 @@ void WelcomeWindow::on_button_exercises(wxCommandEvent& UNUSED(event))
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::on_button_book_1(wxCommandEvent& UNUSED(event))
 {
-    open_book("L1_MusicReading.lmb");
+    Paths* pPaths = m_appScope.get_paths();
+    wxString lang = pPaths->GetLanguageCode();
+    if (lang == "es")
+        open_book("L1_MusicReading.lmb");
+    else
+        open_book("L1_MusicReading.lmb");
 }
 
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::on_button_book_2(wxCommandEvent& UNUSED(event))
 {
-    open_book("L2_MusicReading.lmb");
+    Paths* pPaths = m_appScope.get_paths();
+    wxString lang = pPaths->GetLanguageCode();
+    if (lang == "es")
+        open_book("TheoryHarmony.lmb");
+    else
+        open_book("L2_MusicReading.lmb");
 }
 
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::on_button_book_3(wxCommandEvent& UNUSED(event))
 {
-    open_book("TheoryHarmony.lmb");
+    Paths* pPaths = m_appScope.get_paths();
+    wxString lang = pPaths->GetLanguageCode();
+    if (lang == "es")
+        open_book("L2_MusicReading_v2.lmb");
+    else
+        open_book("TheoryHarmony.lmb");
 }
 
 //---------------------------------------------------------------------------------------

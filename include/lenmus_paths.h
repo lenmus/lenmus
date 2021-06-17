@@ -87,29 +87,30 @@ public:
     string dump_paths();
 
     //Access to paths
-    wxString GetSrcRootPath() { return m_sSourceRoot; } //Only valid in local debug builds
-    wxString GetBinPath() { return m_sBin; }
-    wxString GetXrcPath() { return m_sXrc; }
-    wxString GetTemporaryPath() { return m_sTemp; }
-    wxString GetImagePath() { return m_sImages; }
-    wxString GetCursorsPath() { return m_sCursors; }
-    wxString GetSoundsPath() { return m_sSounds; }
-    wxString GetSoundFontsPath() { return m_sSoundFonts; }
-    wxString GetLocaleRootPath() { return m_sLocaleRoot; }
-    wxString GetScoresPath() { return m_sScores; }
-    wxString GetTestScoresPath() { return m_sTestScores; }
-    wxString GetSamplesPath() { return m_sSamples; }
-    wxString GetTemplatesPath() { return m_sTemplates; }
-    wxString GetConfigPath() { return m_sConfig; }
-    wxString GetLogPath() { return m_sLogs; }
-    wxString GetFontsPath() { return m_sFonts; }
+    inline wxString GetSrcRootPath() { return m_sSourceRoot; } //Only valid in local debug builds
+    inline wxString GetBinPath() { return m_sBin; }
+    inline wxString GetXrcPath() { return m_sXrc; }
+    inline wxString GetTemporaryPath() { return m_sTemp; }
+    inline wxString GetImagePath() { return m_sImages; }
+    inline wxString GetCursorsPath() { return m_sCursors; }
+    inline wxString GetSoundsPath() { return m_sSounds; }
+    inline wxString GetSoundFontsPath() { return m_sSoundFonts; }
+    inline wxString GetLocaleRootPath() { return m_sLocaleRoot; }
+    inline wxString GetScoresPath() { return m_sScores; }
+    inline wxString GetTestScoresPath() { return m_sTestScores; }
+    inline wxString GetSamplesPath() { return m_sSamples; }
+    inline wxString GetTemplatesPath() { return m_sTemplates; }
+    inline wxString GetConfigPath() { return m_sConfig; }
+    inline wxString GetLogPath() { return m_sLogs; }
+    inline wxString GetFontsPath() { return m_sFonts; }
 
     // paths that depend on the language name
-    wxString GetLocalePath() { return m_sLocale; }
-    wxString GetHelpPath() { return m_sHelp; }
-    wxString GetBooksPath() { return m_sBooks; }
+    inline wxString GetLocalePath() { return m_sLocale; }
+    inline wxString GetHelpPath() { return m_sHelp; }
+    inline wxString GetBooksPath() { return m_sBooks; }
 
     void SetLanguageCode(wxString sLangCode);
+    inline wxString GetLanguageCode() { return m_sLangCode; }
 
 private:
 	void ClearTempFiles();

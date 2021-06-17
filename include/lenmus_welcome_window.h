@@ -53,6 +53,7 @@ protected:
     void on_button_book_1(wxCommandEvent& UNUSED(event));
     void on_button_book_2(wxCommandEvent& UNUSED(event));
     void on_button_book_3(wxCommandEvent& UNUSED(event));
+    void on_button_book_4(wxCommandEvent& UNUSED(event));
     void on_button_study_guide(wxCommandEvent& UNUSED(event));
 
     void open_book(const wxString& filename);

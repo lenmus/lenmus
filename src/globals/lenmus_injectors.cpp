@@ -203,26 +203,17 @@ void ApplicationScope::initialize_lomse()
     // pixel of the first row, and so on until the end of the first row,
     // with second row following after it and so on.
     // Therefore, the pixel format is RGB 24 bits.
-    //
+
     // Let's define the requiered information:
-
-        //the pixel format
-        int pixel_format = k_pix_format_rgb24;  //RGB 24bits
-
-        //the desired resolution. For Linux and Windows use 96 pixels per inch
-        int resolution = 96;    //96 ppi
-
-        //Normal y axis direction is 0 coordinate at top and increase downwards. You
-        //must specify if you would like just the opposite behaviour. For Windows and
-        //Linux the default behaviour is the right behaviour.
-        bool reverse_y_axis = false;
+    int pixel_format = k_pix_format_rgb24;  //RGB 24bits
+    int resolution = 96;    //96 ppi
 
     //redirect cout to my own stream, to intercept and display error msgs.
     m_cout_buffer = cout.rdbuf();
     cout.rdbuf (m_lomseReporter.rdbuf());
 
     //Now, initialize the library with these values
-    m_lomse.init_library(pixel_format, resolution, reverse_y_axis, m_lomseReporter);
+    m_lomse.init_library(pixel_format, resolution, m_lomseReporter);
 }
 
 //---------------------------------------------------------------------------------------
@@ -290,7 +281,7 @@ void ApplicationScope::create_logger()
     // - Macro LOMSE_LOG_INFO always work.
     // - Both write logs to lomse-log.txt
 
-    logger.set_logging_mode(Logger::k_normal_mode); //k_normal_mode k_debug_mode k_trace_mode
+    logger.set_logging_mode(Logger::k_trace_mode); //k_normal_mode k_debug_mode k_trace_mode
     logger.set_logging_areas(Logger::k_score_player);   //k_events); //k_layout); //k_all  k_mvc | );
 
 	// For debugging: send wxWidgets log messages to a file

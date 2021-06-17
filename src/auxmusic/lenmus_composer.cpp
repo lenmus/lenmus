@@ -33,6 +33,7 @@
 #include <lomse_staffobjs_table.h>
 #include <lomse_staffobjs_cursor.h>
 #include <lomse_time.h>
+#include <lomse_ldp_exporter.h>
 using namespace lomse;
 
 ////wxWidgets
@@ -43,7 +44,7 @@ using namespace lomse;
 #include <algorithm>
 //#include <vector>
 
-#define TRACE_COMPOSER  0
+#define TRACE_COMPOSER  1
 #define TRACE_PITCH     0
 
 
@@ -225,10 +226,18 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     bool fCompound = get_num_ref_notes_per_pulse_for(m_nTimeSign) != 1;
 
     // prepare and initialize the score
+    stringstream sScore;            //source code of the full score
+    sScore << "(score (vers 2.0)(opt Render.SpacingFactor 0.2)(opt Render.SpacingFopt 2.5)(instrument (musicData ";
+    sScore << "(clef " << LdpExporter::clef_type_to_ldp(m_nClef) << ")";
+    sScore << "(key " << LdpExporter::key_type_to_ldp(m_nKey) << ")";
+
+
     AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
     ImoScore* pScore = score.internal_object();
     ImoInstrument* pInstr = pScore->add_instrument();
     pScore->set_version(200);
+    pScore->set_float_option("Render.SpacingFactor", 0.2);
+    pScore->set_float_option("Render.SpacingFopt", 2.5);
     ImoSoundInfo* pSound = pInstr->get_sound_info(0);
     ImoMidiInfo* pMidi = pSound->get_midi_info();
     pMidi->set_midi_program(m_midiVoice);
@@ -253,6 +262,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     int beats = get_top_number_for(m_nTimeSign);
     int type = get_bottom_number_for(m_nTimeSign);
     pInstr->add_time_signature(beats, type);
+    sScore << "(time " << beats << " " << type << ")";
 #endif
 
     //
@@ -283,6 +293,8 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     {
         LOMSE_LOG_ERROR("No usable fragments!");
         return pScore;
+//        AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+//        return score.internal_object();
     }
 
     //chose ramdomly a fragment satisfying the constraints, and take the first segment
@@ -302,6 +314,10 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 	// because its length is compensated for in the last measure
         sMeasure = CreateAnacruxMeasure(nNumMeasures, m_nTimeSign, rPickupDuration);
         pInstr->add_staff_objects( to_std_string(sMeasure) );
+        sScore << to_std_string(sMeasure);
+        #if (TRACE_COMPOSER == 1)
+        LOMSE_LOG_INFO("Adding anacrux measure='%s'", to_std_string(sMeasure).c_str());
+        #endif
     }
 #endif
 
@@ -348,9 +364,10 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                      && !is_greater_time(rConsumedBeatTime, rSegmentAlignBeatTime));
 
             #if (TRACE_COMPOSER == 1)
-            wxLogMessage("[Composer::generate_score] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s",
-                    sMeasure.wx_str(),
-                    (pSegment->GetSource()).wx_str(), rTimeRemaining, rSegmentDuration,
+            LOMSE_LOG_INFO("sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s",
+                    to_std_string(sMeasure).c_str(),
+                    to_std_string(pSegment->GetSource()).c_str(),
+                    rTimeRemaining, rSegmentDuration,
                     rConsumedBeatTime, rSegmentAlignBeatTime,
                     rOccupiedDuration, rBeatDuration,
                     (fFits ? "yes" : "no") );
@@ -372,8 +389,8 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                 //add segment
                 sMeasure += pSegment->GetSource();
                 #if (TRACE_COMPOSER == 1)
-                wxLogMessage("[Composer::generate_score] Adding segment. Measure = '%s')",
-                             sMeasure.wx_str());
+                LOMSE_LOG_INFO("Adding segment. Measure = '%s')",
+                               to_std_string(sMeasure).c_str());
                 #endif
 
                 //update tr
@@ -387,7 +404,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
             {
                 //does not fit.
                 #if (TRACE_COMPOSER == 1)
-                wxLogMessage("[Composer::generate_score] Segment does not fit. Ignored");
+                LOMSE_LOG_INFO("Segment does not fit. Ignored");
                 #endif
                 if (nSegmentLoopCounter++ > 100)
                 {
@@ -418,13 +435,23 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
             // Instantiate the notes by assigning note pitches and add
             // the measure to the score
             #if (TRACE_COMPOSER == 1)
-            wxLogMessage("[Composer::generate_score] Adding measure = '%s')",
-                         sMeasure.wx_str());
+            LOMSE_LOG_INFO("Adding measure = '%s')",
+                           to_std_string(sMeasure).c_str());
             #endif
             pInstr->add_staff_objects( to_std_string(sMeasure) );
+            sScore << to_std_string(sMeasure);
         }
 
     }
+
+    //create the ImoScore object
+    sScore << to_std_string(sMeasure) << " )))";
+    #if (TRACE_COMPOSER == 1)
+    LOMSE_LOG_INFO(sScore.str());
+    #endif
+//    AScore score = m_doc.create_score(sScore.str(), Document::k_format_ldp).downcast_to_score();
+//    ImoScore* pScore = score.internal_object();
+//    ImoInstrument* pInstr = pScore->get_instrument(0);
 
     pScore->end_of_changes();    //generate ColStaffObjs, to traverse it in following code lines
 
@@ -450,20 +477,18 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     }
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage("[Composer::generate_score] fOnlyQuarterNotes=%s)",
-            (fOnlyQuarterNotes ? "True" : "False") );
+    LOMSE_LOG_INFO("fOnlyQuarterNotes=%s)", (fOnlyQuarterNotes ? "True" : "False") );
     #endif
 
     // add a final measure with a root pitch note lasting, at least, one beat
     sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes, rPickupDuration);
     pInstr->add_staff_objects( to_std_string(sMeasure) );
-
-    pScore->end_of_changes();
-
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage("[Composer::generate_score] Adding final measure = '%s')", sMeasure.wx_str());
+    LOMSE_LOG_INFO("Adding final measure = '%s')",
+                   to_std_string(sMeasure).c_str());
     #endif
 
+    pScore->end_of_changes();
 
      //Score is built but pitches are not yet defined.
      //Proceed to instatiate pitches according to key signature
@@ -654,8 +679,8 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
     }
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage("[Composer::CreateNoteRest] Needed duration= %d, added=%s",
-        nNoteRestDuration, sElement.wx_str());
+    LOMSE_LOG_INFO("Needed duration= %d, added=%s",
+        nNoteRestDuration, to_std_string(sElement).c_str());
     #endif
 
     return sElement;

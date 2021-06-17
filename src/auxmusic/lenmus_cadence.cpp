@@ -1448,41 +1448,41 @@ string Cadence::get_error_description(ChordError nError)
     if (m_language != ApplicationScope::get_language())
     {
         m_error[k_chord_error_0_none] =
-            _("Chord is valid");
+            "Chord is valid";
         m_error[k_chord_error_1_not_all_notes] =
-            _("Not all chord steps in the chord");
+            "Not all chord steps in the chord";
         m_error[k_chord_error_2_fifth_missing] =
-            _("Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)");
+            "Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)";
         m_error[k_chord_error_3_fifth_octave_motion] =
-            _("Parallel motion of perfect octaves, perfect fifths or unisons");
+            "Parallel motion of perfect octaves, perfect fifths or unisons";
         m_error[k_chord_error_4_resultant_fifth_octave] =
-            _("Resultant fifths or octaves in no valid cases");
+            "Resultant fifths or octaves in no valid cases";
         m_error[k_chord_error_5_fifth_doubled] =
-            _("The fifth is doubled");
+            "The fifth is doubled";
         m_error[k_chord_error_6_leading_doubled] =
-            _("The leading tone is doubled");
+            "The leading tone is doubled";
         m_error[k_chord_error_7_leading_resolution] =
-            _("Scale degree seven (the leading tone) doesn't resolve to tonic");
+            "Scale degree seven (the leading tone) doesn't resolve to tonic";
         m_error[k_chord_error_8_seventh_resolution] =
-            _("The seventh does not resolve down by second");
+            "The seventh does not resolve down by second";
         m_error[k_chord_error_9_greater_than_octave] =
-            _("Notes interval greater than one octave (other than bass-tenor)");
+            "Notes interval greater than one octave (other than bass-tenor)";
         m_error[k_chord_error_10_notes_not_ascending] =
-            _("Notes not in ascending sequence or duplicated");
+            "Notes not in ascending sequence or duplicated";
         m_error[k_chord_error_11_voice_overlap] =
-            _("Voice overlap");
+            "Voice overlap";
         m_error[k_chord_error_12_chromatic_acc] =
-            _("Chromatic accidental not resolved in the same direction than "
-              "key accidental");
+            "Chromatic accidental not resolved in the same direction than "
+              "key accidental";
         m_error[k_chord_error_13_greater_than_sixth] =
-            _("No es conveniente exceder el intervalo de sexta, exceptuando la "
-              "octava justa");
+            "No es conveniente exceder el intervalo de sexta, exceptuando la "
+              "octava justa";
         m_error[k_chord_error_14_not_contrary_motion] =
-            _("Bass moves by step and not all other voices moves in the opposite "
-              "direction");
+            "Bass moves by step and not all other voices moves in the opposite "
+              "direction";
         m_error[k_chord_error_15_doubled_third] =
-            _("Cuando el bajo enlaza el V grado con el VI (cadencia rota), en "
-              "el acorde de VI grado se duplica la tercera");
+            "Cuando el bajo enlaza el V grado con el VI (cadencia rota), en "
+              "el acorde de VI grado se duplica la tercera";
 
         m_language = ApplicationScope::get_language();
     }
