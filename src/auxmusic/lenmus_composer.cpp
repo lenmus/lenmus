@@ -226,12 +226,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     bool fCompound = get_num_ref_notes_per_pulse_for(m_nTimeSign) != 1;
 
     // prepare and initialize the score
-    stringstream sScore;            //source code of the full score
-    sScore << "(score (vers 2.0)(opt Render.SpacingFactor 0.2)(opt Render.SpacingFopt 2.5)(instrument (musicData ";
-    sScore << "(clef " << LdpExporter::clef_type_to_ldp(m_nClef) << ")";
-    sScore << "(key " << LdpExporter::key_type_to_ldp(m_nKey) << ")";
-
-
+    stringstream sScore;            //source code for all measures except last one
     AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
     ImoScore* pScore = score.internal_object();
     ImoInstrument* pInstr = pScore->add_instrument();
@@ -262,7 +257,6 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     int beats = get_top_number_for(m_nTimeSign);
     int type = get_bottom_number_for(m_nTimeSign);
     pInstr->add_time_signature(beats, type);
-    sScore << "(time " << beats << " " << type << ")";
 #endif
 
     //
@@ -293,8 +287,6 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     {
         LOMSE_LOG_ERROR("No usable fragments!");
         return pScore;
-//        AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
-//        return score.internal_object();
     }
 
     //chose ramdomly a fragment satisfying the constraints, and take the first segment
@@ -313,7 +305,6 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 	// Assuming the pickup measure doesn't count against the measure count,
 	// because its length is compensated for in the last measure
         sMeasure = CreateAnacruxMeasure(nNumMeasures, m_nTimeSign, rPickupDuration);
-        pInstr->add_staff_objects( to_std_string(sMeasure) );
         sScore << to_std_string(sMeasure);
         #if (TRACE_COMPOSER == 1)
         LOMSE_LOG_INFO("Adding anacrux measure='%s'", to_std_string(sMeasure).c_str());
@@ -432,27 +423,21 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
             // increment measures counter
             nNumMeasures++;
 
-            // Instantiate the notes by assigning note pitches and add
-            // the measure to the score
+            // add the measure to the score
             #if (TRACE_COMPOSER == 1)
             LOMSE_LOG_INFO("Adding measure = '%s')",
                            to_std_string(sMeasure).c_str());
             #endif
-            pInstr->add_staff_objects( to_std_string(sMeasure) );
             sScore << to_std_string(sMeasure);
         }
 
     }
 
-    //create the ImoScore object
-    sScore << to_std_string(sMeasure) << " )))";
+    //add the measures to the ImoScore object
     #if (TRACE_COMPOSER == 1)
     LOMSE_LOG_INFO(sScore.str());
     #endif
-//    AScore score = m_doc.create_score(sScore.str(), Document::k_format_ldp).downcast_to_score();
-//    ImoScore* pScore = score.internal_object();
-//    ImoInstrument* pInstr = pScore->get_instrument(0);
-
+    pInstr->add_staff_objects(sScore.str());
     pScore->end_of_changes();    //generate ColStaffObjs, to traverse it in following code lines
 
     // In Music Reading, level 1, introduction lessons use only quarter notes. In those
