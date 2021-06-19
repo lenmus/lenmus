@@ -132,6 +132,10 @@ private:
     FPitch MoveByChromaticStep(bool fUpStep, FPitch nPitch);
     FPitch MoveByStep(bool fUpStep, FPitch nPitch, FPitch aScale[7]);
 
+    //helper
+    static std::string replace(const std::string& str, const std::string& oldStr,
+                               const std::string& newStr);
+
     //debug
     void InstantiateWithNote(ImoScore* pScore, FPitch fp);
 

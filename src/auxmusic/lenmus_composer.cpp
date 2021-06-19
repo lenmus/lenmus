@@ -43,8 +43,9 @@ using namespace lomse;
 //other
 #include <algorithm>
 //#include <vector>
+using namespace std;
 
-#define TRACE_COMPOSER  1
+#define TRACE_COMPOSER  0
 #define TRACE_PITCH     0
 
 
@@ -433,11 +434,20 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 
     }
 
-    //add the measures to the ImoScore object
+    //sanitize measures
+    string measures = sScore.str();
     #if (TRACE_COMPOSER == 1)
     LOMSE_LOG_INFO(sScore.str());
     #endif
-    pInstr->add_staff_objects(sScore.str());
+        //remove ties to rests (issue #134)
+    measures = Composer::replace(measures, " l g-)(r", " g-)(r");
+    measures = Composer::replace(measures, " l)(r", ")(r");
+    #if (TRACE_COMPOSER == 1)
+    LOMSE_LOG_INFO(measures);
+    #endif
+
+    //add the measures to the ImoScore object
+    pInstr->add_staff_objects(measures);
     pScore->end_of_changes();    //generate ColStaffObjs, to traverse it in following code lines
 
     // In Music Reading, level 1, introduction lessons use only quarter notes. In those
@@ -489,6 +499,27 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     // done
     //pScore->Dump("lemus_score_dump.txt");
     return pScore;
+}
+
+//---------------------------------------------------------------------------------------
+string Composer::replace(const string& str, const string& oldStr, const string& newStr)
+{
+    if (oldStr == "")
+        return str;
+
+    std::string result = "";
+    size_t pos = 0;
+    size_t pos2 = str.find(oldStr, pos);
+
+    while (pos2 != std::string::npos)
+    {
+        result += str.substr(pos, pos2-pos) + newStr;
+        pos = pos2 + oldStr.length();
+        pos2 = str.find(oldStr, pos);
+    }
+    result += str.substr(pos, str.length()-pos);
+
+    return result;
 }
 
 //---------------------------------------------------------------------------------------
