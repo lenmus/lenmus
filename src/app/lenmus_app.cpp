@@ -527,24 +527,6 @@ void TheApp::initialize_xrc_resources()
     // Cedences identification exercises: configuration dialog
     oXrcFile = wxFileName(sPath, "DlgCfgIdfyCadence", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Pattern Editor dialog
-    oXrcFile = wxFileName(sPath, "DlgPatternEditor", "xrc", wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Updater dialog: start
-    oXrcFile = wxFileName(sPath, "UpdaterDlgStart", "xrc", wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Updater dialog: info
-    oXrcFile = wxFileName(sPath, "UpdaterDlgInfo", "xrc", wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    #if (LENMUS_DEBUG_BUILD == 1)
-        // Debug: masks to trace dialog
-        oXrcFile = wxFileName(sPath, "DlgDebugTrace", "xrc", wxPATH_NATIVE);
-        wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-    #endif
 }
 
 //---------------------------------------------------------------------------------------
