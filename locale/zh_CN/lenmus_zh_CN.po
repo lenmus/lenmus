@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 5.4.7\n"
+"Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 13:04+0200\n"
-"PO-Revision-Date: 2020-05-17 13:05+0200\n"
+"POT-Creation-Date: 2021-06-22 17:48+0200\n"
+"PO-Revision-Date: 2021-06-22 17:56+0200\n"
 "Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: zh_CN\n"
@@ -13,26 +13,21 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../..\n"
-"X-Poedit-KeywordsList: _\n"
+"X-Poedit-KeywordsList: _;wxT\n"
 "X-Poedit-SearchPath-0: src/app\n"
 "X-Poedit-SearchPath-1: src/auxmusic\n"
-"X-Poedit-SearchPath-2: src/exercises\n"
-"X-Poedit-SearchPath-3: src/exercises/auxctrols\n"
-"X-Poedit-SearchPath-4: src/exercises/constrains\n"
-"X-Poedit-SearchPath-5: src/exercises/ctrols\n"
-"X-Poedit-SearchPath-6: src/exercises/dialogs\n"
-"X-Poedit-SearchPath-7: src/exercises/params\n"
-"X-Poedit-SearchPath-8: src/globals\n"
-"X-Poedit-SearchPath-9: src/options\n"
-"X-Poedit-SearchPath-10: src/properties\n"
+"X-Poedit-SearchPath-2: src/dialogs\n"
+"X-Poedit-SearchPath-3: src/exercises\n"
+"X-Poedit-SearchPath-4: src/exercises/auxctrols\n"
+"X-Poedit-SearchPath-5: src/exercises/constrains\n"
+"X-Poedit-SearchPath-6: src/exercises/ctrols\n"
+"X-Poedit-SearchPath-7: src/exercises/dialogs\n"
+"X-Poedit-SearchPath-8: src/exercises/params\n"
+"X-Poedit-SearchPath-9: src/globals\n"
+"X-Poedit-SearchPath-10: src/options\n"
 "X-Poedit-SearchPath-11: src/sound\n"
-"X-Poedit-SearchPath-12: src/updater\n"
-"X-Poedit-SearchPath-13: src/widgets\n"
-"X-Poedit-SearchPath-14: src/xml_parser\n"
-"X-Poedit-SearchPath-15: xrc\n"
-"X-Poedit-SearchPath-16: src/app\n"
-"X-Poedit-SearchPath-17: src/dialogs/lenmus_dlg_metronome.cpp\n"
-"X-Poedit-SearchPath-18: src/dialogs/lenmus_dlg_books.cpp\n"
+"X-Poedit-SearchPath-12: src/xml_parser\n"
+"X-Poedit-SearchPath-13: xrc\n"
 
 #: src/app/lenmus_about_dialog.cpp:99 src/app/lenmus_about_dialog.cpp:134
 msgid "A free program for music language learning"
@@ -67,10 +62,9 @@ msgstr "构建信息"
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:372
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:451
 #: src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:139
-#: src/options/lenmus_options_dlg.cpp:273 src/properties/DlgEditText.cpp:148
-#: src/properties/lenmus_dlg_properties.cpp:81 xrc/xrc_strings.cpp:62
-#: xrc/xrc_strings.cpp:127 xrc/xrc_strings.cpp:157 xrc/xrc_strings.cpp:251
-#: xrc/xrc_strings.cpp:305 xrc/xrc_strings.cpp:397
+#: src/options/lenmus_options_dlg.cpp:233 xrc/xrc_strings.cpp:63
+#: xrc/xrc_strings.cpp:128 xrc/xrc_strings.cpp:180 xrc/xrc_strings.cpp:234
+#: xrc/xrc_strings.cpp:326
 msgid "Accept"
 msgstr "同意"
 
@@ -278,78 +272,86 @@ msgid "Project management:"
 msgstr "项目管理："
 
 #: src/app/lenmus_about_dialog.cpp:373
-msgid "Programming:"
-msgstr "程序设计："
-
-#: src/app/lenmus_about_dialog.cpp:379
-msgid "Linux package:"
+msgid "Pedagogical and musical direction:"
 msgstr ""
 
-#: src/app/lenmus_about_dialog.cpp:385
+#: src/app/lenmus_about_dialog.cpp:382
 msgid "Music advice:"
 msgstr ""
 
-#: src/app/lenmus_about_dialog.cpp:395
+#: src/app/lenmus_about_dialog.cpp:396
+msgid "Programming:"
+msgstr "程序设计："
+
+#: src/app/lenmus_about_dialog.cpp:402
+msgid "Linux package:"
+msgstr ""
+
+#: src/app/lenmus_about_dialog.cpp:408
+msgid "macOS package:"
+msgstr ""
+
+#: src/app/lenmus_about_dialog.cpp:413
 msgid "Music texts and exercises:"
 msgstr "音乐教材和练习："
 
-#: src/app/lenmus_about_dialog.cpp:397
+#: src/app/lenmus_about_dialog.cpp:415
 msgid "See credits page on each eBook"
 msgstr ""
 
-#: src/app/lenmus_about_dialog.cpp:402
+#: src/app/lenmus_about_dialog.cpp:420
 msgid "Translation:"
 msgstr "翻译："
 
-#: src/app/lenmus_about_dialog.cpp:403
+#: src/app/lenmus_about_dialog.cpp:421
 msgid "Basque"
 msgstr "巴斯克语"
 
-#: src/app/lenmus_about_dialog.cpp:406
+#: src/app/lenmus_about_dialog.cpp:424
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: src/app/lenmus_about_dialog.cpp:409
+#: src/app/lenmus_about_dialog.cpp:427
 msgid "Simplified Chinese"
 msgstr "简体中文"
 
-#: src/app/lenmus_about_dialog.cpp:412
+#: src/app/lenmus_about_dialog.cpp:430
 msgid "French"
 msgstr "法语"
 
-#: src/app/lenmus_about_dialog.cpp:417
+#: src/app/lenmus_about_dialog.cpp:437
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: src/app/lenmus_about_dialog.cpp:422
+#: src/app/lenmus_about_dialog.cpp:442
 msgid "German"
 msgstr "德语"
 
-#: src/app/lenmus_about_dialog.cpp:425
+#: src/app/lenmus_about_dialog.cpp:447
 msgid "Greek"
 msgstr "希腊语"
 
-#: src/app/lenmus_about_dialog.cpp:428
+#: src/app/lenmus_about_dialog.cpp:450
 msgid "Italian"
 msgstr "意大利语"
 
-#: src/app/lenmus_about_dialog.cpp:432
+#: src/app/lenmus_about_dialog.cpp:454
 msgid "Russian"
 msgstr ""
 
-#: src/app/lenmus_about_dialog.cpp:436
+#: src/app/lenmus_about_dialog.cpp:458
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: src/app/lenmus_about_dialog.cpp:439
+#: src/app/lenmus_about_dialog.cpp:461
 msgid "Turkish"
 msgstr "土耳其语"
 
-#: src/app/lenmus_about_dialog.cpp:445
+#: src/app/lenmus_about_dialog.cpp:467
 msgid "Thanks also to:"
 msgstr "其他致谢："
 
-#: src/app/lenmus_about_dialog.cpp:450
+#: src/app/lenmus_about_dialog.cpp:472
 msgid ""
 "If you would like to help developing this program or join the project to "
 "help in any other way, you are indeed welcome; please, visit LenMus at "
@@ -360,350 +362,153 @@ msgstr ""
 "访问GitHub（https://github.com/lenmus/lenmus）上的LenMus，并通过打开新一期留"
 "言。 谢谢，欢迎您。"
 
-#: src/app/lenmus_app.cpp:178
+#: src/app/lenmus_app.cpp:177
 #, c-format
 msgid "Another instance of %s is already running."
 msgstr "其他几个 %s 实例已经在运行"
 
-#: src/app/lenmus_app.cpp:920
+#: src/app/lenmus_app.cpp:825
 msgid "LenMus First Run"
 msgstr "首次运行LenMus"
 
-#: src/app/lenmus_command_event_handler.cpp:987
-#, fuzzy
-msgid "Add chord note"
-msgstr "添加音符"
-
-#: src/app/lenmus_command_event_handler.cpp:996
-#, fuzzy
-msgid "Add tie"
-msgstr "添加标题"
-
-#: src/app/lenmus_command_event_handler.cpp:1057
-msgid "Add tuplet"
-msgstr "添加连音符"
-
-#: src/app/lenmus_command_event_handler.cpp:1110
-msgid "Break a beam"
-msgstr "拆分符杠"
-
-#: src/app/lenmus_command_event_handler.cpp:1118
-#: src/app/lenmus_command_event_handler.cpp:1134
-#, fuzzy
-msgid "Change numeric property"
-msgstr "改变音高"
-
-#: src/app/lenmus_command_event_handler.cpp:1126
-msgid "Change color property"
-msgstr ""
-
-#: src/app/lenmus_command_event_handler.cpp:1142
-#, fuzzy
-msgid "Change string property"
-msgstr "改变音高"
-
-#: src/app/lenmus_command_event_handler.cpp:1159
-#, fuzzy
-msgid "Change notes/rests dots"
-msgstr "改变音高"
-
-#: src/app/lenmus_command_event_handler.cpp:1185
-msgid "Change note accidentals"
-msgstr "改变休止记号"
-
-#: src/app/lenmus_command_event_handler.cpp:1238
-msgid "Delete selection"
-msgstr "取消选择"
-
-#: src/app/lenmus_command_event_handler.cpp:1255
-#, c-format
-msgid "Delete %s"
-msgstr "删除 %s"
-
-#: src/app/lenmus_command_event_handler.cpp:1265
-msgid "Delete tie"
-msgstr "删除延音线"
-
-#: src/app/lenmus_command_event_handler.cpp:1274
-msgid "Delete tuplet"
-msgstr "删除连音符"
-
-#: src/app/lenmus_command_event_handler.cpp:1288
-msgid "Insert barline"
-msgstr "插入小节线"
-
-#: src/app/lenmus_command_event_handler.cpp:1303
-msgid "Insert clef"
-msgstr "插入谱号"
-
-#: src/app/lenmus_command_event_handler.cpp:1356
-#: src/app/lenmus_command_event_handler.cpp:1564
-msgid "Insert note"
-msgstr "插入音符"
-
-#: src/app/lenmus_command_event_handler.cpp:1375
-#: src/app/lenmus_command_event_handler.cpp:1578
-msgid "Insert rest"
-msgstr "插入休止符"
-
-#: src/app/lenmus_command_event_handler.cpp:1408
-msgid "Add beam"
-msgstr "添加符杠"
-
-#: src/app/lenmus_command_event_handler.cpp:1434
-#, fuzzy
-msgid "Move control point"
-msgstr "移动点"
-
-#: src/app/lenmus_command_event_handler.cpp:1451
-#, fuzzy
-#| msgid "Select octave %d"
-msgid "Select object"
-msgstr "选择八度 %d"
-
-#: src/app/lenmus_document_canvas.cpp:2184
-msgid ""
-"The document contains scores created with a previous version. You must "
-"convert the document to current format (Menu > File > Convert) and edit the "
-"converted document."
-msgstr ""
-
-#: src/app/lenmus_document_canvas.cpp:2291
-#, c-format
-msgid ""
-"Document %s has been modified. Would you like to save it before closing?"
-msgstr ""
-
-#: src/app/lenmus_document_canvas.cpp:2295
-msgid "Save the file before closing"
-msgstr ""
-
-#: src/app/lenmus_document_canvas.cpp:2296
-msgid "Close without saving the file"
-msgstr ""
-
-#: src/app/lenmus_document_canvas.cpp:2312
-#: src/app/lenmus_document_canvas.cpp:2364 src/app/lenmus_main_frame.cpp:804
-msgid "Header"
-msgstr ""
-
-#: src/app/lenmus_document_canvas.cpp:2324
-#: src/app/lenmus_document_canvas.cpp:2376 src/app/lenmus_main_frame.cpp:806
-msgid "Paragraph"
-msgstr ""
-
-#: src/app/lenmus_document_canvas.cpp:2421
-#: src/app/lenmus_document_canvas.cpp:2446
-msgid "&Cut"
-msgstr "剪切"
-
-#: src/app/lenmus_document_canvas.cpp:2439
-#: src/app/lenmus_document_canvas.cpp:2451 src/app/lenmus_main_frame.cpp:1047
-msgid "Edit"
-msgstr "编辑"
-
-#: src/app/lenmus_document_frame.cpp:294 src/app/lenmus_document_frame.cpp:335
+#: src/app/lenmus_document_frame.cpp:296 src/app/lenmus_document_frame.cpp:337
 #, c-format
 msgid "Failed adding book %s"
 msgstr "添加电子书失败 %s"
 
-#: src/app/lenmus_help_system.cpp:99
-#, fuzzy
-msgid "Help system"
-msgstr "系统"
-
-#: src/app/lenmus_help_system.cpp:127
-msgid "Opening Internet browser. Please wait ..."
-msgstr "打开Internet浏览器。 请耐心等待 ..."
-
-#: src/app/lenmus_help_system.cpp:193
-msgid "Help documentation not found: Re-install LenMus?"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:711
-msgid "New"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:714
+#: src/app/lenmus_main_frame.cpp:521
 msgid "Open"
 msgstr "打开"
 
-#: src/app/lenmus_main_frame.cpp:716
+#: src/app/lenmus_main_frame.cpp:522
+#, fuzzy
+msgid "Open a existing document"
+msgstr "打开文档"
+
+#: src/app/lenmus_main_frame.cpp:523
 msgid "Reload"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:718
-msgid "Open books"
-msgstr "打开书籍"
+#: src/app/lenmus_main_frame.cpp:524
+#, fuzzy
+msgid "Reload current document"
+msgstr "重新载入文件"
 
-#: src/app/lenmus_main_frame.cpp:741
-msgid "Save"
-msgstr "保存"
-
-#: src/app/lenmus_main_frame.cpp:743 src/app/lenmus_main_frame.cpp:3561
-#: src/app/lenmus_main_frame.cpp:3584
-msgid "Save as"
-msgstr "保存为"
-
-#: src/app/lenmus_main_frame.cpp:745
-msgid "Convert"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:747 src/dialogs/lenmus_dlg_books.cpp:102
+#: src/app/lenmus_main_frame.cpp:525
 msgid "Close"
 msgstr "关闭"
 
-#: src/app/lenmus_main_frame.cpp:749
+#: src/app/lenmus_main_frame.cpp:526
+#, fuzzy
+msgid "Close current document"
+msgstr "最近打开的文件"
+
+#: src/app/lenmus_main_frame.cpp:527
 msgid "Close all"
 msgstr "关闭所有"
 
-#: src/app/lenmus_main_frame.cpp:753
+#: src/app/lenmus_main_frame.cpp:528
+msgid "Close all documents"
+msgstr "关闭所有文件"
+
+#: src/app/lenmus_main_frame.cpp:531
 msgid "Print"
 msgstr "打印"
 
-#: src/app/lenmus_main_frame.cpp:755
+#: src/app/lenmus_main_frame.cpp:532
+#, fuzzy
+msgid "Print current document"
+msgstr "打印文件"
+
+#: src/app/lenmus_main_frame.cpp:533
 msgid "Print Setup"
 msgstr "打印 设置"
 
-#: src/app/lenmus_main_frame.cpp:759
+#: src/app/lenmus_main_frame.cpp:534
+msgid "Configure printer options"
+msgstr "配置打印机选项"
+
+#: src/app/lenmus_main_frame.cpp:537
 msgid "Quit"
 msgstr "罢"
 
-#: src/app/lenmus_main_frame.cpp:793
-msgid "Enable edition"
-msgstr ""
+#: src/app/lenmus_main_frame.cpp:538
+msgid "Exit program"
+msgstr "退出程序"
 
-#: src/app/lenmus_main_frame.cpp:797 src/app/lenmus_main_frame.cpp:1705
-#: xrc/xrc_strings.cpp:155
-msgid "Undo"
-msgstr "撤销"
-
-#: src/app/lenmus_main_frame.cpp:799 src/app/lenmus_main_frame.cpp:1709
-#: xrc/xrc_strings.cpp:156
-msgid "Redo"
-msgstr "重做"
-
-#: src/app/lenmus_main_frame.cpp:808
-msgid "Score"
-msgstr "乐谱"
-
-#: src/app/lenmus_main_frame.cpp:810
-msgid "Insert ..."
-msgstr "插入谱号"
-
-#: src/app/lenmus_main_frame.cpp:810
-msgid "Insert new content in the document"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:820
-msgid "Tool bar"
-msgstr "工具栏"
-
-#: src/app/lenmus_main_frame.cpp:821
-msgid "Hide/show the tools bar"
-msgstr "隐藏/显示工具栏"
-
-#: src/app/lenmus_main_frame.cpp:822
-msgid "Status bar"
-msgstr "状态栏"
-
-#: src/app/lenmus_main_frame.cpp:823
-msgid "Hide/show the status bar"
-msgstr "隐藏/显示状态栏"
-
-#: src/app/lenmus_main_frame.cpp:824
+#: src/app/lenmus_main_frame.cpp:550
 msgid "Table of content"
 msgstr "查看内容"
 
-#: src/app/lenmus_main_frame.cpp:825
+#: src/app/lenmus_main_frame.cpp:551
 msgid "Hide/show the TOC for current book"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:828 src/app/lenmus_main_frame.cpp:2172
-msgid "Virtual keyboard"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:829
-#, fuzzy
-msgid "Hide/show virtual keyboard"
-msgstr "隐藏/显示标尺"
-
-#: src/app/lenmus_main_frame.cpp:830 src/app/lenmus_main_frame.cpp:2860
-msgid "Command console"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:831
-msgid "Show the commands console"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:835
+#: src/app/lenmus_main_frame.cpp:553
 msgid "Welcome page"
 msgstr "欢迎页面"
 
-#: src/app/lenmus_main_frame.cpp:836
+#: src/app/lenmus_main_frame.cpp:554
 msgid "Hide/show welcome page"
 msgstr "隐藏/显示欢迎页面"
 
-#: src/app/lenmus_main_frame.cpp:838
-msgid "Show voices in colors"
-msgstr ""
+#: src/app/lenmus_main_frame.cpp:555 src/options/lenmus_options_dlg.cpp:154
+msgid "Preferences"
+msgstr "参数选择"
 
-#: src/app/lenmus_main_frame.cpp:839
-msgid "Use a different colour for each voice"
-msgstr ""
+#: src/app/lenmus_main_frame.cpp:556
+msgid "Open preferences dialog"
+msgstr "语言选择"
 
-#: src/app/lenmus_main_frame.cpp:950 src/app/lenmus_main_frame.cpp:1757
-#: src/app/lenmus_main_frame.cpp:2998
+#: src/app/lenmus_main_frame.cpp:557
+msgid "Metronome"
+msgstr "节拍器打开"
+
+#: src/app/lenmus_main_frame.cpp:558
+msgid "Open metronome tool"
+msgstr "节拍器工具"
+
+#: src/app/lenmus_main_frame.cpp:650
 msgid "Actual size"
 msgstr "实际尺寸"
 
-#: src/app/lenmus_main_frame.cpp:952 src/app/lenmus_main_frame.cpp:1758
-#: src/app/lenmus_main_frame.cpp:2990
+#: src/app/lenmus_main_frame.cpp:652
 msgid "Fit page full"
 msgstr "满页适应"
 
-#: src/app/lenmus_main_frame.cpp:953 src/app/lenmus_main_frame.cpp:1727
+#: src/app/lenmus_main_frame.cpp:653
 msgid "Zoom so that the full page is displayed"
 msgstr "放大显示完整页面"
 
-#: src/app/lenmus_main_frame.cpp:955 src/app/lenmus_main_frame.cpp:1759
-#: src/app/lenmus_main_frame.cpp:2994
+#: src/app/lenmus_main_frame.cpp:655
 msgid "Fit page width"
 msgstr "页面宽度适应"
 
-#: src/app/lenmus_main_frame.cpp:956 src/app/lenmus_main_frame.cpp:1731
+#: src/app/lenmus_main_frame.cpp:656
 msgid "Zoom so that page width equals window width"
 msgstr "放大至全屏显示"
 
-#: src/app/lenmus_main_frame.cpp:959 src/app/lenmus_main_frame.cpp:1735
+#: src/app/lenmus_main_frame.cpp:659
 msgid "Enlarge image size"
 msgstr "放大图片尺寸"
 
-#: src/app/lenmus_main_frame.cpp:961 src/app/lenmus_main_frame.cpp:1739
+#: src/app/lenmus_main_frame.cpp:661
 msgid "Reduce image size"
 msgstr "减小图片尺寸"
 
-#: src/app/lenmus_main_frame.cpp:962
+#: src/app/lenmus_main_frame.cpp:662
 msgid "Zoom to ..."
 msgstr "放大至..."
 
-#: src/app/lenmus_main_frame.cpp:969
+#: src/app/lenmus_main_frame.cpp:669
 msgid "play"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:970 src/app/lenmus_main_frame.cpp:1770
+#: src/app/lenmus_main_frame.cpp:670
 msgid "Start/resume play back. From selection of full score"
 msgstr "开始/继续回放。从选择的总谱处开始"
 
-#: src/app/lenmus_main_frame.cpp:972
-msgid "play from cursor"
-msgstr "从鼠标处播放"
-
-#: src/app/lenmus_main_frame.cpp:973 src/app/lenmus_main_frame.cpp:1774
-msgid "Start/resume play back. From cursor measure"
-msgstr "开始/继续回放。从鼠标处开始"
-
-#: src/app/lenmus_main_frame.cpp:975 src/dialogs/lenmus_dlg_metronome.cpp:430
+#: src/app/lenmus_main_frame.cpp:672 src/dialogs/lenmus_dlg_metronome.cpp:430
 #: src/exercises/constrains/lenmus_constrains.cpp:373
 #: src/exercises/constrains/lenmus_constrains.cpp:375
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
@@ -711,521 +516,207 @@ msgstr "开始/继续回放。从鼠标处开始"
 msgid "Stop"
 msgstr "停止"
 
-#: src/app/lenmus_main_frame.cpp:976 src/app/lenmus_main_frame.cpp:1778
+#: src/app/lenmus_main_frame.cpp:673
 msgid "Stop playing back"
 msgstr "停止回放"
 
-#: src/app/lenmus_main_frame.cpp:977
+#: src/app/lenmus_main_frame.cpp:674
 msgid "Pause"
 msgstr "暂停"
 
-#: src/app/lenmus_main_frame.cpp:978 src/app/lenmus_main_frame.cpp:1782
+#: src/app/lenmus_main_frame.cpp:675
 msgid "Pause playing back"
 msgstr "暂停回放"
 
-#: src/app/lenmus_main_frame.cpp:979
-msgid "Do count off"
-msgstr "开始计数"
-
-#: src/app/lenmus_main_frame.cpp:980
-msgid "Do count off before starting the play back"
-msgstr "开始播放之前，请先算数"
-
-#: src/app/lenmus_main_frame.cpp:983
-msgid "Metronome on"
-msgstr "节拍器打开"
-
-#: src/app/lenmus_main_frame.cpp:984 src/app/lenmus_main_frame.cpp:1791
-msgid "Turn metronome on/off"
-msgstr "打开/关闭节拍器"
-
-#: src/app/lenmus_main_frame.cpp:987 src/options/lenmus_sound_opt_panel.cpp:94
+#: src/app/lenmus_main_frame.cpp:678 src/options/lenmus_sound_opt_panel.cpp:94
 #: src/options/lenmus_sound_opt_panel.cpp:615
 #: src/options/lenmus_sound_opt_panel.cpp:760
 msgid "Test sound"
 msgstr "测试声音"
 
-#: src/app/lenmus_main_frame.cpp:988
+#: src/app/lenmus_main_frame.cpp:679
 msgid "play an scale to test sound"
 msgstr "播放一个音阶测试声音"
 
-#: src/app/lenmus_main_frame.cpp:989
+#: src/app/lenmus_main_frame.cpp:680
 msgid "All sounds off"
 msgstr "关闭所有声音"
 
-#: src/app/lenmus_main_frame.cpp:990
+#: src/app/lenmus_main_frame.cpp:681
 msgid "Stop inmediatly all sounds"
 msgstr "立即关闭所有声音"
 
-#: src/app/lenmus_main_frame.cpp:996 src/options/lenmus_options_dlg.cpp:158
-msgid "Preferences"
-msgstr "参数选择"
-
-#: src/app/lenmus_main_frame.cpp:997
-msgid "Open preferences dialog"
-msgstr "语言选择"
-
-#: src/app/lenmus_main_frame.cpp:1002
-msgid "Metronome"
-msgstr "节拍器打开"
-
-#: src/app/lenmus_main_frame.cpp:1003
-msgid "Open metronome tool"
-msgstr "节拍器工具"
-
-#: src/app/lenmus_main_frame.cpp:1013
-msgid "LenMus manual"
-msgstr "LenMus帮助"
-
-#: src/app/lenmus_main_frame.cpp:1014
-msgid "Open user's manual"
-msgstr "打开用户手册"
-
-#: src/app/lenmus_main_frame.cpp:1015
-msgid "Editor quick guide"
-msgstr "编辑器快速指南"
-
-#: src/app/lenmus_main_frame.cpp:1016
-msgid "Show editor quick guide"
-msgstr "编辑器快速指南"
-
-#: src/app/lenmus_main_frame.cpp:1018
+#: src/app/lenmus_main_frame.cpp:688
 msgid "Study guide"
 msgstr "学习指导"
 
-#: src/app/lenmus_main_frame.cpp:1019
+#: src/app/lenmus_main_frame.cpp:689
 msgid "How to use LenMus in your studies"
 msgstr "如何在学习中使用LenMus"
 
-#: src/app/lenmus_main_frame.cpp:1021
-msgid "Search help"
-msgstr "搜索"
-
-#: src/app/lenmus_main_frame.cpp:1022
-msgid "Search help documentation"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:1024
-msgid "Check now for updates"
-msgstr "检查更新"
-
-#: src/app/lenmus_main_frame.cpp:1025
-msgid "Connect to the Internet and check for program updates"
-msgstr "链接网络并检查更新"
-
-#: src/app/lenmus_main_frame.cpp:1027 src/app/lenmus_welcome_window.cpp:176
+#: src/app/lenmus_main_frame.cpp:691
 msgid "Visit LenMus website"
 msgstr "访问LenMus网站"
 
-#: src/app/lenmus_main_frame.cpp:1028
+#: src/app/lenmus_main_frame.cpp:692
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "打开游览器并访问LenMus的网站"
 
-#: src/app/lenmus_main_frame.cpp:1031
+#: src/app/lenmus_main_frame.cpp:695
 msgid "About"
 msgstr "关于"
 
-#: src/app/lenmus_main_frame.cpp:1032
+#: src/app/lenmus_main_frame.cpp:696
 msgid "Display information about program version and credits"
 msgstr "程序版本和人员信息陈列"
 
-#: src/app/lenmus_main_frame.cpp:1043
+#: src/app/lenmus_main_frame.cpp:707
 msgid "File"
 msgstr "文件"
 
-#: src/app/lenmus_main_frame.cpp:1049
+#: src/app/lenmus_main_frame.cpp:708
 msgid "View"
 msgstr "查看"
 
-#: src/app/lenmus_main_frame.cpp:1053 src/options/lenmus_options_dlg.cpp:168
+#: src/app/lenmus_main_frame.cpp:709 src/options/lenmus_options_dlg.cpp:164
 msgid "Sound"
 msgstr "声音"
 
-#: src/app/lenmus_main_frame.cpp:1059
+#: src/app/lenmus_main_frame.cpp:715
 msgid "Zoom"
 msgstr "放大"
 
-#: src/app/lenmus_main_frame.cpp:1060
-msgid "Options"
-msgstr "选择"
-
-#: src/app/lenmus_main_frame.cpp:1061
-msgid "Tools"
-msgstr "工具条"
-
-#: src/app/lenmus_main_frame.cpp:1062 src/widgets/lenmus_wizard.cpp:116
+#: src/app/lenmus_main_frame.cpp:716
 msgid "Help"
 msgstr "帮助"
 
-#: src/app/lenmus_main_frame.cpp:1232 src/app/lenmus_main_frame.cpp:1242
+#: src/app/lenmus_main_frame.cpp:828 src/app/lenmus_main_frame.cpp:838
 msgid "LenMus files"
 msgstr "LenMus帮助"
 
-#: src/app/lenmus_main_frame.cpp:1234 src/app/lenmus_main_frame.cpp:1244
+#: src/app/lenmus_main_frame.cpp:830 src/app/lenmus_main_frame.cpp:840
 msgid "MusicXML files"
 msgstr "MusicXML格式"
 
-#: src/app/lenmus_main_frame.cpp:1236
+#: src/app/lenmus_main_frame.cpp:832
 msgid "MNX files"
 msgstr "MNX格式"
 
-#: src/app/lenmus_main_frame.cpp:1247
+#: src/app/lenmus_main_frame.cpp:843
 msgid "Choose the file to open"
 msgstr "导出当前文件"
 
-#: src/app/lenmus_main_frame.cpp:1305
+#: src/app/lenmus_main_frame.cpp:896
 msgid "Errors in file "
 msgstr "文件出现错误"
 
-#: src/app/lenmus_main_frame.cpp:1660
-msgid "Set user preferences"
-msgstr "用户首选项设置"
-
-#: src/app/lenmus_main_frame.cpp:1661
-msgid "Help button"
-msgstr "帮助按钮"
-
-#: src/app/lenmus_main_frame.cpp:1670
-msgid "New document"
-msgstr "打开文档"
-
-#: src/app/lenmus_main_frame.cpp:1672
-msgid "Open a score"
-msgstr "打开乐谱"
-
-#: src/app/lenmus_main_frame.cpp:1676 src/app/lenmus_welcome_window.cpp:210
-msgid "Open the music books"
-msgstr "打开音乐书"
-
-#: src/app/lenmus_main_frame.cpp:1680
-msgid "Save current score to disk"
-msgstr "保存当前乐谱到磁盘"
-
-#: src/app/lenmus_main_frame.cpp:1684
-msgid "Print document"
-msgstr "打印文件"
-
-#: src/app/lenmus_main_frame.cpp:1723
-msgid "Hide/show the Table Of Content for current book"
-msgstr ""
-
-#: src/app/lenmus_main_frame.cpp:1812 src/app/lenmus_main_frame.cpp:1859
-msgid "Metronome tools"
-msgstr "节拍器工具"
-
-#: src/app/lenmus_main_frame.cpp:1816 src/app/lenmus_main_frame.cpp:1855
-msgid "play tools"
-msgstr "播放工具"
-
-#: src/app/lenmus_main_frame.cpp:1820 src/app/lenmus_main_frame.cpp:1851
-msgid "Main tools"
-msgstr "主工具栏"
-
-#: src/app/lenmus_main_frame.cpp:1824 src/app/lenmus_main_frame.cpp:1847
-msgid "Zooming tools"
-msgstr "放大工具栏"
-
-#: src/app/lenmus_main_frame.cpp:1828 src/app/lenmus_main_frame.cpp:1843
-msgid "Edit tools"
-msgstr "编辑工具"
-
-#: src/app/lenmus_main_frame.cpp:1832 src/app/lenmus_main_frame.cpp:1839
-msgid "File tools"
-msgstr "文件工具"
-
-#: src/app/lenmus_main_frame.cpp:2068
-msgid "Counters & options"
-msgstr "计数器和选项"
-
-#: src/app/lenmus_main_frame.cpp:2240
+#: src/app/lenmus_main_frame.cpp:1152
 msgid "Start page"
 msgstr "起始页面"
 
-#: src/app/lenmus_main_frame.cpp:2253
+#: src/app/lenmus_main_frame.cpp:1165
 #, c-format
 msgid "File '%s' not found."
 msgstr "错误：未找到文件 %s"
 
-#: src/app/lenmus_main_frame.cpp:2254 src/app/lenmus_main_frame.cpp:3010
-#: src/app/lenmus_main_frame.cpp:3016
+#: src/app/lenmus_main_frame.cpp:1166
 msgid "Error message"
 msgstr "错误信息"
 
-#: src/app/lenmus_main_frame.cpp:2371 src/app/lenmus_welcome_window.cpp:306
-#: src/dialogs/lenmus_dlg_books.cpp:227 src/dialogs/lenmus_dlg_books.cpp:254
+#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:407
 msgid "Sorry: File not found!"
 msgstr "错误：未找到文件"
 
-#: src/app/lenmus_main_frame.cpp:2979
+#: src/app/lenmus_main_frame.cpp:1710
 msgid "Zooming? (10 to 800)"
 msgstr "放大（10 至 800）"
 
-#: src/app/lenmus_main_frame.cpp:3009
-#, c-format
-msgid "Invalid zooming factor '%s'"
-msgstr "无效放大系数 '%s'"
-
-#: src/app/lenmus_main_frame.cpp:3015
-msgid "Zooming factor must be greater that 10% and lower than 800%"
-msgstr "放大系数必须大于10%小于800%"
-
-#: src/app/lenmus_main_frame.cpp:3049
-msgid "Edit toolbox"
-msgstr "编辑工具箱"
-
-#: src/app/lenmus_main_frame.cpp:3225
+#: src/app/lenmus_main_frame.cpp:1742
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr "当前打印机可能违背正确设置"
 
-#: src/app/lenmus_main_frame.cpp:3225 src/app/lenmus_main_frame.cpp:3227
+#: src/app/lenmus_main_frame.cpp:1742 src/app/lenmus_main_frame.cpp:1744
 msgid "Printing"
 msgstr "打印"
 
-#: src/app/lenmus_main_frame.cpp:3227
+#: src/app/lenmus_main_frame.cpp:1744
 msgid "Printing cancelled"
 msgstr "取消打印"
-
-#: src/app/lenmus_score_wizard.cpp:168
-msgid "Score configuration wizard"
-msgstr "乐谱配置向导"
-
-#: src/app/lenmus_score_wizard.cpp:182
-msgid "Empty (manuscript paper)"
-msgstr "空白（稿纸）"
-
-#: src/app/lenmus_score_wizard.cpp:183
-msgid "Cello and piano"
-msgstr "大提琴和钢琴"
-
-#: src/app/lenmus_score_wizard.cpp:184
-msgid "Flute"
-msgstr "长笛"
-
-#: src/app/lenmus_score_wizard.cpp:185
-msgid "Guitar"
-msgstr "吉他"
-
-#: src/app/lenmus_score_wizard.cpp:186
-msgid "Piano"
-msgstr "钢琴"
-
-#: src/app/lenmus_score_wizard.cpp:187
-msgid "Trio sonata"
-msgstr "三重奏鸣曲"
-
-#: src/app/lenmus_score_wizard.cpp:188
-msgid "Tuba"
-msgstr ""
-
-#: src/app/lenmus_score_wizard.cpp:189
-msgid "Viola and piano"
-msgstr "中提琴和钢琴"
-
-#: src/app/lenmus_score_wizard.cpp:190
-msgid "Violin"
-msgstr "小提琴"
-
-#: src/app/lenmus_score_wizard.cpp:191
-msgid "Violin and piano"
-msgstr "小提琴和钢琴"
-
-#: src/app/lenmus_score_wizard.cpp:192
-msgid "Voice and keyboard"
-msgstr ""
-
-#: src/app/lenmus_score_wizard.cpp:274
-#, c-format
-msgid "Error: Template '%s' not found."
-msgstr "错误：未找到文件 %s"
-
-#: src/app/lenmus_score_wizard.cpp:276
-msgid "Possible causes:"
-msgstr "可能原因："
-
-#: src/app/lenmus_score_wizard.cpp:278
-msgid "- An error during lenmus installation."
-msgstr "Lenmus安装时出现错误"
-
-#: src/app/lenmus_score_wizard.cpp:280
-msgid "- An accidental deletion of the required template."
-msgstr "必需的模板被意外删除"
-
-#: src/app/lenmus_score_wizard.cpp:282
-msgid "An empty score will be created."
-msgstr "新乐谱将被创建"
-
-#: src/app/lenmus_score_wizard.cpp:398
-msgid "Select instruments and style"
-msgstr "选择乐器和风格"
-
-#: src/app/lenmus_score_wizard.cpp:410 src/app/lenmus_score_wizard.cpp:568
-#: src/app/lenmus_score_wizard.cpp:800
-msgid "Preview"
-msgstr "预览"
-
-#: src/app/lenmus_score_wizard.cpp:547
-msgid "Select a key signature"
-msgstr "选择调号"
-
-#: src/app/lenmus_score_wizard.cpp:549
-#: src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:152
-msgid "Major"
-msgstr "大调"
-
-#: src/app/lenmus_score_wizard.cpp:549
-msgid "minor"
-msgstr "小调"
-
-#: src/app/lenmus_score_wizard.cpp:551
-msgid "Key type"
-msgstr "调号类型"
-
-#: src/app/lenmus_score_wizard.cpp:687
-msgid "none"
-msgstr "无"
-
-#: src/app/lenmus_score_wizard.cpp:744
-msgid "Select time signature"
-msgstr "选择拍号"
-
-#: src/app/lenmus_score_wizard.cpp:749
-msgid "Time signature"
-msgstr "拍号"
-
-#: src/app/lenmus_score_wizard.cpp:755
-msgid "Other time signatures"
-msgstr "其他拍号"
-
-#: src/app/lenmus_score_wizard.cpp:764
-msgid "Numerator"
-msgstr "分子"
-
-#: src/app/lenmus_score_wizard.cpp:776
-msgid "Denominator"
-msgstr "分母"
 
 #: src/app/lenmus_splash_frame.cpp:101
 msgid "Free software under GNU General Public License, version 3 or later."
 msgstr "满足GUN通用公共许可证的免费软件，版本3或者更新"
 
-#: src/app/lenmus_status_bar.cpp:126
-msgid "Display page and time referred to mouse position"
-msgstr ""
-
-#: src/app/lenmus_status_bar.cpp:130
-msgid "Display page and time referred to caret position"
-msgstr ""
-
-#: src/app/lenmus_welcome_window.cpp:132
+#: src/app/lenmus_welcome_window.cpp:105
 msgid "Welcome to LenMus"
 msgstr "欢迎使用LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:140
+#: src/app/lenmus_welcome_window.cpp:112
 #, c-format
 msgid "Version %s"
 msgstr "版本 %s"
 
-#: src/app/lenmus_welcome_window.cpp:151
-msgid "About LenMus"
-msgstr "关于LenMus"
+#: src/app/lenmus_welcome_window.cpp:150
+msgid "Get started"
+msgstr "開始"
 
-#: src/app/lenmus_welcome_window.cpp:166
-msgid "What's is new in this version"
-msgstr "这一版本的新特性"
+#: src/app/lenmus_welcome_window.cpp:156
+msgid "Read about how to get the most out of LenMus."
+msgstr "閱讀有關如何充分利用 LenMus 的信息。"
 
-#: src/app/lenmus_welcome_window.cpp:171
-msgid "Report an error or make suggestions"
-msgstr ""
+#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
+#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
+#: src/app/lenmus_welcome_window.cpp:264
+#: src/dialogs/lenmus_dlg_metronome.cpp:339
+#: src/dialogs/lenmus_dlg_metronome.cpp:425
+msgid "Start"
+msgstr "开始"
+
+#: src/app/lenmus_welcome_window.cpp:184
+msgid "Train with LenMus"
+msgstr "與 LenMus 一起訓練"
 
 #: src/app/lenmus_welcome_window.cpp:190
-msgid "Learn and practise music theory"
-msgstr "学习和实践音乐理论"
+msgid ""
+"Develop your musical skills with progressive exercises that will help you "
+"assimilate the different contents. Set your own learning pace."
+msgstr ""
+"通過漸進式練習培養您的音樂技能，這將幫助您吸收不同的內容。 設定自己的學習節"
+"奏。"
 
-#: src/app/lenmus_welcome_window.cpp:205
-msgid "Study guide: How to use this program"
-msgstr "学习指南：如何使用本软件。"
+#: src/app/lenmus_welcome_window.cpp:220
+msgid "Study and practice"
+msgstr "學習與實踐"
 
-#: src/app/lenmus_welcome_window.cpp:219
-msgid "Recent documents"
-msgstr "最近打开的文件"
+#: src/app/lenmus_welcome_window.cpp:226
+msgid ""
+"Study with the interactive LenMus music theory books. Start with the first "
+"of these two:"
+msgstr "學習交互式 LenMus 音樂理論書籍。 從這兩個中的第一個開始："
+
+#: src/app/lenmus_welcome_window.cpp:238
+msgid "Music Reading I"
+msgstr "音樂閱讀1"
+
+#: src/app/lenmus_welcome_window.cpp:248
+msgid "Music Reading II"
+msgstr "音樂閱讀2"
+
+#: src/app/lenmus_welcome_window.cpp:258
+msgid "Theory and Harmony"
+msgstr "理論與和諧"
+
+#: src/app/lenmus_welcome_window.cpp:293
+msgid "Acknowledgments:"
+msgstr "致謝："
 
 #: src/app/lenmus_zip_reader.cpp:68
 #, c-format
 msgid "Cannot open HTML document: %s"
 msgstr "无法打开HTML文档 %s"
-
-#: src/auxmusic/lenmus_cadence.cpp:1451
-#, fuzzy
-#| msgid "Chords"
-msgid "Chord is valid"
-msgstr "和弦"
-
-#: src/auxmusic/lenmus_cadence.cpp:1453
-msgid "Not all chord steps in the chord"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1455
-msgid "Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1457
-msgid "Parallel motion of perfect octaves, perfect fifths or unisons"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1459
-msgid "Resultant fifths or octaves in no valid cases"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1461
-msgid "The fifth is doubled"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1463
-msgid "The leading tone is doubled"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1465
-msgid "Scale degree seven (the leading tone) doesn't resolve to tonic"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1467
-msgid "The seventh does not resolve down by second"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1469
-msgid "Notes interval greater than one octave (other than bass-tenor)"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1471
-msgid "Notes not in ascending sequence or duplicated"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1473
-msgid "Voice overlap"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1475
-msgid ""
-"Chromatic accidental not resolved in the same direction than key accidental"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1478
-msgid ""
-"No es conveniente exceder el intervalo de sexta, exceptuando la octava justa"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1481
-msgid ""
-"Bass moves by step and not all other voices moves in the opposite direction"
-msgstr ""
-
-#: src/auxmusic/lenmus_cadence.cpp:1484
-msgid ""
-"Cuando el bajo enlaza el V grado con el VI (cadencia rota), en el acorde de "
-"VI grado se duplica la tercera"
-msgstr ""
 
 #: src/auxmusic/lenmus_cadence.cpp:1511 src/auxmusic/lenmus_cadence.cpp:1512
 #: src/auxmusic/lenmus_cadence.cpp:1513 src/auxmusic/lenmus_cadence.cpp:1514
@@ -1236,12 +727,12 @@ msgstr "完满终止"
 #: src/auxmusic/lenmus_cadence.cpp:1516 src/auxmusic/lenmus_cadence.cpp:1517
 #: src/auxmusic/lenmus_cadence.cpp:1518 src/auxmusic/lenmus_cadence.cpp:1519
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:176
-#: xrc/xrc_strings.cpp:319 xrc/xrc_strings.cpp:391
+#: xrc/xrc_strings.cpp:248 xrc/xrc_strings.cpp:320
 msgid "Plagal"
 msgstr "变格终止"
 
-#: src/auxmusic/lenmus_cadence.cpp:1523 xrc/xrc_strings.cpp:317
-#: xrc/xrc_strings.cpp:390
+#: src/auxmusic/lenmus_cadence.cpp:1523 xrc/xrc_strings.cpp:246
+#: xrc/xrc_strings.cpp:319
 msgid "Imperfect authentic"
 msgstr "不完满正格中止"
 
@@ -1250,7 +741,7 @@ msgstr "不完满正格中止"
 #: src/auxmusic/lenmus_cadence.cpp:1529 src/auxmusic/lenmus_cadence.cpp:1530
 #: src/auxmusic/lenmus_cadence.cpp:1531
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:188
-#: xrc/xrc_strings.cpp:336 xrc/xrc_strings.cpp:393
+#: xrc/xrc_strings.cpp:265 xrc/xrc_strings.cpp:322
 msgid "Deceptive"
 msgstr "伪中止"
 
@@ -1260,7 +751,7 @@ msgstr "伪中止"
 #: src/auxmusic/lenmus_cadence.cpp:1539 src/auxmusic/lenmus_cadence.cpp:1540
 #: src/auxmusic/lenmus_cadence.cpp:1541
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:194
-#: xrc/xrc_strings.cpp:394
+#: xrc/xrc_strings.cpp:323
 msgid "Half cadence"
 msgstr "半终止"
 
@@ -1296,19 +787,19 @@ msgstr "未知和弦"
 msgid "Not identified"
 msgstr "未鉴定"
 
-#: src/auxmusic/lenmus_chord.cpp:775 xrc/xrc_strings.cpp:205
+#: src/auxmusic/lenmus_chord.cpp:775 xrc/xrc_strings.cpp:134
 msgid "Major triad"
 msgstr "大三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:776 xrc/xrc_strings.cpp:206
+#: src/auxmusic/lenmus_chord.cpp:776 xrc/xrc_strings.cpp:135
 msgid "Minor triad"
 msgstr "小三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:777 xrc/xrc_strings.cpp:207
+#: src/auxmusic/lenmus_chord.cpp:777 xrc/xrc_strings.cpp:136
 msgid "Augmented triad"
 msgstr "增三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:778 xrc/xrc_strings.cpp:208
+#: src/auxmusic/lenmus_chord.cpp:778 xrc/xrc_strings.cpp:137
 msgid "Diminished triad"
 msgstr "减三和弦"
 
@@ -1321,62 +812,62 @@ msgid "Suspended triad (2nd)"
 msgstr "延留音和弦（二度）"
 
 #: src/auxmusic/lenmus_chord.cpp:783
-#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:109 xrc/xrc_strings.cpp:15
-#: xrc/xrc_strings.cpp:212
+#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:109 xrc/xrc_strings.cpp:16
+#: xrc/xrc_strings.cpp:141
 msgid "Major 7th"
 msgstr "大七和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:784
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:110
-#: xrc/xrc_strings.cpp:216
+#: xrc/xrc_strings.cpp:145
 msgid "Dominant 7th"
 msgstr "主七和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:785
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:111
-#: xrc/xrc_strings.cpp:213
+#: xrc/xrc_strings.cpp:142
 msgid "Minor 7th"
 msgstr "小七和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:786
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:112
-#: xrc/xrc_strings.cpp:215
+#: xrc/xrc_strings.cpp:144
 msgid "Diminished 7th"
 msgstr "减七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:787 xrc/xrc_strings.cpp:217
+#: src/auxmusic/lenmus_chord.cpp:787 xrc/xrc_strings.cpp:146
 msgid "Half diminished 7th"
 msgstr "半减七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:788 xrc/xrc_strings.cpp:218
+#: src/auxmusic/lenmus_chord.cpp:788 xrc/xrc_strings.cpp:147
 msgid "Augmented major 7th"
 msgstr "增大调七和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:789
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:115
-#: xrc/xrc_strings.cpp:214
+#: xrc/xrc_strings.cpp:143
 msgid "Augmented 7th"
 msgstr "增七和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:790 xrc/xrc_strings.cpp:219
+#: src/auxmusic/lenmus_chord.cpp:790 xrc/xrc_strings.cpp:148
 msgid "Minor major 7th"
 msgstr "大小调七和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:793
-#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:119 xrc/xrc_strings.cpp:13
-#: xrc/xrc_strings.cpp:221
+#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:119 xrc/xrc_strings.cpp:14
+#: xrc/xrc_strings.cpp:150
 msgid "Major 6th"
 msgstr "大调六和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:794
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:120
-#: xrc/xrc_strings.cpp:223
+#: xrc/xrc_strings.cpp:152
 msgid "Minor 6th"
 msgstr "小六和弦"
 
 #: src/auxmusic/lenmus_chord.cpp:795
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:121
-#: xrc/xrc_strings.cpp:222
+#: xrc/xrc_strings.cpp:151
 msgid "Augmented 6th"
 msgstr "增六和弦"
 
@@ -1408,7 +899,7 @@ msgstr "小调十一和弦"
 msgid "Dominant 13th"
 msgstr "属十三和弦"
 
-#: src/auxmusic/lenmus_chord.cpp:809 xrc/xrc_strings.cpp:25
+#: src/auxmusic/lenmus_chord.cpp:809 xrc/xrc_strings.cpp:26
 msgid "Major 13th"
 msgstr "大调十三和弦"
 
@@ -1423,45 +914,45 @@ msgstr "崔丝坦和弦"
 #: src/auxmusic/lenmus_interval.cpp:43 src/auxmusic/lenmus_interval.cpp:76
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:100
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:273
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1066
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1071
-#: xrc/xrc_strings.cpp:4
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1069
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1074
+#: xrc/xrc_strings.cpp:5
 msgid "Unison"
 msgstr "等音"
 
 #: src/auxmusic/lenmus_interval.cpp:44
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1002
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1072
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1005
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1075
 msgid "2nd"
 msgstr "二度"
 
 #: src/auxmusic/lenmus_interval.cpp:45
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1003
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1073
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1006
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1076
 msgid "3rd"
 msgstr "三度"
 
 #: src/auxmusic/lenmus_interval.cpp:46
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1004
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1074
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1007
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1077
 msgid "4th"
 msgstr "四度"
 
 #: src/auxmusic/lenmus_interval.cpp:47
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1005
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1075
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1008
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1078
 msgid "5th"
 msgstr "五度"
 
 #: src/auxmusic/lenmus_interval.cpp:48
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1006
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1076
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1009
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1079
 msgid "6th"
 msgstr "六度"
 
 #: src/auxmusic/lenmus_interval.cpp:49
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1007
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1077
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1010
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1080
 msgid "7th"
 msgstr "七度"
 
@@ -1495,19 +986,19 @@ msgstr "十四度"
 
 #: src/auxmusic/lenmus_interval.cpp:57
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:300
-#: xrc/xrc_strings.cpp:28
+#: xrc/xrc_strings.cpp:29
 msgid "Two octaves"
 msgstr "两个八度"
 
 #: src/auxmusic/lenmus_interval.cpp:78
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:275
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1067
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1070
 msgid "Chromatic semitone"
 msgstr "变化半音程"
 
 #: src/auxmusic/lenmus_interval.cpp:80
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:277
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1068
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1071
 msgid "Chromatic tone"
 msgstr "变化全音程"
 
@@ -1587,321 +1078,255 @@ msgstr "旋律小音程"
 
 #: src/auxmusic/lenmus_scale.cpp:167
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:156
-#: xrc/xrc_strings.cpp:267
+#: xrc/xrc_strings.cpp:196
 msgid "Ionian"
 msgstr "爱奥尼亚"
 
 #: src/auxmusic/lenmus_scale.cpp:168
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:151
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:157
-#: xrc/xrc_strings.cpp:263 xrc/xrc_strings.cpp:269
+#: xrc/xrc_strings.cpp:192 xrc/xrc_strings.cpp:198
 msgid "Dorian"
 msgstr "多里安"
 
 #: src/auxmusic/lenmus_scale.cpp:169
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:158
-#: xrc/xrc_strings.cpp:271
+#: xrc/xrc_strings.cpp:200
 msgid "Phrygian"
 msgstr "弗里几亚"
 
 #: src/auxmusic/lenmus_scale.cpp:170
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:159
-#: xrc/xrc_strings.cpp:273
+#: xrc/xrc_strings.cpp:202
 msgid "Lydian"
 msgstr "吕底亚"
 
 #: src/auxmusic/lenmus_scale.cpp:171
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:160
-#: xrc/xrc_strings.cpp:268
+#: xrc/xrc_strings.cpp:197
 msgid "Mixolydian"
 msgstr "米索利地安"
 
 #: src/auxmusic/lenmus_scale.cpp:172
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:161
-#: xrc/xrc_strings.cpp:270
+#: xrc/xrc_strings.cpp:199
 msgid "Aeolian"
 msgstr "伊奥利亚"
 
 #: src/auxmusic/lenmus_scale.cpp:173
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:162
-#: xrc/xrc_strings.cpp:272
+#: xrc/xrc_strings.cpp:201
 msgid "Locrian"
 msgstr "洛克里斯"
 
 #: src/auxmusic/lenmus_scale.cpp:176
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:165
-#: xrc/xrc_strings.cpp:276
+#: xrc/xrc_strings.cpp:205
 msgid "Pentatonic minor"
 msgstr "五声小音程"
 
 #: src/auxmusic/lenmus_scale.cpp:177
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:166
-#: xrc/xrc_strings.cpp:275
+#: xrc/xrc_strings.cpp:204
 msgid "Pentatonic major"
 msgstr "无声大音程"
 
 #: src/auxmusic/lenmus_scale.cpp:178
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:167
-#: xrc/xrc_strings.cpp:278
+#: xrc/xrc_strings.cpp:207
 msgid "Blues"
 msgstr "布鲁士"
 
 #: src/auxmusic/lenmus_scale.cpp:179
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:168
-#: xrc/xrc_strings.cpp:277
+#: xrc/xrc_strings.cpp:206
 msgid "Whole tones"
 msgstr "全音程"
 
 #: src/auxmusic/lenmus_scale.cpp:180
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:169
-#: xrc/xrc_strings.cpp:279
+#: xrc/xrc_strings.cpp:208
 msgid "Chromatic"
 msgstr "半音程"
 
-#: src/auxmusic/lenmus_utilities.cpp:303
-msgid "Simple barline"
-msgstr "单小节线"
-
-#: src/auxmusic/lenmus_utilities.cpp:304
-msgid "Double barline"
-msgstr "双小节线"
-
-#: src/auxmusic/lenmus_utilities.cpp:305
-msgid "Final barline"
-msgstr "终止小节线"
-
-#: src/auxmusic/lenmus_utilities.cpp:306
-msgid "Start repetition"
-msgstr "重复开始"
-
-#: src/auxmusic/lenmus_utilities.cpp:307
-msgid "End repetition"
-msgstr "重复结束"
-
-#: src/auxmusic/lenmus_utilities.cpp:308
-msgid "Start barline"
-msgstr "起始小节线"
-
-#: src/auxmusic/lenmus_utilities.cpp:309
-msgid "Double repetition"
-msgstr "双重复"
-
-#: src/auxmusic/lenmus_utilities.cpp:310
-#, fuzzy
-#| msgid "Double repetition"
-msgid "Double repetition alt."
-msgstr "双重复"
-
-#: src/auxmusic/lenmus_utilities.cpp:331
-msgid "Default stem"
-msgstr ""
-
-#: src/auxmusic/lenmus_utilities.cpp:332
-msgid "Stem up"
-msgstr ""
-
-#: src/auxmusic/lenmus_utilities.cpp:333
-msgid "Stem down"
-msgstr ""
-
-#: src/auxmusic/lenmus_utilities.cpp:334
-msgid "Stem double"
-msgstr ""
-
-#: src/auxmusic/lenmus_utilities.cpp:335
-#, fuzzy
-msgid "Stem none"
-msgstr "无"
-
-#: src/auxmusic/lenmus_utilities.cpp:365
+#: src/auxmusic/lenmus_utilities.cpp:364
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:158
-#: xrc/xrc_strings.cpp:347
+#: xrc/xrc_strings.cpp:276
 msgid "C Major"
 msgstr "C大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:366
+#: src/auxmusic/lenmus_utilities.cpp:365
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:162
-#: xrc/xrc_strings.cpp:348
+#: xrc/xrc_strings.cpp:277
 msgid "G Major"
 msgstr "G大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:367
+#: src/auxmusic/lenmus_utilities.cpp:366
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:166
-#: xrc/xrc_strings.cpp:349
+#: xrc/xrc_strings.cpp:278
 msgid "D Major"
 msgstr "D大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:368
+#: src/auxmusic/lenmus_utilities.cpp:367
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:170
-#: xrc/xrc_strings.cpp:350
+#: xrc/xrc_strings.cpp:279
 msgid "A Major"
 msgstr "A大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:369
+#: src/auxmusic/lenmus_utilities.cpp:368
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:174
-#: xrc/xrc_strings.cpp:351
+#: xrc/xrc_strings.cpp:280
 msgid "E Major"
 msgstr "E大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:370
+#: src/auxmusic/lenmus_utilities.cpp:369
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:178
-#: xrc/xrc_strings.cpp:352
+#: xrc/xrc_strings.cpp:281
 msgid "B Major"
 msgstr "B大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:371
+#: src/auxmusic/lenmus_utilities.cpp:370
 msgid "F # Major"
 msgstr "升F大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:372
+#: src/auxmusic/lenmus_utilities.cpp:371
 msgid "C # Major"
 msgstr "升C大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:373
+#: src/auxmusic/lenmus_utilities.cpp:372
 msgid "C b Major"
 msgstr "降C大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:374
+#: src/auxmusic/lenmus_utilities.cpp:373
 msgid "G b Major"
 msgstr "降G大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:375
+#: src/auxmusic/lenmus_utilities.cpp:374
 msgid "D b Major"
 msgstr "降D大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:376
+#: src/auxmusic/lenmus_utilities.cpp:375
 msgid "A b Major"
 msgstr "降A大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:377
+#: src/auxmusic/lenmus_utilities.cpp:376
 msgid "E b Major"
 msgstr "降E大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:378
+#: src/auxmusic/lenmus_utilities.cpp:377
 msgid "B b Major"
 msgstr "降B大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:379
+#: src/auxmusic/lenmus_utilities.cpp:378
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:219
-#: xrc/xrc_strings.cpp:361
+#: xrc/xrc_strings.cpp:290
 msgid "F Major"
 msgstr "F大调"
 
-#: src/auxmusic/lenmus_utilities.cpp:381
+#: src/auxmusic/lenmus_utilities.cpp:380
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:123
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:477
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:228
-#: xrc/xrc_strings.cpp:362
+#: xrc/xrc_strings.cpp:291
 msgid "A minor"
 msgstr "A小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:382
+#: src/auxmusic/lenmus_utilities.cpp:381
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:124
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:471
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:232
-#: xrc/xrc_strings.cpp:363
+#: xrc/xrc_strings.cpp:292
 msgid "E minor"
 msgstr "E小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:383
+#: src/auxmusic/lenmus_utilities.cpp:382
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:125
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:480
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:236
-#: xrc/xrc_strings.cpp:364
+#: xrc/xrc_strings.cpp:293
 msgid "B minor"
 msgstr "B小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:384
+#: src/auxmusic/lenmus_utilities.cpp:383
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:126
 msgid "F # minor"
 msgstr "升F小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:385
+#: src/auxmusic/lenmus_utilities.cpp:384
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:127
 msgid "C # minor"
 msgstr "升C小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:386
+#: src/auxmusic/lenmus_utilities.cpp:385
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:128
 msgid "G # minor"
 msgstr "升G小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:387
+#: src/auxmusic/lenmus_utilities.cpp:386
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:129
 msgid "D # minor"
 msgstr "升D小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:388
+#: src/auxmusic/lenmus_utilities.cpp:387
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:130
 msgid "A # minor"
 msgstr "升A小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:389
+#: src/auxmusic/lenmus_utilities.cpp:388
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:131
 msgid "A b minor"
 msgstr "降A小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:390
+#: src/auxmusic/lenmus_utilities.cpp:389
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:132
 msgid "E b minor"
 msgstr "降E小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:391
+#: src/auxmusic/lenmus_utilities.cpp:390
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:133
 msgid "B b minor"
 msgstr "降B小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:392
+#: src/auxmusic/lenmus_utilities.cpp:391
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:134
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:472
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:277
-#: xrc/xrc_strings.cpp:373
+#: xrc/xrc_strings.cpp:302
 msgid "F minor"
 msgstr "F小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:393
+#: src/auxmusic/lenmus_utilities.cpp:392
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:135
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:466
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:281
-#: xrc/xrc_strings.cpp:374
+#: xrc/xrc_strings.cpp:303
 msgid "C minor"
 msgstr "C小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:394
+#: src/auxmusic/lenmus_utilities.cpp:393
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:136
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:474
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:285
-#: xrc/xrc_strings.cpp:375
+#: xrc/xrc_strings.cpp:304
 msgid "G minor"
 msgstr "G小调"
 
-#: src/auxmusic/lenmus_utilities.cpp:395
+#: src/auxmusic/lenmus_utilities.cpp:394
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:137
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:468
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:289
-#: xrc/xrc_strings.cpp:376
+#: xrc/xrc_strings.cpp:305
 msgid "D minor"
 msgstr "D小调"
 
-#: src/dialogs/lenmus_dlg_books.cpp:67
-msgid "Available music books"
-msgstr "可用音乐电子书"
+#: src/dialogs/lenmus_dlg_choose_lang.cpp:65
+#: src/options/lenmus_lang_opt_panel.cpp:103
+msgid "Choose language to use:"
+msgstr "使用语言设置"
 
-#: src/dialogs/lenmus_dlg_books.cpp:127
-msgid ""
-"Please read the <a-1>Study guide</a-1> for information about the best way to "
-"use LenMus Phonascus and the books."
-msgstr ""
-"了解LenMus Phonascus和教材的最佳使用方法的相关信息，请参阅<a-1>学习指南</a-1>"
-
-#: src/dialogs/lenmus_dlg_books.cpp:138
-msgid "Available books:"
-msgstr "可用电子书"
-
-#: src/dialogs/lenmus_dlg_books.cpp:144
-#, c-format
-msgid "Error when trying to move to folder %s"
-msgstr "无法转移至文件夹 %s"
+#: src/dialogs/lenmus_dlg_choose_lang.cpp:87
+msgid "OK"
+msgstr "确定"
 
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 msgid "Metronome settings"
@@ -1942,11 +1367,6 @@ msgstr "在右侧选择的音符值"
 #: src/dialogs/lenmus_dlg_metronome.cpp:318
 msgid "implied by time signature"
 msgstr "时间签名暗示"
-
-#: src/dialogs/lenmus_dlg_metronome.cpp:339
-#: src/dialogs/lenmus_dlg_metronome.cpp:425
-msgid "Start"
-msgstr "开始"
 
 #: src/exercises/auxctrols/lenmus_counters_ctrol.cpp:81
 msgid "Mode:"
@@ -2045,13 +1465,13 @@ msgstr "小测试"
 
 #: src/exercises/constrains/lenmus_constrains.cpp:372
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:334
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1042
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1089
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1097
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1122
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1246
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1255
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1044
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1091
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1099
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1124
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1248
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1257
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:193
 msgid "Play"
 msgstr "播放"
@@ -2071,53 +1491,8 @@ msgstr "小节 %d"
 msgid "Stop %d"
 msgstr "停止 %d"
 
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:156
-#, fuzzy
-msgid "Play fragment 1"
-msgstr "再次播放"
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:157
-#, fuzzy
-msgid "Play fragment 2"
-msgstr "再次播放"
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:158
-#, fuzzy
-msgid "Play fragment 3"
-msgstr "再次播放"
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:159
-#, fuzzy
-msgid "Play fragment 4"
-msgstr "再次播放"
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:161
-msgid "Stop fragment 1"
-msgstr ""
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:162
-msgid "Stop fragment 2"
-msgstr ""
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:163
-msgid "Stop fragment 3"
-msgstr ""
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:164
-msgid "Stop fragment 4"
-msgstr ""
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:295
-msgid "This is the solution (in colour, missing in your score):"
-msgstr ""
-
-#: src/exercises/ctrols/lenmus_dictation_ctrol.cpp:305
-#, fuzzy
-msgid "Perfect!"
-msgstr "完满终止"
-
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:101
-#: xrc/xrc_strings.cpp:5
+#: xrc/xrc_strings.cpp:6
 msgid "minor 2nd"
 msgstr "小二度"
 
@@ -2126,7 +1501,7 @@ msgid "major 2nd"
 msgstr "大二度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:103
-#: xrc/xrc_strings.cpp:7
+#: xrc/xrc_strings.cpp:8
 msgid "minor 3rd"
 msgstr "小三度"
 
@@ -2143,12 +1518,12 @@ msgid "aug.4th/dim.5th"
 msgstr "增四度/减五度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:107
-#: xrc/xrc_strings.cpp:11
+#: xrc/xrc_strings.cpp:12
 msgid "perfect 5th"
 msgstr "纯五度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:108
-#: xrc/xrc_strings.cpp:12
+#: xrc/xrc_strings.cpp:13
 msgid "minor 6th"
 msgstr "小六度"
 
@@ -2157,7 +1532,7 @@ msgid "major 6th"
 msgstr "大六度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:110
-#: xrc/xrc_strings.cpp:14
+#: xrc/xrc_strings.cpp:15
 msgid "minor 7th"
 msgstr "小七度"
 
@@ -2166,12 +1541,12 @@ msgid "major 7th"
 msgstr "大七度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:112
-#: xrc/xrc_strings.cpp:16
+#: xrc/xrc_strings.cpp:17
 msgid "perfect 8th"
 msgstr "纯八度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:113
-#: xrc/xrc_strings.cpp:17
+#: xrc/xrc_strings.cpp:18
 msgid "minor 9th"
 msgstr "小九度"
 
@@ -2180,7 +1555,7 @@ msgid "major 9th"
 msgstr "大九度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:115
-#: xrc/xrc_strings.cpp:19
+#: xrc/xrc_strings.cpp:20
 msgid "minor 10th"
 msgstr "小十度"
 
@@ -2189,7 +1564,7 @@ msgid "major 10th"
 msgstr "大十度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:117
-#: xrc/xrc_strings.cpp:21
+#: xrc/xrc_strings.cpp:22
 msgid "perfect 11th"
 msgstr "纯十一度"
 
@@ -2198,12 +1573,12 @@ msgid "aug.11th / dim.12th"
 msgstr "增十一度/减十二度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:119
-#: xrc/xrc_strings.cpp:23
+#: xrc/xrc_strings.cpp:24
 msgid "perfect 12th"
 msgstr "纯十二度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:120
-#: xrc/xrc_strings.cpp:24
+#: xrc/xrc_strings.cpp:25
 msgid "minor 13th"
 msgstr "小十三度"
 
@@ -2212,7 +1587,7 @@ msgid "major 13th"
 msgstr "大十三度"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:122
-#: xrc/xrc_strings.cpp:26
+#: xrc/xrc_strings.cpp:27
 msgid "minor 14th"
 msgstr "小十四度"
 
@@ -2230,90 +1605,70 @@ msgstr "两个八度"
 msgid "Press 'Play' to hear the problem again."
 msgstr "点击”播放“ 重听问题"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:257
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1656
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:259
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:119
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:77
 msgid "Exercise options"
 msgstr "练习选择"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:270
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1645
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:272
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:174
 msgid "Go back to theory"
 msgstr "回到理论"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:285
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1669
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:287
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:132
 msgid "See source score"
 msgstr "查看源乐谱"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:293
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1677
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:295
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:140
 msgid "See MIDI events"
 msgstr "查看MIDI事件"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:313
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1555
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:315
 #: src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:183
 msgid "New problem"
 msgstr "新问题"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:323
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:325
 msgid "Show solution"
 msgstr "显示答案"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:792
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:794
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:344
-#: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:684
+#: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:687
 msgid "Click on 'New problem' to start"
 msgstr "点击“新问题”开始"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:914
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:916
 msgid "First one greater"
 msgstr "前者大"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:915
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:917
 msgid "Second one greater"
 msgstr "后者大"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:916
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:918
 msgid "Both are equal"
 msgstr "两者相同"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1002
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1142
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1217
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1559
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1004
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1144
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1219
 msgid "Stop playing"
 msgstr "停止播放"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1090
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1257
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1092
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1259
 msgid "Press 'Play' to hear it again"
 msgstr "点击”播放“试听"
 
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1308
+#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1310
 msgid ""
 "Press any button below to hear how it sounds, and compare with the right "
 "answer"
 msgstr "点击下列任意按钮进行试听，并和正确答案进行比较"
-
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1556
-#, fuzzy
-msgid "Play problem"
-msgstr "新问题"
-
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1557
-msgid "Done"
-msgstr ""
-
-#: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1558
-#, fuzzy
-msgid "Play my score"
-msgstr "播放模式"
 
 #: src/exercises/ctrols/lenmus_generators.cpp:1110
 msgid "No more scheduled work for today."
@@ -2357,12 +1712,12 @@ msgid "Average answer time:"
 msgstr "平均答题时间："
 
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:158
-#: xrc/xrc_strings.cpp:310
+#: xrc/xrc_strings.cpp:239
 msgid "Terminal"
 msgstr "终止"
 
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:164
-#: xrc/xrc_strings.cpp:325
+#: xrc/xrc_strings.cpp:254
 msgid "Transient"
 msgstr "瞬时"
 
@@ -2399,12 +1754,12 @@ msgid "Diminished "
 msgstr "减音"
 
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:105
-#: xrc/xrc_strings.cpp:209
+#: xrc/xrc_strings.cpp:138
 msgid "Suspended (4th)"
 msgstr "延留（4度）"
 
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:106
-#: xrc/xrc_strings.cpp:210
+#: xrc/xrc_strings.cpp:139
 msgid "Suspended (2nd)"
 msgstr "延留（2度）"
 
@@ -2432,7 +1787,7 @@ msgstr "七和弦："
 msgid "Other chords:"
 msgstr "其他和弦："
 
-#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:331
+#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:332
 msgid "Identify the next chord:"
 msgstr "识别下一个和弦："
 
@@ -2453,8 +1808,8 @@ msgid "Continue"
 msgstr "继续"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:196
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:557
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:582
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:559
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:584
 msgid "C"
 msgstr "C"
 
@@ -2463,8 +1818,8 @@ msgid "C#/Db"
 msgstr "升C / 降D"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:198
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:558
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:583
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:560
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:585
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:209
 msgid "D"
 msgstr "D"
@@ -2474,14 +1829,14 @@ msgid "D#/Eb"
 msgstr "升D / 降E"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:200
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:559
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:584
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:561
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:586
 msgid "E"
 msgstr "E"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:201
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:560
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:585
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:562
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:587
 msgid "F"
 msgstr "F"
 
@@ -2490,8 +1845,8 @@ msgid "F#/Gb"
 msgstr "升F / 降G"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:203
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:561
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:586
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:563
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:588
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:234
 msgid "G"
 msgstr "G"
@@ -2501,8 +1856,8 @@ msgid "G#/Ab"
 msgstr "升G / 降A"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:205
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:562
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:587
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:564
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:589
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:242
 msgid "A"
 msgstr "A"
@@ -2512,8 +1867,8 @@ msgid "A#/Bb"
 msgstr "升A / 降B"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:207
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:563
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:588
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:565
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:590
 msgid "B"
 msgstr "B"
 
@@ -2529,43 +1884,43 @@ msgstr "点击‘继续’听新的音符"
 msgid "Identify the following note:"
 msgstr "辨别下一个音符："
 
-#: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:706
+#: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:709
 msgid "You will have to identify the following notes:"
 msgstr "您将必须识别以下注意事项："
 
-#: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:778
+#: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:781
 msgid "Try again!"
 msgstr ""
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:144
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:150
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:552
-#: xrc/xrc_strings.cpp:257 xrc/xrc_strings.cpp:262
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:554
+#: xrc/xrc_strings.cpp:186 xrc/xrc_strings.cpp:191
 msgid "Natural"
 msgstr "自然性"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:145
-#: xrc/xrc_strings.cpp:258
+#: xrc/xrc_strings.cpp:187
 msgid "Type II"
 msgstr "II类型"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:146
-#: xrc/xrc_strings.cpp:259
+#: xrc/xrc_strings.cpp:188
 msgid "Type III"
 msgstr "III类型"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:147
-#: xrc/xrc_strings.cpp:260
+#: xrc/xrc_strings.cpp:189
 msgid "Type IV"
 msgstr "IV类型"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:152
-#: xrc/xrc_strings.cpp:264
+#: xrc/xrc_strings.cpp:193
 msgid "Harmonic"
 msgstr "和声性"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:153
-#: xrc/xrc_strings.cpp:265
+#: xrc/xrc_strings.cpp:194
 msgid "Melodic"
 msgstr "旋律性"
 
@@ -2585,9 +1940,13 @@ msgstr "格里高利模式："
 msgid "Other scales:"
 msgstr "其他音阶："
 
-#: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:323
+#: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:325
 msgid "Identify the next scale:"
 msgstr "识别下一个音阶："
+
+#: src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:152
+msgid "Major"
+msgstr "大调"
 
 #: src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:157
 msgid "Minor"
@@ -2607,321 +1966,321 @@ msgstr ", 上升"
 msgid ", descending"
 msgstr "，下降"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:540
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:542
 msgid "Build a "
 msgstr "创建a"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:550
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:552
 msgid "Double flat"
 msgstr "重降"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:551
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:553
 msgid "Flat"
 msgstr "降"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:553
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:555
 msgid "Sharp"
 msgstr "升"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:554
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:556
 msgid "Double sharp"
 msgstr "重升"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:566
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:568
 msgid "bb C"
 msgstr "重降C"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:567
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:569
 msgid "bb D"
 msgstr "重降D"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:568
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:570
 msgid "bb E"
 msgstr "重降E"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:569
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:571
 msgid "bb F"
 msgstr "重降F"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:570
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:572
 msgid "bb G"
 msgstr "重降G"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:571
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:573
 msgid "bb A"
 msgstr "重降A"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:572
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:574
 msgid "bb B"
 msgstr "重降B"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:574
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:576
 msgid "b C"
 msgstr "降C"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:575
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:577
 msgid "b D"
 msgstr "降D"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:576
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:578
 msgid "b E"
 msgstr "降E"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:577
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:579
 msgid "b F"
 msgstr "降F"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:578
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:580
 msgid "b G"
 msgstr "降G"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:579
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:581
 msgid "b A"
 msgstr "降A"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:580
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:582
 msgid "b B"
 msgstr "降B"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:590
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:592
 msgid "# C"
 msgstr "升C"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:591
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:593
 msgid "# D"
 msgstr "升D"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:592
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:594
 msgid "# E"
 msgstr "升E"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:593
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:595
 msgid "# F"
 msgstr "升F"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:594
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:596
 msgid "# G"
 msgstr "升G"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:595
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:597
 msgid "# A"
 msgstr "升A"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:596
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:598
 msgid "# B"
 msgstr "升B"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:598
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:600
 msgid "x C"
 msgstr "重升C"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:599
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:601
 msgid "x D"
 msgstr "重升D"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:600
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:602
 msgid "x E"
 msgstr "重升E"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:601
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:603
 msgid "x F"
 msgstr "重升F"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:602
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:604
 msgid "x G"
 msgstr "重升G"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:603
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:605
 msgid "x A"
 msgstr "重升A"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:604
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:606
 msgid "x B"
 msgstr "重升B"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:866
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:869
 msgid "Identify the next interval:"
 msgstr "辨别下一个音程 :"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:994
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:997
 msgid "dd - double diminished"
 msgstr "dd —— 双倍减音程"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:995
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:998
 msgid "dim - diminished"
 msgstr "dim —— 减音程"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:996
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:999
 msgid "m - minor"
 msgstr "m —— 小调"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:997
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1000
 msgid "M, P - Major, Perfect"
 msgstr "M, P —— 大调，完全"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:998
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1001
 msgid "aug - augmented"
 msgstr "aug —— 增音程"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:999
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1002
 msgid "da - double augmented"
 msgstr "da —— 双倍增音程"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1008
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1078
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1011
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1081
 msgid "8ve"
 msgstr "8ve"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1012
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1015
 msgid "dd2"
 msgstr "dd2"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1013
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1016
 msgid "dd3"
 msgstr "dd3"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1014
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1017
 msgid "dd4"
 msgstr "dd4"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1015
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1018
 msgid "dd5"
 msgstr "dd5"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1016
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1019
 msgid "dd6"
 msgstr "dd6"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1017
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1020
 msgid "dd7"
 msgstr "dd7"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1018
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1021
 msgid "dd8"
 msgstr "dd8"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1021
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1024
 msgid "dim2"
 msgstr "dim2"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1022
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1025
 msgid "dim3"
 msgstr "dim3"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1023
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1026
 msgid "dim4"
 msgstr "dim4"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1024
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1027
 msgid "dim5"
 msgstr "dim5"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1025
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1028
 msgid "dim6"
 msgstr "dim6"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1026
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1029
 msgid "dim7"
 msgstr "dim7"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1027
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1030
 msgid "dim8"
 msgstr "dim8"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1030
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1033
 msgid "m2"
 msgstr "m2"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1031
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1034
 msgid "m3"
 msgstr "m3"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1034
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1037
 msgid "m6"
 msgstr "m6"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1035
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1038
 msgid "m7"
 msgstr "m7"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1039
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1042
 msgid "M2"
 msgstr "M2"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1040
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1043
 msgid "M3"
 msgstr "M3"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1041
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1044
 msgid "P4"
 msgstr "P4"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1042
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1045
 msgid "P5"
 msgstr "P5"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1043
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1046
 msgid "M6"
 msgstr "M6"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1044
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1047
 msgid "M7"
 msgstr "M7"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1045
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1048
 msgid "P8"
 msgstr "P8"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1048
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1051
 msgid "aug2"
 msgstr "aug2"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1049
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1052
 msgid "aug3"
 msgstr "aug3"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1050
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1053
 msgid "aug4"
 msgstr "aug4"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1051
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1054
 msgid "aug5"
 msgstr "aug5"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1052
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1055
 msgid "aug6"
 msgstr "aug6"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1053
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1056
 msgid "aug7"
 msgstr "aug7"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1054
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1057
 msgid "aug8"
 msgstr "aug8"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1057
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1060
 msgid "da2"
 msgstr "da2"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1058
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1061
 msgid "da3"
 msgstr "da3"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1059
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1062
 msgid "da4"
 msgstr "da4"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1060
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1063
 msgid "da5"
 msgstr "da5"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1061
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1064
 msgid "da6"
 msgstr "da6"
 
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1062
-#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1063
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1065
+#: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1066
 msgid "da7"
 msgstr "da7"
 
@@ -3116,11 +2475,11 @@ msgstr "6 b"
 msgid "7 b"
 msgstr "7 b"
 
-#: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:521
+#: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:522
 msgid "Problem. Identify the following key signature:"
 msgstr "问题。辨别下面的调号："
 
-#: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:529
+#: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:530
 msgid "Problem. How many accidentals has next key signature?:"
 msgstr "问题。 下一个密钥签名有多少意外？："
 
@@ -3206,8 +2565,8 @@ msgstr "B / 降C"
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:233
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:343
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:431
-#: xrc/xrc_strings.cpp:29 xrc/xrc_strings.cpp:60 xrc/xrc_strings.cpp:224
-#: xrc/xrc_strings.cpp:248 xrc/xrc_strings.cpp:280
+#: xrc/xrc_strings.cpp:30 xrc/xrc_strings.cpp:61 xrc/xrc_strings.cpp:153
+#: xrc/xrc_strings.cpp:177 xrc/xrc_strings.cpp:209
 msgid "You must choose one at least! "
 msgstr "必须至少选择其一！"
 
@@ -3217,7 +2576,7 @@ msgstr "音符"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:199
-#: xrc/xrc_strings.cpp:69
+#: xrc/xrc_strings.cpp:70
 msgid "G clef (violin)"
 msgstr "高音谱号（小提琴高音）"
 
@@ -3231,25 +2590,25 @@ msgstr "位于第三线的低音谱号"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:211
-#: xrc/xrc_strings.cpp:78
+#: xrc/xrc_strings.cpp:79
 msgid "C clef on 1st line (soprano)"
 msgstr "第一线中音谱号（女高音）"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:215
-#: xrc/xrc_strings.cpp:81
+#: xrc/xrc_strings.cpp:82
 msgid "C clef on 2nd line (mezzo soprano)"
 msgstr "第二线中音谱号（次女高音）"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:219
-#: xrc/xrc_strings.cpp:84
+#: xrc/xrc_strings.cpp:85
 msgid "C clef on 3rd line (contralto)"
 msgstr "第三线中音谱号（女低音）"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:223
-#: xrc/xrc_strings.cpp:87
+#: xrc/xrc_strings.cpp:88
 msgid "C clef on 4th line (tenor)"
 msgstr "第四线中音谱号（男高音）"
 
@@ -3271,18 +2630,15 @@ msgstr "多少个八度"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:309
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:444
-#: src/options/lenmus_options_dlg.cpp:201
+#: src/options/lenmus_options_dlg.cpp:173
 msgid "Other"
 msgstr "其他"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:320
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:376
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:455
-#: src/options/lenmus_options_dlg.cpp:276 src/properties/DlgEditText.cpp:154
-#: src/properties/lenmus_dlg_properties.cpp:87
-#: src/widgets/lenmus_wizard.cpp:138 xrc/xrc_strings.cpp:63
-#: xrc/xrc_strings.cpp:158 xrc/xrc_strings.cpp:252 xrc/xrc_strings.cpp:306
-#: xrc/xrc_strings.cpp:398
+#: src/options/lenmus_options_dlg.cpp:236 xrc/xrc_strings.cpp:64
+#: xrc/xrc_strings.cpp:181 xrc/xrc_strings.cpp:235 xrc/xrc_strings.cpp:327
 msgid "Cancel"
 msgstr "取消"
 
@@ -3294,104 +2650,104 @@ msgstr "识别音调设置"
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:333
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:256
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:356
-#: xrc/xrc_strings.cpp:34 xrc/xrc_strings.cpp:107 xrc/xrc_strings.cpp:225
-#: xrc/xrc_strings.cpp:226 xrc/xrc_strings.cpp:281 xrc/xrc_strings.cpp:282
-#: xrc/xrc_strings.cpp:345 xrc/xrc_strings.cpp:346
+#: xrc/xrc_strings.cpp:35 xrc/xrc_strings.cpp:108 xrc/xrc_strings.cpp:154
+#: xrc/xrc_strings.cpp:155 xrc/xrc_strings.cpp:210 xrc/xrc_strings.cpp:211
+#: xrc/xrc_strings.cpp:274 xrc/xrc_strings.cpp:275
 msgid "Key signatures"
 msgstr "调号"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:182
-#: xrc/xrc_strings.cpp:353
+#: xrc/xrc_strings.cpp:282
 msgid "F# Major"
 msgstr "升F大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:186
-#: xrc/xrc_strings.cpp:354
+#: xrc/xrc_strings.cpp:283
 msgid "C# Major"
 msgstr "升C大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:195
-#: xrc/xrc_strings.cpp:355
+#: xrc/xrc_strings.cpp:284
 msgid "Cb Major"
 msgstr "降C大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:199
-#: xrc/xrc_strings.cpp:356
+#: xrc/xrc_strings.cpp:285
 msgid "Gb Major"
 msgstr "降G大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:203
-#: xrc/xrc_strings.cpp:357
+#: xrc/xrc_strings.cpp:286
 msgid "Db Major"
 msgstr "降D大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:207
-#: xrc/xrc_strings.cpp:358
+#: xrc/xrc_strings.cpp:287
 msgid "Ab Major"
 msgstr "降A大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:211
-#: xrc/xrc_strings.cpp:359
+#: xrc/xrc_strings.cpp:288
 msgid "Eb Major"
 msgstr "降E大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:215
-#: xrc/xrc_strings.cpp:360
+#: xrc/xrc_strings.cpp:289
 msgid "Bb Major"
 msgstr "降B大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:240
-#: xrc/xrc_strings.cpp:365
+#: xrc/xrc_strings.cpp:294
 msgid "F# minor"
 msgstr "升F小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:244
-#: xrc/xrc_strings.cpp:366
+#: xrc/xrc_strings.cpp:295
 msgid "C# minor"
 msgstr "升C小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:248
-#: xrc/xrc_strings.cpp:367
+#: xrc/xrc_strings.cpp:296
 msgid "G# minor"
 msgstr "升G小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:252
-#: xrc/xrc_strings.cpp:368
+#: xrc/xrc_strings.cpp:297
 msgid "D# minor"
 msgstr "升D小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:256
-#: xrc/xrc_strings.cpp:369
+#: xrc/xrc_strings.cpp:298
 msgid "A# minor"
 msgstr "升A小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:265
-#: xrc/xrc_strings.cpp:370
+#: xrc/xrc_strings.cpp:299
 msgid "Ab minor"
 msgstr "降A小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:269
-#: xrc/xrc_strings.cpp:371
+#: xrc/xrc_strings.cpp:300
 msgid "Eb minor"
 msgstr "降E小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:273
-#: xrc/xrc_strings.cpp:372
+#: xrc/xrc_strings.cpp:301
 msgid "Bb minor"
 msgstr "降B小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:300
-#: xrc/xrc_strings.cpp:377
+#: xrc/xrc_strings.cpp:306
 msgid "check/uncheck all major"
 msgstr "选中/取消选中所有大调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:304
-#: xrc/xrc_strings.cpp:378
+#: xrc/xrc_strings.cpp:307
 msgid "check/uncheck all minor"
 msgstr "选中/取消选中所有小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:320
-#: xrc/xrc_strings.cpp:123 xrc/xrc_strings.cpp:379
+#: xrc/xrc_strings.cpp:124 xrc/xrc_strings.cpp:308
 msgid "You must choose at least one key signature! "
 msgstr "必须至少选择一个调号"
 
@@ -3404,12 +2760,12 @@ msgid "Name the key signature"
 msgstr "说出调号的名字"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:340
-#: xrc/xrc_strings.cpp:384
+#: xrc/xrc_strings.cpp:313
 msgid "Type of desired answer"
 msgstr "所需答案类型"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:347
-#: xrc/xrc_strings.cpp:383
+#: xrc/xrc_strings.cpp:312
 msgid "Answer buttons"
 msgstr "回答按钮"
 
@@ -3427,12 +2783,12 @@ msgid "Clefs to use"
 msgstr "可用谱号"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:203
-#: xrc/xrc_strings.cpp:72
+#: xrc/xrc_strings.cpp:73
 msgid "F clef on 4th line (bass)"
 msgstr "第四线低音谱号（男低音）"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:207
-#: xrc/xrc_strings.cpp:75
+#: xrc/xrc_strings.cpp:76
 msgid "F clef on 3rd line"
 msgstr "男次高音谱号"
 
@@ -3441,92 +2797,92 @@ msgid "Clefs"
 msgstr "谱号"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:264
-#: xrc/xrc_strings.cpp:35 xrc/xrc_strings.cpp:108 xrc/xrc_strings.cpp:227
-#: xrc/xrc_strings.cpp:283
+#: xrc/xrc_strings.cpp:36 xrc/xrc_strings.cpp:109 xrc/xrc_strings.cpp:156
+#: xrc/xrc_strings.cpp:212
 msgid "C Major / A minor"
 msgstr "C大调/A小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:268
-#: xrc/xrc_strings.cpp:36 xrc/xrc_strings.cpp:109 xrc/xrc_strings.cpp:228
-#: xrc/xrc_strings.cpp:284
+#: xrc/xrc_strings.cpp:37 xrc/xrc_strings.cpp:110 xrc/xrc_strings.cpp:157
+#: xrc/xrc_strings.cpp:213
 msgid "G Major / E minor"
 msgstr "G大调/E小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:272
-#: xrc/xrc_strings.cpp:37 xrc/xrc_strings.cpp:45 xrc/xrc_strings.cpp:110
-#: xrc/xrc_strings.cpp:118 xrc/xrc_strings.cpp:229 xrc/xrc_strings.cpp:237
-#: xrc/xrc_strings.cpp:285
+#: xrc/xrc_strings.cpp:38 xrc/xrc_strings.cpp:46 xrc/xrc_strings.cpp:111
+#: xrc/xrc_strings.cpp:119 xrc/xrc_strings.cpp:158 xrc/xrc_strings.cpp:166
+#: xrc/xrc_strings.cpp:214
 msgid "D Major / B minor"
 msgstr "D大调/B小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:276
-#: xrc/xrc_strings.cpp:38 xrc/xrc_strings.cpp:111 xrc/xrc_strings.cpp:230
-#: xrc/xrc_strings.cpp:286
+#: xrc/xrc_strings.cpp:39 xrc/xrc_strings.cpp:112 xrc/xrc_strings.cpp:159
+#: xrc/xrc_strings.cpp:215
 msgid "A Major / F# minor"
 msgstr "A大调/F#小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:280
-#: xrc/xrc_strings.cpp:39 xrc/xrc_strings.cpp:112 xrc/xrc_strings.cpp:231
-#: xrc/xrc_strings.cpp:287
+#: xrc/xrc_strings.cpp:40 xrc/xrc_strings.cpp:113 xrc/xrc_strings.cpp:160
+#: xrc/xrc_strings.cpp:216
 msgid "E Major / C# minor"
 msgstr "E大调/C#小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:284
-#: xrc/xrc_strings.cpp:40 xrc/xrc_strings.cpp:113 xrc/xrc_strings.cpp:232
-#: xrc/xrc_strings.cpp:288
+#: xrc/xrc_strings.cpp:41 xrc/xrc_strings.cpp:114 xrc/xrc_strings.cpp:161
+#: xrc/xrc_strings.cpp:217
 msgid "B Major / G# minor"
 msgstr "B大调/G#小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:288
-#: xrc/xrc_strings.cpp:41 xrc/xrc_strings.cpp:114 xrc/xrc_strings.cpp:233
-#: xrc/xrc_strings.cpp:289
+#: xrc/xrc_strings.cpp:42 xrc/xrc_strings.cpp:115 xrc/xrc_strings.cpp:162
+#: xrc/xrc_strings.cpp:218
 msgid "F# Major / D# minor"
 msgstr "F#大调/D#小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:292
-#: xrc/xrc_strings.cpp:42 xrc/xrc_strings.cpp:115 xrc/xrc_strings.cpp:234
-#: xrc/xrc_strings.cpp:290
+#: xrc/xrc_strings.cpp:43 xrc/xrc_strings.cpp:116 xrc/xrc_strings.cpp:163
+#: xrc/xrc_strings.cpp:219
 msgid "C# Major / A# minor"
 msgstr "C#大调/A#小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:301
-#: xrc/xrc_strings.cpp:43 xrc/xrc_strings.cpp:116 xrc/xrc_strings.cpp:235
-#: xrc/xrc_strings.cpp:291
+#: xrc/xrc_strings.cpp:44 xrc/xrc_strings.cpp:117 xrc/xrc_strings.cpp:164
+#: xrc/xrc_strings.cpp:220
 msgid "Cb Major / Ab minor"
 msgstr "降C大调/降A小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:305
-#: xrc/xrc_strings.cpp:44 xrc/xrc_strings.cpp:117 xrc/xrc_strings.cpp:236
-#: xrc/xrc_strings.cpp:292
+#: xrc/xrc_strings.cpp:45 xrc/xrc_strings.cpp:118 xrc/xrc_strings.cpp:165
+#: xrc/xrc_strings.cpp:221
 msgid "Gb Major / Eb minor"
 msgstr "降G大调/降E小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:309
-#: xrc/xrc_strings.cpp:293
+#: xrc/xrc_strings.cpp:222
 msgid "Db Major / Bb minor"
 msgstr "降D大调/降B小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:313
-#: xrc/xrc_strings.cpp:46 xrc/xrc_strings.cpp:119 xrc/xrc_strings.cpp:238
-#: xrc/xrc_strings.cpp:294
+#: xrc/xrc_strings.cpp:47 xrc/xrc_strings.cpp:120 xrc/xrc_strings.cpp:167
+#: xrc/xrc_strings.cpp:223
 msgid "Ab Major / F minor"
 msgstr "降A大调/F小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:317
-#: xrc/xrc_strings.cpp:47 xrc/xrc_strings.cpp:120 xrc/xrc_strings.cpp:239
-#: xrc/xrc_strings.cpp:295
+#: xrc/xrc_strings.cpp:48 xrc/xrc_strings.cpp:121 xrc/xrc_strings.cpp:168
+#: xrc/xrc_strings.cpp:224
 msgid "Eb Major / C minor"
 msgstr "降E大调/C小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:321
-#: xrc/xrc_strings.cpp:48 xrc/xrc_strings.cpp:121 xrc/xrc_strings.cpp:240
-#: xrc/xrc_strings.cpp:296
+#: xrc/xrc_strings.cpp:49 xrc/xrc_strings.cpp:122 xrc/xrc_strings.cpp:169
+#: xrc/xrc_strings.cpp:225
 msgid "Bb Major / G minor"
 msgstr "降B大调/G小调"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:325
-#: xrc/xrc_strings.cpp:49 xrc/xrc_strings.cpp:122 xrc/xrc_strings.cpp:241
-#: xrc/xrc_strings.cpp:297
+#: xrc/xrc_strings.cpp:50 xrc/xrc_strings.cpp:123 xrc/xrc_strings.cpp:170
+#: xrc/xrc_strings.cpp:226
 msgid "F Major / D minor"
 msgstr "大调F/小调D"
 
@@ -3563,22 +2919,22 @@ msgid "Below"
 msgstr "在下方"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:405
-#: xrc/xrc_strings.cpp:56
+#: xrc/xrc_strings.cpp:57
 msgid "Intervals' types"
 msgstr "音程的类型"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:407
-#: xrc/xrc_strings.cpp:57
+#: xrc/xrc_strings.cpp:58
 msgid "Harmonic (simultaneous notes)"
 msgstr "和声（同步音符）"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:411
-#: xrc/xrc_strings.cpp:58
+#: xrc/xrc_strings.cpp:59
 msgid "Melodic (ascending)"
 msgstr "有旋律的（递增）"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:416
-#: xrc/xrc_strings.cpp:59
+#: xrc/xrc_strings.cpp:60
 msgid "Melodic (descending)"
 msgstr "有旋律的（递减）"
 
@@ -3641,535 +2997,25 @@ msgid ""
 "in pairs or in teams at classroom."
 msgstr ""
 
-#: src/globals/lenmus_actions.cpp:61
-msgid "(Undefined)"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:342
-#, fuzzy
-msgid "General actions on documents"
-msgstr "打开文档"
-
-#: src/globals/lenmus_actions.cpp:344
-msgid "Application appearance and layout"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:346
-msgid "Toolbox: select tools and options"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:348
-#, fuzzy
-msgid "Score edition"
-msgstr "重复开始"
-
-#: src/globals/lenmus_actions.cpp:350
-msgid "Edition: general actions"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:407
-#, fuzzy
-msgid "Create a new blank document"
-msgstr "新建空白文件"
-
-#: src/globals/lenmus_actions.cpp:412
-#, fuzzy
-msgid "Open a existing document"
-msgstr "打开文档"
-
-#: src/globals/lenmus_actions.cpp:417
-#, fuzzy
-msgid "Reload current document"
-msgstr "重新载入文件"
-
-#: src/globals/lenmus_actions.cpp:422
-msgid "Open a music book"
-msgstr "打开一本音乐书"
-
-#: src/globals/lenmus_actions.cpp:427
-#, fuzzy
-msgid "Close current document"
-msgstr "最近打开的文件"
-
-#: src/globals/lenmus_actions.cpp:432
-#, fuzzy
-msgid "Save current document to file"
-msgstr "保存当前乐谱到磁盘"
-
-#: src/globals/lenmus_actions.cpp:437
-msgid "Save current document with a different name"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:442
-msgid "Convert document to latest format"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:447
-msgid "Close all documents"
-msgstr "关闭所有文件"
-
-#: src/globals/lenmus_actions.cpp:452
-#, fuzzy
-msgid "Print current document"
-msgstr "打印文件"
-
-#: src/globals/lenmus_actions.cpp:457
-msgid "Zoom in"
-msgstr "放大"
-
-#: src/globals/lenmus_actions.cpp:462
-msgid "Zoom out"
-msgstr "缩小"
-
-#: src/globals/lenmus_actions.cpp:467
-msgid "Allow edition of current document"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:474
-msgid "Exit program"
-msgstr "退出程序"
-
-#: src/globals/lenmus_actions.cpp:479
-msgid "Configure printer options"
-msgstr "配置打印机选项"
-
-#: src/globals/lenmus_actions.cpp:487
-msgid "Undo last action"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:492
-msgid "Redo last undo"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:498
-msgid "Move cursor back"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:503
-#, fuzzy
-msgid "Move cursor forward"
-msgstr "前进"
-
-#: src/globals/lenmus_actions.cpp:508
-msgid "Move cursor down"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:513
-msgid "Move cursor up"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:518
-msgid "Cursor: enter object"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:523
-msgid "Cursor: exit object"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:528
-msgid "Move cursor to next page"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:533
-#, fuzzy
-msgid "Move cursor to previous page"
-msgstr "去先前的访问页面"
-
-#: src/globals/lenmus_actions.cpp:539
-#, fuzzy
-msgid "Delete selection or pointed object"
-msgstr "取消选择"
-
-#: src/globals/lenmus_actions.cpp:544
-msgid "Move cursor back and delete object"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:550
-#, fuzzy
-msgid "Insert a header"
-msgstr "插入小节线"
-
-#: src/globals/lenmus_actions.cpp:555
-msgid "Insert a paragraph"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:560
-#, fuzzy
-msgid "Insert a score"
-msgstr "关闭乐谱"
-
-#: src/globals/lenmus_actions.cpp:566
-#, fuzzy
-msgid "Remove selection"
-msgstr "取消选择"
-
-#: src/globals/lenmus_actions.cpp:574
-#, fuzzy
-msgid "Move cursor to next measure"
-msgstr "后移：小节之外"
-
-#: src/globals/lenmus_actions.cpp:579
-#, fuzzy
-msgid "Move cursor to previous measure"
-msgstr "后移：小节之外"
-
-#: src/globals/lenmus_actions.cpp:584
-#, fuzzy
-msgid "Move cursor to first measure"
-msgstr "后移：小节之外"
-
-#: src/globals/lenmus_actions.cpp:589
-#, fuzzy
-msgid "Move cursor to last measure"
-msgstr "后移：小节之外"
-
-#: src/globals/lenmus_actions.cpp:594
-msgid "Move cursor to start of system"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:599
-msgid "Move cursor end of system"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:604
-msgid "Move cursor to first staff"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:609
-msgid "Move cursor to last staff"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:615
-#, fuzzy
-msgid "Add note A"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:620
-#, fuzzy
-msgid "Add note B"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:625
-#, fuzzy
-msgid "Add note C"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:630
-#, fuzzy
-msgid "Add note D"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:635
-#, fuzzy
-msgid "Add note E"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:640
-#, fuzzy
-msgid "Add note F"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:645
-#, fuzzy
-msgid "Add note G"
-msgstr "添加音符"
-
-#: src/globals/lenmus_actions.cpp:651
-msgid "Display dialog for adding a clef"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:657
-#, fuzzy
-msgid "Add a rest"
-msgstr "添加休止符"
-
-#: src/globals/lenmus_actions.cpp:663
-msgid "Add barline"
-msgstr "添加小节线"
-
-#: src/globals/lenmus_actions.cpp:669
-#, fuzzy
-msgid "Add note A to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:674
-#, fuzzy
-msgid "Add note B to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:679
-#, fuzzy
-msgid "Add note C to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:684
-#, fuzzy
-msgid "Add note D to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:689
-#, fuzzy
-msgid "Add note E to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:694
-#, fuzzy
-msgid "Add note F to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:699
-#, fuzzy
-msgid "Add note G to chord"
-msgstr "为乐谱添加标题"
-
-#: src/globals/lenmus_actions.cpp:705
-#, fuzzy
-msgid "Select prev. note/rest"
-msgstr "选择拍号"
-
-#: src/globals/lenmus_actions.cpp:710
-#, fuzzy
-msgid "Select next note/rest"
-msgstr "选择拍号"
-
-#: src/globals/lenmus_actions.cpp:715
-#, fuzzy
-msgid "Select all to start of measure"
-msgstr "选择调号"
-
-#: src/globals/lenmus_actions.cpp:721
-#, fuzzy
-msgid "Select all to end of measure"
-msgstr "选择调号"
-
-#: src/globals/lenmus_actions.cpp:727
-msgid "Select all to start of system"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:733
-msgid "Select all to end of system"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:743
-msgid "Toolbox: select notes tools"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:748
-msgid "Toolbox: select clef tools"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:753
-msgid "Toolbox: select barline tools"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:758
-msgid "Toolbox: select symbols tools"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:764
-msgid "Select note/rest duration: longa"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:769
-msgid "Select note/rest duration: breve"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:774
-#, fuzzy
-msgid "Select note/rest duration: whole"
-msgstr "选择乐器和风格"
-
-#: src/globals/lenmus_actions.cpp:779
-msgid "Select note/rest duration: half"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:784
-msgid "Select note/rest duration: quarter"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:789
-msgid "Select note/rest duration: eight"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:794
-msgid "Select note/rest duration: 16th"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:799
-#, fuzzy
-msgid "Select note/rest duration: 32nd"
-msgstr "选择乐器和风格"
-
-#: src/globals/lenmus_actions.cpp:804
-msgid "Select note/rest duration: 64th"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:809
-msgid "Select note/rest duration: 128th"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:814
-msgid "Select note/rest duration: 256th"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:819
-#, fuzzy
-msgid "Select next accidental"
-msgstr "改变休止记号"
-
-#: src/globals/lenmus_actions.cpp:824
-#, fuzzy
-msgid "Select prev accidental"
-msgstr "改变休止记号"
-
-#: src/globals/lenmus_actions.cpp:829
-#, fuzzy
-msgid "Select next voice"
-msgstr "选择声音 %d"
-
-#: src/globals/lenmus_actions.cpp:834
-#, fuzzy
-msgid "Select prev voice"
-msgstr "选择声音 %d"
-
-#: src/globals/lenmus_actions.cpp:839
-#, fuzzy
-msgid "Select next octave"
-msgstr "选择八度 %d"
-
-#: src/globals/lenmus_actions.cpp:844
-#, fuzzy
-msgid "Select prev octave"
-msgstr "选择八度 %d"
-
-#: src/globals/lenmus_actions.cpp:849
-msgid "Increment note/rest dots"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:854
-msgid "Decrement note/rest dots"
-msgstr ""
-
-#: src/globals/lenmus_actions.cpp:879
-msgid "Action code not defined."
-msgstr ""
-
-#: src/options/lenmus_colors_opt_panel.cpp:49
-msgid "Choose colors to use:"
-msgstr "选择使用颜色："
-
-#: src/options/lenmus_internet_opt_panel.cpp:82
-#: src/options/lenmus_internet_opt_panel.cpp:112
-msgid "Never"
-msgstr "从不"
-
-#: src/options/lenmus_internet_opt_panel.cpp:83
-msgid "Daily"
-msgstr "日度"
-
-#: src/options/lenmus_internet_opt_panel.cpp:84
-msgid "Weekly"
-msgstr "周度"
-
-#: src/options/lenmus_internet_opt_panel.cpp:85
-msgid "Monthly"
-msgstr "阅读"
-
-#: src/options/lenmus_internet_opt_panel.cpp:160 xrc/xrc_strings.cpp:173
-msgid "Internet connection options"
-msgstr "网络连接选择"
-
-#: src/options/lenmus_internet_opt_panel.cpp:181 xrc/xrc_strings.cpp:174
-msgid "Software updates"
-msgstr "软件更新"
-
-#: src/options/lenmus_internet_opt_panel.cpp:189 xrc/xrc_strings.cpp:175
-msgid "Check for updates"
-msgstr "检测更新"
-
-#: src/options/lenmus_internet_opt_panel.cpp:204 xrc/xrc_strings.cpp:176
-msgid "Last successful check:"
-msgstr "最后一次检测成功："
-
-#: src/options/lenmus_internet_opt_panel.cpp:216 xrc/xrc_strings.cpp:178
-msgid "Use a proxy server to connect to Internet"
-msgstr "使用代理连接网络"
-
-#: src/options/lenmus_internet_opt_panel.cpp:219 xrc/xrc_strings.cpp:179
-msgid "Proxy settings"
-msgstr "代理器设置"
-
-#: src/options/lenmus_internet_opt_panel.cpp:221 xrc/xrc_strings.cpp:180
-msgid "Server settings"
-msgstr "服务器设置"
-
-#: src/options/lenmus_internet_opt_panel.cpp:229 xrc/xrc_strings.cpp:181
-msgid "Host:"
-msgstr "主机名："
-
-#: src/options/lenmus_internet_opt_panel.cpp:239 xrc/xrc_strings.cpp:182
-msgid "Port number:"
-msgstr "端口号："
-
-#: src/options/lenmus_internet_opt_panel.cpp:258 xrc/xrc_strings.cpp:183
-msgid "Please enter data for both, host name and port number"
-msgstr "请输入主机名和端口号"
-
-#: src/options/lenmus_internet_opt_panel.cpp:270 xrc/xrc_strings.cpp:184
-msgid "Proxy server requires authentication"
-msgstr "代理服务器需要认证"
-
-#: src/options/lenmus_internet_opt_panel.cpp:273 xrc/xrc_strings.cpp:185
-msgid "Authentication"
-msgstr "身份验证"
-
-#: src/options/lenmus_internet_opt_panel.cpp:278 xrc/xrc_strings.cpp:186
-msgid "Username:"
-msgstr "用户名："
-
-#: src/options/lenmus_internet_opt_panel.cpp:288 xrc/xrc_strings.cpp:187
-msgid "Password:"
-msgstr "密码："
-
-#: src/options/lenmus_internet_opt_panel.cpp:307 xrc/xrc_strings.cpp:188
-msgid "Please enter data for both, user name and password"
-msgstr "请输入用户名和密码"
-
-#: src/options/lenmus_lang_opt_panel.cpp:83 xrc/xrc_strings.cpp:160
+#: src/options/lenmus_lang_opt_panel.cpp:83
 msgid "Language preferences"
 msgstr "语言选择"
 
-#: src/options/lenmus_lang_opt_panel.cpp:103 xrc/xrc_strings.cpp:161
-msgid "Choose language to use:"
-msgstr "使用语言设置"
-
-#: src/options/lenmus_options_dlg.cpp:115
+#: src/options/lenmus_options_dlg.cpp:111
 msgid "Configuration options"
 msgstr "配置选项"
 
-#: src/options/lenmus_options_dlg.cpp:163
+#: src/options/lenmus_options_dlg.cpp:159
 msgid "Language"
 msgstr "语言"
 
-#: src/options/lenmus_options_dlg.cpp:178
-msgid "Toolbars"
-msgstr "工具条"
-
-#: src/options/lenmus_options_dlg.cpp:183
-msgid "Internet"
-msgstr "因特网"
-
-#: src/options/lenmus_options_dlg.cpp:191
-msgid "Shortcuts"
-msgstr ""
-
-#: src/options/lenmus_options_dlg.cpp:197
+#: src/options/lenmus_options_dlg.cpp:169
 #, fuzzy
 #| msgid "Play"
 msgid "Playback"
 msgstr "播放"
 
-#: src/options/lenmus_options_dlg.cpp:371
+#: src/options/lenmus_options_dlg.cpp:323
 msgid "Please correct the errors before moving to another section."
 msgstr "请在跳到其他章节前先更正错误"
 
@@ -4224,37 +3070,6 @@ msgstr ""
 #: src/options/lenmus_playback_opt_panel.cpp:191
 msgid "Error: invalid width"
 msgstr ""
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:220
-msgid "Keyboard shortcuts"
-msgstr ""
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:238
-msgid "Category:"
-msgstr ""
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:270
-#, fuzzy
-msgid "Action"
-msgstr "章节："
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:271
-msgid "Shortcut"
-msgstr ""
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:292
-msgid "Reset all to default"
-msgstr ""
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:295
-#, fuzzy
-msgid "Clear selected"
-msgstr "全部清空"
-
-#: src/options/lenmus_shortcuts_opt_panel.cpp:298
-#, fuzzy
-msgid "Change selected"
-msgstr "改变模式"
 
 #: src/options/lenmus_sound_opt_panel.cpp:65
 #, fuzzy
@@ -4415,248 +3230,95 @@ msgstr "每个小节第一拍的声音："
 msgid "Sound for other beats of each measure:"
 msgstr "每个小节的其他节拍的声音"
 
-#: src/options/lenmus_toolbar_opt_panel.cpp:90 xrc/xrc_strings.cpp:163
-msgid "Preferences for toolbars"
-msgstr "工具栏参数选择"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:110 xrc/xrc_strings.cpp:165
-msgid "&Small"
-msgstr "小"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:110 xrc/xrc_strings.cpp:166
-msgid "&Medium"
-msgstr "中"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:110 xrc/xrc_strings.cpp:167
-msgid "&Large"
-msgstr "大"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:112 xrc/xrc_strings.cpp:164
-msgid "Icons' size"
-msgstr "图标尺寸"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:121 xrc/xrc_strings.cpp:169
-msgid "&No labels"
-msgstr "无标签"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:121 xrc/xrc_strings.cpp:170
-msgid "Labels &bottom"
-msgstr "底部标签"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:121 xrc/xrc_strings.cpp:171
-msgid "Labels &right"
-msgstr "右标签"
-
-#: src/options/lenmus_toolbar_opt_panel.cpp:123 xrc/xrc_strings.cpp:168
-msgid "Labels"
-msgstr "标签"
-
-#: src/properties/DlgEditText.cpp:66
-msgid "Edit text"
-msgstr "编辑文字"
-
-#: src/properties/DlgEditText.cpp:96
-msgid "Copy"
-msgstr "复制"
-
-#: src/properties/DlgEditText.cpp:100
-msgid "Cut"
-msgstr "剪切"
-
-#: src/properties/DlgEditText.cpp:104 src/properties/DlgEditText.cpp:110
-#: src/properties/DlgEditText.cpp:114 src/properties/DlgEditText.cpp:118
-msgid "Paste"
-msgstr "粘贴"
-
-#: src/properties/DlgEditText.cpp:122
-msgid "Text color selector"
-msgstr "文字颜色选择器"
-
-#: src/properties/DlgTextStyles.cpp:93
-msgid "Styles defined in current score"
-msgstr "已为当前乐谱定义风格"
-
-#: src/properties/DlgTextStyles.cpp:287 src/properties/DlgTextStyles.cpp:292
-#: src/properties/DlgTextStyles.cpp:297
-msgid "Not yet implemented"
-msgstr "未实施"
-
-#: src/properties/TextProperties.cpp:158
-msgid "Text style:"
-msgstr "文字风格："
-
-#: src/properties/TextProperties.cpp:167
-msgid "Add/change styles"
-msgstr "添加/改变风"
-
-#: src/properties/lenmus_dlg_properties.cpp:57
-msgid "Properties"
-msgstr "特性"
-
-#: src/properties/lenmus_dlg_properties.cpp:167 xrc/xrc_strings.cpp:153
-msgid "Barline"
-msgstr "小节线"
-
-#: src/properties/lenmus_dlg_properties.cpp:182
-msgid "General"
-msgstr "普通"
-
-#: src/properties/lenmus_properties_barline.cpp:107
-#, fuzzy
-msgid "Barline type"
-msgstr "小节线"
-
-#: src/properties/lenmus_properties_general.cpp:145
-msgid "false"
-msgstr ""
-
-#: src/properties/lenmus_properties_general.cpp:146
-msgid "true"
-msgstr ""
-
-#: src/updater/lenmus_updater.cpp:107
-msgid "You are not connected to internet!"
-msgstr "未连接至因特网"
-
-#: src/updater/lenmus_updater.cpp:108
-msgid "To check for updates LenMus needs internet connection."
-msgstr "检测LenMus的更新需要网络连接"
-
-#: src/updater/lenmus_updater.cpp:109
-msgid "Please, connect to internet and then retry."
-msgstr "请链接网络并重试"
-
-#: src/updater/lenmus_updater.cpp:203
-msgid "Error checking for updates"
-msgstr "检查更新出现错误"
-
-#: src/updater/lenmus_updater.cpp:204
-msgid ""
-"A connection with the server could not be established. Check that you are "
-"connected to the internet and that no firewalls are blocking this program; "
-"then try again. If problems persist, the server may be down. Please, try "
-"again later."
-msgstr ""
-"无法与服务器建立链接。检测网络是否链接并确保防火墙没有屏蔽本程序；然后再尝"
-"试。如果仍然存在问题，服务器可能被关闭，请稍后尝试。"
-
-#: src/updater/lenmus_updater.cpp:367
-msgid "No updates available."
-msgstr ""
-
-#: src/widgets/MusicSymbolList.cpp:140 src/widgets/lenmus_msg_box.cpp:149
-msgid "Question"
-msgstr "问题"
-
-#: src/widgets/MusicSymbolList.cpp:168 src/widgets/lenmus_msg_box.cpp:176
-msgid "Error"
-msgstr "错误"
-
-#: src/widgets/lenmus_wizard.cpp:123
-msgid "< Previous"
-msgstr "< 上一个"
-
-#: src/widgets/lenmus_wizard.cpp:127
-msgid "Next >"
-msgstr "下一个 >"
-
-#: src/widgets/lenmus_wizard.cpp:131
-msgid "Finish"
-msgstr "完成"
-
-#: src/widgets/lenmus_wizard.cpp:242
-msgid "unknown button"
-msgstr "未知按钮"
-
-#: xrc/xrc_strings.cpp:1
+#: xrc/xrc_strings.cpp:2
 msgid "Configuration: Intervals - identification by ear"
 msgstr "配合：音程 —— 听音识别"
 
-#: xrc/xrc_strings.cpp:2
+#: xrc/xrc_strings.cpp:3
 msgid "Intervals"
 msgstr "音程"
 
-#: xrc/xrc_strings.cpp:3
+#: xrc/xrc_strings.cpp:4
 msgid "Intervals to practise"
 msgstr "练习音程"
 
-#: xrc/xrc_strings.cpp:6
+#: xrc/xrc_strings.cpp:7
 msgid "Major 2nd"
 msgstr "大2度"
 
-#: xrc/xrc_strings.cpp:8
+#: xrc/xrc_strings.cpp:9
 msgid "Major 3rd"
 msgstr "大3度"
 
-#: xrc/xrc_strings.cpp:9
+#: xrc/xrc_strings.cpp:10
 msgid "Perfect 4th"
 msgstr "全4度"
 
-#: xrc/xrc_strings.cpp:10
+#: xrc/xrc_strings.cpp:11
 msgid "augm.4th / dim. 5th"
 msgstr "增4度/减5度"
 
-#: xrc/xrc_strings.cpp:18
+#: xrc/xrc_strings.cpp:19
 msgid "Major 9th"
 msgstr "大9度"
 
-#: xrc/xrc_strings.cpp:20
+#: xrc/xrc_strings.cpp:21
 msgid "Major 10th"
 msgstr "大10度"
 
-#: xrc/xrc_strings.cpp:22
+#: xrc/xrc_strings.cpp:23
 msgid "augm. 11th / dim. 12th"
 msgstr "增11度/减12度"
 
-#: xrc/xrc_strings.cpp:27
+#: xrc/xrc_strings.cpp:28
 msgid "Major 14th"
 msgstr "大14度"
 
-#: xrc/xrc_strings.cpp:30 xrc/xrc_strings.cpp:31
+#: xrc/xrc_strings.cpp:31 xrc/xrc_strings.cpp:32
 msgid "Accidentals"
 msgstr "临时记号"
 
-#: xrc/xrc_strings.cpp:32
+#: xrc/xrc_strings.cpp:33
 msgid "&Use only notes from key signature"
 msgstr "仅使用来自调号的音符"
 
-#: xrc/xrc_strings.cpp:33
+#: xrc/xrc_strings.cpp:34
 msgid "&Allow chromatic accidentals"
 msgstr "允许半音临时记号"
 
-#: xrc/xrc_strings.cpp:50 xrc/xrc_strings.cpp:242 xrc/xrc_strings.cpp:298
+#: xrc/xrc_strings.cpp:51 xrc/xrc_strings.cpp:171 xrc/xrc_strings.cpp:227
 msgid "You must choose one key signature at least! "
 msgstr "必须至少选择一个调号"
 
-#: xrc/xrc_strings.cpp:51 xrc/xrc_strings.cpp:243 xrc/xrc_strings.cpp:299
+#: xrc/xrc_strings.cpp:52 xrc/xrc_strings.cpp:172 xrc/xrc_strings.cpp:228
 msgid "Other settings"
 msgstr "其他设置"
 
-#: xrc/xrc_strings.cpp:52
+#: xrc/xrc_strings.cpp:53
 msgid "Notes' range"
 msgstr "音符范围"
-
-#: xrc/xrc_strings.cpp:53 xrc/xrc_strings.cpp:70 xrc/xrc_strings.cpp:73
-#: xrc/xrc_strings.cpp:76 xrc/xrc_strings.cpp:79 xrc/xrc_strings.cpp:82
-#: xrc/xrc_strings.cpp:85 xrc/xrc_strings.cpp:88
-msgid "Min. note"
-msgstr "最小音符"
 
 #: xrc/xrc_strings.cpp:54 xrc/xrc_strings.cpp:71 xrc/xrc_strings.cpp:74
 #: xrc/xrc_strings.cpp:77 xrc/xrc_strings.cpp:80 xrc/xrc_strings.cpp:83
 #: xrc/xrc_strings.cpp:86 xrc/xrc_strings.cpp:89
+msgid "Min. note"
+msgstr "最小音符"
+
+#: xrc/xrc_strings.cpp:55 xrc/xrc_strings.cpp:72 xrc/xrc_strings.cpp:75
+#: xrc/xrc_strings.cpp:78 xrc/xrc_strings.cpp:81 xrc/xrc_strings.cpp:84
+#: xrc/xrc_strings.cpp:87 xrc/xrc_strings.cpp:90
 msgid "Max. note"
 msgstr "最大音符"
 
-#: xrc/xrc_strings.cpp:55 xrc/xrc_strings.cpp:91
+#: xrc/xrc_strings.cpp:56 xrc/xrc_strings.cpp:92
 msgid "Minimum pitch must be lower than maximum pitch "
 msgstr "最低音必须低于最高音"
 
-#: xrc/xrc_strings.cpp:61
+#: xrc/xrc_strings.cpp:62
 msgid "Start both intervals with the same note"
 msgstr "根据同一音程同时开始音程"
 
-#: xrc/xrc_strings.cpp:64
+#: xrc/xrc_strings.cpp:65
 msgid ""
 "It is not possible to generate any interval. Selected notes range interval "
 "(see tab 'Other settings') is lower than minimun allowed interval (see tab "
@@ -4665,472 +3327,1183 @@ msgstr ""
 "无法生成任何音程。选中的音符音程范围（见工具栏“其他设置”）低于音程中允许的最"
 "小范围（见“音程”）"
 
-#: xrc/xrc_strings.cpp:66
+#: xrc/xrc_strings.cpp:67
 msgid "Score generation settings"
 msgstr "乐谱生成设置"
 
-#: xrc/xrc_strings.cpp:67
+#: xrc/xrc_strings.cpp:68
 msgid "Clefs and Notes"
 msgstr "谱号和音符"
 
-#: xrc/xrc_strings.cpp:68
+#: xrc/xrc_strings.cpp:69
 msgid ""
 "Mark the clefts to use and set up the minimun and\n"
 "maximum pitches for the notes to use with each selected clef."
 msgstr "选中谱号下的最高音符"
 
-#: xrc/xrc_strings.cpp:90
+#: xrc/xrc_strings.cpp:91
 msgid "You must choose at least one clef! "
 msgstr "必须至少选择一个谱号"
 
-#: xrc/xrc_strings.cpp:92
+#: xrc/xrc_strings.cpp:93
 msgid "Maximum interval between two consecutive notes"
 msgstr "两个连续音符之间的最大音程"
 
-#: xrc/xrc_strings.cpp:93
+#: xrc/xrc_strings.cpp:94
 msgid "Time signatures"
 msgstr "拍号"
 
-#: xrc/xrc_strings.cpp:94
+#: xrc/xrc_strings.cpp:95
 msgid "Binary subdivision"
 msgstr "二拍子"
 
-#: xrc/xrc_strings.cpp:95
+#: xrc/xrc_strings.cpp:96
 msgid "2 4 time signature"
 msgstr "2 4拍"
 
-#: xrc/xrc_strings.cpp:96
+#: xrc/xrc_strings.cpp:97
 msgid "3 4"
 msgstr "3 4"
 
-#: xrc/xrc_strings.cpp:97
+#: xrc/xrc_strings.cpp:98
 msgid "4 4"
 msgstr "4 4"
 
-#: xrc/xrc_strings.cpp:98
+#: xrc/xrc_strings.cpp:99
 msgid "2 8"
 msgstr "2 8"
 
-#: xrc/xrc_strings.cpp:99
+#: xrc/xrc_strings.cpp:100
 msgid "2 2"
 msgstr "2 2"
 
-#: xrc/xrc_strings.cpp:100
+#: xrc/xrc_strings.cpp:101
 msgid "3 2"
 msgstr "3 2"
 
-#: xrc/xrc_strings.cpp:101
+#: xrc/xrc_strings.cpp:102
 msgid "Ternary subdivision"
 msgstr "三拍子"
 
-#: xrc/xrc_strings.cpp:102
+#: xrc/xrc_strings.cpp:103
 msgid "6 8 time signature"
 msgstr "6 8拍"
 
-#: xrc/xrc_strings.cpp:103
+#: xrc/xrc_strings.cpp:104
 msgid "9 8"
 msgstr "9 8"
 
-#: xrc/xrc_strings.cpp:104
+#: xrc/xrc_strings.cpp:105
 msgid "12 8"
 msgstr "12 8"
 
-#: xrc/xrc_strings.cpp:105
+#: xrc/xrc_strings.cpp:106
 msgid "3 8"
 msgstr "3 8"
 
-#: xrc/xrc_strings.cpp:106
+#: xrc/xrc_strings.cpp:107
 msgid "You must choose at least one time signature! "
 msgstr "必须至少选择一个拍号！"
 
-#: xrc/xrc_strings.cpp:124
+#: xrc/xrc_strings.cpp:125
 msgid "Rhymths"
 msgstr "节奏"
 
-#: xrc/xrc_strings.cpp:125
+#: xrc/xrc_strings.cpp:126
 msgid "Add rhythm"
 msgstr "添加节奏"
 
-#: xrc/xrc_strings.cpp:126
+#: xrc/xrc_strings.cpp:127
 msgid "Delete rhythm"
 msgstr "删除节奏"
 
-#: xrc/xrc_strings.cpp:128 xrc/xrc_strings.cpp:194 xrc/xrc_strings.cpp:200
+#: xrc/xrc_strings.cpp:129
 msgid "&Cancel"
 msgstr "取消"
 
-#: xrc/xrc_strings.cpp:130
-msgid "Pattern's editor"
-msgstr "模式编辑器"
-
 #: xrc/xrc_strings.cpp:131
-msgid "Step 1. Choose attributes for next note/rest to enter:"
-msgstr "第1步.为下一个音符/休止符选择属性"
-
-#: xrc/xrc_strings.cpp:132
-msgid "Dotted"
-msgstr "附点"
-
-#: xrc/xrc_strings.cpp:133
-msgid "Tied next"
-msgstr "和下一个音符相连"
-
-#: xrc/xrc_strings.cpp:134
-msgid "Not beamed"
-msgstr "无连接符杠"
-
-#: xrc/xrc_strings.cpp:135
-msgid "Start of a beamed group"
-msgstr "符杠起点"
-
-#: xrc/xrc_strings.cpp:136
-msgid "Continue in beamed group"
-msgstr "符杠中间"
-
-#: xrc/xrc_strings.cpp:137
-msgid "End of beamed group"
-msgstr "符杠结束"
-
-#: xrc/xrc_strings.cpp:138
-msgid "Step 2. Enter the the desired note/rest:"
-msgstr "第2步. 输入音符/休止"
-
-#: xrc/xrc_strings.cpp:139
-msgid "Whole note"
-msgstr "全音符"
-
-#: xrc/xrc_strings.cpp:140
-msgid "Half note"
-msgstr "2分音符"
-
-#: xrc/xrc_strings.cpp:141
-msgid "Quarter note"
-msgstr "4分音符"
-
-#: xrc/xrc_strings.cpp:142
-msgid "8th note"
-msgstr "8分音符"
-
-#: xrc/xrc_strings.cpp:143
-msgid "16th note"
-msgstr "16分音符"
-
-#: xrc/xrc_strings.cpp:144
-msgid "32th note"
-msgstr "32分音符"
-
-#: xrc/xrc_strings.cpp:145
-msgid "64th note"
-msgstr "64分音符"
-
-#: xrc/xrc_strings.cpp:146
-msgid "Whole rest"
-msgstr "全休止符"
-
-#: xrc/xrc_strings.cpp:147
-msgid "Half rest"
-msgstr "2分休止符"
-
-#: xrc/xrc_strings.cpp:148
-msgid "Quarter rest"
-msgstr "4分休止符"
-
-#: xrc/xrc_strings.cpp:149
-msgid "8th rest"
-msgstr "8分休止符"
-
-#: xrc/xrc_strings.cpp:150
-msgid "16th rest"
-msgstr "16分休止符"
-
-#: xrc/xrc_strings.cpp:151
-msgid "32th rest"
-msgstr "32分休止符"
-
-#: xrc/xrc_strings.cpp:152
-msgid "64th rest"
-msgstr "64分休止符"
-
-#: xrc/xrc_strings.cpp:154
-msgid "Clear all"
-msgstr "全部清空"
-
-#: xrc/xrc_strings.cpp:177
-msgid "dd/mm/aaaa"
-msgstr "dd/mm/aaaa"
-
-#: xrc/xrc_strings.cpp:190 xrc/xrc_strings.cpp:196
-msgid "LenMus Phonascus updater"
-msgstr "LenMus Phonascus升级器"
-
-#: xrc/xrc_strings.cpp:191
-msgid "Available updates"
-msgstr "可用更新"
-
-#: xrc/xrc_strings.cpp:192
-msgid "Item description"
-msgstr "项目描述"
-
-#: xrc/xrc_strings.cpp:193
-msgid "Download selected items"
-msgstr "下载选中的项目"
-
-#: xrc/xrc_strings.cpp:197
-msgid "Checking for available updates"
-msgstr "检查可用更新"
-
-#: xrc/xrc_strings.cpp:198
-msgid ""
-"This program will connect to LenMus website and look for \n"
-"available updates.\n"
-"\n"
-"Press 'Proceed' to start."
-msgstr "点击“开始”"
-
-#: xrc/xrc_strings.cpp:199
-msgid "Proceed"
-msgstr "开始"
-
-#: xrc/xrc_strings.cpp:202
 msgid "Configuration: Chords' identification"
 msgstr "配置：和弦识别"
 
-#: xrc/xrc_strings.cpp:203
+#: xrc/xrc_strings.cpp:132
 msgid "Chords"
 msgstr "和弦"
 
-#: xrc/xrc_strings.cpp:204
+#: xrc/xrc_strings.cpp:133
 msgid "Triads"
 msgstr "三和弦"
 
-#: xrc/xrc_strings.cpp:211
+#: xrc/xrc_strings.cpp:140
 msgid "Sevenths"
 msgstr "七和弦"
 
-#: xrc/xrc_strings.cpp:220
+#: xrc/xrc_strings.cpp:149
 msgid "Other chords"
 msgstr "其他和弦"
 
-#: xrc/xrc_strings.cpp:244
+#: xrc/xrc_strings.cpp:173
 msgid "Play modes"
 msgstr "播放模式"
 
-#: xrc/xrc_strings.cpp:245
+#: xrc/xrc_strings.cpp:174
 msgid "Chord (simultaneous notes)"
 msgstr "和弦（同时音符）"
 
-#: xrc/xrc_strings.cpp:246
+#: xrc/xrc_strings.cpp:175
 msgid "Arpegiated (ascending)"
 msgstr "琶音（上升）"
 
-#: xrc/xrc_strings.cpp:247
+#: xrc/xrc_strings.cpp:176
 msgid "Arpegiated (descending)"
 msgstr "琶音（下降）"
 
-#: xrc/xrc_strings.cpp:249
+#: xrc/xrc_strings.cpp:178
 msgid "Allow inversions"
 msgstr "允许转位"
 
-#: xrc/xrc_strings.cpp:250 xrc/xrc_strings.cpp:304
+#: xrc/xrc_strings.cpp:179 xrc/xrc_strings.cpp:233
 msgid "Display key signature"
 msgstr "显示调号"
 
-#: xrc/xrc_strings.cpp:254
+#: xrc/xrc_strings.cpp:183
 msgid "Configuration: Scales' identification"
 msgstr "配置：音阶识别"
 
-#: xrc/xrc_strings.cpp:255
+#: xrc/xrc_strings.cpp:184
 msgid "Scales"
 msgstr "音阶"
 
-#: xrc/xrc_strings.cpp:256
+#: xrc/xrc_strings.cpp:185
 msgid "Major scales"
 msgstr "大音阶"
 
-#: xrc/xrc_strings.cpp:261
+#: xrc/xrc_strings.cpp:190
 msgid "Minor scales"
 msgstr "小音阶"
 
-#: xrc/xrc_strings.cpp:266
+#: xrc/xrc_strings.cpp:195
 msgid "Gregorian scales"
 msgstr "格里高利音阶"
 
-#: xrc/xrc_strings.cpp:274
+#: xrc/xrc_strings.cpp:203
 msgid "Other scales"
 msgstr "其他音阶"
 
-#: xrc/xrc_strings.cpp:300
+#: xrc/xrc_strings.cpp:229
 msgid "Play mode"
 msgstr "播放模式"
 
-#: xrc/xrc_strings.cpp:301
+#: xrc/xrc_strings.cpp:230
 msgid "&Ascending"
 msgstr "上升"
 
-#: xrc/xrc_strings.cpp:302
+#: xrc/xrc_strings.cpp:231
 msgid "&Descending"
 msgstr "下降"
 
-#: xrc/xrc_strings.cpp:303
+#: xrc/xrc_strings.cpp:232
 msgid "&Both"
 msgstr "两者都是"
 
-#: xrc/xrc_strings.cpp:308
+#: xrc/xrc_strings.cpp:237
 msgid "Cadence settings"
 msgstr "终止式设置"
 
-#: xrc/xrc_strings.cpp:309
+#: xrc/xrc_strings.cpp:238
 msgid "Cadences"
 msgstr "终止式"
 
-#: xrc/xrc_strings.cpp:311 xrc/xrc_strings.cpp:389
+#: xrc/xrc_strings.cpp:240 xrc/xrc_strings.cpp:318
 msgid "Perfect authentic"
 msgstr "完全正格终止"
 
-#: xrc/xrc_strings.cpp:312
+#: xrc/xrc_strings.cpp:241
 msgid "V --> I"
 msgstr "V转I"
 
-#: xrc/xrc_strings.cpp:313
+#: xrc/xrc_strings.cpp:242
 msgid "V7 --> I"
 msgstr "V7转I"
 
-#: xrc/xrc_strings.cpp:314
+#: xrc/xrc_strings.cpp:243
 msgid "V aug5 --> I"
 msgstr "V转I"
 
-#: xrc/xrc_strings.cpp:315
+#: xrc/xrc_strings.cpp:244
 msgid "V dim5 --> I"
 msgstr "V dim5转I"
 
-#: xrc/xrc_strings.cpp:316 xrc/xrc_strings.cpp:324 xrc/xrc_strings.cpp:335
-#: xrc/xrc_strings.cpp:344
+#: xrc/xrc_strings.cpp:245 xrc/xrc_strings.cpp:253 xrc/xrc_strings.cpp:264
+#: xrc/xrc_strings.cpp:273
 msgid "check/uncheck all"
 msgstr "选中/取消选中全部"
 
-#: xrc/xrc_strings.cpp:318
+#: xrc/xrc_strings.cpp:247
 msgid "V --> I (one or both with inversions)"
 msgstr "V转I (一个或者均伴随转位)"
 
-#: xrc/xrc_strings.cpp:320
+#: xrc/xrc_strings.cpp:249
 msgid "IV --> I"
 msgstr "IV转I"
 
-#: xrc/xrc_strings.cpp:321
+#: xrc/xrc_strings.cpp:250
 msgid "IVm --> I"
 msgstr "IVm转I"
 
-#: xrc/xrc_strings.cpp:322
+#: xrc/xrc_strings.cpp:251
 msgid "II/6 --> I"
 msgstr "II/6转I"
 
-#: xrc/xrc_strings.cpp:323
+#: xrc/xrc_strings.cpp:252
 msgid "IIm/6 --> I"
 msgstr "IIm/6转I"
 
-#: xrc/xrc_strings.cpp:326
+#: xrc/xrc_strings.cpp:255
 msgid "Half cadences"
 msgstr "半终止式"
 
-#: xrc/xrc_strings.cpp:327
+#: xrc/xrc_strings.cpp:256
 msgid "IIm/6 --> V"
 msgstr "IIm/6转V"
 
-#: xrc/xrc_strings.cpp:328
+#: xrc/xrc_strings.cpp:257
 msgid "IV --> V"
 msgstr "IV转V"
 
-#: xrc/xrc_strings.cpp:329
+#: xrc/xrc_strings.cpp:258
 msgid "I --> V"
 msgstr "I转V"
 
-#: xrc/xrc_strings.cpp:330
+#: xrc/xrc_strings.cpp:259
 msgid "I/64 --> V"
 msgstr "I/64转V"
 
-#: xrc/xrc_strings.cpp:331
+#: xrc/xrc_strings.cpp:260
 msgid "IVm/6 --> V (Phrygian half cadence)"
 msgstr "IVm/6转V（弗吉尼亚半终止）"
 
-#: xrc/xrc_strings.cpp:332
+#: xrc/xrc_strings.cpp:261
 msgid "II --> V"
 msgstr "II转V"
 
-#: xrc/xrc_strings.cpp:333
+#: xrc/xrc_strings.cpp:262
 msgid "Neapolitan sixth --> V"
 msgstr "那波里六和弦转V"
 
-#: xrc/xrc_strings.cpp:334
+#: xrc/xrc_strings.cpp:263
 msgid "VI+ --> V"
 msgstr "VI+转V"
 
-#: xrc/xrc_strings.cpp:337
+#: xrc/xrc_strings.cpp:266
 msgid "V --> IV"
 msgstr "V转IV"
 
-#: xrc/xrc_strings.cpp:338
+#: xrc/xrc_strings.cpp:267
 msgid "V --> IVm"
 msgstr "V转IVm"
 
-#: xrc/xrc_strings.cpp:339
+#: xrc/xrc_strings.cpp:268
 msgid "V --> IIm"
 msgstr "V转IIm"
 
-#: xrc/xrc_strings.cpp:340
+#: xrc/xrc_strings.cpp:269
 msgid "V --> III"
 msgstr "V转III"
 
-#: xrc/xrc_strings.cpp:341
+#: xrc/xrc_strings.cpp:270
 msgid "V --> VII"
 msgstr "V转VII"
 
-#: xrc/xrc_strings.cpp:342
+#: xrc/xrc_strings.cpp:271
 msgid "V --> VI"
 msgstr "V转VI"
 
-#: xrc/xrc_strings.cpp:343
+#: xrc/xrc_strings.cpp:272
 msgid "V --> VIm"
 msgstr "V转VIm"
 
-#: xrc/xrc_strings.cpp:380
+#: xrc/xrc_strings.cpp:309
 msgid "How to show key signature?"
 msgstr "如何显示调号"
 
-#: xrc/xrc_strings.cpp:381
+#: xrc/xrc_strings.cpp:310
 msgid "&Play A4 note"
 msgstr "播放A4音符"
 
-#: xrc/xrc_strings.cpp:382
+#: xrc/xrc_strings.cpp:311
 msgid "Play &tonic chord"
 msgstr "播放主音和弦"
 
-#: xrc/xrc_strings.cpp:385
+#: xrc/xrc_strings.cpp:314
 msgid "Identify cadence &group (terminal/transient)"
 msgstr "辨别终止式组（末端/瞬时）"
 
-#: xrc/xrc_strings.cpp:386
+#: xrc/xrc_strings.cpp:315
 msgid "Identify cadence &type"
 msgstr "判断终止式类型"
 
-#: xrc/xrc_strings.cpp:387
+#: xrc/xrc_strings.cpp:316
 msgid "Cadence types"
 msgstr "终止式类型"
 
-#: xrc/xrc_strings.cpp:388
+#: xrc/xrc_strings.cpp:317
 msgid "Terminal cadences"
 msgstr "末端终止式"
 
-#: xrc/xrc_strings.cpp:392
+#: xrc/xrc_strings.cpp:321
 msgid "Transient cadences"
 msgstr "瞬时中止式"
 
-#: xrc/xrc_strings.cpp:395
+#: xrc/xrc_strings.cpp:324
 msgid "You must choose al least two buttons! "
 msgstr "必须至少选择两个按钮"
 
-#: xrc/xrc_strings.cpp:396
+#: xrc/xrc_strings.cpp:325
 msgid "You must choose at least one cadence in tab 'cadences'! "
 msgstr "必须至少在“终止式”标签中选择一个终止式"
+
+#, fuzzy
+#~ msgid "Add chord note"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add tie"
+#~ msgstr "添加标题"
+
+#~ msgid "Add tuplet"
+#~ msgstr "添加连音符"
+
+#~ msgid "Break a beam"
+#~ msgstr "拆分符杠"
+
+#, fuzzy
+#~ msgid "Change numeric property"
+#~ msgstr "改变音高"
+
+#, fuzzy
+#~ msgid "Change string property"
+#~ msgstr "改变音高"
+
+#, fuzzy
+#~ msgid "Change notes/rests dots"
+#~ msgstr "改变音高"
+
+#~ msgid "Change note accidentals"
+#~ msgstr "改变休止记号"
+
+#~ msgid "Delete selection"
+#~ msgstr "取消选择"
+
+#~ msgid "Delete %s"
+#~ msgstr "删除 %s"
+
+#~ msgid "Delete tie"
+#~ msgstr "删除延音线"
+
+#~ msgid "Delete tuplet"
+#~ msgstr "删除连音符"
+
+#~ msgid "Insert barline"
+#~ msgstr "插入小节线"
+
+#~ msgid "Insert clef"
+#~ msgstr "插入谱号"
+
+#~ msgid "Insert note"
+#~ msgstr "插入音符"
+
+#~ msgid "Insert rest"
+#~ msgstr "插入休止符"
+
+#~ msgid "Add beam"
+#~ msgstr "添加符杠"
+
+#, fuzzy
+#~ msgid "Move control point"
+#~ msgstr "移动点"
+
+#, fuzzy
+#~| msgid "Select octave %d"
+#~ msgid "Select object"
+#~ msgstr "选择八度 %d"
+
+#~ msgid "&Cut"
+#~ msgstr "剪切"
+
+#~ msgid "Edit"
+#~ msgstr "编辑"
+
+#, fuzzy
+#~ msgid "Help system"
+#~ msgstr "系统"
+
+#~ msgid "Opening Internet browser. Please wait ..."
+#~ msgstr "打开Internet浏览器。 请耐心等待 ..."
+
+#~ msgid "Open books"
+#~ msgstr "打开书籍"
+
+#~ msgid "Save"
+#~ msgstr "保存"
+
+#~ msgid "Save as"
+#~ msgstr "保存为"
+
+#~ msgid "Undo"
+#~ msgstr "撤销"
+
+#~ msgid "Redo"
+#~ msgstr "重做"
+
+#~ msgid "Score"
+#~ msgstr "乐谱"
+
+#~ msgid "Insert ..."
+#~ msgstr "插入谱号"
+
+#~ msgid "Tool bar"
+#~ msgstr "工具栏"
+
+#~ msgid "Hide/show the tools bar"
+#~ msgstr "隐藏/显示工具栏"
+
+#~ msgid "Status bar"
+#~ msgstr "状态栏"
+
+#~ msgid "Hide/show the status bar"
+#~ msgstr "隐藏/显示状态栏"
+
+#, fuzzy
+#~ msgid "Hide/show virtual keyboard"
+#~ msgstr "隐藏/显示标尺"
+
+#~ msgid "play from cursor"
+#~ msgstr "从鼠标处播放"
+
+#~ msgid "Start/resume play back. From cursor measure"
+#~ msgstr "开始/继续回放。从鼠标处开始"
+
+#~ msgid "Do count off"
+#~ msgstr "开始计数"
+
+#~ msgid "Do count off before starting the play back"
+#~ msgstr "开始播放之前，请先算数"
+
+#~ msgid "Metronome on"
+#~ msgstr "节拍器打开"
+
+#~ msgid "Turn metronome on/off"
+#~ msgstr "打开/关闭节拍器"
+
+#~ msgid "LenMus manual"
+#~ msgstr "LenMus帮助"
+
+#~ msgid "Open user's manual"
+#~ msgstr "打开用户手册"
+
+#~ msgid "Editor quick guide"
+#~ msgstr "编辑器快速指南"
+
+#~ msgid "Show editor quick guide"
+#~ msgstr "编辑器快速指南"
+
+#~ msgid "Search help"
+#~ msgstr "搜索"
+
+#~ msgid "Check now for updates"
+#~ msgstr "检查更新"
+
+#~ msgid "Connect to the Internet and check for program updates"
+#~ msgstr "链接网络并检查更新"
+
+#~ msgid "Options"
+#~ msgstr "选择"
+
+#~ msgid "Tools"
+#~ msgstr "工具条"
+
+#~ msgid "Set user preferences"
+#~ msgstr "用户首选项设置"
+
+#~ msgid "Help button"
+#~ msgstr "帮助按钮"
+
+#~ msgid "New document"
+#~ msgstr "打开文档"
+
+#~ msgid "Open a score"
+#~ msgstr "打开乐谱"
+
+#~ msgid "Open the music books"
+#~ msgstr "打开音乐书"
+
+#~ msgid "Save current score to disk"
+#~ msgstr "保存当前乐谱到磁盘"
+
+#~ msgid "Print document"
+#~ msgstr "打印文件"
+
+#~ msgid "Metronome tools"
+#~ msgstr "节拍器工具"
+
+#~ msgid "play tools"
+#~ msgstr "播放工具"
+
+#~ msgid "Main tools"
+#~ msgstr "主工具栏"
+
+#~ msgid "Zooming tools"
+#~ msgstr "放大工具栏"
+
+#~ msgid "Edit tools"
+#~ msgstr "编辑工具"
+
+#~ msgid "File tools"
+#~ msgstr "文件工具"
+
+#~ msgid "Counters & options"
+#~ msgstr "计数器和选项"
+
+#~ msgid "Invalid zooming factor '%s'"
+#~ msgstr "无效放大系数 '%s'"
+
+#~ msgid "Zooming factor must be greater that 10% and lower than 800%"
+#~ msgstr "放大系数必须大于10%小于800%"
+
+#~ msgid "Edit toolbox"
+#~ msgstr "编辑工具箱"
+
+#~ msgid "Score configuration wizard"
+#~ msgstr "乐谱配置向导"
+
+#~ msgid "Empty (manuscript paper)"
+#~ msgstr "空白（稿纸）"
+
+#~ msgid "Cello and piano"
+#~ msgstr "大提琴和钢琴"
+
+#~ msgid "Flute"
+#~ msgstr "长笛"
+
+#~ msgid "Guitar"
+#~ msgstr "吉他"
+
+#~ msgid "Piano"
+#~ msgstr "钢琴"
+
+#~ msgid "Trio sonata"
+#~ msgstr "三重奏鸣曲"
+
+#~ msgid "Viola and piano"
+#~ msgstr "中提琴和钢琴"
+
+#~ msgid "Violin"
+#~ msgstr "小提琴"
+
+#~ msgid "Violin and piano"
+#~ msgstr "小提琴和钢琴"
+
+#~ msgid "Error: Template '%s' not found."
+#~ msgstr "错误：未找到文件 %s"
+
+#~ msgid "Possible causes:"
+#~ msgstr "可能原因："
+
+#~ msgid "- An error during lenmus installation."
+#~ msgstr "Lenmus安装时出现错误"
+
+#~ msgid "- An accidental deletion of the required template."
+#~ msgstr "必需的模板被意外删除"
+
+#~ msgid "An empty score will be created."
+#~ msgstr "新乐谱将被创建"
+
+#~ msgid "Select instruments and style"
+#~ msgstr "选择乐器和风格"
+
+#~ msgid "Preview"
+#~ msgstr "预览"
+
+#~ msgid "Select a key signature"
+#~ msgstr "选择调号"
+
+#~ msgid "minor"
+#~ msgstr "小调"
+
+#~ msgid "Key type"
+#~ msgstr "调号类型"
+
+#~ msgid "none"
+#~ msgstr "无"
+
+#~ msgid "Select time signature"
+#~ msgstr "选择拍号"
+
+#~ msgid "Time signature"
+#~ msgstr "拍号"
+
+#~ msgid "Other time signatures"
+#~ msgstr "其他拍号"
+
+#~ msgid "Numerator"
+#~ msgstr "分子"
+
+#~ msgid "Denominator"
+#~ msgstr "分母"
+
+#~ msgid "About LenMus"
+#~ msgstr "关于LenMus"
+
+#~ msgid "What's is new in this version"
+#~ msgstr "这一版本的新特性"
+
+#~ msgid "Learn and practise music theory"
+#~ msgstr "学习和实践音乐理论"
+
+#~ msgid "Study guide: How to use this program"
+#~ msgstr "学习指南：如何使用本软件。"
+
+#~ msgid "Recent documents"
+#~ msgstr "最近打开的文件"
+
+#, fuzzy
+#~| msgid "Chords"
+#~ msgid "Chord is valid"
+#~ msgstr "和弦"
+
+#~ msgid "Simple barline"
+#~ msgstr "单小节线"
+
+#~ msgid "Double barline"
+#~ msgstr "双小节线"
+
+#~ msgid "Final barline"
+#~ msgstr "终止小节线"
+
+#~ msgid "Start repetition"
+#~ msgstr "重复开始"
+
+#~ msgid "End repetition"
+#~ msgstr "重复结束"
+
+#~ msgid "Start barline"
+#~ msgstr "起始小节线"
+
+#~ msgid "Double repetition"
+#~ msgstr "双重复"
+
+#, fuzzy
+#~| msgid "Double repetition"
+#~ msgid "Double repetition alt."
+#~ msgstr "双重复"
+
+#, fuzzy
+#~ msgid "Stem none"
+#~ msgstr "无"
+
+#~ msgid "Available music books"
+#~ msgstr "可用音乐电子书"
+
+#~ msgid ""
+#~ "Please read the <a-1>Study guide</a-1> for information about the best way "
+#~ "to use LenMus Phonascus and the books."
+#~ msgstr ""
+#~ "了解LenMus Phonascus和教材的最佳使用方法的相关信息，请参阅<a-1>学习指南</"
+#~ "a-1>"
+
+#~ msgid "Available books:"
+#~ msgstr "可用电子书"
+
+#~ msgid "Error when trying to move to folder %s"
+#~ msgstr "无法转移至文件夹 %s"
+
+#, fuzzy
+#~ msgid "Play fragment 1"
+#~ msgstr "再次播放"
+
+#, fuzzy
+#~ msgid "Play fragment 2"
+#~ msgstr "再次播放"
+
+#, fuzzy
+#~ msgid "Play fragment 3"
+#~ msgstr "再次播放"
+
+#, fuzzy
+#~ msgid "Play fragment 4"
+#~ msgstr "再次播放"
+
+#, fuzzy
+#~ msgid "Perfect!"
+#~ msgstr "完满终止"
+
+#, fuzzy
+#~ msgid "Play problem"
+#~ msgstr "新问题"
+
+#, fuzzy
+#~ msgid "Play my score"
+#~ msgstr "播放模式"
+
+#, fuzzy
+#~ msgid "General actions on documents"
+#~ msgstr "打开文档"
+
+#, fuzzy
+#~ msgid "Score edition"
+#~ msgstr "重复开始"
+
+#, fuzzy
+#~ msgid "Create a new blank document"
+#~ msgstr "新建空白文件"
+
+#~ msgid "Open a music book"
+#~ msgstr "打开一本音乐书"
+
+#, fuzzy
+#~ msgid "Save current document to file"
+#~ msgstr "保存当前乐谱到磁盘"
+
+#~ msgid "Zoom in"
+#~ msgstr "放大"
+
+#~ msgid "Zoom out"
+#~ msgstr "缩小"
+
+#, fuzzy
+#~ msgid "Move cursor forward"
+#~ msgstr "前进"
+
+#, fuzzy
+#~ msgid "Move cursor to previous page"
+#~ msgstr "去先前的访问页面"
+
+#, fuzzy
+#~ msgid "Delete selection or pointed object"
+#~ msgstr "取消选择"
+
+#, fuzzy
+#~ msgid "Insert a header"
+#~ msgstr "插入小节线"
+
+#, fuzzy
+#~ msgid "Insert a score"
+#~ msgstr "关闭乐谱"
+
+#, fuzzy
+#~ msgid "Remove selection"
+#~ msgstr "取消选择"
+
+#, fuzzy
+#~ msgid "Move cursor to next measure"
+#~ msgstr "后移：小节之外"
+
+#, fuzzy
+#~ msgid "Move cursor to previous measure"
+#~ msgstr "后移：小节之外"
+
+#, fuzzy
+#~ msgid "Move cursor to first measure"
+#~ msgstr "后移：小节之外"
+
+#, fuzzy
+#~ msgid "Move cursor to last measure"
+#~ msgstr "后移：小节之外"
+
+#, fuzzy
+#~ msgid "Add note A"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add note B"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add note C"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add note D"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add note E"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add note F"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add note G"
+#~ msgstr "添加音符"
+
+#, fuzzy
+#~ msgid "Add a rest"
+#~ msgstr "添加休止符"
+
+#~ msgid "Add barline"
+#~ msgstr "添加小节线"
+
+#, fuzzy
+#~ msgid "Add note A to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Add note B to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Add note C to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Add note D to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Add note E to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Add note F to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Add note G to chord"
+#~ msgstr "为乐谱添加标题"
+
+#, fuzzy
+#~ msgid "Select prev. note/rest"
+#~ msgstr "选择拍号"
+
+#, fuzzy
+#~ msgid "Select next note/rest"
+#~ msgstr "选择拍号"
+
+#, fuzzy
+#~ msgid "Select all to start of measure"
+#~ msgstr "选择调号"
+
+#, fuzzy
+#~ msgid "Select all to end of measure"
+#~ msgstr "选择调号"
+
+#, fuzzy
+#~ msgid "Select note/rest duration: whole"
+#~ msgstr "选择乐器和风格"
+
+#, fuzzy
+#~ msgid "Select note/rest duration: 32nd"
+#~ msgstr "选择乐器和风格"
+
+#, fuzzy
+#~ msgid "Select next accidental"
+#~ msgstr "改变休止记号"
+
+#, fuzzy
+#~ msgid "Select prev accidental"
+#~ msgstr "改变休止记号"
+
+#, fuzzy
+#~ msgid "Select next voice"
+#~ msgstr "选择声音 %d"
+
+#, fuzzy
+#~ msgid "Select prev voice"
+#~ msgstr "选择声音 %d"
+
+#, fuzzy
+#~ msgid "Select next octave"
+#~ msgstr "选择八度 %d"
+
+#, fuzzy
+#~ msgid "Select prev octave"
+#~ msgstr "选择八度 %d"
+
+#~ msgid "Choose colors to use:"
+#~ msgstr "选择使用颜色："
+
+#~ msgid "Never"
+#~ msgstr "从不"
+
+#~ msgid "Daily"
+#~ msgstr "日度"
+
+#~ msgid "Weekly"
+#~ msgstr "周度"
+
+#~ msgid "Monthly"
+#~ msgstr "阅读"
+
+#~ msgid "Internet connection options"
+#~ msgstr "网络连接选择"
+
+#~ msgid "Software updates"
+#~ msgstr "软件更新"
+
+#~ msgid "Check for updates"
+#~ msgstr "检测更新"
+
+#~ msgid "Last successful check:"
+#~ msgstr "最后一次检测成功："
+
+#~ msgid "Use a proxy server to connect to Internet"
+#~ msgstr "使用代理连接网络"
+
+#~ msgid "Proxy settings"
+#~ msgstr "代理器设置"
+
+#~ msgid "Server settings"
+#~ msgstr "服务器设置"
+
+#~ msgid "Host:"
+#~ msgstr "主机名："
+
+#~ msgid "Port number:"
+#~ msgstr "端口号："
+
+#~ msgid "Please enter data for both, host name and port number"
+#~ msgstr "请输入主机名和端口号"
+
+#~ msgid "Proxy server requires authentication"
+#~ msgstr "代理服务器需要认证"
+
+#~ msgid "Authentication"
+#~ msgstr "身份验证"
+
+#~ msgid "Username:"
+#~ msgstr "用户名："
+
+#~ msgid "Password:"
+#~ msgstr "密码："
+
+#~ msgid "Please enter data for both, user name and password"
+#~ msgstr "请输入用户名和密码"
+
+#~ msgid "Toolbars"
+#~ msgstr "工具条"
+
+#~ msgid "Internet"
+#~ msgstr "因特网"
+
+#, fuzzy
+#~ msgid "Action"
+#~ msgstr "章节："
+
+#, fuzzy
+#~ msgid "Clear selected"
+#~ msgstr "全部清空"
+
+#, fuzzy
+#~ msgid "Change selected"
+#~ msgstr "改变模式"
+
+#~ msgid "Preferences for toolbars"
+#~ msgstr "工具栏参数选择"
+
+#~ msgid "&Small"
+#~ msgstr "小"
+
+#~ msgid "&Medium"
+#~ msgstr "中"
+
+#~ msgid "&Large"
+#~ msgstr "大"
+
+#~ msgid "Icons' size"
+#~ msgstr "图标尺寸"
+
+#~ msgid "&No labels"
+#~ msgstr "无标签"
+
+#~ msgid "Labels &bottom"
+#~ msgstr "底部标签"
+
+#~ msgid "Labels &right"
+#~ msgstr "右标签"
+
+#~ msgid "Labels"
+#~ msgstr "标签"
+
+#~ msgid "Edit text"
+#~ msgstr "编辑文字"
+
+#~ msgid "Copy"
+#~ msgstr "复制"
+
+#~ msgid "Cut"
+#~ msgstr "剪切"
+
+#~ msgid "Paste"
+#~ msgstr "粘贴"
+
+#~ msgid "Text color selector"
+#~ msgstr "文字颜色选择器"
+
+#~ msgid "Styles defined in current score"
+#~ msgstr "已为当前乐谱定义风格"
+
+#~ msgid "Not yet implemented"
+#~ msgstr "未实施"
+
+#~ msgid "Text style:"
+#~ msgstr "文字风格："
+
+#~ msgid "Add/change styles"
+#~ msgstr "添加/改变风"
+
+#~ msgid "Properties"
+#~ msgstr "特性"
+
+#~ msgid "Barline"
+#~ msgstr "小节线"
+
+#~ msgid "General"
+#~ msgstr "普通"
+
+#, fuzzy
+#~ msgid "Barline type"
+#~ msgstr "小节线"
+
+#~ msgid "You are not connected to internet!"
+#~ msgstr "未连接至因特网"
+
+#~ msgid "To check for updates LenMus needs internet connection."
+#~ msgstr "检测LenMus的更新需要网络连接"
+
+#~ msgid "Please, connect to internet and then retry."
+#~ msgstr "请链接网络并重试"
+
+#~ msgid "Error checking for updates"
+#~ msgstr "检查更新出现错误"
+
+#~ msgid ""
+#~ "A connection with the server could not be established. Check that you are "
+#~ "connected to the internet and that no firewalls are blocking this "
+#~ "program; then try again. If problems persist, the server may be down. "
+#~ "Please, try again later."
+#~ msgstr ""
+#~ "无法与服务器建立链接。检测网络是否链接并确保防火墙没有屏蔽本程序；然后再尝"
+#~ "试。如果仍然存在问题，服务器可能被关闭，请稍后尝试。"
+
+#~ msgid "Question"
+#~ msgstr "问题"
+
+#~ msgid "Error"
+#~ msgstr "错误"
+
+#~ msgid "< Previous"
+#~ msgstr "< 上一个"
+
+#~ msgid "Next >"
+#~ msgstr "下一个 >"
+
+#~ msgid "Finish"
+#~ msgstr "完成"
+
+#~ msgid "unknown button"
+#~ msgstr "未知按钮"
+
+#~ msgid "Pattern's editor"
+#~ msgstr "模式编辑器"
+
+#~ msgid "Step 1. Choose attributes for next note/rest to enter:"
+#~ msgstr "第1步.为下一个音符/休止符选择属性"
+
+#~ msgid "Dotted"
+#~ msgstr "附点"
+
+#~ msgid "Tied next"
+#~ msgstr "和下一个音符相连"
+
+#~ msgid "Not beamed"
+#~ msgstr "无连接符杠"
+
+#~ msgid "Start of a beamed group"
+#~ msgstr "符杠起点"
+
+#~ msgid "Continue in beamed group"
+#~ msgstr "符杠中间"
+
+#~ msgid "End of beamed group"
+#~ msgstr "符杠结束"
+
+#~ msgid "Step 2. Enter the the desired note/rest:"
+#~ msgstr "第2步. 输入音符/休止"
+
+#~ msgid "Whole note"
+#~ msgstr "全音符"
+
+#~ msgid "Half note"
+#~ msgstr "2分音符"
+
+#~ msgid "Quarter note"
+#~ msgstr "4分音符"
+
+#~ msgid "8th note"
+#~ msgstr "8分音符"
+
+#~ msgid "16th note"
+#~ msgstr "16分音符"
+
+#~ msgid "32th note"
+#~ msgstr "32分音符"
+
+#~ msgid "64th note"
+#~ msgstr "64分音符"
+
+#~ msgid "Whole rest"
+#~ msgstr "全休止符"
+
+#~ msgid "Half rest"
+#~ msgstr "2分休止符"
+
+#~ msgid "Quarter rest"
+#~ msgstr "4分休止符"
+
+#~ msgid "8th rest"
+#~ msgstr "8分休止符"
+
+#~ msgid "16th rest"
+#~ msgstr "16分休止符"
+
+#~ msgid "32th rest"
+#~ msgstr "32分休止符"
+
+#~ msgid "64th rest"
+#~ msgstr "64分休止符"
+
+#~ msgid "Clear all"
+#~ msgstr "全部清空"
+
+#~ msgid "dd/mm/aaaa"
+#~ msgstr "dd/mm/aaaa"
+
+#~ msgid "LenMus Phonascus updater"
+#~ msgstr "LenMus Phonascus升级器"
+
+#~ msgid "Available updates"
+#~ msgstr "可用更新"
+
+#~ msgid "Item description"
+#~ msgstr "项目描述"
+
+#~ msgid "Download selected items"
+#~ msgstr "下载选中的项目"
+
+#~ msgid "Checking for available updates"
+#~ msgstr "检查可用更新"
+
+#~ msgid ""
+#~ "This program will connect to LenMus website and look for \n"
+#~ "available updates.\n"
+#~ "\n"
+#~ "Press 'Proceed' to start."
+#~ msgstr "点击“开始”"
+
+#~ msgid "Proceed"
+#~ msgstr "开始"
 
 #~ msgid "Run Midi wizard"
 #~ msgstr "运行MIDI向导"
@@ -5293,9 +4666,6 @@ msgstr "必须至少在“终止式”标签中选择一个终止式"
 #, fuzzy
 #~ msgid "Notes and rests"
 #~ msgstr "音符或休止符"
-
-#~ msgid "OK"
-#~ msgstr "确定"
 
 #~ msgid "Octave"
 #~ msgstr "八度"

@@ -90,14 +90,14 @@ DlgDebug::DlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSav
 
     wxBoxSizer* pButtonsSizer = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *cmdOK = LENMUS_NEW wxButton(this, wxID_OK, _("OK"));
+    wxButton *cmdOK = LENMUS_NEW wxButton(this, wxID_OK, "OK");
     pButtonsSizer->Add(cmdOK, 0, 0, 1);
     cmdOK->SetDefault();
     cmdOK->SetFocus();
 
     if (m_fSave)
     {
-	    wxButton *cmdSave = LENMUS_NEW wxButton(this, lmID_SAVE, _("Save"));
+	    wxButton *cmdSave = LENMUS_NEW wxButton(this, lmID_SAVE, "Save");
 
 	    pButtonsSizer->Add(cmdSave, 0, 0, 1);
     }
@@ -181,7 +181,7 @@ void lmHtmlDlg::CreateControls(bool fSaveButton)
 	wxBoxSizer* pButtonsSizer;
 	pButtonsSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pBtnAccept = LENMUS_NEW wxButton( this, lmID_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pBtnAccept = LENMUS_NEW wxButton( this, lmID_ACCEPT, "Accept", wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnAccept, 0, wxALL, 5 );
 
 
@@ -189,7 +189,7 @@ void lmHtmlDlg::CreateControls(bool fSaveButton)
 
     if (fSaveButton)
     {
-	    m_pBtnSave = LENMUS_NEW wxButton( this, lmID_SAVE, _("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	    m_pBtnSave = LENMUS_NEW wxButton( this, lmID_SAVE, "Save", wxDefaultPosition, wxDefaultSize, 0 );
 	    pButtonsSizer->Add( m_pBtnSave, 0, wxALL, 5 );
     }
 
@@ -213,7 +213,7 @@ void lmHtmlDlg::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void lmHtmlDlg::OnSaveClicked(wxCommandEvent& WXUNUSED(event))
 {
-	wxString sFilename = wxFileSelector(_("File to save"));
+	wxString sFilename = wxFileSelector("File to save");
 	if ( !sFilename.empty() )
 	{
 		// save the file
@@ -259,21 +259,21 @@ DlgSpacingParams::DlgSpacingParams(wxWindow * parent, float force, float alpha,
 	pGridSizer->SetFlexibleDirection( wxBOTH );
 	pGridSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_lblForce = new wxStaticText( this, wxID_ANY, _("Optimum force:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblForce = new wxStaticText( this, wxID_ANY, "Optimum force:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblForce->Wrap( -1 );
 	pGridSizer->Add( m_lblForce, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	m_txtForce = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pGridSizer->Add( m_txtForce, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	m_lblAlpha = new wxStaticText( this, wxID_ANY, _("Alpha:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblAlpha = new wxStaticText( this, wxID_ANY, "Alpha:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblAlpha->Wrap( -1 );
 	pGridSizer->Add( m_lblAlpha, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	m_txtAlpha = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pGridSizer->Add( m_txtAlpha, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	m_lblDmin = new wxStaticText( this, wxID_ANY, _("D min:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblDmin = new wxStaticText( this, wxID_ANY, "D min:", wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblDmin->Wrap( -1 );
 	pGridSizer->Add( m_lblDmin, 0, wxALL, 5 );
 
@@ -288,11 +288,11 @@ DlgSpacingParams::DlgSpacingParams(wxWindow * parent, float force, float alpha,
 
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_cmdUpdate = new wxButton( this, wxID_ANY, _("Update"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cmdUpdate = new wxButton( this, wxID_ANY, "Update", wxDefaultPosition, wxDefaultSize, 0 );
 	m_cmdUpdate->SetDefault();
 	pButtonsSizer->Add( m_cmdUpdate, 0, wxALL|wxALIGN_BOTTOM, 5 );
 
-	m_cmdClose = new wxButton( this, wxID_ANY, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_cmdClose = new wxButton( this, wxID_ANY, "Close", wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_cmdClose, 0, wxALL|wxALIGN_BOTTOM, 5 );
 
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-09 13:02+0200\n"
-"PO-Revision-Date: 2021-04-09 13:08+0200\n"
+"POT-Creation-Date: 2021-06-22 17:35+0200\n"
+"PO-Revision-Date: 2021-06-22 17:35+0200\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: <cecilios@gmail.com>\n"
 "Language: es\n"
@@ -57,14 +57,14 @@ msgstr "Software utilizado"
 msgid "Build info."
 msgstr "Información de versión"
 
-#: src/app/lenmus_about_dialog.cpp:172 src/dialogs/lenmus_dlg_debug.cpp:184
+#: src/app/lenmus_about_dialog.cpp:172
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:316
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:372
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:451
 #: src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:139
-#: src/options/lenmus_options_dlg.cpp:233 xrc/xrc_strings.cpp:62
-#: xrc/xrc_strings.cpp:127 xrc/xrc_strings.cpp:157 xrc/xrc_strings.cpp:251
-#: xrc/xrc_strings.cpp:305 xrc/xrc_strings.cpp:397
+#: src/options/lenmus_options_dlg.cpp:233 xrc/xrc_strings.cpp:63
+#: xrc/xrc_strings.cpp:128 xrc/xrc_strings.cpp:180 xrc/xrc_strings.cpp:234
+#: xrc/xrc_strings.cpp:326
 msgid "Accept"
 msgstr "Aceptar"
 
@@ -300,82 +300,86 @@ msgid "Project management:"
 msgstr "Gestión del proyecto:"
 
 #: src/app/lenmus_about_dialog.cpp:373
-msgid "Programming:"
-msgstr "Programación:"
+msgid "Pedagogical and musical direction:"
+msgstr "Dirección musical y pedagógica:"
 
-#: src/app/lenmus_about_dialog.cpp:379
-msgid "Linux package:"
-msgstr "Paquete Linux:"
-
-#: src/app/lenmus_about_dialog.cpp:385
-msgid "macOS package:"
-msgstr "Paquete macOS:"
-
-#: src/app/lenmus_about_dialog.cpp:390
+#: src/app/lenmus_about_dialog.cpp:382
 msgid "Music advice:"
 msgstr "Ayuda en teoría de la música:"
 
-#: src/app/lenmus_about_dialog.cpp:400
+#: src/app/lenmus_about_dialog.cpp:396
+msgid "Programming:"
+msgstr "Programación:"
+
+#: src/app/lenmus_about_dialog.cpp:402
+msgid "Linux package:"
+msgstr "Paquete Linux:"
+
+#: src/app/lenmus_about_dialog.cpp:408
+msgid "macOS package:"
+msgstr "Paquete macOS:"
+
+#: src/app/lenmus_about_dialog.cpp:413
 msgid "Music texts and exercises:"
 msgstr "Textos de música y ejercicios:"
 
-#: src/app/lenmus_about_dialog.cpp:402
+#: src/app/lenmus_about_dialog.cpp:415
 msgid "See credits page on each eBook"
 msgstr "Ver página de créditos de cada libro"
 
-#: src/app/lenmus_about_dialog.cpp:407
+#: src/app/lenmus_about_dialog.cpp:420
 msgid "Translation:"
 msgstr "Traducción:"
 
-#: src/app/lenmus_about_dialog.cpp:408
+#: src/app/lenmus_about_dialog.cpp:421
 msgid "Basque"
 msgstr "Vascuence"
 
-#: src/app/lenmus_about_dialog.cpp:411
+#: src/app/lenmus_about_dialog.cpp:424
 msgid "Dutch"
 msgstr "Holandés"
 
-#: src/app/lenmus_about_dialog.cpp:414
+#: src/app/lenmus_about_dialog.cpp:427
 msgid "Simplified Chinese"
 msgstr "Chino simplificado"
 
-#: src/app/lenmus_about_dialog.cpp:417
+#: src/app/lenmus_about_dialog.cpp:430
 msgid "French"
 msgstr "Francés"
 
-#: src/app/lenmus_about_dialog.cpp:424
+#: src/app/lenmus_about_dialog.cpp:437
 msgid "Galician"
 msgstr "Gallego"
 
-#: src/app/lenmus_about_dialog.cpp:429
+#: src/app/lenmus_about_dialog.cpp:442
 msgid "German"
 msgstr "Alemán"
 
-#: src/app/lenmus_about_dialog.cpp:434
+#: src/app/lenmus_about_dialog.cpp:447
 msgid "Greek"
 msgstr "Griego"
 
-#: src/app/lenmus_about_dialog.cpp:437
+#: src/app/lenmus_about_dialog.cpp:450
 msgid "Italian"
 msgstr "Italiano"
 
-#: src/app/lenmus_about_dialog.cpp:441
+#: src/app/lenmus_about_dialog.cpp:454
 msgid "Russian"
 msgstr "Ruso"
 
-#: src/app/lenmus_about_dialog.cpp:445
+#: src/app/lenmus_about_dialog.cpp:458
 msgid "Spanish"
 msgstr "Español"
 
-#: src/app/lenmus_about_dialog.cpp:448
+#: src/app/lenmus_about_dialog.cpp:461
 msgid "Turkish"
 msgstr "Turco"
 
-#: src/app/lenmus_about_dialog.cpp:454
+#: src/app/lenmus_about_dialog.cpp:467
 msgid "Thanks also to:"
 msgstr "Gracias también a:"
 
-#: src/app/lenmus_about_dialog.cpp:459
+#: src/app/lenmus_about_dialog.cpp:472
 msgid ""
 "If you would like to help developing this program or join the project to "
 "help in any other way, you are indeed welcome; please, visit LenMus at "
@@ -392,7 +396,7 @@ msgstr ""
 msgid "Another instance of %s is already running."
 msgstr "Ya hay otra instancia de %s ejecutándose."
 
-#: src/app/lenmus_app.cpp:843
+#: src/app/lenmus_app.cpp:825
 msgid "LenMus First Run"
 msgstr "Primera ejecución de LenMus"
 
@@ -417,7 +421,7 @@ msgstr "Recargar"
 msgid "Reload current document"
 msgstr "Recargar el documento actual"
 
-#: src/app/lenmus_main_frame.cpp:525 src/dialogs/lenmus_dlg_debug.cpp:295
+#: src/app/lenmus_main_frame.cpp:525
 msgid "Close"
 msgstr "Cerrar"
 
@@ -644,8 +648,8 @@ msgstr "Archivo '%s' no encontrado."
 msgid "Error message"
 msgstr "Mensaje de error"
 
-#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:349
-#: src/app/lenmus_welcome_window.cpp:383
+#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:407
 msgid "Sorry: File not found!"
 msgstr "Error: No se encuentra el archivo"
 
@@ -675,36 +679,36 @@ msgstr ""
 "Software libre bajo licencia GNU GPL (General Public License), versión 3 o "
 "superior."
 
-#: src/app/lenmus_welcome_window.cpp:96
+#: src/app/lenmus_welcome_window.cpp:105
 msgid "Welcome to LenMus"
 msgstr "LenMus te da la bienvenida"
 
-#: src/app/lenmus_welcome_window.cpp:103
+#: src/app/lenmus_welcome_window.cpp:112
 #, c-format
 msgid "Version %s"
 msgstr "Versión %s"
 
-#: src/app/lenmus_welcome_window.cpp:141
+#: src/app/lenmus_welcome_window.cpp:150
 msgid "Get started"
 msgstr "Primeros pasos con LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:147
+#: src/app/lenmus_welcome_window.cpp:156
 msgid "Read about how to get the most out of LenMus."
 msgstr "Instrucciones para sacar el máximo provecho de LenMus."
 
-#: src/app/lenmus_welcome_window.cpp:153 src/app/lenmus_welcome_window.cpp:187
-#: src/app/lenmus_welcome_window.cpp:235 src/app/lenmus_welcome_window.cpp:245
-#: src/app/lenmus_welcome_window.cpp:255
+#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
+#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
+#: src/app/lenmus_welcome_window.cpp:264
 #: src/dialogs/lenmus_dlg_metronome.cpp:339
 #: src/dialogs/lenmus_dlg_metronome.cpp:425
 msgid "Start"
 msgstr "Comenzar"
 
-#: src/app/lenmus_welcome_window.cpp:175
+#: src/app/lenmus_welcome_window.cpp:184
 msgid "Train with LenMus"
 msgstr "Entrena con LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:181
+#: src/app/lenmus_welcome_window.cpp:190
 msgid ""
 "Develop your musical skills with progressive exercises that will help you "
 "assimilate the different contents. Set your own learning pace."
@@ -713,30 +717,30 @@ msgstr ""
 "que te ayudarán a asimilar los distintos contenidos. Marca tu propio ritmo "
 "de aprendizaje."
 
-#: src/app/lenmus_welcome_window.cpp:211
+#: src/app/lenmus_welcome_window.cpp:220
 msgid "Study and practice"
 msgstr "Estudia y practica"
 
-#: src/app/lenmus_welcome_window.cpp:217
+#: src/app/lenmus_welcome_window.cpp:226
 msgid ""
 "Study with the interactive LenMus music theory books. Start with the first "
 "of these two:"
 msgstr ""
 "Estudia con los libros interactivos de LenMus. Empieza primero con estos dos:"
 
-#: src/app/lenmus_welcome_window.cpp:229
-msgid "Music Language Elements I"
-msgstr "Elementos del Lenguaje Musical I"
+#: src/app/lenmus_welcome_window.cpp:238
+msgid "Music Reading I"
+msgstr "Lectura Musical I"
 
-#: src/app/lenmus_welcome_window.cpp:239
-msgid "Music Language Elements II"
-msgstr "Elementos del Lenguaje Musical II"
+#: src/app/lenmus_welcome_window.cpp:248
+msgid "Music Reading II"
+msgstr "Lectura Musical II"
 
-#: src/app/lenmus_welcome_window.cpp:249
-msgid "Music Reading Exercises"
-msgstr "Ejercicios de Lectura"
+#: src/app/lenmus_welcome_window.cpp:258
+msgid "Theory and Harmony"
+msgstr "Teoría y Armonía"
 
-#: src/app/lenmus_welcome_window.cpp:284
+#: src/app/lenmus_welcome_window.cpp:293
 msgid "Acknowledgments:"
 msgstr "Agradecimientos:"
 
@@ -754,12 +758,12 @@ msgstr "Perfecta"
 #: src/auxmusic/lenmus_cadence.cpp:1516 src/auxmusic/lenmus_cadence.cpp:1517
 #: src/auxmusic/lenmus_cadence.cpp:1518 src/auxmusic/lenmus_cadence.cpp:1519
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:176
-#: xrc/xrc_strings.cpp:319 xrc/xrc_strings.cpp:391
+#: xrc/xrc_strings.cpp:248 xrc/xrc_strings.cpp:320
 msgid "Plagal"
 msgstr "Plagal"
 
-#: src/auxmusic/lenmus_cadence.cpp:1523 xrc/xrc_strings.cpp:317
-#: xrc/xrc_strings.cpp:390
+#: src/auxmusic/lenmus_cadence.cpp:1523 xrc/xrc_strings.cpp:246
+#: xrc/xrc_strings.cpp:319
 msgid "Imperfect authentic"
 msgstr "Imperfecta auténtica"
 
@@ -768,7 +772,7 @@ msgstr "Imperfecta auténtica"
 #: src/auxmusic/lenmus_cadence.cpp:1529 src/auxmusic/lenmus_cadence.cpp:1530
 #: src/auxmusic/lenmus_cadence.cpp:1531
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:188
-#: xrc/xrc_strings.cpp:336 xrc/xrc_strings.cpp:393
+#: xrc/xrc_strings.cpp:265 xrc/xrc_strings.cpp:322
 msgid "Deceptive"
 msgstr "Rota"
 
@@ -778,7 +782,7 @@ msgstr "Rota"
 #: src/auxmusic/lenmus_cadence.cpp:1539 src/auxmusic/lenmus_cadence.cpp:1540
 #: src/auxmusic/lenmus_cadence.cpp:1541
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:194
-#: xrc/xrc_strings.cpp:394
+#: xrc/xrc_strings.cpp:323
 msgid "Half cadence"
 msgstr "Semicadencia"
 
@@ -814,19 +818,19 @@ msgstr "acorde desconocido"
 msgid "Not identified"
 msgstr "No identificado"
 
-#: src/auxmusic/lenmus_chord.cpp:775 xrc/xrc_strings.cpp:205
+#: src/auxmusic/lenmus_chord.cpp:775 xrc/xrc_strings.cpp:134
 msgid "Major triad"
 msgstr "Perfecta mayor"
 
-#: src/auxmusic/lenmus_chord.cpp:776 xrc/xrc_strings.cpp:206
+#: src/auxmusic/lenmus_chord.cpp:776 xrc/xrc_strings.cpp:135
 msgid "Minor triad"
 msgstr "Perfecta menor"
 
-#: src/auxmusic/lenmus_chord.cpp:777 xrc/xrc_strings.cpp:207
+#: src/auxmusic/lenmus_chord.cpp:777 xrc/xrc_strings.cpp:136
 msgid "Augmented triad"
 msgstr "Triada aumentada"
 
-#: src/auxmusic/lenmus_chord.cpp:778 xrc/xrc_strings.cpp:208
+#: src/auxmusic/lenmus_chord.cpp:778 xrc/xrc_strings.cpp:137
 msgid "Diminished triad"
 msgstr "Triada disminuida"
 
@@ -839,62 +843,62 @@ msgid "Suspended triad (2nd)"
 msgstr "2ª añadida"
 
 #: src/auxmusic/lenmus_chord.cpp:783
-#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:109 xrc/xrc_strings.cpp:15
-#: xrc/xrc_strings.cpp:212
+#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:109 xrc/xrc_strings.cpp:16
+#: xrc/xrc_strings.cpp:141
 msgid "Major 7th"
 msgstr "7ª Mayor"
 
 #: src/auxmusic/lenmus_chord.cpp:784
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:110
-#: xrc/xrc_strings.cpp:216
+#: xrc/xrc_strings.cpp:145
 msgid "Dominant 7th"
 msgstr "7ª de dominante"
 
 #: src/auxmusic/lenmus_chord.cpp:785
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:111
-#: xrc/xrc_strings.cpp:213
+#: xrc/xrc_strings.cpp:142
 msgid "Minor 7th"
 msgstr "7ª menor"
 
 #: src/auxmusic/lenmus_chord.cpp:786
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:112
-#: xrc/xrc_strings.cpp:215
+#: xrc/xrc_strings.cpp:144
 msgid "Diminished 7th"
 msgstr "7ª disminuida"
 
-#: src/auxmusic/lenmus_chord.cpp:787 xrc/xrc_strings.cpp:217
+#: src/auxmusic/lenmus_chord.cpp:787 xrc/xrc_strings.cpp:146
 msgid "Half diminished 7th"
 msgstr "7ª de sensible"
 
-#: src/auxmusic/lenmus_chord.cpp:788 xrc/xrc_strings.cpp:218
+#: src/auxmusic/lenmus_chord.cpp:788 xrc/xrc_strings.cpp:147
 msgid "Augmented major 7th"
 msgstr "7ª aumentada mayor"
 
 #: src/auxmusic/lenmus_chord.cpp:789
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:115
-#: xrc/xrc_strings.cpp:214
+#: xrc/xrc_strings.cpp:143
 msgid "Augmented 7th"
 msgstr "7ª aumentada"
 
-#: src/auxmusic/lenmus_chord.cpp:790 xrc/xrc_strings.cpp:219
+#: src/auxmusic/lenmus_chord.cpp:790 xrc/xrc_strings.cpp:148
 msgid "Minor major 7th"
 msgstr "7ª menor-mayor"
 
 #: src/auxmusic/lenmus_chord.cpp:793
-#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:119 xrc/xrc_strings.cpp:13
-#: xrc/xrc_strings.cpp:221
+#: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:119 xrc/xrc_strings.cpp:14
+#: xrc/xrc_strings.cpp:150
 msgid "Major 6th"
 msgstr "6ª Mayor"
 
 #: src/auxmusic/lenmus_chord.cpp:794
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:120
-#: xrc/xrc_strings.cpp:223
+#: xrc/xrc_strings.cpp:152
 msgid "Minor 6th"
 msgstr "6ª menor"
 
 #: src/auxmusic/lenmus_chord.cpp:795
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:121
-#: xrc/xrc_strings.cpp:222
+#: xrc/xrc_strings.cpp:151
 msgid "Augmented 6th"
 msgstr "6ª aumentada"
 
@@ -926,7 +930,7 @@ msgstr "11ª menor"
 msgid "Dominant 13th"
 msgstr "13ª de dominante"
 
-#: src/auxmusic/lenmus_chord.cpp:809 xrc/xrc_strings.cpp:25
+#: src/auxmusic/lenmus_chord.cpp:809 xrc/xrc_strings.cpp:26
 msgid "Major 13th"
 msgstr "13ª Mayor"
 
@@ -943,7 +947,7 @@ msgstr "Acorde Tristan"
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:273
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1069
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1074
-#: xrc/xrc_strings.cpp:4
+#: xrc/xrc_strings.cpp:5
 msgid "Unison"
 msgstr "Unísono"
 
@@ -1013,7 +1017,7 @@ msgstr "14ª"
 
 #: src/auxmusic/lenmus_interval.cpp:57
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:300
-#: xrc/xrc_strings.cpp:28
+#: xrc/xrc_strings.cpp:29
 msgid "Two octaves"
 msgstr "Dos octavas"
 
@@ -1109,110 +1113,110 @@ msgstr "Menor melódica"
 
 #: src/auxmusic/lenmus_scale.cpp:167
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:156
-#: xrc/xrc_strings.cpp:267
+#: xrc/xrc_strings.cpp:196
 msgid "Ionian"
 msgstr "Jónica"
 
 #: src/auxmusic/lenmus_scale.cpp:168
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:151
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:157
-#: xrc/xrc_strings.cpp:263 xrc/xrc_strings.cpp:269
+#: xrc/xrc_strings.cpp:192 xrc/xrc_strings.cpp:198
 msgid "Dorian"
 msgstr "Dórica"
 
 #: src/auxmusic/lenmus_scale.cpp:169
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:158
-#: xrc/xrc_strings.cpp:271
+#: xrc/xrc_strings.cpp:200
 msgid "Phrygian"
 msgstr "Frigia"
 
 #: src/auxmusic/lenmus_scale.cpp:170
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:159
-#: xrc/xrc_strings.cpp:273
+#: xrc/xrc_strings.cpp:202
 msgid "Lydian"
 msgstr "Lidia"
 
 #: src/auxmusic/lenmus_scale.cpp:171
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:160
-#: xrc/xrc_strings.cpp:268
+#: xrc/xrc_strings.cpp:197
 msgid "Mixolydian"
 msgstr "Mixolidia"
 
 #: src/auxmusic/lenmus_scale.cpp:172
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:161
-#: xrc/xrc_strings.cpp:270
+#: xrc/xrc_strings.cpp:199
 msgid "Aeolian"
 msgstr "Eólica"
 
 #: src/auxmusic/lenmus_scale.cpp:173
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:162
-#: xrc/xrc_strings.cpp:272
+#: xrc/xrc_strings.cpp:201
 msgid "Locrian"
 msgstr "Lócria"
 
 #: src/auxmusic/lenmus_scale.cpp:176
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:165
-#: xrc/xrc_strings.cpp:276
+#: xrc/xrc_strings.cpp:205
 msgid "Pentatonic minor"
 msgstr "Pentáfona menor"
 
 #: src/auxmusic/lenmus_scale.cpp:177
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:166
-#: xrc/xrc_strings.cpp:275
+#: xrc/xrc_strings.cpp:204
 msgid "Pentatonic major"
 msgstr "Pentáfona mayor"
 
 #: src/auxmusic/lenmus_scale.cpp:178
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:167
-#: xrc/xrc_strings.cpp:278
+#: xrc/xrc_strings.cpp:207
 msgid "Blues"
 msgstr "Blues"
 
 #: src/auxmusic/lenmus_scale.cpp:179
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:168
-#: xrc/xrc_strings.cpp:277
+#: xrc/xrc_strings.cpp:206
 msgid "Whole tones"
 msgstr "Por tonos"
 
 #: src/auxmusic/lenmus_scale.cpp:180
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:169
-#: xrc/xrc_strings.cpp:279
+#: xrc/xrc_strings.cpp:208
 msgid "Chromatic"
 msgstr "Cromática"
 
 #: src/auxmusic/lenmus_utilities.cpp:364
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:158
-#: xrc/xrc_strings.cpp:347
+#: xrc/xrc_strings.cpp:276
 msgid "C Major"
 msgstr "Do Mayor"
 
 #: src/auxmusic/lenmus_utilities.cpp:365
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:162
-#: xrc/xrc_strings.cpp:348
+#: xrc/xrc_strings.cpp:277
 msgid "G Major"
 msgstr "Sol Mayor"
 
 #: src/auxmusic/lenmus_utilities.cpp:366
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:166
-#: xrc/xrc_strings.cpp:349
+#: xrc/xrc_strings.cpp:278
 msgid "D Major"
 msgstr "Re Mayor"
 
 #: src/auxmusic/lenmus_utilities.cpp:367
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:170
-#: xrc/xrc_strings.cpp:350
+#: xrc/xrc_strings.cpp:279
 msgid "A Major"
 msgstr "La Mayor"
 
 #: src/auxmusic/lenmus_utilities.cpp:368
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:174
-#: xrc/xrc_strings.cpp:351
+#: xrc/xrc_strings.cpp:280
 msgid "E Major"
 msgstr "Mi Mayor"
 
 #: src/auxmusic/lenmus_utilities.cpp:369
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:178
-#: xrc/xrc_strings.cpp:352
+#: xrc/xrc_strings.cpp:281
 msgid "B Major"
 msgstr "Si Mayor"
 
@@ -1250,7 +1254,7 @@ msgstr "Si b Mayor"
 
 #: src/auxmusic/lenmus_utilities.cpp:378
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:219
-#: xrc/xrc_strings.cpp:361
+#: xrc/xrc_strings.cpp:290
 msgid "F Major"
 msgstr "Fa Mayor"
 
@@ -1258,7 +1262,7 @@ msgstr "Fa Mayor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:123
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:477
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:228
-#: xrc/xrc_strings.cpp:362
+#: xrc/xrc_strings.cpp:291
 msgid "A minor"
 msgstr "La menor"
 
@@ -1266,7 +1270,7 @@ msgstr "La menor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:124
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:471
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:232
-#: xrc/xrc_strings.cpp:363
+#: xrc/xrc_strings.cpp:292
 msgid "E minor"
 msgstr "Mi menor"
 
@@ -1274,7 +1278,7 @@ msgstr "Mi menor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:125
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:480
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:236
-#: xrc/xrc_strings.cpp:364
+#: xrc/xrc_strings.cpp:293
 msgid "B minor"
 msgstr "Si menor"
 
@@ -1322,7 +1326,7 @@ msgstr "Si b menor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:134
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:472
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:277
-#: xrc/xrc_strings.cpp:373
+#: xrc/xrc_strings.cpp:302
 msgid "F minor"
 msgstr "Fa menor"
 
@@ -1330,7 +1334,7 @@ msgstr "Fa menor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:135
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:466
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:281
-#: xrc/xrc_strings.cpp:374
+#: xrc/xrc_strings.cpp:303
 msgid "C minor"
 msgstr "Do menor"
 
@@ -1338,7 +1342,7 @@ msgstr "Do menor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:136
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:474
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:285
-#: xrc/xrc_strings.cpp:375
+#: xrc/xrc_strings.cpp:304
 msgid "G minor"
 msgstr "Sol menor"
 
@@ -1346,43 +1350,18 @@ msgstr "Sol menor"
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:137
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:468
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:289
-#: xrc/xrc_strings.cpp:376
+#: xrc/xrc_strings.cpp:305
 msgid "D minor"
 msgstr "Re menor"
 
 #: src/dialogs/lenmus_dlg_choose_lang.cpp:65
-#: src/options/lenmus_lang_opt_panel.cpp:103 xrc/xrc_strings.cpp:161
+#: src/options/lenmus_lang_opt_panel.cpp:103
 msgid "Choose language to use:"
 msgstr "Elija el idioma a utilizar:"
 
 #: src/dialogs/lenmus_dlg_choose_lang.cpp:87
-#: src/dialogs/lenmus_dlg_debug.cpp:93
 msgid "OK"
 msgstr "Aceptar"
-
-#: src/dialogs/lenmus_dlg_debug.cpp:100 src/dialogs/lenmus_dlg_debug.cpp:192
-msgid "Save"
-msgstr "Guardar"
-
-#: src/dialogs/lenmus_dlg_debug.cpp:216
-msgid "File to save"
-msgstr "Archivo a guardar"
-
-#: src/dialogs/lenmus_dlg_debug.cpp:262
-msgid "Optimum force:"
-msgstr "Fuerza óptima:"
-
-#: src/dialogs/lenmus_dlg_debug.cpp:269
-msgid "Alpha:"
-msgstr "Alfa:"
-
-#: src/dialogs/lenmus_dlg_debug.cpp:276
-msgid "D min:"
-msgstr "Re menor:"
-
-#: src/dialogs/lenmus_dlg_debug.cpp:291
-msgid "Update"
-msgstr "Actualizar"
 
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 msgid "Metronome settings"
@@ -1548,7 +1527,7 @@ msgid "Stop %d"
 msgstr "Parar %d"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:101
-#: xrc/xrc_strings.cpp:5
+#: xrc/xrc_strings.cpp:6
 msgid "minor 2nd"
 msgstr "2ª menor"
 
@@ -1557,7 +1536,7 @@ msgid "major 2nd"
 msgstr "2ª Mayor"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:103
-#: xrc/xrc_strings.cpp:7
+#: xrc/xrc_strings.cpp:8
 msgid "minor 3rd"
 msgstr "3º menor"
 
@@ -1574,12 +1553,12 @@ msgid "aug.4th/dim.5th"
 msgstr "4ª aum / 5ª dism"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:107
-#: xrc/xrc_strings.cpp:11
+#: xrc/xrc_strings.cpp:12
 msgid "perfect 5th"
 msgstr "5ª justa"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:108
-#: xrc/xrc_strings.cpp:12
+#: xrc/xrc_strings.cpp:13
 msgid "minor 6th"
 msgstr "6ª menor"
 
@@ -1588,7 +1567,7 @@ msgid "major 6th"
 msgstr "6ª Mayor"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:110
-#: xrc/xrc_strings.cpp:14
+#: xrc/xrc_strings.cpp:15
 msgid "minor 7th"
 msgstr "7ª menor"
 
@@ -1597,12 +1576,12 @@ msgid "major 7th"
 msgstr "7ª Mayor"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:112
-#: xrc/xrc_strings.cpp:16
+#: xrc/xrc_strings.cpp:17
 msgid "perfect 8th"
 msgstr "8ª justa"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:113
-#: xrc/xrc_strings.cpp:17
+#: xrc/xrc_strings.cpp:18
 msgid "minor 9th"
 msgstr "9ª menor"
 
@@ -1611,7 +1590,7 @@ msgid "major 9th"
 msgstr "9ª Mayor"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:115
-#: xrc/xrc_strings.cpp:19
+#: xrc/xrc_strings.cpp:20
 msgid "minor 10th"
 msgstr "10ª menor"
 
@@ -1620,7 +1599,7 @@ msgid "major 10th"
 msgstr "10ª Mayor"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:117
-#: xrc/xrc_strings.cpp:21
+#: xrc/xrc_strings.cpp:22
 msgid "perfect 11th"
 msgstr "11ª justa"
 
@@ -1629,12 +1608,12 @@ msgid "aug.11th / dim.12th"
 msgstr "11ª aum / 12ª dism"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:119
-#: xrc/xrc_strings.cpp:23
+#: xrc/xrc_strings.cpp:24
 msgid "perfect 12th"
 msgstr "12º justa"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:120
-#: xrc/xrc_strings.cpp:24
+#: xrc/xrc_strings.cpp:25
 msgid "minor 13th"
 msgstr "13ª menor"
 
@@ -1643,7 +1622,7 @@ msgid "major 13th"
 msgstr "13ª Mayor"
 
 #: src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:122
-#: xrc/xrc_strings.cpp:26
+#: xrc/xrc_strings.cpp:27
 msgid "minor 14th"
 msgstr "14ª menor"
 
@@ -1770,12 +1749,12 @@ msgid "Average answer time:"
 msgstr "Tiempo medio de respuesta:"
 
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:158
-#: xrc/xrc_strings.cpp:310
+#: xrc/xrc_strings.cpp:239
 msgid "Terminal"
 msgstr "Conclusiva"
 
 #: src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:164
-#: xrc/xrc_strings.cpp:325
+#: xrc/xrc_strings.cpp:254
 msgid "Transient"
 msgstr "Suspensiva"
 
@@ -1812,12 +1791,12 @@ msgid "Diminished "
 msgstr "Disminuida "
 
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:105
-#: xrc/xrc_strings.cpp:209
+#: xrc/xrc_strings.cpp:138
 msgid "Suspended (4th)"
 msgstr "4ª añadida"
 
 #: src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:106
-#: xrc/xrc_strings.cpp:210
+#: xrc/xrc_strings.cpp:139
 msgid "Suspended (2nd)"
 msgstr "2ª añadida"
 
@@ -1953,32 +1932,32 @@ msgstr "¡Inténtalo de nuevo!"
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:144
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:150
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:554
-#: xrc/xrc_strings.cpp:257 xrc/xrc_strings.cpp:262
+#: xrc/xrc_strings.cpp:186 xrc/xrc_strings.cpp:191
 msgid "Natural"
 msgstr "Natural"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:145
-#: xrc/xrc_strings.cpp:258
+#: xrc/xrc_strings.cpp:187
 msgid "Type II"
 msgstr "Tipo II"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:146
-#: xrc/xrc_strings.cpp:259
+#: xrc/xrc_strings.cpp:188
 msgid "Type III"
 msgstr "Tipo III"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:147
-#: xrc/xrc_strings.cpp:260
+#: xrc/xrc_strings.cpp:189
 msgid "Type IV"
 msgstr "Tipo IV"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:152
-#: xrc/xrc_strings.cpp:264
+#: xrc/xrc_strings.cpp:193
 msgid "Harmonic"
 msgstr "Armónica"
 
 #: src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:153
-#: xrc/xrc_strings.cpp:265
+#: xrc/xrc_strings.cpp:194
 msgid "Melodic"
 msgstr "Melódica"
 
@@ -2623,8 +2602,8 @@ msgstr "Si / Do b"
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:233
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:343
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:431
-#: xrc/xrc_strings.cpp:29 xrc/xrc_strings.cpp:60 xrc/xrc_strings.cpp:224
-#: xrc/xrc_strings.cpp:248 xrc/xrc_strings.cpp:280
+#: xrc/xrc_strings.cpp:30 xrc/xrc_strings.cpp:61 xrc/xrc_strings.cpp:153
+#: xrc/xrc_strings.cpp:177 xrc/xrc_strings.cpp:209
 msgid "You must choose one at least! "
 msgstr "¡Hay que elegir al menos uno!"
 
@@ -2634,7 +2613,7 @@ msgstr "Notas"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:199
-#: xrc/xrc_strings.cpp:69
+#: xrc/xrc_strings.cpp:70
 msgid "G clef (violin)"
 msgstr "Sol (violín)"
 
@@ -2648,25 +2627,25 @@ msgstr "Fa en 3ª línea"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:211
-#: xrc/xrc_strings.cpp:78
+#: xrc/xrc_strings.cpp:79
 msgid "C clef on 1st line (soprano)"
 msgstr "Do en 1º línea (soprano)"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:215
-#: xrc/xrc_strings.cpp:81
+#: xrc/xrc_strings.cpp:82
 msgid "C clef on 2nd line (mezzo soprano)"
 msgstr "Do en 2º línea (mezzo soprano)"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:219
-#: xrc/xrc_strings.cpp:84
+#: xrc/xrc_strings.cpp:85
 msgid "C clef on 3rd line (contralto)"
 msgstr "Do en 3º línea (contralto)"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:286
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:223
-#: xrc/xrc_strings.cpp:87
+#: xrc/xrc_strings.cpp:88
 msgid "C clef on 4th line (tenor)"
 msgstr "Do en 4º línea (tenor)"
 
@@ -2695,9 +2674,8 @@ msgstr "Otros"
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:320
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:376
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:455
-#: src/options/lenmus_options_dlg.cpp:236 xrc/xrc_strings.cpp:63
-#: xrc/xrc_strings.cpp:158 xrc/xrc_strings.cpp:252 xrc/xrc_strings.cpp:306
-#: xrc/xrc_strings.cpp:398
+#: src/options/lenmus_options_dlg.cpp:236 xrc/xrc_strings.cpp:64
+#: xrc/xrc_strings.cpp:181 xrc/xrc_strings.cpp:235 xrc/xrc_strings.cpp:327
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -2709,104 +2687,104 @@ msgstr "Opciones de 'Identificar tonalidad'"
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:333
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:256
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:356
-#: xrc/xrc_strings.cpp:34 xrc/xrc_strings.cpp:107 xrc/xrc_strings.cpp:225
-#: xrc/xrc_strings.cpp:226 xrc/xrc_strings.cpp:281 xrc/xrc_strings.cpp:282
-#: xrc/xrc_strings.cpp:345 xrc/xrc_strings.cpp:346
+#: xrc/xrc_strings.cpp:35 xrc/xrc_strings.cpp:108 xrc/xrc_strings.cpp:154
+#: xrc/xrc_strings.cpp:155 xrc/xrc_strings.cpp:210 xrc/xrc_strings.cpp:211
+#: xrc/xrc_strings.cpp:274 xrc/xrc_strings.cpp:275
 msgid "Key signatures"
 msgstr "Tonalidades"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:182
-#: xrc/xrc_strings.cpp:353
+#: xrc/xrc_strings.cpp:282
 msgid "F# Major"
 msgstr "Fa # Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:186
-#: xrc/xrc_strings.cpp:354
+#: xrc/xrc_strings.cpp:283
 msgid "C# Major"
 msgstr "Do # Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:195
-#: xrc/xrc_strings.cpp:355
+#: xrc/xrc_strings.cpp:284
 msgid "Cb Major"
 msgstr "Do b Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:199
-#: xrc/xrc_strings.cpp:356
+#: xrc/xrc_strings.cpp:285
 msgid "Gb Major"
 msgstr "Sol b Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:203
-#: xrc/xrc_strings.cpp:357
+#: xrc/xrc_strings.cpp:286
 msgid "Db Major"
 msgstr "Re b Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:207
-#: xrc/xrc_strings.cpp:358
+#: xrc/xrc_strings.cpp:287
 msgid "Ab Major"
 msgstr "La b Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:211
-#: xrc/xrc_strings.cpp:359
+#: xrc/xrc_strings.cpp:288
 msgid "Eb Major"
 msgstr "Mi b Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:215
-#: xrc/xrc_strings.cpp:360
+#: xrc/xrc_strings.cpp:289
 msgid "Bb Major"
 msgstr "Si b Mayor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:240
-#: xrc/xrc_strings.cpp:365
+#: xrc/xrc_strings.cpp:294
 msgid "F# minor"
 msgstr "Fa # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:244
-#: xrc/xrc_strings.cpp:366
+#: xrc/xrc_strings.cpp:295
 msgid "C# minor"
 msgstr "Do # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:248
-#: xrc/xrc_strings.cpp:367
+#: xrc/xrc_strings.cpp:296
 msgid "G# minor"
 msgstr "Sol # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:252
-#: xrc/xrc_strings.cpp:368
+#: xrc/xrc_strings.cpp:297
 msgid "D# minor"
 msgstr "Re # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:256
-#: xrc/xrc_strings.cpp:369
+#: xrc/xrc_strings.cpp:298
 msgid "A# minor"
 msgstr "La # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:265
-#: xrc/xrc_strings.cpp:370
+#: xrc/xrc_strings.cpp:299
 msgid "Ab minor"
 msgstr "La b menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:269
-#: xrc/xrc_strings.cpp:371
+#: xrc/xrc_strings.cpp:300
 msgid "Eb minor"
 msgstr "Mi b menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:273
-#: xrc/xrc_strings.cpp:372
+#: xrc/xrc_strings.cpp:301
 msgid "Bb minor"
 msgstr "Si b menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:300
-#: xrc/xrc_strings.cpp:377
+#: xrc/xrc_strings.cpp:306
 msgid "check/uncheck all major"
 msgstr "marcar/desmarcar todas las mayores"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:304
-#: xrc/xrc_strings.cpp:378
+#: xrc/xrc_strings.cpp:307
 msgid "check/uncheck all minor"
 msgstr "marcar/desmarcar todas las menores"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:320
-#: xrc/xrc_strings.cpp:123 xrc/xrc_strings.cpp:379
+#: xrc/xrc_strings.cpp:124 xrc/xrc_strings.cpp:308
 msgid "You must choose at least one key signature! "
 msgstr "Hay que elegir al menos una tonalidad "
 
@@ -2819,12 +2797,12 @@ msgid "Name the key signature"
 msgstr "Nombrar la armadura"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:340
-#: xrc/xrc_strings.cpp:384
+#: xrc/xrc_strings.cpp:313
 msgid "Type of desired answer"
 msgstr "Tipo de respuesta deseada"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:347
-#: xrc/xrc_strings.cpp:383
+#: xrc/xrc_strings.cpp:312
 msgid "Answer buttons"
 msgstr "Botones de respuesta"
 
@@ -2843,12 +2821,12 @@ msgid "Clefs to use"
 msgstr "Claves a usar"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:203
-#: xrc/xrc_strings.cpp:72
+#: xrc/xrc_strings.cpp:73
 msgid "F clef on 4th line (bass)"
 msgstr "Fa en 4ª línea (Bajo)"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:207
-#: xrc/xrc_strings.cpp:75
+#: xrc/xrc_strings.cpp:76
 msgid "F clef on 3rd line"
 msgstr "Fa en 3ª línea"
 
@@ -2857,92 +2835,92 @@ msgid "Clefs"
 msgstr "Claves"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:264
-#: xrc/xrc_strings.cpp:35 xrc/xrc_strings.cpp:108 xrc/xrc_strings.cpp:227
-#: xrc/xrc_strings.cpp:283
+#: xrc/xrc_strings.cpp:36 xrc/xrc_strings.cpp:109 xrc/xrc_strings.cpp:156
+#: xrc/xrc_strings.cpp:212
 msgid "C Major / A minor"
 msgstr "Do Mayor / La menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:268
-#: xrc/xrc_strings.cpp:36 xrc/xrc_strings.cpp:109 xrc/xrc_strings.cpp:228
-#: xrc/xrc_strings.cpp:284
+#: xrc/xrc_strings.cpp:37 xrc/xrc_strings.cpp:110 xrc/xrc_strings.cpp:157
+#: xrc/xrc_strings.cpp:213
 msgid "G Major / E minor"
 msgstr "Sol Mayor / Mi menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:272
-#: xrc/xrc_strings.cpp:37 xrc/xrc_strings.cpp:45 xrc/xrc_strings.cpp:110
-#: xrc/xrc_strings.cpp:118 xrc/xrc_strings.cpp:229 xrc/xrc_strings.cpp:237
-#: xrc/xrc_strings.cpp:285
+#: xrc/xrc_strings.cpp:38 xrc/xrc_strings.cpp:46 xrc/xrc_strings.cpp:111
+#: xrc/xrc_strings.cpp:119 xrc/xrc_strings.cpp:158 xrc/xrc_strings.cpp:166
+#: xrc/xrc_strings.cpp:214
 msgid "D Major / B minor"
 msgstr "Re Mayor / Si menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:276
-#: xrc/xrc_strings.cpp:38 xrc/xrc_strings.cpp:111 xrc/xrc_strings.cpp:230
-#: xrc/xrc_strings.cpp:286
+#: xrc/xrc_strings.cpp:39 xrc/xrc_strings.cpp:112 xrc/xrc_strings.cpp:159
+#: xrc/xrc_strings.cpp:215
 msgid "A Major / F# minor"
 msgstr "La Mayor / Fa # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:280
-#: xrc/xrc_strings.cpp:39 xrc/xrc_strings.cpp:112 xrc/xrc_strings.cpp:231
-#: xrc/xrc_strings.cpp:287
+#: xrc/xrc_strings.cpp:40 xrc/xrc_strings.cpp:113 xrc/xrc_strings.cpp:160
+#: xrc/xrc_strings.cpp:216
 msgid "E Major / C# minor"
 msgstr "Mi Mayor / Do # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:284
-#: xrc/xrc_strings.cpp:40 xrc/xrc_strings.cpp:113 xrc/xrc_strings.cpp:232
-#: xrc/xrc_strings.cpp:288
+#: xrc/xrc_strings.cpp:41 xrc/xrc_strings.cpp:114 xrc/xrc_strings.cpp:161
+#: xrc/xrc_strings.cpp:217
 msgid "B Major / G# minor"
 msgstr "Si Mayor / Sol # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:288
-#: xrc/xrc_strings.cpp:41 xrc/xrc_strings.cpp:114 xrc/xrc_strings.cpp:233
-#: xrc/xrc_strings.cpp:289
+#: xrc/xrc_strings.cpp:42 xrc/xrc_strings.cpp:115 xrc/xrc_strings.cpp:162
+#: xrc/xrc_strings.cpp:218
 msgid "F# Major / D# minor"
 msgstr "Fa # Mayor / Re # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:292
-#: xrc/xrc_strings.cpp:42 xrc/xrc_strings.cpp:115 xrc/xrc_strings.cpp:234
-#: xrc/xrc_strings.cpp:290
+#: xrc/xrc_strings.cpp:43 xrc/xrc_strings.cpp:116 xrc/xrc_strings.cpp:163
+#: xrc/xrc_strings.cpp:219
 msgid "C# Major / A# minor"
 msgstr "Do # Mayor / La # menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:301
-#: xrc/xrc_strings.cpp:43 xrc/xrc_strings.cpp:116 xrc/xrc_strings.cpp:235
-#: xrc/xrc_strings.cpp:291
+#: xrc/xrc_strings.cpp:44 xrc/xrc_strings.cpp:117 xrc/xrc_strings.cpp:164
+#: xrc/xrc_strings.cpp:220
 msgid "Cb Major / Ab minor"
 msgstr "Do b Mayor / La b menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:305
-#: xrc/xrc_strings.cpp:44 xrc/xrc_strings.cpp:117 xrc/xrc_strings.cpp:236
-#: xrc/xrc_strings.cpp:292
+#: xrc/xrc_strings.cpp:45 xrc/xrc_strings.cpp:118 xrc/xrc_strings.cpp:165
+#: xrc/xrc_strings.cpp:221
 msgid "Gb Major / Eb minor"
 msgstr "Sol b Mayor / Mi b menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:309
-#: xrc/xrc_strings.cpp:293
+#: xrc/xrc_strings.cpp:222
 msgid "Db Major / Bb minor"
 msgstr "Re b Mayor / Si b menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:313
-#: xrc/xrc_strings.cpp:46 xrc/xrc_strings.cpp:119 xrc/xrc_strings.cpp:238
-#: xrc/xrc_strings.cpp:294
+#: xrc/xrc_strings.cpp:47 xrc/xrc_strings.cpp:120 xrc/xrc_strings.cpp:167
+#: xrc/xrc_strings.cpp:223
 msgid "Ab Major / F minor"
 msgstr "La b Mayor / Fa menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:317
-#: xrc/xrc_strings.cpp:47 xrc/xrc_strings.cpp:120 xrc/xrc_strings.cpp:239
-#: xrc/xrc_strings.cpp:295
+#: xrc/xrc_strings.cpp:48 xrc/xrc_strings.cpp:121 xrc/xrc_strings.cpp:168
+#: xrc/xrc_strings.cpp:224
 msgid "Eb Major / C minor"
 msgstr "Mi b Mayor / Do menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:321
-#: xrc/xrc_strings.cpp:48 xrc/xrc_strings.cpp:121 xrc/xrc_strings.cpp:240
-#: xrc/xrc_strings.cpp:296
+#: xrc/xrc_strings.cpp:49 xrc/xrc_strings.cpp:122 xrc/xrc_strings.cpp:169
+#: xrc/xrc_strings.cpp:225
 msgid "Bb Major / G minor"
 msgstr "Si b Mayor / Sol menor"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:325
-#: xrc/xrc_strings.cpp:49 xrc/xrc_strings.cpp:122 xrc/xrc_strings.cpp:241
-#: xrc/xrc_strings.cpp:297
+#: xrc/xrc_strings.cpp:50 xrc/xrc_strings.cpp:123 xrc/xrc_strings.cpp:170
+#: xrc/xrc_strings.cpp:226
 msgid "F Major / D minor"
 msgstr "Fa Mayor / Re menor"
 
@@ -2979,22 +2957,22 @@ msgid "Below"
 msgstr "Por debajo"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:405
-#: xrc/xrc_strings.cpp:56
+#: xrc/xrc_strings.cpp:57
 msgid "Intervals' types"
 msgstr "Tipos de intervalo"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:407
-#: xrc/xrc_strings.cpp:57
+#: xrc/xrc_strings.cpp:58
 msgid "Harmonic (simultaneous notes)"
 msgstr "Armónico (notas simultáneas)"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:411
-#: xrc/xrc_strings.cpp:58
+#: xrc/xrc_strings.cpp:59
 msgid "Melodic (ascending)"
 msgstr "Melódico ascendente"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:416
-#: xrc/xrc_strings.cpp:59
+#: xrc/xrc_strings.cpp:60
 msgid "Melodic (descending)"
 msgstr "Melódico descendente"
 
@@ -3069,7 +3047,7 @@ msgstr ""
 "de contadores y las respuestas se van anotando en ellos alternando entre uno "
 "y otro. Este modo es útil para trabajar en clase, por parejas o equipos."
 
-#: src/options/lenmus_lang_opt_panel.cpp:83 xrc/xrc_strings.cpp:160
+#: src/options/lenmus_lang_opt_panel.cpp:83
 msgid "Language preferences"
 msgstr "Preferencias de idioma"
 
@@ -3298,95 +3276,95 @@ msgstr "Sonido para el primer tiempo de cada compás:"
 msgid "Sound for other beats of each measure:"
 msgstr "Sonido para los restantes tiempos:"
 
-#: xrc/xrc_strings.cpp:1
+#: xrc/xrc_strings.cpp:2
 msgid "Configuration: Intervals - identification by ear"
 msgstr "Configuración: Intervalos - identificación auditiva"
 
-#: xrc/xrc_strings.cpp:2
+#: xrc/xrc_strings.cpp:3
 msgid "Intervals"
 msgstr "Intervalos"
 
-#: xrc/xrc_strings.cpp:3
+#: xrc/xrc_strings.cpp:4
 msgid "Intervals to practise"
 msgstr "Intervalos a practicar"
 
-#: xrc/xrc_strings.cpp:6
+#: xrc/xrc_strings.cpp:7
 msgid "Major 2nd"
 msgstr "2ª Mayor"
 
-#: xrc/xrc_strings.cpp:8
+#: xrc/xrc_strings.cpp:9
 msgid "Major 3rd"
 msgstr "3ª Mayor"
 
-#: xrc/xrc_strings.cpp:9
+#: xrc/xrc_strings.cpp:10
 msgid "Perfect 4th"
 msgstr "4ª justa"
 
-#: xrc/xrc_strings.cpp:10
+#: xrc/xrc_strings.cpp:11
 msgid "augm.4th / dim. 5th"
 msgstr "4ª aum. / 5ª dism."
 
-#: xrc/xrc_strings.cpp:18
+#: xrc/xrc_strings.cpp:19
 msgid "Major 9th"
 msgstr "9ª Mayor"
 
-#: xrc/xrc_strings.cpp:20
+#: xrc/xrc_strings.cpp:21
 msgid "Major 10th"
 msgstr "10ª Mayor"
 
-#: xrc/xrc_strings.cpp:22
+#: xrc/xrc_strings.cpp:23
 msgid "augm. 11th / dim. 12th"
 msgstr "11º aum. / 12ª dism."
 
-#: xrc/xrc_strings.cpp:27
+#: xrc/xrc_strings.cpp:28
 msgid "Major 14th"
 msgstr "14ª Mayor"
 
-#: xrc/xrc_strings.cpp:30 xrc/xrc_strings.cpp:31
+#: xrc/xrc_strings.cpp:31 xrc/xrc_strings.cpp:32
 msgid "Accidentals"
 msgstr "Alteraciones"
 
-#: xrc/xrc_strings.cpp:32
+#: xrc/xrc_strings.cpp:33
 msgid "&Use only notes from key signature"
 msgstr "&Usar sólo las notas propias de la tonalidad"
 
-#: xrc/xrc_strings.cpp:33
+#: xrc/xrc_strings.cpp:34
 msgid "&Allow chromatic accidentals"
 msgstr "&Permitir alteraciones cromáticas"
 
-#: xrc/xrc_strings.cpp:50 xrc/xrc_strings.cpp:242 xrc/xrc_strings.cpp:298
+#: xrc/xrc_strings.cpp:51 xrc/xrc_strings.cpp:171 xrc/xrc_strings.cpp:227
 msgid "You must choose one key signature at least! "
 msgstr "¡Hay que elegir al menos una armadura!"
 
-#: xrc/xrc_strings.cpp:51 xrc/xrc_strings.cpp:243 xrc/xrc_strings.cpp:299
+#: xrc/xrc_strings.cpp:52 xrc/xrc_strings.cpp:172 xrc/xrc_strings.cpp:228
 msgid "Other settings"
 msgstr "Otros ajustes"
 
-#: xrc/xrc_strings.cpp:52
+#: xrc/xrc_strings.cpp:53
 msgid "Notes' range"
 msgstr "Ambito"
-
-#: xrc/xrc_strings.cpp:53 xrc/xrc_strings.cpp:70 xrc/xrc_strings.cpp:73
-#: xrc/xrc_strings.cpp:76 xrc/xrc_strings.cpp:79 xrc/xrc_strings.cpp:82
-#: xrc/xrc_strings.cpp:85 xrc/xrc_strings.cpp:88
-msgid "Min. note"
-msgstr "Nota min."
 
 #: xrc/xrc_strings.cpp:54 xrc/xrc_strings.cpp:71 xrc/xrc_strings.cpp:74
 #: xrc/xrc_strings.cpp:77 xrc/xrc_strings.cpp:80 xrc/xrc_strings.cpp:83
 #: xrc/xrc_strings.cpp:86 xrc/xrc_strings.cpp:89
+msgid "Min. note"
+msgstr "Nota min."
+
+#: xrc/xrc_strings.cpp:55 xrc/xrc_strings.cpp:72 xrc/xrc_strings.cpp:75
+#: xrc/xrc_strings.cpp:78 xrc/xrc_strings.cpp:81 xrc/xrc_strings.cpp:84
+#: xrc/xrc_strings.cpp:87 xrc/xrc_strings.cpp:90
 msgid "Max. note"
 msgstr "Nota max."
 
-#: xrc/xrc_strings.cpp:55 xrc/xrc_strings.cpp:91
+#: xrc/xrc_strings.cpp:56 xrc/xrc_strings.cpp:92
 msgid "Minimum pitch must be lower than maximum pitch "
 msgstr "La altura mínima debe ser menor que la máxima"
 
-#: xrc/xrc_strings.cpp:61
+#: xrc/xrc_strings.cpp:62
 msgid "Start both intervals with the same note"
 msgstr "Iniciar ambos intervalos en la misma nota"
 
-#: xrc/xrc_strings.cpp:64
+#: xrc/xrc_strings.cpp:65
 msgid ""
 "It is not possible to generate any interval. Selected notes range interval "
 "(see tab 'Other settings') is lower than minimun allowed interval (see tab "
@@ -3396,15 +3374,15 @@ msgstr ""
 "'Otros ajustes') es menor que el mínimo intervalo deseado (ver pestaña "
 "'Intervalos')"
 
-#: xrc/xrc_strings.cpp:66
+#: xrc/xrc_strings.cpp:67
 msgid "Score generation settings"
 msgstr "Parámetros de generación de partituras"
 
-#: xrc/xrc_strings.cpp:67
+#: xrc/xrc_strings.cpp:68
 msgid "Clefs and Notes"
 msgstr "Claves y ámbitos"
 
-#: xrc/xrc_strings.cpp:68
+#: xrc/xrc_strings.cpp:69
 msgid ""
 "Mark the clefts to use and set up the minimun and\n"
 "maximum pitches for the notes to use with each selected clef."
@@ -3412,576 +3390,538 @@ msgstr ""
 "Marque la claves a utilizar y elija la altura mínima y\n"
 "máxima de las notas a utilizar con cada clave."
 
-#: xrc/xrc_strings.cpp:90
+#: xrc/xrc_strings.cpp:91
 msgid "You must choose at least one clef! "
 msgstr "¡Hay que elegir al menos una clave!"
 
-#: xrc/xrc_strings.cpp:92
+#: xrc/xrc_strings.cpp:93
 msgid "Maximum interval between two consecutive notes"
 msgstr "Intervalo máximo entre dos notas consecutivas"
 
-#: xrc/xrc_strings.cpp:93
+#: xrc/xrc_strings.cpp:94
 msgid "Time signatures"
 msgstr "Métricas"
 
-#: xrc/xrc_strings.cpp:94
+#: xrc/xrc_strings.cpp:95
 msgid "Binary subdivision"
 msgstr "Subdivisión binaria"
 
-#: xrc/xrc_strings.cpp:95
+#: xrc/xrc_strings.cpp:96
 msgid "2 4 time signature"
 msgstr "métrica 2 4"
 
-#: xrc/xrc_strings.cpp:96
+#: xrc/xrc_strings.cpp:97
 msgid "3 4"
 msgstr "3 4"
 
-#: xrc/xrc_strings.cpp:97
+#: xrc/xrc_strings.cpp:98
 msgid "4 4"
 msgstr "4 4"
 
-#: xrc/xrc_strings.cpp:98
+#: xrc/xrc_strings.cpp:99
 msgid "2 8"
 msgstr "2 8"
 
-#: xrc/xrc_strings.cpp:99
+#: xrc/xrc_strings.cpp:100
 msgid "2 2"
 msgstr "2 2"
 
-#: xrc/xrc_strings.cpp:100
+#: xrc/xrc_strings.cpp:101
 msgid "3 2"
 msgstr "3 2"
 
-#: xrc/xrc_strings.cpp:101
+#: xrc/xrc_strings.cpp:102
 msgid "Ternary subdivision"
 msgstr "Subdivisión ternaria"
 
-#: xrc/xrc_strings.cpp:102
+#: xrc/xrc_strings.cpp:103
 msgid "6 8 time signature"
 msgstr "Métrica de 6 8"
 
-#: xrc/xrc_strings.cpp:103
+#: xrc/xrc_strings.cpp:104
 msgid "9 8"
 msgstr "9 8"
 
-#: xrc/xrc_strings.cpp:104
+#: xrc/xrc_strings.cpp:105
 msgid "12 8"
 msgstr "12 8"
 
-#: xrc/xrc_strings.cpp:105
+#: xrc/xrc_strings.cpp:106
 msgid "3 8"
 msgstr "3 8"
 
-#: xrc/xrc_strings.cpp:106
+#: xrc/xrc_strings.cpp:107
 msgid "You must choose at least one time signature! "
 msgstr "Hay que elegir al menos una métrica"
 
-#: xrc/xrc_strings.cpp:124
+#: xrc/xrc_strings.cpp:125
 msgid "Rhymths"
 msgstr "Ritmos"
 
-#: xrc/xrc_strings.cpp:125
+#: xrc/xrc_strings.cpp:126
 msgid "Add rhythm"
 msgstr "Añadir ritmo"
 
-#: xrc/xrc_strings.cpp:126
+#: xrc/xrc_strings.cpp:127
 msgid "Delete rhythm"
 msgstr "Quitar ritmo"
 
-#: xrc/xrc_strings.cpp:128 xrc/xrc_strings.cpp:194 xrc/xrc_strings.cpp:200
+#: xrc/xrc_strings.cpp:129
 msgid "&Cancel"
 msgstr "&Cancelar"
 
-#: xrc/xrc_strings.cpp:130
-msgid "Pattern's editor"
-msgstr "Editor de patrones"
-
 #: xrc/xrc_strings.cpp:131
-msgid "Step 1. Choose attributes for next note/rest to enter:"
-msgstr "Paso 1: Elegir los atributos para la nota o silencio:"
-
-#: xrc/xrc_strings.cpp:132
-msgid "Dotted"
-msgstr "Con puntillo"
-
-#: xrc/xrc_strings.cpp:133
-msgid "Tied next"
-msgstr "Ligada a la siguiente"
-
-#: xrc/xrc_strings.cpp:134
-msgid "Not beamed"
-msgstr "Sin agrupar"
-
-#: xrc/xrc_strings.cpp:135
-msgid "Start of a beamed group"
-msgstr "Iniciar grupo"
-
-#: xrc/xrc_strings.cpp:136
-msgid "Continue in beamed group"
-msgstr "Continuar en grupo"
-
-#: xrc/xrc_strings.cpp:137
-msgid "End of beamed group"
-msgstr "Error en grupo"
-
-#: xrc/xrc_strings.cpp:138
-msgid "Step 2. Enter the the desired note/rest:"
-msgstr "Paso 2. Elegir la nota o silencio:"
-
-#: xrc/xrc_strings.cpp:139
-msgid "Whole note"
-msgstr "Redonda"
-
-#: xrc/xrc_strings.cpp:140
-msgid "Half note"
-msgstr "Blanca"
-
-#: xrc/xrc_strings.cpp:141
-msgid "Quarter note"
-msgstr "Negra"
-
-#: xrc/xrc_strings.cpp:142
-msgid "8th note"
-msgstr "Corchea"
-
-#: xrc/xrc_strings.cpp:143
-msgid "16th note"
-msgstr "Semicorchea"
-
-#: xrc/xrc_strings.cpp:144
-msgid "32th note"
-msgstr "Fusa"
-
-#: xrc/xrc_strings.cpp:145
-msgid "64th note"
-msgstr "semifusa"
-
-#: xrc/xrc_strings.cpp:146
-msgid "Whole rest"
-msgstr "Silencio de redonda"
-
-#: xrc/xrc_strings.cpp:147
-msgid "Half rest"
-msgstr "Silencio de blanca"
-
-#: xrc/xrc_strings.cpp:148
-msgid "Quarter rest"
-msgstr "Silencio de negra"
-
-#: xrc/xrc_strings.cpp:149
-msgid "8th rest"
-msgstr "silencio de corchea"
-
-#: xrc/xrc_strings.cpp:150
-msgid "16th rest"
-msgstr "silencio de semicorchea"
-
-#: xrc/xrc_strings.cpp:151
-msgid "32th rest"
-msgstr "silencio de fusa"
-
-#: xrc/xrc_strings.cpp:152
-msgid "64th rest"
-msgstr "silencio de semifusa"
-
-#: xrc/xrc_strings.cpp:153
-msgid "Barline"
-msgstr "Barra"
-
-#: xrc/xrc_strings.cpp:154
-msgid "Clear all"
-msgstr "Borrar todo"
-
-#: xrc/xrc_strings.cpp:155
-msgid "Undo"
-msgstr "Deshacer"
-
-#: xrc/xrc_strings.cpp:156
-msgid "Redo"
-msgstr "Rehacer"
-
-#: xrc/xrc_strings.cpp:163
-msgid "Preferences for toolbars"
-msgstr "Preferencias para las barras de herramientas"
-
-#: xrc/xrc_strings.cpp:164
-msgid "Icons' size"
-msgstr "Tamaño de los iconos"
-
-#: xrc/xrc_strings.cpp:165
-msgid "&Small"
-msgstr "&Pequeño"
-
-#: xrc/xrc_strings.cpp:166
-msgid "&Medium"
-msgstr "&Mediano"
-
-#: xrc/xrc_strings.cpp:167
-msgid "&Large"
-msgstr "&Grande"
-
-#: xrc/xrc_strings.cpp:168
-msgid "Labels"
-msgstr "Etiquetas"
-
-#: xrc/xrc_strings.cpp:169
-msgid "&No labels"
-msgstr "&Sin etiquetas"
-
-#: xrc/xrc_strings.cpp:170
-msgid "Labels &bottom"
-msgstr "Etiquetas &debajo"
-
-#: xrc/xrc_strings.cpp:171
-msgid "Labels &right"
-msgstr "&Etiquetas a la derecha"
-
-#: xrc/xrc_strings.cpp:173
-msgid "Internet connection options"
-msgstr "Opciones de conexión a Internet"
-
-#: xrc/xrc_strings.cpp:174
-msgid "Software updates"
-msgstr "Actualizaciones del software"
-
-#: xrc/xrc_strings.cpp:175
-msgid "Check for updates"
-msgstr "Buscar actualizaciones"
-
-#: xrc/xrc_strings.cpp:176
-msgid "Last successful check:"
-msgstr "Ultima comprobación:"
-
-#: xrc/xrc_strings.cpp:177
-msgid "dd/mm/aaaa"
-msgstr "dd/mm/aaaa"
-
-#: xrc/xrc_strings.cpp:178
-msgid "Use a proxy server to connect to Internet"
-msgstr "Conexión a Internet a través de un proxy"
-
-#: xrc/xrc_strings.cpp:179
-msgid "Proxy settings"
-msgstr "Datos del proxy"
-
-#: xrc/xrc_strings.cpp:180
-msgid "Server settings"
-msgstr "Datos del servidor"
-
-#: xrc/xrc_strings.cpp:181
-msgid "Host:"
-msgstr "Host:"
-
-#: xrc/xrc_strings.cpp:182
-msgid "Port number:"
-msgstr "Puerto:"
-
-#: xrc/xrc_strings.cpp:183
-msgid "Please enter data for both, host name and port number"
-msgstr "Por favor, indique nombre de host y número de puerto"
-
-#: xrc/xrc_strings.cpp:184
-msgid "Proxy server requires authentication"
-msgstr "La conexión al proxy necesita autenticación"
-
-#: xrc/xrc_strings.cpp:185
-msgid "Authentication"
-msgstr "Autenticación"
-
-#: xrc/xrc_strings.cpp:186
-msgid "Username:"
-msgstr "Usuario:"
-
-#: xrc/xrc_strings.cpp:187
-msgid "Password:"
-msgstr "Contraseña:"
-
-#: xrc/xrc_strings.cpp:188
-msgid "Please enter data for both, user name and password"
-msgstr "Por favor, indique usuario y contraseña"
-
-#: xrc/xrc_strings.cpp:190 xrc/xrc_strings.cpp:196
-msgid "LenMus Phonascus updater"
-msgstr "Actualizador de LenMus Phonascus"
-
-#: xrc/xrc_strings.cpp:191
-msgid "Available updates"
-msgstr "Actualizaciones disponibles"
-
-#: xrc/xrc_strings.cpp:192
-msgid "Item description"
-msgstr "Descripción del elemento"
-
-#: xrc/xrc_strings.cpp:193
-msgid "Download selected items"
-msgstr "Descargar seleccionados"
-
-#: xrc/xrc_strings.cpp:197
-msgid "Checking for available updates"
-msgstr "Comprobando si hay actualizaciones"
-
-#: xrc/xrc_strings.cpp:198
-msgid ""
-"This program will connect to LenMus website and look for \n"
-"available updates.\n"
-"\n"
-"Press 'Proceed' to start."
-msgstr ""
-"El programa se conectará ahora a la web de LenMus y\n"
-"comprobará si existen actualizaciones.\n"
-"\n"
-"Pulse 'Iniciar' para continuar."
-
-#: xrc/xrc_strings.cpp:199
-msgid "Proceed"
-msgstr "Iniciar"
-
-#: xrc/xrc_strings.cpp:202
 msgid "Configuration: Chords' identification"
 msgstr "Configuración: Identificar acordes"
 
-#: xrc/xrc_strings.cpp:203
+#: xrc/xrc_strings.cpp:132
 msgid "Chords"
 msgstr "Acordes"
 
-#: xrc/xrc_strings.cpp:204
+#: xrc/xrc_strings.cpp:133
 msgid "Triads"
 msgstr "Tríadas"
 
-#: xrc/xrc_strings.cpp:211
+#: xrc/xrc_strings.cpp:140
 msgid "Sevenths"
 msgstr "Acordes de 7ª"
 
-#: xrc/xrc_strings.cpp:220
+#: xrc/xrc_strings.cpp:149
 msgid "Other chords"
 msgstr "Otros acordes"
 
-#: xrc/xrc_strings.cpp:244
+#: xrc/xrc_strings.cpp:173
 msgid "Play modes"
 msgstr "Modos de interpretación"
 
-#: xrc/xrc_strings.cpp:245
+#: xrc/xrc_strings.cpp:174
 msgid "Chord (simultaneous notes)"
 msgstr "Armónico (notas simultáneas)"
 
-#: xrc/xrc_strings.cpp:246
+#: xrc/xrc_strings.cpp:175
 msgid "Arpegiated (ascending)"
 msgstr "Arpegiado (ascendente)"
 
-#: xrc/xrc_strings.cpp:247
+#: xrc/xrc_strings.cpp:176
 msgid "Arpegiated (descending)"
 msgstr "Arpegiado (descendente)"
 
-#: xrc/xrc_strings.cpp:249
+#: xrc/xrc_strings.cpp:178
 msgid "Allow inversions"
 msgstr "Permitir inversiones"
 
-#: xrc/xrc_strings.cpp:250 xrc/xrc_strings.cpp:304
+#: xrc/xrc_strings.cpp:179 xrc/xrc_strings.cpp:233
 msgid "Display key signature"
 msgstr "Mostrar la armadura"
 
-#: xrc/xrc_strings.cpp:254
+#: xrc/xrc_strings.cpp:183
 msgid "Configuration: Scales' identification"
 msgstr "Configuración: Identificar escalas"
 
-#: xrc/xrc_strings.cpp:255
+#: xrc/xrc_strings.cpp:184
 msgid "Scales"
 msgstr "Escalas"
 
-#: xrc/xrc_strings.cpp:256
+#: xrc/xrc_strings.cpp:185
 msgid "Major scales"
 msgstr "Escalas mayores"
 
-#: xrc/xrc_strings.cpp:261
+#: xrc/xrc_strings.cpp:190
 msgid "Minor scales"
 msgstr "Escalas menores"
 
-#: xrc/xrc_strings.cpp:266
+#: xrc/xrc_strings.cpp:195
 msgid "Gregorian scales"
 msgstr "Modos Gregorianos"
 
-#: xrc/xrc_strings.cpp:274
+#: xrc/xrc_strings.cpp:203
 msgid "Other scales"
 msgstr "Otras escalas"
 
-#: xrc/xrc_strings.cpp:300
+#: xrc/xrc_strings.cpp:229
 msgid "Play mode"
 msgstr "Modos de interpretación"
 
-#: xrc/xrc_strings.cpp:301
+#: xrc/xrc_strings.cpp:230
 msgid "&Ascending"
 msgstr "&Ascendente"
 
-#: xrc/xrc_strings.cpp:302
+#: xrc/xrc_strings.cpp:231
 msgid "&Descending"
 msgstr "&Descendente"
 
-#: xrc/xrc_strings.cpp:303
+#: xrc/xrc_strings.cpp:232
 msgid "&Both"
 msgstr "Am&bos"
 
-#: xrc/xrc_strings.cpp:308
+#: xrc/xrc_strings.cpp:237
 msgid "Cadence settings"
 msgstr "Opciones de cadencias"
 
-#: xrc/xrc_strings.cpp:309
+#: xrc/xrc_strings.cpp:238
 msgid "Cadences"
 msgstr "Cadencias"
 
-#: xrc/xrc_strings.cpp:311 xrc/xrc_strings.cpp:389
+#: xrc/xrc_strings.cpp:240 xrc/xrc_strings.cpp:318
 msgid "Perfect authentic"
 msgstr "Auténtica perfecta"
 
-#: xrc/xrc_strings.cpp:312
+#: xrc/xrc_strings.cpp:241
 msgid "V --> I"
 msgstr "V --> I"
 
-#: xrc/xrc_strings.cpp:313
+#: xrc/xrc_strings.cpp:242
 msgid "V7 --> I"
 msgstr "V7 --> I"
 
-#: xrc/xrc_strings.cpp:314
+#: xrc/xrc_strings.cpp:243
 msgid "V aug5 --> I"
 msgstr "V aum5 --> I"
 
-#: xrc/xrc_strings.cpp:315
+#: xrc/xrc_strings.cpp:244
 msgid "V dim5 --> I"
 msgstr "V dis5 --> I"
 
-#: xrc/xrc_strings.cpp:316 xrc/xrc_strings.cpp:324 xrc/xrc_strings.cpp:335
-#: xrc/xrc_strings.cpp:344
+#: xrc/xrc_strings.cpp:245 xrc/xrc_strings.cpp:253 xrc/xrc_strings.cpp:264
+#: xrc/xrc_strings.cpp:273
 msgid "check/uncheck all"
 msgstr "marcar/desmarcar todo"
 
-#: xrc/xrc_strings.cpp:318
+#: xrc/xrc_strings.cpp:247
 msgid "V --> I (one or both with inversions)"
 msgstr "V --> I (uno o ambos invertido)"
 
-#: xrc/xrc_strings.cpp:320
+#: xrc/xrc_strings.cpp:249
 msgid "IV --> I"
 msgstr "IV --> I"
 
-#: xrc/xrc_strings.cpp:321
+#: xrc/xrc_strings.cpp:250
 msgid "IVm --> I"
 msgstr "IVm --> I"
 
-#: xrc/xrc_strings.cpp:322
+#: xrc/xrc_strings.cpp:251
 msgid "II/6 --> I"
 msgstr "II/6 --> I"
 
-#: xrc/xrc_strings.cpp:323
+#: xrc/xrc_strings.cpp:252
 msgid "IIm/6 --> I"
 msgstr "IIm/6 --> I"
 
-#: xrc/xrc_strings.cpp:326
+#: xrc/xrc_strings.cpp:255
 msgid "Half cadences"
 msgstr "Semicadencia"
 
-#: xrc/xrc_strings.cpp:327
+#: xrc/xrc_strings.cpp:256
 msgid "IIm/6 --> V"
 msgstr "IIm/6 --> V"
 
-#: xrc/xrc_strings.cpp:328
+#: xrc/xrc_strings.cpp:257
 msgid "IV --> V"
 msgstr "IV --> V"
 
-#: xrc/xrc_strings.cpp:329
+#: xrc/xrc_strings.cpp:258
 msgid "I --> V"
 msgstr "I --> V"
 
-#: xrc/xrc_strings.cpp:330
+#: xrc/xrc_strings.cpp:259
 msgid "I/64 --> V"
 msgstr "I/64 --> V"
 
-#: xrc/xrc_strings.cpp:331
+#: xrc/xrc_strings.cpp:260
 msgid "IVm/6 --> V (Phrygian half cadence)"
 msgstr "IVm/6 --> V (semicadencia Frigia)"
 
-#: xrc/xrc_strings.cpp:332
+#: xrc/xrc_strings.cpp:261
 msgid "II --> V"
 msgstr "II --> V"
 
-#: xrc/xrc_strings.cpp:333
+#: xrc/xrc_strings.cpp:262
 msgid "Neapolitan sixth --> V"
 msgstr "Sexta Napolitana --> V"
 
-#: xrc/xrc_strings.cpp:334
+#: xrc/xrc_strings.cpp:263
 msgid "VI+ --> V"
 msgstr "VI+ --> V"
 
-#: xrc/xrc_strings.cpp:337
+#: xrc/xrc_strings.cpp:266
 msgid "V --> IV"
 msgstr "V --> IV"
 
-#: xrc/xrc_strings.cpp:338
+#: xrc/xrc_strings.cpp:267
 msgid "V --> IVm"
 msgstr "V --> IVm"
 
-#: xrc/xrc_strings.cpp:339
+#: xrc/xrc_strings.cpp:268
 msgid "V --> IIm"
 msgstr "V --> IIm"
 
-#: xrc/xrc_strings.cpp:340
+#: xrc/xrc_strings.cpp:269
 msgid "V --> III"
 msgstr "V --> III"
 
-#: xrc/xrc_strings.cpp:341
+#: xrc/xrc_strings.cpp:270
 msgid "V --> VII"
 msgstr "V --> VII"
 
-#: xrc/xrc_strings.cpp:342
+#: xrc/xrc_strings.cpp:271
 msgid "V --> VI"
 msgstr "V --> VI"
 
-#: xrc/xrc_strings.cpp:343
+#: xrc/xrc_strings.cpp:272
 msgid "V --> VIm"
 msgstr "V --> VIm"
 
-#: xrc/xrc_strings.cpp:380
+#: xrc/xrc_strings.cpp:309
 msgid "How to show key signature?"
 msgstr "¿Cómo indicar la tonalidad?"
 
-#: xrc/xrc_strings.cpp:381
+#: xrc/xrc_strings.cpp:310
 msgid "&Play A4 note"
 msgstr "Tocar la &nota La4"
 
-#: xrc/xrc_strings.cpp:382
+#: xrc/xrc_strings.cpp:311
 msgid "Play &tonic chord"
 msgstr "Tocar un &acorde de tónica"
 
-#: xrc/xrc_strings.cpp:385
+#: xrc/xrc_strings.cpp:314
 msgid "Identify cadence &group (terminal/transient)"
 msgstr "Identificar el &grupo de la cadencia (conclusiva/suspensiva)"
 
-#: xrc/xrc_strings.cpp:386
+#: xrc/xrc_strings.cpp:315
 msgid "Identify cadence &type"
 msgstr "Identificar el &tipo de cadencia"
 
-#: xrc/xrc_strings.cpp:387
+#: xrc/xrc_strings.cpp:316
 msgid "Cadence types"
 msgstr "Tipos de cadencias"
 
-#: xrc/xrc_strings.cpp:388
+#: xrc/xrc_strings.cpp:317
 msgid "Terminal cadences"
 msgstr "Cadencias conclusivas"
 
-#: xrc/xrc_strings.cpp:392
+#: xrc/xrc_strings.cpp:321
 msgid "Transient cadences"
 msgstr "Cadencias suspensivas"
 
-#: xrc/xrc_strings.cpp:395
+#: xrc/xrc_strings.cpp:324
 msgid "You must choose al least two buttons! "
 msgstr "¡Hay que elegir al menos dos botones! "
 
-#: xrc/xrc_strings.cpp:396
+#: xrc/xrc_strings.cpp:325
 msgid "You must choose at least one cadence in tab 'cadences'! "
 msgstr "¡Hay que elegir al menos una cadencia en la pestaña 'cadencias'! "
 
-#~ msgid "Music Reading I"
-#~ msgstr "Lectura Musical I"
+#~ msgid "Save"
+#~ msgstr "Guardar"
 
-#~ msgid "Music Reading II"
-#~ msgstr "Lectura Musical II"
+#~ msgid "File to save"
+#~ msgstr "Archivo a guardar"
+
+#~ msgid "Optimum force:"
+#~ msgstr "Fuerza óptima:"
+
+#~ msgid "Alpha:"
+#~ msgstr "Alfa:"
+
+#~ msgid "D min:"
+#~ msgstr "Re menor:"
+
+#~ msgid "Update"
+#~ msgstr "Actualizar"
+
+#~ msgid "Music Language Elements I"
+#~ msgstr "Elementos del Lenguaje Musical I"
+
+#~ msgid "Music Language Elements II"
+#~ msgstr "Elementos del Lenguaje Musical II"
+
+#~ msgid "Music Reading Exercises"
+#~ msgstr "Ejercicios de Lectura"
+
+#~ msgid "Pattern's editor"
+#~ msgstr "Editor de patrones"
+
+#~ msgid "Step 1. Choose attributes for next note/rest to enter:"
+#~ msgstr "Paso 1: Elegir los atributos para la nota o silencio:"
+
+#~ msgid "Dotted"
+#~ msgstr "Con puntillo"
+
+#~ msgid "Tied next"
+#~ msgstr "Ligada a la siguiente"
+
+#~ msgid "Not beamed"
+#~ msgstr "Sin agrupar"
+
+#~ msgid "Start of a beamed group"
+#~ msgstr "Iniciar grupo"
+
+#~ msgid "Continue in beamed group"
+#~ msgstr "Continuar en grupo"
+
+#~ msgid "End of beamed group"
+#~ msgstr "Error en grupo"
+
+#~ msgid "Step 2. Enter the the desired note/rest:"
+#~ msgstr "Paso 2. Elegir la nota o silencio:"
+
+#~ msgid "Whole note"
+#~ msgstr "Redonda"
+
+#~ msgid "Half note"
+#~ msgstr "Blanca"
+
+#~ msgid "Quarter note"
+#~ msgstr "Negra"
+
+#~ msgid "8th note"
+#~ msgstr "Corchea"
+
+#~ msgid "16th note"
+#~ msgstr "Semicorchea"
+
+#~ msgid "32th note"
+#~ msgstr "Fusa"
+
+#~ msgid "64th note"
+#~ msgstr "semifusa"
+
+#~ msgid "Whole rest"
+#~ msgstr "Silencio de redonda"
+
+#~ msgid "Half rest"
+#~ msgstr "Silencio de blanca"
+
+#~ msgid "Quarter rest"
+#~ msgstr "Silencio de negra"
+
+#~ msgid "8th rest"
+#~ msgstr "silencio de corchea"
+
+#~ msgid "16th rest"
+#~ msgstr "silencio de semicorchea"
+
+#~ msgid "32th rest"
+#~ msgstr "silencio de fusa"
+
+#~ msgid "64th rest"
+#~ msgstr "silencio de semifusa"
+
+#~ msgid "Barline"
+#~ msgstr "Barra"
+
+#~ msgid "Clear all"
+#~ msgstr "Borrar todo"
+
+#~ msgid "Undo"
+#~ msgstr "Deshacer"
+
+#~ msgid "Redo"
+#~ msgstr "Rehacer"
+
+#~ msgid "Preferences for toolbars"
+#~ msgstr "Preferencias para las barras de herramientas"
+
+#~ msgid "Icons' size"
+#~ msgstr "Tamaño de los iconos"
+
+#~ msgid "&Small"
+#~ msgstr "&Pequeño"
+
+#~ msgid "&Medium"
+#~ msgstr "&Mediano"
+
+#~ msgid "&Large"
+#~ msgstr "&Grande"
+
+#~ msgid "Labels"
+#~ msgstr "Etiquetas"
+
+#~ msgid "&No labels"
+#~ msgstr "&Sin etiquetas"
+
+#~ msgid "Labels &bottom"
+#~ msgstr "Etiquetas &debajo"
+
+#~ msgid "Labels &right"
+#~ msgstr "&Etiquetas a la derecha"
+
+#~ msgid "Internet connection options"
+#~ msgstr "Opciones de conexión a Internet"
+
+#~ msgid "Software updates"
+#~ msgstr "Actualizaciones del software"
+
+#~ msgid "Check for updates"
+#~ msgstr "Buscar actualizaciones"
+
+#~ msgid "Last successful check:"
+#~ msgstr "Ultima comprobación:"
+
+#~ msgid "dd/mm/aaaa"
+#~ msgstr "dd/mm/aaaa"
+
+#~ msgid "Use a proxy server to connect to Internet"
+#~ msgstr "Conexión a Internet a través de un proxy"
+
+#~ msgid "Proxy settings"
+#~ msgstr "Datos del proxy"
+
+#~ msgid "Server settings"
+#~ msgstr "Datos del servidor"
+
+#~ msgid "Host:"
+#~ msgstr "Host:"
+
+#~ msgid "Port number:"
+#~ msgstr "Puerto:"
+
+#~ msgid "Please enter data for both, host name and port number"
+#~ msgstr "Por favor, indique nombre de host y número de puerto"
+
+#~ msgid "Proxy server requires authentication"
+#~ msgstr "La conexión al proxy necesita autenticación"
+
+#~ msgid "Authentication"
+#~ msgstr "Autenticación"
+
+#~ msgid "Username:"
+#~ msgstr "Usuario:"
+
+#~ msgid "Password:"
+#~ msgstr "Contraseña:"
+
+#~ msgid "Please enter data for both, user name and password"
+#~ msgstr "Por favor, indique usuario y contraseña"
+
+#~ msgid "LenMus Phonascus updater"
+#~ msgstr "Actualizador de LenMus Phonascus"
+
+#~ msgid "Available updates"
+#~ msgstr "Actualizaciones disponibles"
+
+#~ msgid "Item description"
+#~ msgstr "Descripción del elemento"
+
+#~ msgid "Download selected items"
+#~ msgstr "Descargar seleccionados"
+
+#~ msgid "Checking for available updates"
+#~ msgstr "Comprobando si hay actualizaciones"
+
+#~ msgid ""
+#~ "This program will connect to LenMus website and look for \n"
+#~ "available updates.\n"
+#~ "\n"
+#~ "Press 'Proceed' to start."
+#~ msgstr ""
+#~ "El programa se conectará ahora a la web de LenMus y\n"
+#~ "comprobará si existen actualizaciones.\n"
+#~ "\n"
+#~ "Pulse 'Iniciar' para continuar."
+
+#~ msgid "Proceed"
+#~ msgstr "Iniciar"
 
 #~ msgid "Add chord note"
 #~ msgstr "Añadir nota al acorde"
