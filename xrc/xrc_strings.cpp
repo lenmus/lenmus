@@ -1,3 +1,4 @@
+//DlgCfgEarIntervals.xrc 
 _("Configuration: Intervals - identification by ear");
 _("Intervals");
 _("Intervals to practise");
@@ -125,78 +126,6 @@ _("Rhymths");
 _("Add rhythm");
 _("Delete rhythm");
 _("Accept");
-_("&Cancel");
-//DlgPatternEditor.xrc 
-_("Pattern's editor");
-_("Step 1. Choose attributes for next note/rest to enter:");
-_("Dotted");
-_("Tied next");
-_("Not beamed");
-_("Start of a beamed group");
-_("Continue in beamed group");
-_("End of beamed group");
-_("Step 2. Enter the the desired note/rest:");
-_("Whole note");
-_("Half note");
-_("Quarter note");
-_("8th note");
-_("16th note");
-_("32th note");
-_("64th note");
-_("Whole rest");
-_("Half rest");
-_("Quarter rest");
-_("8th rest");
-_("16th rest");
-_("32th rest");
-_("64th rest");
-_("Barline");
-_("Clear all");
-_("Undo");
-_("Redo");
-_("Accept");
-_("Cancel");
-//LangOptionsPanel.xrc 
-_("Language preferences");
-_("Choose language to use:");
-//ToolbarsOptPanel.xrc 
-_("Preferences for toolbars");
-_("Icons' size");
-_("&Small");
-_("&Medium");
-_("&Large");
-_("Labels");
-_("&No labels");
-_("Labels &bottom");
-_("Labels &right");
-//InternetOptPanel.xrc 
-_("Internet connection options");
-_("Software updates");
-_("Check for updates");
-_("Last successful check:");
-_("dd/mm/aaaa");
-_("Use a proxy server to connect to Internet");
-_("Proxy settings");
-_("Server settings");
-_("Host:");
-_("Port number:");
-_("Please enter data for both, host name and port number");
-_("Proxy server requires authentication");
-_("Authentication");
-_("Username:");
-_("Password:");
-_("Please enter data for both, user name and password");
-//UpdaterDlgInfo.xrc 
-_("LenMus Phonascus updater");
-_("Available updates");
-_("Item description");
-_("Download selected items");
-_("&Cancel");
-//UpdaterDlgStart.xrc 
-_("LenMus Phonascus updater");
-_("Checking for available updates");
-_("This program will connect to LenMus website and look for \navailable updates.\n\nPress 'Proceed' to start.");
-_("Proceed");
 _("&Cancel");
 //DlgCfgIdfyChord.xrc 
 _("Configuration: Chords' identification");
