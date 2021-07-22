@@ -298,21 +298,20 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 
     // Randomly decide whether or not to create an anacrux measure
     TimeUnits rPickupDuration = 0;	// Pickup measure duration
-#if (LENMUS_DEBUG_BUILD == 1)   //CAMILLA
-    if (RandomGenerator::flip_coin())
+    LOMSE_LOG_INFO("Anacrux measure allowed = %s",
+                    (pConstrains->pickup_measure_allowed() ? "true" : "false") );
+    if (pConstrains->pickup_measure_allowed() && RandomGenerator::flip_coin())
     {
         rPickupDuration = rBeatDuration;	// 1 pickup beat
 
-	// Assuming the pickup measure doesn't count against the measure count,
-	// because its length is compensated for in the last measure
+        // Assuming the pickup measure doesn't count against the measure count,
+        // because its length is compensated for in the last measure
         sMeasure = CreateAnacruxMeasure(nNumMeasures, m_nTimeSign, rPickupDuration);
         sScore << to_std_string(sMeasure);
         #if (TRACE_COMPOSER == 1)
         LOMSE_LOG_INFO("Adding anacrux measure='%s'", to_std_string(sMeasure).c_str());
         #endif
     }
-#endif
-
 
 
 
