@@ -212,6 +212,18 @@ private:
 
 class ScoreConstrains
 {
+private:
+    ApplicationScope& m_appScope;
+    wxString    m_sSection;         // section name to save the constraints
+    int         m_nMaxInterval;     // max interval in two consecutive notes
+    long        m_nMM;              // metronome setting
+    bool        m_fPickupMeasure;   // allow to generate pickup measures
+
+    KeyConstrains         m_oValidKeys;           //allowed key signatures
+    ClefConstrains        m_oClefs;               //allowed clefs and scopes
+    TimeSignConstrains    m_oValidTimeSign;       //allowed time signatures
+    FragmentsTable        m_aFragmentsTable;      //allowed fragments
+
 public:
     ScoreConstrains(ApplicationScope& appScope);
     ~ScoreConstrains() {}
@@ -235,6 +247,9 @@ public:
     void SetMetronomeMM(long nValue) { m_nMM = nValue; }
     long GetMetronomeMM() { return m_nMM; }
 
+    inline void allow_pickup_measure(bool value) { m_fPickupMeasure = value; }
+    inline bool pickup_measure_allowed() { return m_fPickupMeasure; }
+
     void load_settings();
     void save_settings();
     wxString Verify();
@@ -252,16 +267,6 @@ public:
     inline void ChooseRandomFragment() { return m_aFragmentsTable.ChooseRandom(); }
     inline SegmentEntry* GetNextSegment() { return m_aFragmentsTable.GetNextSegment(); }
 
-private:
-    ApplicationScope& m_appScope;
-    wxString    m_sSection;         // section name to save the constraints
-    int         m_nMaxInterval;     // max interval in two consecutive notes
-    long        m_nMM;              // metronome setting
-
-    KeyConstrains         m_oValidKeys;           //allowed key signatures
-    ClefConstrains        m_oClefs;               //allowed clefs and scopes
-    TimeSignConstrains    m_oValidTimeSign;       //allowed time signatures
-    FragmentsTable        m_aFragmentsTable;      //allowed fragments
 };
 
 
