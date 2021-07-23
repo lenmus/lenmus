@@ -1208,7 +1208,7 @@ public:
     int index;      ///< An optional integer index for the measure, as defined in NMX.
                     ///< The first measure has an index of 1.
     int count;      ///< sequential integer index for the measure. The first measure
-                    ///< is counted as 1, even if anacruxis start.
+                    ///< is counted as 1, even if anacrusis start.
     std::string number;  ///< An optional textual number to be displayed for the measure.
     bool fHideNumber;   ///< Override measures number policy for preventing to
                         ///< display the number in this measure.
@@ -3228,20 +3228,6 @@ protected:
     {
     }
 
-    ImoLineStyle(ImoLineStyle& info)
-        : ImoSimpleObj(k_imo_line_style)
-        , m_lineStyle( info.get_line_style() )
-        , m_startEdge( info.get_start_edge() )
-        , m_endEdge( info.get_end_edge() )
-        , m_startStyle( info.get_start_cap() )
-        , m_endStyle( info.get_end_cap() )
-        , m_color( info.get_color() )
-        , m_width( info.get_width() )
-        , m_startPoint( info.get_start_point() )
-        , m_endPoint( info.get_end_point() )
-    {
-    }
-
 public:
     virtual ~ImoLineStyle() {}
 
@@ -3621,7 +3607,6 @@ protected:
     friend class ImoDocument;
     friend class ImoScore;
     ImoPageInfo();
-    ImoPageInfo(ImoPageInfo& dto);
 
 public:
     virtual ~ImoPageInfo() {}
@@ -5854,7 +5839,6 @@ protected:
     friend class ImFactory;
     friend class ImoScore;
     ImoSystemInfo();
-    ImoSystemInfo(ImoSystemInfo& dto);
 
 public:
     virtual ~ImoSystemInfo() {}
