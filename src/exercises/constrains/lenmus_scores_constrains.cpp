@@ -46,7 +46,9 @@ ScoreConstrains::ScoreConstrains(ApplicationScope& appScope)
     , m_sSection("")
     , m_nMaxInterval(4)
     , m_nMM(0)              // zero means: no predefined setting
-    , m_fPickupMeasure(true)
+    , m_pickupType(k_pickup_random)
+    , m_pickupMinNote(k_eighth)
+    , m_pickupFraction(true)
     , m_aFragmentsTable(appScope)
 {
     //ScoreConstrains objetc is used in MusicReading exercise and Dictation exercise.

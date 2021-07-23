@@ -296,20 +296,20 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     //TODO: what if no fragment satisfies the constraints?
 
 
-    // Randomly decide whether or not to create an anacrux measure
+    // determine if anacrusis start, and create it
     TimeUnits rPickupDuration = 0;	// Pickup measure duration
-    LOMSE_LOG_INFO("Anacrux measure allowed = %s",
-                    (pConstrains->pickup_measure_allowed() ? "true" : "false") );
-    if (pConstrains->pickup_measure_allowed() && RandomGenerator::flip_coin())
+    LOMSE_LOG_INFO("Anacrusis measure allowed = %d", pConstrains->pickup_measure_allowed());
+    if (pConstrains->pickup_measure_allowed() == k_pickup_always
+        || (pConstrains->pickup_measure_allowed() == k_pickup_random && RandomGenerator::flip_coin())
+        )
     {
-        rPickupDuration = rBeatDuration;	// 1 pickup beat
-
-        // Assuming the pickup measure doesn't count against the measure count,
-        // because its length is compensated for in the last measure
-        sMeasure = CreateAnacruxMeasure(nNumMeasures, m_nTimeSign, rPickupDuration);
+	    bool fFraction = pConstrains->pickup_fraction_allowed();
+	    if (fFraction)
+	        fFraction = RandomGenerator::flip_coin();      //start in pulse fraction
+        sMeasure = create_anacrusis_measure(m_nTimeSign, fFraction, &rPickupDuration);
         sScore << to_std_string(sMeasure);
         #if (TRACE_COMPOSER == 1)
-        LOMSE_LOG_INFO("Adding anacrux measure='%s'", to_std_string(sMeasure).c_str());
+        LOMSE_LOG_INFO("Adding anacrusis measure='%s'", to_std_string(sMeasure).c_str());
         #endif
     }
 
@@ -538,7 +538,7 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
 {
     //Returns a string with one or more LDP elements containing notes o rests up to a total
     //duration nNoteDuration. They will be notes if fNote==true; otherwise they will be rests.
-    //For example, for nNoteDuration=64 it will return "(n * n)"
+    //For example, for nNoteDuration=64 it will return "(n * q)"
 
     wxString sElement = "";
     int nDuration;
@@ -736,18 +736,111 @@ wxString Composer::CreateLastMeasure(int WXUNUSED(nNumMeasure), ETimeSignature n
 }
 
 //---------------------------------------------------------------------------------------
-wxString Composer::CreateAnacruxMeasure(int WXUNUSED(nNumMeasure), ETimeSignature nTimeSign,
-                                        TimeUnits rPickupDuration)
+wxString Composer::create_anacrusis_measure(ETimeSignature nTimeSign, bool fFraction,
+                                            TimeUnits* rPickupDuration)
 {
+    //returns LDP source for the measure, including simple barline, and updates
+    //parameter rPickupDuration with total duration of pickup notes
+
+    //Algorithm:
+    // 1. Decide how many pickup beats based on time signature. At maximum two beats
+    // 2. Create the first pulse or fraction
+    // 3. If pickup has two beats add a second full beat
+    // done
+
+
+    // 1. Decide how many pickup beats based on time signature. At maximum two beats
+    int maxBeats = min(2, get_num_beats(nTimeSign) - 1);    // 1 or 2
+    int beats = RandomGenerator::random_number(1, maxBeats);
+
+
+    // 2. Create the first pulse or fraction
+    *rPickupDuration = 0.0;
 	wxString sMeasure = "";
+	bool fSimpleMeter = (get_num_ref_notes_per_pulse_for(nTimeSign) == 1);
 
-	TimeUnits newMeasureDuration = rPickupDuration; //(get_measure_duration_for(nTimeSign)); //Shorter measure duration by half, since it's a pickup measure.
-	//TimeUnits rMeasureDuration = newMeasureDuration;
+    if (fSimpleMeter)
+    {
+        if (fFraction)
+        {
+            sMeasure += "(n * e)";
+            *rPickupDuration += double(k_duration_eighth);
+        }
+        else
+        {
+            if (RandomGenerator::flip_coin())
+                sMeasure += "(n * q)";
+            else
+                sMeasure += "(n * e g+)(n * e g-)";
 
-	bool fCompound = (get_num_ref_notes_per_pulse_for(nTimeSign) != 1);
+            *rPickupDuration += double(k_duration_quarter);
+        }
+    }
+    else
+    {
+        if (fFraction)
+        {
+            int opt = RandomGenerator::random_number(0, 2);
+            if (opt==0)
+            {
+                sMeasure += "(n * e)";
+                *rPickupDuration += double(k_duration_eighth);
+            }
+            else if (opt==1)
+            {
+                sMeasure += "(n * q)";
+                *rPickupDuration += double(k_duration_quarter);
+            }
+            else
+            {
+                sMeasure += "(n * e g+)(n * e g-)";
+                *rPickupDuration += double(k_duration_quarter);
+            }
+        }
+        else
+        {
+            int opt = RandomGenerator::random_number(0, 3);
+            if (opt==0)
+                sMeasure += "(n * e)(n * q)";
+            else if (opt==1)
+                sMeasure += "(n * q)(n * e)";
+            else if (opt==2)
+                sMeasure += "(n * e g+)(n * e)(n * e g-)";
+            else
+                sMeasure += "(n * q.)";
 
-	TimeUnits rNoteDuration = newMeasureDuration; //or rNoteDuration = newMeasureDuration (k_duration_quarter)
-	sMeasure += CreateNote((int)rNoteDuration, fCompound, false);
+            *rPickupDuration += double(k_duration_quarter_dotted);
+        }
+    }
+
+
+    // 3. If pickup has two beats add a second full beat
+    if (beats > 1)
+    {
+        if (fSimpleMeter)
+        {
+            if (RandomGenerator::flip_coin())
+                sMeasure += "(n * e g+)(n * e g-)";
+            else
+                sMeasure += "(n * q)";
+
+            *rPickupDuration += double(k_duration_quarter);
+        }
+        else
+        {
+            int opt = RandomGenerator::random_number(0, 3);
+            if (opt==0)
+                sMeasure += "(n * e)(n * q)";
+            else if (opt==1)
+                sMeasure += "(n * q)(n * e)";
+            else if (opt==2)
+                sMeasure += "(n * e g+)(n * e)(n * e g-)";
+            else
+                sMeasure += "(n * q.)";
+
+            *rPickupDuration += double(k_duration_quarter_dotted);
+        }
+    }
 
 	sMeasure += "(barline simple)";
 	return sMeasure;
@@ -793,7 +886,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
 //            ImoNote* pNote = static_cast<ImoNote*>(pSO);
             int pos = k_off_beat;
             if (pTS)
-                pos = get_beat_position(cursor.time(), pTS, cursor.anacruxis_missing_time());
+                pos = get_beat_position(cursor.time(), pTS, cursor.anacrusis_missing_time());
 
             if(pos != k_off_beat)
                 nNumPoints++;   // on beat note
@@ -868,10 +961,10 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                 int pos = k_off_beat;
                 ImoTimeSignature* pTS = cursor2.get_applicable_time_signature();
                 if (pTS)
-                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacruxis_missing_time());
+                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacrusis_missing_time());
                 #if (TRACE_PITCH == 1)
-                    LOMSE_LOG_INFO("note %d, pos=%d, time=%f, anacrux.time=%f",
-                        numNotes, pos, cursor2.time(), cursor2.anacruxis_missing_time());
+                    LOMSE_LOG_INFO("note %d, pos=%d, time=%f, anacrusis.time=%f",
+                        numNotes, pos, cursor2.time(), cursor2.anacrusis_missing_time());
                 #endif
                 if (pos != k_off_beat)
                 {
@@ -1628,7 +1721,7 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
 {
     // Receives the two on-chord notes and the non-chord notes between them, and assign
     // the pitch to all notes
-    // The first on-chord note can be nullptr (first anacruxis measure)
+    // The first on-chord note can be nullptr (first anacrusis measure)
     // The number of non-chord notes received is in 'nNumNotes'
 
     //case: no non-chord notes. Nothing to do
@@ -1640,11 +1733,11 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
         return;
     }
 
-    //case: anacruxis measure
+    //case: anacrusis measure
     if (!pOnChord1)
     {
     #if (TRACE_PITCH == 1)
-        LOMSE_LOG_INFO("Anacruxis measure");
+        LOMSE_LOG_INFO("Anacrusis measure");
     #endif
 
         //we are going to assign an ascending sequence, by step, to finish in the root

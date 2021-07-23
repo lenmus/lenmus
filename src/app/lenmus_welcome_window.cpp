@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -70,9 +70,9 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
     Paths* pPaths = m_appScope.get_paths();
     if (pPaths->GetLanguageCode() == "es")
     {
-	    m_txtLevel1->SetLabel("Elementos del lenguaje musical I");
-    	m_txtLevel2->SetLabel("Elementos del lenguaje musical II");
-        m_txtLevel3->SetLabel("Ejercicios de lectura");
+	    m_txtLevel1->SetLabel("Lectura musical I");
+        m_txtLevel2->SetLabel("Lectura musical II");
+        m_txtLevel3->SetLabel(L"Teoría y armonía");
     }
 
     //load icons
@@ -327,7 +327,7 @@ void WelcomeWindow::on_button_book_1(wxCommandEvent& UNUSED(event))
     Paths* pPaths = m_appScope.get_paths();
     wxString lang = pPaths->GetLanguageCode();
     if (lang == "es")
-        open_book("L1_MusicReading.lmb");
+        open_book("L1_MusicReading_v2.lmb");
     else
         open_book("L1_MusicReading.lmb");
 }
@@ -338,7 +338,7 @@ void WelcomeWindow::on_button_book_2(wxCommandEvent& UNUSED(event))
     Paths* pPaths = m_appScope.get_paths();
     wxString lang = pPaths->GetLanguageCode();
     if (lang == "es")
-        open_book("TheoryHarmony.lmb");
+        open_book("L2_MusicReading_v2.lmb");
     else
         open_book("L2_MusicReading.lmb");
 }
@@ -348,10 +348,7 @@ void WelcomeWindow::on_button_book_3(wxCommandEvent& UNUSED(event))
 {
     Paths* pPaths = m_appScope.get_paths();
     wxString lang = pPaths->GetLanguageCode();
-    if (lang == "es")
-        open_book("L2_MusicReading_v2.lmb");
-    else
-        open_book("TheoryHarmony.lmb");
+    open_book("TheoryHarmony.lmb");
 }
 
 //---------------------------------------------------------------------------------------

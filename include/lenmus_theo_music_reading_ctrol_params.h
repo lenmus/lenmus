@@ -186,9 +186,14 @@ void TheoMusicReadingCtrolParams::process(ImoParamInfo* pParam)
         max_interval        A number indicating the maximum allowed interval for two consecutive notes
                             Default: 4
 
-        no_pickup_measure   By default, pickup measures will be randomly generated. To disable
-                            generation of pickup measures just include param <no_pickup_measure/>
+        pickup_measure      Keyword "always | never | random". By default, pickup measures will be
+                            randomly generated (pickup_measure = random)
 
+        pickup_min_note     Minimum note to use in anacrusis measure. It is the LDP character
+                            for note type "q | e | s". Default value is "e" (eighth note).
+
+        pickup_no_fraction  Do not start anacrusis in beat fraction. By default, pickup
+                            measure is allowed to start in beat fraction
 
 
         Example:
@@ -226,9 +231,44 @@ void TheoMusicReadingCtrolParams::process(ImoParamInfo* pParam)
     if (name == "control_solfa")
         pConstrains->SetControlSolfa(true, to_wx_string(value));
 
-    // "no_pickup_measure" flag: disable generation of pickup measures
-    else if ( name == "no_pickup_measure")
-        m_pScoreConstrains->allow_pickup_measure(false);
+    // "pickup_measure": options for generating pickup measures
+    else if (name == "pickup_measure")
+    {
+        if (value == "always")
+            m_pScoreConstrains->allow_pickup_measure(k_pickup_always);
+        else if (value == "never")
+            m_pScoreConstrains->allow_pickup_measure(k_pickup_never);
+        else if (value == "random")
+            m_pScoreConstrains->allow_pickup_measure(k_pickup_random);
+        else
+            error_invalid_param(name, value, "always | never | random");
+    }
+
+    // "pickup_min_note": minimum note to use in anacrusis measure
+    else if (name == "pickup_min_note")
+    {
+        if (value == "q")
+            m_pScoreConstrains->set_pickup_min_note(k_quarter);
+        else if (value == "e")
+            m_pScoreConstrains->set_pickup_min_note(k_eighth);
+        else if (value == "s")
+            m_pScoreConstrains->set_pickup_min_note(k_16th);
+        else
+            error_invalid_param(name, value, "q | e | s");
+    }
+
+    // "pickup_no_fraction": do not start anacrusis in beat fraction
+    else if (name == "pickup_no_fraction")
+    {
+        m_pScoreConstrains->allow_pickup_fraction(false);
+    }
+
+    // control_settings
+    if ( name == "control_settings")
+    {
+        pConstrains->SetSettingsLink(true);
+        pConstrains->set_section(value);
+    }
 
 
     // metronome

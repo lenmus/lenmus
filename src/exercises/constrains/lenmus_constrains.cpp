@@ -190,6 +190,46 @@ TimeUnits get_measure_duration_for(ETimeSignature nTimeSign)
     return rNumBeats * get_ref_note_duration_for(nTimeSign);
 }
 
+//---------------------------------------------------------------------------------------
+bool is_compound_meter(ETimeSignature nTimeSign)
+{
+    //In compound time signatures, the beat is broken down into three equal parts,
+    //so that a dotted note (half again longer than a regular note) becomes the
+    //beat unit. The top number is always divisible by 3, with the exception
+    //of time signatures where the top number is 3. Common examples of compound
+    //time signatures are 6/8, 12/8, and 9/4.
+
+    switch (nTimeSign) {
+        case k_time_6_8:
+        case k_time_9_8:
+        case k_time_12_8:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+int get_num_beats(ETimeSignature nTimeSign)
+{
+    //returns the number of beats implied by this TS
+
+    //In simple time signatures, such as  4/4, 3/4, 2/4, 3/8, and 2/2, the number
+    //of beats is given by the top number, with the exception of 3/8 which is
+    //conducted in one beat.
+    //TODO: Any other exception?
+    //In compound time signatures (6/x, 12/x, and 9/x) the number of beats is given
+    //by dividing the top number by three.
+    //TODO: Any exception?
+
+    int top = get_top_number_for(nTimeSign);
+    if (is_compound_meter(nTimeSign) || nTimeSign ==  k_time_3_8)
+        return top / 3;
+    else
+        return top;
+}
+
 
 //=======================================================================================
 // ClefConstrains

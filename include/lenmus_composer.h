@@ -92,8 +92,8 @@ private:
     }
     wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
                                bool fOnlyQuarterNotes, TimeUnits rPickupDuration = 0.0);
-    wxString CreateAnacruxMeasure(int nNumMeasure, ETimeSignature nTimeSign,
-                                  TimeUnits rPickupDuration);
+    wxString create_anacrusis_measure(ETimeSignature nTimeSign, bool fFraction,
+                                      TimeUnits* rPickupDuration);
 
     // pitch related methods
     bool InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int numMeasures);

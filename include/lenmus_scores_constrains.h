@@ -206,7 +206,12 @@ private:
 //---------------------------------------------------------------------------------------
 // The ScoreConstrains object
 //---------------------------------------------------------------------------------------
-
+enum EPickupOptions
+{
+    k_pickup_never = 0,
+    k_pickup_always,
+    k_pickup_random,
+};
 
 #define lmNO_DEFAULTS   false
 
@@ -217,7 +222,9 @@ private:
     wxString    m_sSection;         // section name to save the constraints
     int         m_nMaxInterval;     // max interval in two consecutive notes
     long        m_nMM;              // metronome setting
-    bool        m_fPickupMeasure;   // allow to generate pickup measures
+    int         m_pickupType;       // options to generate pickup measures
+    ENoteType   m_pickupMinNote;    // min mote to use in pickup measures
+    bool        m_pickupFraction;   // allow anacrusis to start in fraction
 
     KeyConstrains         m_oValidKeys;           //allowed key signatures
     ClefConstrains        m_oClefs;               //allowed clefs and scopes
@@ -247,8 +254,12 @@ public:
     void SetMetronomeMM(long nValue) { m_nMM = nValue; }
     long GetMetronomeMM() { return m_nMM; }
 
-    inline void allow_pickup_measure(bool value) { m_fPickupMeasure = value; }
-    inline bool pickup_measure_allowed() { return m_fPickupMeasure; }
+    inline void allow_pickup_measure(bool value) { m_pickupType = value; }
+    inline int pickup_measure_allowed() { return m_pickupType; }
+    inline void set_pickup_min_note(ENoteType value) { m_pickupMinNote = value; }
+    inline ENoteType get_pickup_min_note() { return m_pickupMinNote; }
+    inline void allow_pickup_fraction(bool value) { m_pickupFraction = value; }
+    inline bool pickup_fraction_allowed() { return m_pickupFraction; }
 
     void load_settings();
     void save_settings();
