@@ -52,7 +52,8 @@ TonalityConstrains::TonalityConstrains(wxString sSection, ApplicationScope& appS
 //---------------------------------------------------------------------------------------
 void TonalityConstrains::save_settings()
 {
-    //save settings in user configuration data file
+    if (m_appScope.get_exercises_level() != 100)
+        return;
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
@@ -63,7 +64,7 @@ void TonalityConstrains::save_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyTonality/%s/KeySignature%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
@@ -76,8 +77,18 @@ void TonalityConstrains::save_settings()
 //---------------------------------------------------------------------------------------
 void TonalityConstrains::load_settings()
 {
-    // load settings form user configuration data or default values
+    switch (m_appScope.get_exercises_level())
+    {
+        case 1: load_settings_for_level_1();        break;
+        case 2: load_settings_for_level_2();        break;
+        default:
+            load_settings_for_customized_level();
+    }
+}
 
+//---------------------------------------------------------------------------------------
+void TonalityConstrains::load_settings_for_customized_level()
+{
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     // allowed key signatures. Default: all allowed
@@ -87,7 +98,7 @@ void TonalityConstrains::load_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyTonality/%s/KeySignature%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Read(sKey, &fValid, true);
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
@@ -95,6 +106,48 @@ void TonalityConstrains::load_settings()
     //answer buttons. Default: use major/minor buttons
     sKey = "/Constrains/IdfyTonality/UseMajorMinorButtons";
     pPrefs->Read(sKey, &m_fUseMajorMinorButtons, true);
+}
+
+//---------------------------------------------------------------------------------------
+void TonalityConstrains::load_settings_for_level_1()
+{
+    //key signatures
+    for (int i=k_min_key; i <= k_max_key; i++)
+        m_oValidKeys.SetValid((EKeySignature)i, false);
+
+    m_oValidKeys.SetValid(k_key_C, true);
+    m_oValidKeys.SetValid(k_key_a, true);
+    m_oValidKeys.SetValid(k_key_G, true);
+    m_oValidKeys.SetValid(k_key_e, true);
+    m_oValidKeys.SetValid(k_key_F, true);
+    m_oValidKeys.SetValid(k_key_d, true);
+
+    //answer buttons
+    m_fUseMajorMinorButtons = true;
+}
+
+//---------------------------------------------------------------------------------------
+void TonalityConstrains::load_settings_for_level_2()
+{
+    //key signatures
+    for (int i=k_min_key; i <= k_max_key; i++)
+        m_oValidKeys.SetValid((EKeySignature)i, false);
+
+    m_oValidKeys.SetValid(k_key_C, true);
+    m_oValidKeys.SetValid(k_key_a, true);
+    m_oValidKeys.SetValid(k_key_G, true);
+    m_oValidKeys.SetValid(k_key_e, true);
+    m_oValidKeys.SetValid(k_key_F, true);
+    m_oValidKeys.SetValid(k_key_d, true);
+    m_oValidKeys.SetValid(k_key_D, true);
+    m_oValidKeys.SetValid(k_key_b, true);
+    m_oValidKeys.SetValid(k_key_A, true);
+    m_oValidKeys.SetValid(k_key_fs, true);
+    m_oValidKeys.SetValid(k_key_E, true);
+    m_oValidKeys.SetValid(k_key_cs, true);
+
+    //answer buttons
+    m_fUseMajorMinorButtons = false;
 }
 
 

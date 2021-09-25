@@ -64,55 +64,72 @@ NotesConstrains::NotesConstrains(wxString sSection, ApplicationScope& appScope)
     m_nOctaves = 1;
 }
 
+//---------------------------------------------------------------------------------------
 void NotesConstrains::save_settings()
 {
     //save settings in user configuration data file
+
+    if (m_appScope.get_exercises_level() != 100)
+        return;
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     //clef to use
     wxString sKey;
-    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Clef", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Clef", GetSection());
     pPrefs->Write(sKey, int(m_nClef));
 
     //For settings dlg: how are notes selected
     sKey = wxString::Format("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature",
-        m_sSection.wx_str());
+        GetSection());
     pPrefs->Write(sKey, m_fFromKeySignature);
-    sKey = wxString::Format("/Constrains/IdfyNotes/%s/KeySignature", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/KeySignature", GetSection());
     pPrefs->Write(sKey, int(m_nKeySignature));
 
     // valid notes
     for (int i=0; i < 12; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyNotes/%s/Note%dAllowed",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Write(sKey, m_fValidNotes[i]);
     }
 
     //how many octaves
-    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Octaves", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Octaves", GetSection());
     pPrefs->Write(sKey, m_nOctaves);
 }
 
+//---------------------------------------------------------------------------------------
 void NotesConstrains::load_settings()
 {
     // load settings form user configuration data or default values
 
+    switch (m_appScope.get_exercises_level())
+    {
+        case 1: load_settings_for_level_1();        break;
+        case 2: load_settings_for_level_2();        break;
+        default:
+            load_settings_for_customized_level();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void NotesConstrains::load_settings_for_customized_level()
+{
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     //clef to use. Default: G
     wxString sKey;
-    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Clef", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Clef", GetSection());
     long nClef;
     pPrefs->Read(sKey, &nClef, static_cast<long>(k_clef_G2));
     m_nClef = static_cast<EClef>(nClef);
 
     //For settings dlg: how are notes selected. Default: from C major scale
     sKey = wxString::Format("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature",
-        m_sSection.wx_str());
+        GetSection());
     pPrefs->Read(sKey, &m_fFromKeySignature, true);
-    sKey = wxString::Format("/Constrains/IdfyNotes/%s/KeySignature", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/KeySignature", GetSection());
     long nKey;
     pPrefs->Read(sKey, &nKey, static_cast<long>(k_key_C));
     m_nKeySignature = static_cast<EKeySignature>(nKey);
@@ -123,17 +140,72 @@ void NotesConstrains::load_settings()
     for (int i=0; i < 12; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyNotes/%s/Note%dAllowed",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Read(sKey, &m_fValidNotes[i], fDefault[i]);
     }
 
     //how many octaves. Default 1
-    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Octaves", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Octaves", GetSection());
     long nOctaves;
     pPrefs->Read(sKey, &nOctaves, 1);
     m_nOctaves = nOctaves;
 }
 
+//---------------------------------------------------------------------------------------
+void NotesConstrains::load_settings_for_level_1()
+{
+    //clef to use. Default: G
+    m_nClef = k_clef_G2;
+
+    //Select notes from C major scale
+    m_nKeySignature = k_key_C;
+
+    // Valid notes. Default: C major natural notes
+    m_fValidNotes[0] = true;    // c
+    m_fValidNotes[1] = false;   // +c
+    m_fValidNotes[2] = true;    // d
+    m_fValidNotes[3] = false;   // +d
+    m_fValidNotes[4] = true;    // e
+    m_fValidNotes[5] = true;    // f
+    m_fValidNotes[6] = false;   // +f
+    m_fValidNotes[7] = true;    // g
+    m_fValidNotes[8] = false;   // +g
+    m_fValidNotes[9] = true;    // a
+    m_fValidNotes[10] = false;  // +a
+    m_fValidNotes[11] = true;   // b
+
+    //how many octaves. Default 1
+    m_nOctaves = 1;
+}
+
+//---------------------------------------------------------------------------------------
+void NotesConstrains::load_settings_for_level_2()
+{
+    //clef to use: F4
+    m_nClef = k_clef_F4;
+
+    //Select notes from D major scale
+    m_nKeySignature = k_key_D;
+
+    // Valid notes D major natural notes
+    m_fValidNotes[0] = false;    // c
+    m_fValidNotes[1] = true;   // +c
+    m_fValidNotes[2] = true;    // d
+    m_fValidNotes[3] = false;   // +d
+    m_fValidNotes[4] = true;    // e
+    m_fValidNotes[5] = false;    // f
+    m_fValidNotes[6] = true;   // +f
+    m_fValidNotes[7] = true;    // g
+    m_fValidNotes[8] = false;   // +g
+    m_fValidNotes[9] = true;    // a
+    m_fValidNotes[10] = false;  // +a
+    m_fValidNotes[11] = true;   // b
+
+    //how many octaves: 2
+    m_nOctaves = 2;
+}
+
+//---------------------------------------------------------------------------------------
 int NotesConstrains::GetRandomNoteIndex()
 {
     RandomGenerator oGenerator;

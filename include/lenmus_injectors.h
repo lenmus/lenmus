@@ -107,6 +107,7 @@ protected:
     bool m_fExperimentalFeatures;
     int m_trackingMode;
     LUnits m_tempoLineWidth;
+    int m_exercisesLevel = 100;     //customized
 
     static wxString m_language;
 
@@ -164,6 +165,9 @@ public:
     inline int get_visual_tracking_mode() { return m_trackingMode; }
     inline void set_tempo_line_width(LUnits value) { m_tempoLineWidth = value; }
     inline LUnits get_tempo_line_width() { return m_tempoLineWidth; }
+    inline void set_exercises_level(int level) { m_exercisesLevel = level; }
+    inline int get_exercises_level() { return m_exercisesLevel; }
+
 
     //global optionf for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }

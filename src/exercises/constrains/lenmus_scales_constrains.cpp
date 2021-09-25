@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -86,6 +86,9 @@ bool ScalesConstrains::IsValidGroup(EScaleGroup nGroup)
 //---------------------------------------------------------------------------------------
 void ScalesConstrains::save_settings()
 {
+    if (m_appScope.get_exercises_level() != 100)
+        return;
+
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     // allowed scales
@@ -94,7 +97,7 @@ void ScalesConstrains::save_settings()
     for (i=0; i < est_Max; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyScale/%s/Scale%dAllowed",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Write(sKey, m_fValidScales[i]);
     }
 
@@ -103,20 +106,32 @@ void ScalesConstrains::save_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyScale/%s/KeySignature%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
 
     // other settings
-    sKey = wxString::Format("/Constrains/IdfyScale/%s/DisplayKey", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyScale/%s/DisplayKey", GetSection());
     pPrefs->Write(sKey, m_fDisplayKey);
-    sKey = wxString::Format("/Constrains/IdfyScale/%s/PlayMode", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyScale/%s/PlayMode", GetSection());
     pPrefs->Write(sKey, m_nPlayMode);
 }
 
 //---------------------------------------------------------------------------------------
 void ScalesConstrains::load_settings()
+{
+    switch (m_appScope.get_exercises_level())
+    {
+        case 1: load_settings_for_level_1();        break;
+        case 2: load_settings_for_level_2();        break;
+        default:
+            load_settings_for_customized_level();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ScalesConstrains::load_settings_for_customized_level()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
@@ -126,7 +141,7 @@ void ScalesConstrains::load_settings()
     for (i=0; i < est_Max; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyScale/%s/Scale%dAllowed",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         EScaleType nType = (EScaleType)i;
         bool fDefault = (nType == est_MajorNatural || nType == est_MinorNatural
                          || nType == est_MinorHarmonic || nType == est_MinorMelodic);
@@ -139,18 +154,152 @@ void ScalesConstrains::load_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format("/Constrains/IdfyScale/%s/KeySignature%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Read(sKey, &fValid, true);
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
 
     // other settings:
     //      Display key - default: no
-    sKey = wxString::Format("/Constrains/IdfyScale/%s/DisplayKey", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyScale/%s/DisplayKey", GetSection());
     pPrefs->Read(sKey, &m_fDisplayKey, false);
     // play modes. Default: ascending
-    sKey = wxString::Format("/Constrains/IdfyScale/%s/PlayMode", m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyScale/%s/PlayMode", GetSection());
     pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
+}
+
+//---------------------------------------------------------------------------------------
+void ScalesConstrains::load_settings_for_level_1()
+{
+    if (GetSection() == "EarIdfyScale")
+    {
+        // allowed scales
+        for (int i=0; i < est_Max; i++)
+            m_fValidScales[i] = false;
+
+        m_fValidScales[est_MajorNatural] = true;
+        m_fValidScales[est_MinorNatural] = true;
+        m_fValidScales[est_Chromatic] = true;
+        m_fValidScales[est_PentatonicMajor] = true;
+
+        // key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+
+        // other settings
+        m_fDisplayKey = true;   //display key: yes
+        m_nPlayMode = 0;        //0-ascending, 1-descending, 2-both
+    }
+    else if (GetSection() == "TheoIdfyScale")
+    {
+        // allowed scales
+        for (int i=0; i < est_Max; i++)
+            m_fValidScales[i] = false;
+
+        m_fValidScales[est_MajorNatural] = true;
+        m_fValidScales[est_MinorNatural] = true;
+        m_fValidScales[est_Chromatic] = true;
+        m_fValidScales[est_PentatonicMajor] = true;
+
+        // key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+
+        // other settings
+        m_fDisplayKey = true;   //display key: yes
+        m_nPlayMode = 2;        //Not used. 0-ascending, 1-descending, 2-both
+    }
+    else
+        load_settings_for_customized_level();
+}
+
+//---------------------------------------------------------------------------------------
+void ScalesConstrains::load_settings_for_level_2()
+{
+    if (GetSection() == "EarIdfyScale")
+    {
+        // allowed scales
+        for (int i=0; i < est_Max; i++)
+            m_fValidScales[i] = false;
+
+        m_fValidScales[est_MajorNatural] = true;
+        m_fValidScales[est_MinorNatural] = true;
+        m_fValidScales[est_MinorHarmonic] = true;
+        m_fValidScales[est_MinorMelodic] = true;
+        m_fValidScales[est_Chromatic] = true;
+        m_fValidScales[est_PentatonicMajor] = true;
+        m_fValidScales[est_PentatonicMinor] = true;
+        m_fValidScales[est_WholeTones] = true;
+
+        // key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+        m_oValidKeys.SetValid(k_key_D, true);
+        m_oValidKeys.SetValid(k_key_b, true);
+        m_oValidKeys.SetValid(k_key_Bf, true);
+        m_oValidKeys.SetValid(k_key_g, true);
+
+        // other settings
+        m_fDisplayKey = true;   //display key: yes
+        m_nPlayMode = 2;        //0-ascending, 1-descending, 2-both
+    }
+    else if (GetSection() == "TheoIdfyScale")
+    {
+        // allowed scales
+        for (int i=0; i < est_Max; i++)
+            m_fValidScales[i] = false;
+
+        m_fValidScales[est_MajorNatural] = true;
+        m_fValidScales[est_MinorNatural] = true;
+        m_fValidScales[est_MinorHarmonic] = true;
+        m_fValidScales[est_MinorMelodic] = true;
+        m_fValidScales[est_Chromatic] = true;
+        m_fValidScales[est_PentatonicMajor] = true;
+        m_fValidScales[est_PentatonicMinor] = true;
+        m_fValidScales[est_WholeTones] = true;
+
+        // key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+        m_oValidKeys.SetValid(k_key_D, true);
+        m_oValidKeys.SetValid(k_key_b, true);
+        m_oValidKeys.SetValid(k_key_Bf, true);
+        m_oValidKeys.SetValid(k_key_g, true);
+
+        // other settings
+        m_fDisplayKey = true;   //display key: yes
+        m_nPlayMode = 2;        //Not used.  0-ascending, 1-descending, 2-both
+    }
+    else
+        load_settings_for_customized_level();
 }
 
 //---------------------------------------------------------------------------------------

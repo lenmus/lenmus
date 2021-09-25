@@ -159,6 +159,7 @@ protected:
     void create_menu();
     void set_lomse_callbacks();
     void load_file(const string& filename);
+    void set_exercises_level(int level);
     Interactor* get_active_canvas_interactor();
     AScore get_active_score();
     DocumentWindow* get_active_document_window();

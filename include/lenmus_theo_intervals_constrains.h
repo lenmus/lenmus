@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -94,6 +94,9 @@ public:
 
 private:
     void load_settings();
+    void load_settings_for_level_1();
+    void load_settings_for_level_2();
+    void load_settings_for_customized_level();
 
 };
 

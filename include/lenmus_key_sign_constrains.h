@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -79,7 +79,7 @@ private:
     int                 m_nMaxAccidentals;
     EScaleMode          m_nMode;
     KeyConstrains       m_oValidKeys;           //allowed key signatures
-    ClefConstrains    m_oClefs;               //allowed clefs
+    ClefConstrains      m_oClefs;               //allowed clefs
 
 };
 
