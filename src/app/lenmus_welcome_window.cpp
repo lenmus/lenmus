@@ -24,6 +24,7 @@
 #include "lenmus_paths.h"
 #include "lenmus_main_frame.h"
 #include "lenmus_string.h"
+#include "lenmus_dlg_levels.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -318,7 +319,9 @@ WelcomeWindow::~WelcomeWindow()
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::on_button_exercises(wxCommandEvent& UNUSED(event))
 {
-    open_book("GeneralExercises.lmb");
+    LevelsDlg dlg(this, m_appScope);
+    if (dlg.ShowModal() == wxID_OK)
+        open_book("GeneralExercises.lmb", dlg.get_level());
 }
 
 //---------------------------------------------------------------------------------------
@@ -352,7 +355,7 @@ void WelcomeWindow::on_button_book_3(wxCommandEvent& UNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
-void WelcomeWindow::open_book(const wxString& filename)
+void WelcomeWindow::open_book(const wxString& filename, int level)
 {
     Paths* pPaths = m_appScope.get_paths();
     wxString sPath = pPaths->GetBooksPath();
@@ -376,6 +379,7 @@ void WelcomeWindow::open_book(const wxString& filename)
 
     wxCommandEvent myEvent(LM_EVT_OPEN_BOOK, k_id_open_book);
     myEvent.SetString( oFile.GetFullPath() );
+    myEvent.SetInt(level);
     ::wxPostEvent(this, myEvent);
 }
 

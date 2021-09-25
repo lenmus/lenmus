@@ -56,7 +56,7 @@ protected:
     void on_button_book_4(wxCommandEvent& UNUSED(event));
     void on_button_study_guide(wxCommandEvent& UNUSED(event));
 
-    void open_book(const wxString& filename);
+    void open_book(const wxString& filename, int level=0);
 
 private:
     void create_controls();
