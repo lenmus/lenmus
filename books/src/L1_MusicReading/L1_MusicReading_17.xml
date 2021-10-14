@@ -145,7 +145,7 @@ this rhythm.</para>
     <fragment>34;(n * q)(r e)(n * e)(n * q),(n * e)(r e)(n * e)(r e)(n * s g+)(n * s)(n * s)(n * s g-),(n * h.)</fragment>
     <fragment>34;(n * h)(n * s g+)(n * s)(n * s)(n * s g-),(n * h)(r e)(n * e),(r e)(n * e)(r e)(n * e)(n * e g+)(n * e g-),(n * e g+)(n * e g- l)(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * h.)</fragment>
     <fragment>34;(n * e)(n * q)(n * e)(n * s g+)(n * s)(n * s)(n * s g-),(n * q l)(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * h)(r q)</fragment>
-    <fragment>34;(n * q)(r e)(n * e) c (n * q)(n * e),(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-)(n * h)</fragment>
+    <fragment>34;(n * q)(r e)(n * e)n * q)(n * e),(n * e g+)(n * e g-)(n * s g+)(n * s)(n * s)(n * s g-)(n * h)</fragment>
 </exercise>
 
 </theme>

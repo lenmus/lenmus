@@ -107,6 +107,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm4</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>G;c4;c5</clef>
     <key>C</key>
     <key>a</key>
@@ -134,6 +135,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm4</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>G;c4;c5</clef>
     <key>C</key>
     <key>a</key>

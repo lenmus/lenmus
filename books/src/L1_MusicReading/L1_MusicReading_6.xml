@@ -61,6 +61,7 @@ reading these rhythms.</para>
     <control_go_back>mr1_thm6</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>F4;f3;c4</clef>
     <key>C</key>
     <key>a</key>

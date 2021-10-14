@@ -104,11 +104,13 @@ void IdfyChordCtrolParams::process(ImoParamInfo* pParam)
 
         Example:
         ------------------------------------
-        <object type="Application/LenMusIdfyChord" width="100%" height="300" border="0">
-            <param name="mode" value="earTraining">
-            <param name="chords" value="mT,MT,aT,dT,m7,M7,dom7">
-            <param name="keys" value="all">
-        </object>
+        <exercise type="IdfyChord" height="35">
+            <control_go_back>th1_chords</control_go_back>
+            <mode>theory</mode>
+            <keys>C,a,F,b-,G,e</key>
+            <chords>mT,MT,aT,dT</chords>
+            <show_key>1</show_key>
+        </exercise>
 
         @endverbatim
 

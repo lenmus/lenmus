@@ -72,12 +72,12 @@ se obtienen al ligar las dos notas del primer compás:</para>
     <control_solfa />
     <fragment>24,34,44;(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24,34,44;(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
-    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
     <fragment>24,34,44;(r q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24,34,44;(r q),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
     <clef>none;a4;a4</clef>
@@ -100,12 +100,12 @@ se obtienen al ligar las dos notas del primer compás:</para>
     <control_solfa />
     <fragment>24,34,44;(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24,34,44;(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
-    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
     <fragment>24,34,44;(r q),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24,34,44;(r q),(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
     <clef>G;a3;a5</clef>

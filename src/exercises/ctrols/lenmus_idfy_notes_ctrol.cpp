@@ -632,7 +632,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
                         break;
 
                     case 5: //E# or F
-                        nStep = 2;
+                        nStep = 3;
                         break;
 
                     case 6: //F# or Gb

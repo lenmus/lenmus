@@ -1,0 +1,129 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-09">
+<title>La blanca y su silencio. Ligaduras</title>
+<!-- <tocimage>img102.png</tocimage> -->
+
+<part>
+<title>La blanca y su silencio</title>
+
+<para>
+En esta lección vamos a estudiar dos nuevas figuras: la blanca y su silencio. La siguiente imagen muestra sus símbolos:
+</para>
+
+<score>
+    <music>
+        (score (vers 2.0)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4 noVisible)
+            (spacer 50)(n a4 h)(r h)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Una blanca dura lo mismo que dos negras y un silencio de blanca lo mismo que dos silencios de negra. Por tanto, en el compás de 2/4, una blanca dura dos pulsos y, por ello, ocupa un compás completo:
+</para>
+
+<score>
+    <music>
+        (score (vers 2.0)
+         (instrument
+          (musicData (clef G)(key C)
+           (time 2 4)
+           (n a4 q)(n a4 q)(barline simple)
+           (n a4 h)(barline simple)
+           (r h)(barline end)
+        )))
+    </music>
+</score>
+
+</part>
+
+<part>
+<title>Ligaduras</title>
+
+<para>
+Una ligadura es un pequeño arco que une las cabezas de dos <emphasis>notas consecutivas de igual altura</emphasis>. Por ejemplo:
+</para>
+
+<score>
+    <music>
+        (score (vers 2.0)
+         (instrument
+          (musicData (clef G)(key C)
+           (time 2 4)(n a4 q l)(n a4 q)(barline end)
+        )))
+    </music>
+</score>
+
+<para>El símbolo de ligadura indica que la duración de las dos notas ligadas debe sumarse, esto es, el sonido no debe interrumpirse al pasar de la primera a la segunda. En el ejemplo anterior la ligadura une dos notas negras lo que equivale a una nota de doble duración: una blanca. Escucha el siguiente ejemplo:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n g4 q l)(n g4 q)
+            (barline simple)
+            (n g4 h)
+            (barline double)
+            (spacer 20)
+            (n c5 q l)(n c5 q)
+            (barline simple)
+            (n c5 h)
+            (barline end)
+        )))
+    </music>
+</score>
+
+</part>
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-09_E1">Ejercicio 1</link> - Practica la lectura con blancas y negras ligadas.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-09_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>La blanca y su silencio. Ligaduras</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-09</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;d4;b4</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(n * q)(n * q),(n * h),(r h)</fragment>
+</exercise>
+
+</theme>
+
+
+</content>

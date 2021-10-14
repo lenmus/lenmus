@@ -185,16 +185,16 @@ void NotesConstrains::load_settings_for_level_2()
     m_nClef = k_clef_F4;
 
     //Select notes from D major scale
-    m_nKeySignature = k_key_D;
+    m_nKeySignature = k_key_a;
 
-    // Valid notes D major natural notes
-    m_fValidNotes[0] = false;    // c
-    m_fValidNotes[1] = true;   // +c
+    // Valid notes A minor natural notes
+    m_fValidNotes[0] = true;    // c
+    m_fValidNotes[1] = false;   // +c
     m_fValidNotes[2] = true;    // d
     m_fValidNotes[3] = false;   // +d
     m_fValidNotes[4] = true;    // e
-    m_fValidNotes[5] = false;    // f
-    m_fValidNotes[6] = true;   // +f
+    m_fValidNotes[5] = true;    // f
+    m_fValidNotes[6] = false;   // +f
     m_fValidNotes[7] = true;    // g
     m_fValidNotes[8] = false;   // +g
     m_fValidNotes[9] = true;    // a

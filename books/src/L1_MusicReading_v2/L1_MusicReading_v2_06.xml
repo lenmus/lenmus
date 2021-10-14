@@ -1,0 +1,43 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-06">
+<title>El compás de 2/4</title>
+
+<para>
+La primera métrica que vamos a aprender y a utilizar es el compás de 2/4, también llamado de dos tiempos:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+<para>
+Como sabes, la métrica de 2/4 indica que cada compás tiene dos tiempos o pulsos y que la figura que ocupa cada pulso es la negra. Por tanto, cada compás estará formado por dos negras. Por ejemplo:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n e4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(barline simple)
+            (n f4 q)(n c5 q)(barline end) )))
+    </music>
+</score>
+
+<para>
+También sabemos que el primer pulso de cada compás es el más fuerte. Por tanto, si cuentas los pulsos a medida que lees una partitura, la métrica de 2/4 corresponde a un ritmo tal como 'UNO-y-dos-y-UNO-y-dos-...' como si estuvieras desfilando, con un acento en la palabra UNO. Para estudiar la lectura de partituras es importante marcar los pulsos del compás, bien sea con la mano, con un golpe seco abajo (en la mesa o en el aire) y otro arriba (en el hombro o en el aire). También puedes marcarlos con el pie, si lo prefieres. Pero es importante que te acostumbres a marcar los pulsos según lees. Debes hacer de ello un hábito hasta que tengas la destreza necesaria para leer correctamente una partitura.
+</para>
+
+</theme>

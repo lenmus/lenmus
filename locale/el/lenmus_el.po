@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-23 15:16+0200\n"
-"PO-Revision-Date: 2021-06-23 15:20+0200\n"
+"POT-Creation-Date: 2021-10-13 15:22+0200\n"
+"PO-Revision-Date: 2021-10-13 15:25+0200\n"
 "Last-Translator: Avgeris Tsironis <avgeristsironis@gmail.com>\n"
 "Language-Team: Ελληνικά <avgeristsironis@gmail.com>\n"
 "Language: el\n"
@@ -550,8 +550,8 @@ msgstr ""
 "Εκκίνηση/συνέχιση αναπαραγωγής. Από την επιλογή της πλήρους παρτιτούρας"
 
 #: src/app/lenmus_main_frame.cpp:672 src/dialogs/lenmus_dlg_metronome.cpp:430
-#: src/exercises/constrains/lenmus_constrains.cpp:373
-#: src/exercises/constrains/lenmus_constrains.cpp:375
+#: src/exercises/constrains/lenmus_constrains.cpp:413
+#: src/exercises/constrains/lenmus_constrains.cpp:415
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 msgid "Stop"
@@ -648,33 +648,33 @@ msgstr "Αρχεία MNX"
 msgid "Choose the file to open"
 msgstr "Επιλέξτε αρχείο για άνοιγμα"
 
-#: src/app/lenmus_main_frame.cpp:896
+#: src/app/lenmus_main_frame.cpp:897
 msgid "Errors in file "
 msgstr "Σφάλματα στο αρχείο "
 
-#: src/app/lenmus_main_frame.cpp:1152
+#: src/app/lenmus_main_frame.cpp:1161
 msgid "Start page"
 msgstr "Αρχική σελίδα"
 
-#: src/app/lenmus_main_frame.cpp:1165
+#: src/app/lenmus_main_frame.cpp:1174
 #, c-format
 msgid "File '%s' not found."
 msgstr "Το αρχείο '%s' δε βρέθηκε "
 
-#: src/app/lenmus_main_frame.cpp:1166
+#: src/app/lenmus_main_frame.cpp:1175
 msgid "Error message"
 msgstr "Μήνυμα σφάλματος"
 
-#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
-#: src/app/lenmus_welcome_window.cpp:407
+#: src/app/lenmus_main_frame.cpp:1201 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:408
 msgid "Sorry: File not found!"
 msgstr "Λυπούμαστε: Το αρχείο δεν βρέθηκε!"
 
-#: src/app/lenmus_main_frame.cpp:1710
+#: src/app/lenmus_main_frame.cpp:1719
 msgid "Zooming? (10 to 800)"
 msgstr "Μεγέθυνση; (10 έως 800)"
 
-#: src/app/lenmus_main_frame.cpp:1742
+#: src/app/lenmus_main_frame.cpp:1751
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -682,11 +682,11 @@ msgstr ""
 "Υπάρχει πρόβλημα στην εκτύπωση.\n"
 "Ίσως ο τρέχων εκτυπωτής σας να μην έχει ρυθμιστεί σωστά;"
 
-#: src/app/lenmus_main_frame.cpp:1742 src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1751 src/app/lenmus_main_frame.cpp:1753
 msgid "Printing"
 msgstr "Εκτύπωση"
 
-#: src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1753
 msgid "Printing cancelled"
 msgstr "Η εκτύπωση ακυρώθηκε"
 
@@ -696,36 +696,36 @@ msgstr ""
 "Ελεύθερο λογισμικό υπό γενική άδεια δημόσιας χρήσης GNU, έκδοση 3 ή "
 "μεταγενέστερη."
 
-#: src/app/lenmus_welcome_window.cpp:105
+#: src/app/lenmus_welcome_window.cpp:106
 msgid "Welcome to LenMus"
 msgstr "Καλώς ήρθατε στο LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:112
+#: src/app/lenmus_welcome_window.cpp:113
 #, c-format
 msgid "Version %s"
 msgstr "Έκδοση %s"
 
-#: src/app/lenmus_welcome_window.cpp:150
+#: src/app/lenmus_welcome_window.cpp:151
 msgid "Get started"
 msgstr "Ξεκίνα"
 
-#: src/app/lenmus_welcome_window.cpp:156
+#: src/app/lenmus_welcome_window.cpp:157
 msgid "Read about how to get the most out of LenMus."
 msgstr "Διαβάστε πώς να αξιοποιήσετε στο έπακρο το LenMus."
 
-#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
-#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
-#: src/app/lenmus_welcome_window.cpp:264
+#: src/app/lenmus_welcome_window.cpp:163 src/app/lenmus_welcome_window.cpp:197
+#: src/app/lenmus_welcome_window.cpp:245 src/app/lenmus_welcome_window.cpp:255
+#: src/app/lenmus_welcome_window.cpp:265
 #: src/dialogs/lenmus_dlg_metronome.cpp:339
 #: src/dialogs/lenmus_dlg_metronome.cpp:425
 msgid "Start"
 msgstr "Έναρξη"
 
-#: src/app/lenmus_welcome_window.cpp:184
+#: src/app/lenmus_welcome_window.cpp:185
 msgid "Train with LenMus"
 msgstr "Εκπαιδεύστε με το LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:190
+#: src/app/lenmus_welcome_window.cpp:191
 msgid ""
 "Develop your musical skills with progressive exercises that will help you "
 "assimilate the different contents. Set your own learning pace."
@@ -734,11 +734,11 @@ msgstr ""
 "βοηθήσουν να αφομοιώσετε τα διαφορετικά περιεχόμενα. Ορίστε το δικό σας "
 "ρυθμό μάθησης."
 
-#: src/app/lenmus_welcome_window.cpp:220
+#: src/app/lenmus_welcome_window.cpp:221
 msgid "Study and practice"
 msgstr "Μελέτη και πρακτική"
 
-#: src/app/lenmus_welcome_window.cpp:226
+#: src/app/lenmus_welcome_window.cpp:227
 msgid ""
 "Study with the interactive LenMus music theory books. Start with the first "
 "of these two:"
@@ -746,19 +746,19 @@ msgstr ""
 "Μελέτη με τα διαδραστικά βιβλία θεωρίας της μουσικής LenMus. Ξεκινήστε με το "
 "πρώτο από αυτά τα δύο:"
 
-#: src/app/lenmus_welcome_window.cpp:238
+#: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"
 msgstr "Μουσική ανάγνωση I"
 
-#: src/app/lenmus_welcome_window.cpp:248
+#: src/app/lenmus_welcome_window.cpp:249
 msgid "Music Reading II"
 msgstr "Μουσική ανάγνωση II"
 
-#: src/app/lenmus_welcome_window.cpp:258
+#: src/app/lenmus_welcome_window.cpp:259
 msgid "Theory and Harmony"
 msgstr "Θεωρία και αρμονία"
 
-#: src/app/lenmus_welcome_window.cpp:293
+#: src/app/lenmus_welcome_window.cpp:294
 msgid "Acknowledgments:"
 msgstr "Ευχαριστίες:"
 
@@ -1385,6 +1385,26 @@ msgstr "Επιλέξτε γλώσσα για χρήση:"
 msgid "OK"
 msgstr "ΟΚ"
 
+#: src/dialogs/lenmus_dlg_levels.cpp:57
+msgid "Choose level"
+msgstr "Επιλέξτε επίπεδο"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:93
+msgid "Difficulty level:"
+msgstr "Επίπεδο δυσκολίας:"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:97
+msgid "Level 1"
+msgstr "Επίπεδο 1"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:100
+msgid "Level 2"
+msgstr "Επίπεδο 2"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:103
+msgid "Customized"
+msgstr "Προσαρμοσμένο"
+
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 msgid "Metronome settings"
 msgstr "Ρυθμίσεις Μετρονόμου"
@@ -1520,7 +1540,7 @@ msgstr "Εξέταση"
 msgid "Quiz"
 msgstr "Κουίζ"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:372
+#: src/exercises/constrains/lenmus_constrains.cpp:412
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1044
@@ -1533,17 +1553,17 @@ msgstr "Κουίζ"
 msgid "Play"
 msgstr "Αναπαραγωγή"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:374
+#: src/exercises/constrains/lenmus_constrains.cpp:414
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 msgid "Read"
 msgstr "Ανάγνωση"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:376
+#: src/exercises/constrains/lenmus_constrains.cpp:416
 #, c-format
 msgid "Measure %d"
 msgstr "Μέτρο %d"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:377
+#: src/exercises/constrains/lenmus_constrains.cpp:417
 #, c-format
 msgid "Stop %d"
 msgstr "Διακοπή %d"
@@ -2585,8 +2605,8 @@ msgid "The following notes:"
 msgstr "Οι ακόλουθες νότες:"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
-msgid "B b / C"
-msgstr "Σι b / Ντο"
+msgid "B # / C"
+msgstr "Σι # / Ντο"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:205
 msgid "C # / D b"

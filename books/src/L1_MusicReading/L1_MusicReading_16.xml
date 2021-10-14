@@ -99,6 +99,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm16</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <fragment>24;(r q)(n * q)</fragment>
     <fragment>24;(r e)(n * e)(r e)(n * e)</fragment>
     <fragment>24;(r e)(n * e)(n * q)</fragment>
@@ -126,6 +127,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm16</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;c4;c6</clef>
     <key>C</key>
     <key>a</key>

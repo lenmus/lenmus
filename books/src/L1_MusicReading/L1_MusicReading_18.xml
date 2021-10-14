@@ -38,9 +38,9 @@ One eighth note and two 16th notes.
     <music>
         (score (vers 1.5)
          (instrument
-          (musicData (clef G)(key C)
-            (time 2 4)(n a4 q)(n a4 e g+)(n a4 s)(n a4 s g-)
-            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 s)(n a4 s g-)
+          (musicData (clef G)(key C)(time 2 4)
+            (n a4 q)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
             (n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline end)
         )))
     </music>

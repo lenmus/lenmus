@@ -125,6 +125,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm10</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;c4;g5</clef>
     <clef>F4;b2;d4</clef>
     <key>C</key>

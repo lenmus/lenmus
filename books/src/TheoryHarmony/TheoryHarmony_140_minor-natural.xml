@@ -32,7 +32,7 @@ As with major scales, minor scales also share a common pattern of tones and semi
                  (n f4 w v1)
                  (n g4 w v1)
                  (n a4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -100,7 +100,7 @@ It is the scale of <emphasis>A minor natural</emphasis>. If we analyse it we wil
                     (text "T" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n a4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -136,7 +136,7 @@ Here you have more examples of minor natural scales. Take paper and pencil, copy
                  (n -a4 w v1)
                  (n -b4 w v1)
                  (n c5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -329,7 +329,7 @@ Compare these three scales:
                  (n a4 w v1)
                  (n b4 w v1)
                  (n c5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -357,7 +357,7 @@ Compare these three scales:
                  (n a4 w v1)
                  (n b4 w v1)
                  (n c5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -384,7 +384,7 @@ Compare these three scales:
                  (n c5 w v1)
                  (n d5 w v1)
                  (n e5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>

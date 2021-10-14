@@ -1,0 +1,96 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-33">
+<title>El compás de 12/8</title>
+<!-- <tocimage>img124.png</tocimage> -->
+
+<para>
+En esta lección continuamos el estudio de los compases de subdivisión ternaria con un nuevo compás, el de 12/8.
+</para>
+
+<para>
+Se trata de un compás cuaternario, o sea, que tiene cuatro partes y en cada parte se contienen tres corcheas (o sus equivalentes: negra con puntillo, negra y corchea…).
+</para>
+
+<para>
+El compás entero lo llena una redonda con puntillo.
+</para>
+
+<score>
+    <music>
+        (score (vers 1.6)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 12 8)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (barline)
+            (n a4 q)(n a4 e)
+            (n a4 q.)
+            (r q.)
+            (n a4 e g+)(n a4 e g-)(r e)
+            (barline)
+            (n a4 h.)(n a4 h.)
+            (barline)
+            (n a4 w.)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+La acentuación de las partes es similar a la de los compases de subdivisión binaria: las partes 1ª y 3ª son fuertes (la 3ª menos que la 1ª) y la 2ª y la 4ª débiles.
+</para>
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-33_E1">Ejercicio 1</link> - Practica la lectura musical en compás de 12/8</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-33_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>El compás de 9/8</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos en compás de 12/8.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-33</control_go_back>
+    <control_play />
+    <control_solfa />
+    <clef>G;a3;c6</clef>
+    <clef>F4;a2;e4</clef>
+    <key>C</key>
+    <key>a</key>
+    <key>G</key>
+    <key>e</key>
+    <key>F</key>
+    <key>d</key>
+    <key>D</key>
+    <key>B-</key>
+    <key>g</key>
+    <key>b</key>
+    <time>128</time>
+    <fragment>128;(n * q)(n * e)(n * e g+)(n * e)(n * e g-),(n * q.)(r e)(n * e g+)(n * e g-),(n * q.)(r q.)</fragment>
+    <fragment>128;(n * e g+)(n * e)(n * e g-)(n * e g+)(r e)(n * e g-),(n * q.)(n * e g+)(n * e g-)(r e),(n * q.)(r q.)</fragment>
+    <fragment>128;(n * q.)(r q)(n * e),(n * q. l)(n * q)(n * e),(n * e g+)(n * e)(n * e g-)(n * q.),(n * e g+)(r e)(n * e g-)(n * q.)</fragment>
+    <fragment>128;(n * e g+)(r e)(n * e g-)(n * e g+)(r e)(n * e g-),(n * e g+)(n * e)(n * e g-)(n * q.)</fragment>
+    <fragment>128;(n * q.)(r e)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e g-)(n * e g+)(n * e)(n * e g-),(n * e)(n * q l)(n * q.)</fragment>
+</exercise>
+
+</theme>
+
+</content>

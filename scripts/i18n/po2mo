@@ -50,6 +50,7 @@ fi
 if [ -z "$2" ]
 then
     GenerateMO de
+    GenerateMO el
     GenerateMO es
     GenerateMO eu
     GenerateMO fr

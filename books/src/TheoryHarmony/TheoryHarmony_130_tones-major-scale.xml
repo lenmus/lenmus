@@ -40,11 +40,11 @@
                     (text _"G# / Ab is between these two notes" (style "Normal text") dx:61.2775 dy:121.1107)
                  )
                  (n a4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
-
+<para> </para>
 
 <para>E-F sharp is a tone. F natural sits between them.</para>
 
@@ -66,10 +66,11 @@
                     (text _"F is between these two notes" (style "Normal text") dx:56 dy:120)
                  )
                  (n +f4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
+<para> </para>
 
 </part>
 
@@ -158,10 +159,11 @@ semitones (T=tone and S=semitone):
                     (text "S" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n c5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
+<para> </para>
 
 <para>The pattern is <emphasis>T-T-S-T-T-T-S</emphasis>.</para>
 
@@ -192,7 +194,7 @@ semitones (T=tone and S=semitone):
                  (n e5 w v1)
                  (n +f5 w v1)
                  (n g5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -219,7 +221,7 @@ semitones (T=tone and S=semitone):
                  (n +d5 w v1)
                  (n +e5 w v1)
                  (n +f5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -262,7 +264,7 @@ Let's write again the G Major and F# Major but using key signatures:
                  (n e5 w v1)
                  (n f5 w v1)
                  (n g5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -289,7 +291,7 @@ Let's write again the G Major and F# Major but using key signatures:
                  (n d5 w v1)
                  (n e5 w v1)
                  (n f5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -332,7 +334,7 @@ We'll start by putting the the tonic of E major, that is, an E note. We're using
                  (clef G)
                  (key C)
                  (n e4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -362,7 +364,7 @@ higher than E. The note which is a tone higher than E is <emphasis>F sharp</emph
                     (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n +f4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -397,7 +399,7 @@ The third note is, again, a tone up. From F sharp, the next tone up is G sharp, 
                     (text "T" (style "Normal text") dx:51.2219 dy:117)
                  )
                  (n +g4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -438,7 +440,7 @@ Next we meet our first semitone: A. (There is nothing we can squeeze in between 
                     (text "S" (style "Normal text") dx:51.2219 dy:112)
                  )
                  (n a4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -505,7 +507,7 @@ Hopefully by now you've got the idea, so here are the rest of the notes of the E
                     (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n e5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -584,7 +586,7 @@ We already know how to build any other major scale. And we already know C major 
                     (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n g5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -661,7 +663,7 @@ Let's look at D major next:
                     (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n d5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -738,7 +740,7 @@ The last scale we will look at is F major:
                     (text "S" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n f5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -828,7 +830,7 @@ Here's an example of F major descending, using the bass clef.
                     (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n f2 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>

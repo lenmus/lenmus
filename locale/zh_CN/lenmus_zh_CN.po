@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-22 17:48+0200\n"
-"PO-Revision-Date: 2021-06-22 17:56+0200\n"
+"POT-Creation-Date: 2021-10-13 15:37+0200\n"
+"PO-Revision-Date: 2021-10-13 15:40+0200\n"
 "Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: zh_CN\n"
@@ -509,8 +509,8 @@ msgid "Start/resume play back. From selection of full score"
 msgstr "开始/继续回放。从选择的总谱处开始"
 
 #: src/app/lenmus_main_frame.cpp:672 src/dialogs/lenmus_dlg_metronome.cpp:430
-#: src/exercises/constrains/lenmus_constrains.cpp:373
-#: src/exercises/constrains/lenmus_constrains.cpp:375
+#: src/exercises/constrains/lenmus_constrains.cpp:413
+#: src/exercises/constrains/lenmus_constrains.cpp:415
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 msgid "Stop"
@@ -606,43 +606,43 @@ msgstr "MNX格式"
 msgid "Choose the file to open"
 msgstr "导出当前文件"
 
-#: src/app/lenmus_main_frame.cpp:896
+#: src/app/lenmus_main_frame.cpp:897
 msgid "Errors in file "
 msgstr "文件出现错误"
 
-#: src/app/lenmus_main_frame.cpp:1152
+#: src/app/lenmus_main_frame.cpp:1161
 msgid "Start page"
 msgstr "起始页面"
 
-#: src/app/lenmus_main_frame.cpp:1165
+#: src/app/lenmus_main_frame.cpp:1174
 #, c-format
 msgid "File '%s' not found."
 msgstr "错误：未找到文件 %s"
 
-#: src/app/lenmus_main_frame.cpp:1166
+#: src/app/lenmus_main_frame.cpp:1175
 msgid "Error message"
 msgstr "错误信息"
 
-#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
-#: src/app/lenmus_welcome_window.cpp:407
+#: src/app/lenmus_main_frame.cpp:1201 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:408
 msgid "Sorry: File not found!"
 msgstr "错误：未找到文件"
 
-#: src/app/lenmus_main_frame.cpp:1710
+#: src/app/lenmus_main_frame.cpp:1719
 msgid "Zooming? (10 to 800)"
 msgstr "放大（10 至 800）"
 
-#: src/app/lenmus_main_frame.cpp:1742
+#: src/app/lenmus_main_frame.cpp:1751
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr "当前打印机可能违背正确设置"
 
-#: src/app/lenmus_main_frame.cpp:1742 src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1751 src/app/lenmus_main_frame.cpp:1753
 msgid "Printing"
 msgstr "打印"
 
-#: src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1753
 msgid "Printing cancelled"
 msgstr "取消打印"
 
@@ -650,36 +650,36 @@ msgstr "取消打印"
 msgid "Free software under GNU General Public License, version 3 or later."
 msgstr "满足GUN通用公共许可证的免费软件，版本3或者更新"
 
-#: src/app/lenmus_welcome_window.cpp:105
+#: src/app/lenmus_welcome_window.cpp:106
 msgid "Welcome to LenMus"
 msgstr "欢迎使用LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:112
+#: src/app/lenmus_welcome_window.cpp:113
 #, c-format
 msgid "Version %s"
 msgstr "版本 %s"
 
-#: src/app/lenmus_welcome_window.cpp:150
+#: src/app/lenmus_welcome_window.cpp:151
 msgid "Get started"
 msgstr "開始"
 
-#: src/app/lenmus_welcome_window.cpp:156
+#: src/app/lenmus_welcome_window.cpp:157
 msgid "Read about how to get the most out of LenMus."
 msgstr "閱讀有關如何充分利用 LenMus 的信息。"
 
-#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
-#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
-#: src/app/lenmus_welcome_window.cpp:264
+#: src/app/lenmus_welcome_window.cpp:163 src/app/lenmus_welcome_window.cpp:197
+#: src/app/lenmus_welcome_window.cpp:245 src/app/lenmus_welcome_window.cpp:255
+#: src/app/lenmus_welcome_window.cpp:265
 #: src/dialogs/lenmus_dlg_metronome.cpp:339
 #: src/dialogs/lenmus_dlg_metronome.cpp:425
 msgid "Start"
 msgstr "开始"
 
-#: src/app/lenmus_welcome_window.cpp:184
+#: src/app/lenmus_welcome_window.cpp:185
 msgid "Train with LenMus"
 msgstr "與 LenMus 一起訓練"
 
-#: src/app/lenmus_welcome_window.cpp:190
+#: src/app/lenmus_welcome_window.cpp:191
 msgid ""
 "Develop your musical skills with progressive exercises that will help you "
 "assimilate the different contents. Set your own learning pace."
@@ -687,29 +687,29 @@ msgstr ""
 "通過漸進式練習培養您的音樂技能，這將幫助您吸收不同的內容。 設定自己的學習節"
 "奏。"
 
-#: src/app/lenmus_welcome_window.cpp:220
+#: src/app/lenmus_welcome_window.cpp:221
 msgid "Study and practice"
 msgstr "學習與實踐"
 
-#: src/app/lenmus_welcome_window.cpp:226
+#: src/app/lenmus_welcome_window.cpp:227
 msgid ""
 "Study with the interactive LenMus music theory books. Start with the first "
 "of these two:"
 msgstr "學習交互式 LenMus 音樂理論書籍。 從這兩個中的第一個開始："
 
-#: src/app/lenmus_welcome_window.cpp:238
+#: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"
 msgstr "音樂閱讀1"
 
-#: src/app/lenmus_welcome_window.cpp:248
+#: src/app/lenmus_welcome_window.cpp:249
 msgid "Music Reading II"
 msgstr "音樂閱讀2"
 
-#: src/app/lenmus_welcome_window.cpp:258
+#: src/app/lenmus_welcome_window.cpp:259
 msgid "Theory and Harmony"
 msgstr "理論與和諧"
 
-#: src/app/lenmus_welcome_window.cpp:293
+#: src/app/lenmus_welcome_window.cpp:294
 msgid "Acknowledgments:"
 msgstr "致謝："
 
@@ -1328,6 +1328,26 @@ msgstr "使用语言设置"
 msgid "OK"
 msgstr "确定"
 
+#: src/dialogs/lenmus_dlg_levels.cpp:57
+msgid "Choose level"
+msgstr "選擇級別"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:93
+msgid "Difficulty level:"
+msgstr "難度級別："
+
+#: src/dialogs/lenmus_dlg_levels.cpp:97
+msgid "Level 1"
+msgstr "1 級"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:100
+msgid "Level 2"
+msgstr "2 級"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:103
+msgid "Customized"
+msgstr "定制級別"
+
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 msgid "Metronome settings"
 msgstr "节拍器打开"
@@ -1463,7 +1483,7 @@ msgstr "测验"
 msgid "Quiz"
 msgstr "小测试"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:372
+#: src/exercises/constrains/lenmus_constrains.cpp:412
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1044
@@ -1476,17 +1496,17 @@ msgstr "小测试"
 msgid "Play"
 msgstr "播放"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:374
+#: src/exercises/constrains/lenmus_constrains.cpp:414
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 msgid "Read"
 msgstr "阅读"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:376
+#: src/exercises/constrains/lenmus_constrains.cpp:416
 #, c-format
 msgid "Measure %d"
 msgstr "小节 %d"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:377
+#: src/exercises/constrains/lenmus_constrains.cpp:417
 #, c-format
 msgid "Stop %d"
 msgstr "停止 %d"
@@ -2526,8 +2546,8 @@ msgid "The following notes:"
 msgstr "接下来的音符："
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
-msgid "B b / C"
-msgstr "降B / C"
+msgid "B # / C"
+msgstr "升B / C"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:205
 msgid "C # / D b"

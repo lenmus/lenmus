@@ -21,11 +21,11 @@
 ]>
 
 <book id="GeneralExercises">
-<info>
+<bookinfo>
     <title>General exercises</title>
     <abstract>General exercises, customizable to suit your needs at any moment.</abstract>
     <copyright>
-        <year>2002-2010</year>
+        <year>2002-2021</year>
         <holder>LenMus project</holder>
     </copyright>
     <legalnotice>
@@ -40,80 +40,29 @@
         <imagedata fileref='cc-by-sa.png' />
         </para>
     </legalnotice>
-</info>
-
-
-<theme id="ch0">
-<titleabbrev>Contents</titleabbrev>
-<title>Introduction to general exercises</title>
-
-<para>Apart of exercises included in the eBooks, the following general exercises
-(customizable to suit your needs at any moment) are available:</para>
-
-<part>
-<title>Exercises for aural training</title>
-
-<itemizedlist>
-<listitem><link linkend="EarCompareIntervals">Intervals' comparison</link></listitem>
-<listitem><link linkend="EarIntervals">Intervals' identification</link></listitem>
-<listitem><link linkend="EarNotes">Notes' identification</link></listitem>
-<listitem><link linkend="EarChord">Chords' identification</link></listitem>
-<listitem><link linkend="EarScales">Scales' identification</link></listitem>
-<listitem><link linkend="EarTonalities">Tonality identification</link></listitem>
-<listitem><link linkend="EarCadences">Cadences' identification</link></listitem>
-<!--<listitem><link linkend="EarTunning">Un-tunned sounds</link></listitem>-->
-</itemizedlist>
-
-</part>
-
-<part>
-<title>Exercises to practise theory</title>
-
-<itemizedlist>
-<listitem><link linkend="TheoKeySignatures">Key signatures' identification</link></listitem>
-<listitem><link linkend="IdfyIntervals">Interval's identification</link></listitem>
-<listitem><link linkend="TheoIntervals">Interval's construction</link></listitem>
-<listitem><link linkend="TheoChords">Chords' identification</link></listitem>
-<listitem><link linkend="TheoScales">Scales' identification</link></listitem>
-<listitem><link linkend="TheoCadences">Cadences' identification</link></listitem>
-<!--<listitem><link linkend="TheoHarmony">Four-parts harmony</link></listitem>-->
-</itemizedlist>
-
-</part>
-
-<part>
-<title>Other exercises</title>
-
-<itemizedlist>
-<listitem><link linkend="ClefsReading">Clefs reading</link></listitem>
-</itemizedlist>
-
-</part>
-
-</theme>
+</bookinfo>
 
 <chapter id='aural'>
 <title>Aural training exercises</title>
 
+    &chEarNotes;
+    &chEarScales;
     &chEarCompareIntervals;
     &chEarIntervals;
-    &chEarNotes;
-    &chEarChord;
-    &chEarScales;
     &chEarTonalities;
+    &chEarChord;
     &chEarCadences;
     <!-- &chEarTunning; -->
 </chapter>
 
 <chapter id='theory'>
 <title>Theory exercises</title>
-    &chTheoKeySignatures;
+    &chTheoScales;
     &chIdfyIntervals;
     &chBuildIntervals;
+    &chTheoKeySignatures;
     &chTheoChords;
-    &chTheoScales;
     &chTheoCadences;
-
     <!--&chTheoHarmony;-->
 
 </chapter>

@@ -195,7 +195,7 @@ void TheoIntervalsConstrains::load_settings_for_level_1()
 
         //ledger lines
         m_nLedgerAbove = 1;
-        m_nLedgerBelow = 1;
+        m_nLedgerBelow = 2;
 
         //allowed accidentals
         m_fAccidentals = false;         //allow accidentals
@@ -233,7 +233,7 @@ void TheoIntervalsConstrains::load_settings_for_level_1()
 
         //ledger lines
         m_nLedgerAbove = 1;
-        m_nLedgerBelow = 1;
+        m_nLedgerBelow = 2;
 
         //allowed accidentals
         m_fAccidentals = false;         //allow accidentals
@@ -284,7 +284,7 @@ void TheoIntervalsConstrains::load_settings_for_level_2()
 
         //ledger lines
         m_nLedgerAbove = 1;
-        m_nLedgerBelow = 1;
+        m_nLedgerBelow = 2;
 
         //allowed accidentals
         m_fAccidentals = false;         //allow accidentals
@@ -329,7 +329,7 @@ void TheoIntervalsConstrains::load_settings_for_level_2()
 
         //ledger lines
         m_nLedgerAbove = 1;
-        m_nLedgerBelow = 1;
+        m_nLedgerBelow = 2;
 
         //allowed accidentals
         m_fAccidentals = false;         //allow accidentals

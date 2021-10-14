@@ -45,6 +45,7 @@ xgettext -s --from-code=UTF-8 --keyword=_ -o lenmus.pot \
 
 # For each language, update old PO file
 UpdatePO de $1
+UpdatePO el $1
 UpdatePO es $1
 UpdatePO eu $1
 UpdatePO fr $1

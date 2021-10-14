@@ -3,7 +3,7 @@
 ## langpacks
 
 Purpose: create a language pack, that is, a ZIP archive with all .pot files to translate.
-This script MUST BE RUN from <root>/langtool/scripts/i18n/ folder, in source tree
+This script MUST BE RUN from <root>/lenmus/scripts/i18n/ folder, in source tree
 
 usage: cd scripts/i18n/
 	   ./langpacks 5.2            (to create packages for all languages)
@@ -15,7 +15,7 @@ usage: cd scripts/i18n/
 ## mem-update
 
 Purpose: Update/generate compendium_xx.po file
-This script MUST BE RUN from <root>/langtool/scripts/i18n/ folder, in source tree
+This script MUST BE RUN from <root>/lenmus/scripts/i18n/ folder, in source tree
 usage: ./mem-update <po-file> [<lang>]
    <po-file> = { GeneralExercises | L1_MusicReading | L2_MusicReading 
                  | TheoryHarmony | lenmus }
@@ -29,7 +29,7 @@ usage: ./mem-update <po-file> [<lang>]
 ## po2mo
 
 Purpose: generate new MO files from PO files for books
-This script MUST BE RUN from <root>/langtool/scripts/i18n/ folder, in source tree
+This script MUST BE RUN from <root>/lenmus/scripts/i18n/ folder, in source tree
 
 usage: ./po2mo book [language]
   book = GeneralExercises | L1_MusicReading | L2_MusicReading | TheoryHarmony
@@ -63,7 +63,7 @@ Usage
 ## po-update
 
 Purpose: Generate new POT files and update all PO files for books
-This script MUST BE RUN from <root>/langtool/scripts/i18n/ folder, in source tree
+This script MUST BE RUN from <root>/lenmus/scripts/i18n/ folder, in source tree
 
  usage: ./po-update version book [language]
    book = GeneralExercises | L1_MusicReading | L2_MusicReading | TheoryHarmony
@@ -100,7 +100,7 @@ These scripts are for managing the translation of the User's Guide. The scripts 
 ## z_compendium
 
 Purpose: Update/generate compendium_xx.po file
-This script MUST BE RUN from <root>/langtool/scripts/i18n/ folder, in source tree
+This script MUST BE RUN from <root>/lenmus/scripts/i18n/ folder, in source tree
 
 usage: ./compendium [<po-file>] [<lang>]
    <po-file> = { GeneralExercises | L1_MusicReading | L2_MusicReading 

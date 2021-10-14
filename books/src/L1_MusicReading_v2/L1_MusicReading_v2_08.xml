@@ -1,0 +1,91 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-08">
+<title>La negra y su silencio</title>
+<!-- <tocimage>img101.png</tocimage> -->
+
+<para>
+Sabemos ya que la forma de representar los sonidos en el pentagrama es mediante notas, y que existe una figura distinta para cada nota en función de su duración. En la música escrita el silencio o ausencia de sonido se representa también mediante símbolos llamados 'silencios'.  Existe igualmente un símbolo para cada duración de un silencio. La siguiente imagen muestra los símbolos para la nota negra y el silencio de negra:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (spacer 20)(n a4 q)(r q)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+En esta lección vamos a iniciar la lectura comenzando por ejemplos muy simples, compuestos sólo por notas negras y silencios de negra. Estos ritmos son muy sencillos de leer pues cada nota o silencio corresponde a un pulso del compás. Escucha, por ejemplo, la siguiente melodía:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n g4 q)(n e4 q)(barline)
+            (n a4 q)(n f4 q)(barline)
+            (n b4 q)(n g4 q)(barline)
+            (n c5 q)(r q)(barline)
+            (n c5 q)(n g4 q)(barline)
+            (n c5 q)(r q)(barline end)
+        )))
+    </music>
+</score>
+
+
+<part>
+<title>Exercicios</title>
+<para>
+Ahora es tu turno de comenzar a leer música. Recuerda que es importante que te acostumbres a marcar los pulsos, bien con la mano o con el pie. Puedes utilizar también el metrónomo. Para comenzar, el ámbito de notas va a ser muy reducido (las dos primeras líneas y el primer espacio, notas Mi, Fa y Sol) de forma que no tengas dificultades para ir aprendiéndolas. Progresivamente, en los ejercicios de las lecciones sucesivas, se irá ampliando el ámbito.
+</part>
+
+<para>
+<link linkend="v2-08_E1">Ejercicio 1</link> - Practica la lectura
+con notas y silencios de negra.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-08_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>La negra y su silencio</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-08</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;e4;g4</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(n * q)(r q)</fragment>
+    <fragment>24;(n * q)(r q),(r q)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(r q)(n * q)</fragment>
+</exercise>
+
+</theme>
+
+
+</content>

@@ -70,10 +70,11 @@ because there is nothing between them on the piano keyboard.
                     (text _"Nothing possible here!" (style "Normal text") dx:61.2775 dy:121.1107)
                  )
                  (n f4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
     </music>
 </score>
+<para> </para>
 
 
 
@@ -98,10 +99,11 @@ because there is nothing between them on the piano keyboard.
                     (text _"Nothing possible here!" (style "Normal text") dx:61.2775 dy:121.1107)
                  )
                  (n -b4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
+<para> </para>
 
 
 
@@ -149,7 +151,7 @@ chromatic scale:
                  (n b4 w v1)
                  (n +b4 w v1)
                  (n c5 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -189,7 +191,7 @@ Here is an ascending chromatic scale starting on B flat:
                  (n -a4 w v1)
                  (n =a4 w v1)
                  (n -b4 w v1)
-                 (barline simple noVisible)
+                 (barline end noVisible)
         )))
         </music>
     </score>

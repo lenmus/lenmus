@@ -229,7 +229,7 @@ void ScoreConstrains::load_settings_for_level_1()
         for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
             m_oValidTimeSign.SetValid((ETimeSignature)i, false);
 
-        m_oValidTimeSign.SetValid(k_time_2_4, true);
+        m_oValidTimeSign.SetValid(k_time_4_4, true);
     }
     else
         load_settings_for_customized_level();
@@ -273,7 +273,7 @@ void ScoreConstrains::load_settings_for_level_2()
         for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
             m_oValidTimeSign.SetValid((ETimeSignature)i, false);
 
-        m_oValidTimeSign.SetValid(k_time_2_4, true);
+        m_oValidTimeSign.SetValid(k_time_4_4, true);
     }
     else
         load_settings_for_customized_level();

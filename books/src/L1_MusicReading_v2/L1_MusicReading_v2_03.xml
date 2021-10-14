@@ -1,0 +1,135 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-03">
+<title>Las figuras musicales</title>
+
+<para>
+Sabemos que la posición vertical de una nota en el pentagrama determina su sonido. La duración de la nota, esto es, el tiempo que debe durar el sonido, se indica utilizando símbolos distintos para las diferentes duraciones de las notas. Estos símbolos se llaman 'figuras'.  La siguiente ilustración muestra los distintos tipos de figuras y sus nombres:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (opt StaffLines.Hide yes)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 10)
+         (instrument
+          (musicData (clef G noVisible)(key C)
+            (text "Redonda" dx:0 dy:70)
+            (n a4 w)
+            (spacer 100)
+            (text "Blanca" dx:0 dy:70)
+            (n a4 h)
+            (spacer 100)
+            (text "Negra" dx:0 dy:70)
+            (n a4 q)
+            (spacer 100)
+            (text "Corchea" dx:0 dy:70)
+            (n a4 e)
+            (barline end noVisible)
+         )))
+    </music>
+</score>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (opt StaffLines.Hide yes)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 10)
+         (instrument
+          (musicData (clef G noVisible)(key C)
+            (text "Semicorchea" dx:0 dy:70)
+            (n a4 s)
+            (spacer 120)
+            (text "Fusa" dx:0 dy:70)
+            (n a4 t)
+            (spacer 120)
+            (text "Semifusa" dx:0 dy:70)
+            (n a4 i)
+            (barline end noVisible)
+         )))
+    </music>
+</score>
+
+
+<para>
+En las siguientes lecciones comenzaremos a estudiar la nota negra y su duración y, progresivamente iremos estudiando los otros tipos de figuras. En esta lección vamos a estudiar algunos términos y conceptos básicos relacionados con los símbolos de las notas y las reglas para dibujarlos.
+</para>
+
+<para>
+Los símbolos para las notas se descomponen en tres partes: (1) la cabeza, (2) la plica, y (3) el corchete, como muestra la siguiente ilustración:
+</para>
+
+<para role='center'>
+<imagedata fileref='notesymbol_parts.png' />
+</para>
+
+<para>
+La plica normalmente se dibuja hacia arriba para las notas situadas por debajo de la tercera línea y hacia abajo para las notas en la tercera línea o por encima de ella:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 30)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+            (n e4 q)(n f4 q)(n g4 q)(n a4 q)
+            (n b4 q)(n c5 q)(n d5 q)(n e5 q)(n f5 q)
+            (spacer 20)
+            (barline end noVisible)
+         )))
+    </music>
+</score>
+
+<para>
+Las plicas se dibujan al lado derecho de la cabeza cuando van hacia abajo, y al lado izquierdo cuando van hacia arriba. Los corchetes siempre se dibujan a la derecha de la plica.
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 30)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+            (n e4 e)(n f4 e)(n g4 e)(n a4 e)
+            (n b4 e)(n c5 e)(n d5 e)(n e5 e)(n f5 e)
+            (spacer 20)
+            (barline end noVisible)
+         )))
+    </music>
+</score>
+
+
+<para>
+A menudo, los corchetes de varias notas consecutivas se unen entre sí mediante líneas gruesas llamadas 'barras'. El número de barras debe ser igual al de corchetes que hubiera tenido cada nota de no haberse unido. En el siguiente ejemplo las cuatro notas de la izquierda han sido dibujadas, a la derecha, unidas por barras:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 30)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+            (n e4 e)(n f4 e)(n g4 s)(n a4 s)
+            (spacer 20)
+            (barline double)
+            (spacer 20)
+            (n e4 e g+)(n f4 e)(n g4 s)(n a4 s g-)
+            (spacer 20)
+            (barline end noVisible)
+         )))
+    </music>
+</score>
+
+
+</theme>

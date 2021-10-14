@@ -136,6 +136,7 @@ xgettext -s --from-code=UTF-8 --keyword=_ -o ${POT_PATH}/${BOOK}.pot ${BOOK}.cpp
 if [ -z "$3" ]
 then
     UpdatePO de
+    UpdatePO el
     UpdatePO es
     UpdatePO eu
     UpdatePO fr

@@ -1,0 +1,324 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- =============================================== -->
+
+<content>
+<theme id="th1_chords">
+<title>Basic ideas about chords</title>
+
+<style name="normal-10">
+   <font-name>sans</font-name>
+   <font-size>10pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
+</style>
+
+<style name="bold-10">
+   <font-name>sans</font-name>
+   <font-size>10pt</font-size>
+   <font-style>normal</font-style>
+   <font-weight>bold</font-weight>
+   <color>#000000</color>
+</style>
+
+<para>
+A chord is a set of three or more overlapping notes (sounding at the same time). The chords of three notes are called 'triads', those of four 'tetra chords' ...
+</para>
+
+<para>
+Triad chords are formed by superimposing thirds on a note that we call the 'root' note. The second note forms on it a 3rd and the third note forms a 5th.
+</para>
+
+<!-- score 01: C major triad-->
+<score>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)(key C)
+              (spacer 20)
+              (chord (n g4 w)(n e4 w)(n c4 w))
+              (graphic line -55 28 50 -20)
+              (graphic line -55 38 50 10)
+              (graphic line -55 48 50 40)
+              (text _"fifth" (style "normal-10") dx:60 dy:-15)
+              (text _"third" (style "normal-10") dx:60 dy:15)
+              (text _"root" (style "normal-10") dx:60 dy:45)
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+There are four different types of triad chords: perfect major, perfect minor, augmented fifth and diminished fifth. Next we show you them built on the C note and indicating their composition.
+</para>
+
+<!-- ¿Cómo hacer un cuadro con partituras? -->
+<!-- score 02: C major triad-->
+<!-- score 03: C minor triad-->
+<!-- score 04: C augmented triad-->
+<!-- score 05: C diminished triad-->
+<para> </para><para> </para>   <!-- more space before the score -->
+<score>
+    <control_play></control_play>
+    <metronome>160</metronome>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)(key C)
+
+              (text _"Perfect major" (style "bold-10") dx:8 dy:-90)
+              (text _"3rd major" dx:8 dy:-60)
+              (text "+" dx:48 dy:-40)
+              (text _"3rd minor" dx:8 dy:-20)
+              (spacer 50)
+              (chord (n g4 w)(n e4 w)(n c4 w))
+              (spacer 100)
+              (barline double)
+
+              (spacer 30)
+              (text _"Perfect minor" (style "bold-10") dx:8 dy:-90)
+              (text _"3rd minor" dx:8 dy:-60)
+              (text "+" dx:48 dy:-40)
+              (text _"3rd major" dx:8 dy:-20)
+              (spacer 30)
+              (chord (n g4 w)(n -e4 w)(n c4 w))
+              (spacer 100)
+              (barline double)
+
+              (spacer 30)
+              (text _"Augmented fifth" (style "bold-10") dx:8 dy:-90)
+              (text _"3rd major" dx:8 dy:-60)
+              (text "+" dx:48 dy:-40)
+              (text _"3rd major" dx:8 dy:-20)
+              (spacer 50)
+              (chord (n +g4 w)(n e4 w)(n c4 w))
+              (spacer 100)
+              (barline double)
+
+              (spacer 30)
+              (text _"Diminished fifth" (style "bold-10") dx:8 dy:-90)
+              (text _"3rd minor" dx:8 dy:-60)
+              (text "+" dx:48 dy:-40)
+              (text _"3rd minor" dx:8 dy:-20)
+              (spacer 50)
+              (chord (n -g4 w)(n -e4 w)(n c4 w))
+              (spacer 100)
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+Obviously, any chord can be built on any of the 12 notes of the chromatic scale and, depending on the tonality in which we are, the chord will have the range that expresses its root note: 1st degree (I - tonic); 4th degree (IV - subdominant); 5th degree (V - dominant), etc.
+</para>
+
+
+<!-- score 06: C major, F Major and G major chords (I, IV and V) -->
+<score>
+    <control_play></control_play>
+    <metronome>160</metronome>
+    <music>
+        (score (vers 1.5)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)(key C)
+              (text "I" dx:8 dy:80)
+              (chord (n g4 w)(n e4 w)(n c4 w))
+              (barline)
+              (text "IV" dx:6 dy:80)
+              (chord (n c5 w)(n a4 w)(n f4 w))
+              (barline)
+              (text "V" dx:8 dy:80)
+              (chord (n d5 w)(n b4 w)(n g4 w))
+              (barline end)
+            )
+          )
+        )
+    </music>
+</score>
+
+<!-- score 07: D major, G Major and A major chords (I, IV and V) -->
+<score>
+    <control_play></control_play>
+    <metronome>160</metronome>
+    <music>
+        (score (vers 1.5)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)(key D)
+              (text "I" dx:8 dy:70)
+              (chord (n d4 w)(n f4 w)(n a4 w))
+              (barline)
+              (text "IV" dx:6 dy:70)
+              (chord (n d5 w)(n b4 w)(n g4 w))
+              (barline)
+              (text "V" dx:8 dy:70)
+              (chord (n a4 w)(n c5 w)(n e5 w))
+              (barline end)
+            )
+          )
+        )
+    </music>
+</score>
+
+<!-- score 08: F major, B flat Major and C major chords (I, IV and V) -->
+<score>
+    <control_play></control_play>
+    <metronome>160</metronome>
+    <music>
+        (score (vers 1.5)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)(key F)
+              (text "I" dx:8 dy:70)
+              (chord (n f4 w)(n a4 w)(n c5 w))
+              (barline)
+              (text "IV" dx:6 dy:70)
+              (chord (n b4 w)(n d5 w)(n f5 w))
+              (barline)
+              (text "V" dx:8 dy:70)
+              (chord (n c5 w)(n e5 w)(n g5 w))
+              (barline end)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+Tetra chords are also formed by overlapping thirds, and the fouth note forms a 7th that is dissonant with the root. They are known as 'seventh chords' (which can be major, minor, etc.). The dissonace introduces dynamism and tension in the harmony that tends to resolve over the tonic chord or another chord that does not contain dissonance.
+</para>
+
+<para>
+Compare and notice the dissonance between E4 and D5 introduced by the 7th:
+</para>
+
+<!-- score 09: Emin7 chord (I, IV, V and VII) -->
+<score>
+    <control_play></control_play>
+    <metronome>160</metronome>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)(key C)
+              (chord (n e4 w)(n g4 w)(n b4 w))
+              (chord (n e4 w)(n g4 w)(n b4 w)(n d5 w))
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+The most 'powerful' tetra chord is the one whose root note is the V degree. It is known as 'dominant 7th' chord, and it contains a minor seventh.
+</para>
+
+<!-- score 10 -->
+<!-- score 11 -->
+<!-- score 12 -->
+<score>
+    <control_play></control_play>
+    <metronome>160</metronome>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (staves 1)
+            (musicData
+              (clef G)
+
+              (key D)
+              (spacer 40)
+              (text "V" dx:12 dy:70)
+              (chord (n a4 w)(n c5 w)(n e5 w)(n -g5 w))
+              (barline double)
+
+              (key E-)
+              (spacer 30)
+              (text "V" dx:2 dy:90)
+              (chord (n b3 w)(n d4 w)(n f4 w)(n a4 w))
+              (barline double)
+
+              (key F)
+              (spacer 30)
+              (text "V" dx:2 dy:80)
+              (chord (n c4 w)(n e4 w)(n g4 w)(n b4 w))
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="th1_chords_E1">Music reading</link> - Identify the chord type.</para>
+
+<para>
+<link linkend="th1_chords_E2">Aural training</link> - Listen a chord and identify its type.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="th1_chords_E1" toc="no">
+<titleabbrev>Chords. Music reading</titleabbrev>
+<para>Exercise: Identify the chord type</para>
+
+<exercise type="IdfyChord" height="35">
+    <control_go_back>th1_chords</control_go_back>
+    <mode>theory</mode>
+    <keys>C,a,F,b-,G,e</key>
+    <chords>mT,MT,aT,dT</chords>
+    <show_key>1</show_key>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 2  -->
+<!-- ====================== -->
+
+<theme id="th1_chords_E2" toc="no">
+<titleabbrev>Chords. Aural training</titleabbrev>
+<title>Chords' identification</title>
+
+<para>Exercise: Listen a chord and identify its type</para>
+
+<exercise type="IdfyChord" height="35">
+    <control_go_back>th1_chords</control_go_back>
+    <mode>earTraining</mode>
+    <keys>C,a,F,b-,G,e</key>
+    <chords>mT,MT,aT,dT</chords>
+    <show_key>1</show_key>
+</exercise>
+
+</theme>
+
+</content>
+

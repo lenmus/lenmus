@@ -107,6 +107,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm23</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;a3;c6</clef>
     <clef>F4;a2;e4</clef>
     <key>C</key>

@@ -84,6 +84,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm15</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24</time>
@@ -110,6 +111,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm15</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;c4;c6</clef>
     <key>C</key>
     <key>a</key>
@@ -126,11 +128,11 @@ this rhythm.</para>
     <fragment>34;(n * e)(r e)(n * e)(r e)(n * q l)|(n * e g+)(n * e g-)(n * q)(r e)(n * e),(n * q)(n * e g+)(n * e g-)(r e)(n * e),(n * e)(n * q)(n * q)(n * e),(n * q)(r h)</fragment>
     <fragment>34;(n * e)(n * q)(n * q)(n * e),(n * q l)(n * e)(r e)(r e)(n * e),(n * h.)</fragment>
     <fragment>34;(n * e g+)(n * e g-)(r e)(n * e)(n * e g+)(n * e g- l)|(n * e g+)(n * e g-)(n * q)(r e)(n * e),(n * h)(r q)</fragment>
-    <fragment>44;(n * e g+)(n * e)(n * e)(n * e g-)(n * q l)(n * e g+)(n * e g-),(n * q)(n * e g+)(n * e g-)(n * q)(r e) c</fragment>
+    <fragment>44;(n * e g+)(n * e)(n * e)(n * e g-)(n * q l)(n * e g+)(n * e g-),(n * q)(n * e g+)(n * e g-)(n * q)(r e)</fragment>
     <fragment>44;(n * q)(n * e g+)(n * e g-)(n * e g+)(n * e g- l)(n * e g+)(n * e g-),(n * q)(n * e g+)(n * e g-)(n * h)</fragment>
     <fragment>44;(r e)(n * e)(n * q l)(n * q)(n * e g+)(n * e g-),(n * e g+)(n * e g- l)(n * q)(r e)(n * q l)|(n * q)(n * e g+)(n * e g-)(n * h)</fragment>
     <fragment>44;(r e)(n * e)(n * e g+)(n * e g- l)(n * e g+)(n * e g- l)(n * e g+)(n * e g-),(n * q.)(n * e)(n * h)</fragment>
-    <fragment>44;(n * q.)(n * e) c (n * q)(n * e),(n * q)(n * q l)(n * q)(n * e g+)(n * e g-)</fragment>
+    <fragment>44;(n * q.)(n * e) (n * q)(n * e),(n * q)(n * q l)(n * q)(n * e g+)(n * e g-)</fragment>
     <fragment>24;(n * q)(n * e g+)(n * e g-),(n * q)(r e)(n * e),(n * q)(r e)(n * e),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(r q)</fragment>
     <fragment>24;(n * e g+)(n * e)(n * e)(n * e g- l)|(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(r q)</fragment>
     <fragment>24;(r e)(n * e)(n * e g+)(n * e g-),(n * q)(r e)(n * e),(n * q)(n * q)</fragment>

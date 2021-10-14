@@ -18,7 +18,7 @@ following symbol:
          (instrument
           (musicData (clef F)(key C)
             (time 2 4 noVisible)
-            (barline double noVisible)
+            (barline end noVisible)
         )))
     </music>
 </score>
@@ -36,7 +36,7 @@ The bass clef assigns the F note to the 4th line, as shown in following picture:
             (time 2 4 noVisible)
             (text _''F note'' dx:0 dy:-10)
             (n f3 w)
-            (barline double noVisible)
+            (barline end noVisible)
         )))
     </music>
 </score>
@@ -71,7 +71,7 @@ to consecutive notes, as shown in the next score:
             (n g3 q)
             (text _''A'' dx:0 dy:-10)
             (n a3 q)
-            (barline double noVisible)
+            (barline end noVisible)
         )))
     </music>
 </score>
@@ -85,16 +85,16 @@ represented in G clef on the first lower leger line:
     <music>
         (score (vers 1.5)
          (instrument
-          (musicData (clef G)(key C)
+          (musicData (clef F)(key C)
             (time 2 4 noVisible)
+            (text _''C note'' dx:0 dy:-20)
+            (n c4 w)
+            (barline double)
+            (clef G)
+            (spacer 20)
             (text _''C note'' dx:0 dy:-10)
             (n c4 w)
-            (barline double)
-            (clef F)
-            (spacer 20)
-            (text _''C note'' dx:0 dy:-25)
-            (n c4 w)
-            (barline double)
+            (barline end noVisible)
         )))
     </music>
 </score>
@@ -127,63 +127,63 @@ shown in the following score:
          (key C)
          (time 4 4 noVisible)
          (spacer 0
-            (text _''C'' (style ''Style0'') dy:180.0)
+            (text _''C'' (style ''Style0'') dy:90)
          )
          (n c2 w v1 p2)
          (spacer 0
-            (text _''D'' (style ''Style0'') dy:180.0)
+            (text _''D'' (style ''Style0'') dy:90)
          )
          (n d2 w v1 p2)
          (spacer 0
-            (text _''E'' (style ''Style0'') dy:180.0)
+            (text _''E'' (style ''Style0'') dy:90)
          )
          (n e2 w v1 p2)
          (spacer 0
-            (text _''F'' (style ''Style0'') dy:180.0)
+            (text _''F'' (style ''Style0'') dy:90)
          )
          (n f2 w v1 p2)
          (spacer 0
-            (text _''G'' (style ''Style0'') dy:180.0)
+            (text _''G'' (style ''Style0'') dy:90)
          )
          (n g2 w v1 p2)
          (spacer 0
-            (text _''A'' (style ''Style0'') dy:180.0)
+            (text _''A'' (style ''Style0'') dy:90)
          )
          (n a2 w v1 p2)
          (spacer 0
-            (text _''B'' (style ''Style0'') dy:180.0)
+            (text _''B'' (style ''Style0'') dy:90)
          )
          (n b2 w v1 p2)
          (spacer 0
-            (text _''C'' (style ''Style0'') dy:150.0)
+            (text _''C'' (style ''Style0'') dy:70)
          )
          (n c3 w v1 p2)
          (spacer 0
-            (text _''D'' (style ''Style0'') dy:150.0)
+            (text _''D'' (style ''Style0'') dy:70)
          )
          (n d3 w v1 p2)
          (spacer 0
-            (text _''E'' (style ''Style0'') dy:150.0)
+            (text _''E'' (style ''Style0'') dy:70)
          )
          (n e3 w v1 p2)
          (spacer 0
-            (text _''F'' (style ''Style0'') dy:150.0)
+            (text _''F'' (style ''Style0'') dy:70)
          )
          (n f3 w v1 p2)
          (spacer 0
-            (text _''G'' (style ''Style0'') dy:150.0)
+            (text _''G'' (style ''Style0'') dy:70)
          )
          (n g3 w v1 p2)
          (spacer 0
-            (text _''A'' (style ''Style0'') dy:150.0)
+            (text _''A'' (style ''Style0'') dy:70)
          )
          (n a3 w v1 p2)
          (spacer 0
-            (text _''B'' (style ''Style0'') dy:150.0)
+            (text _''B'' (style ''Style0'') dy:70)
          )
          (n b3 w v1 p2)
          (spacer 0
-            (text _''C'' (style ''Style0'') dy:-10.0)
+            (text _''C'' (style ''Style0'') dy:-20.0)
          )
          (n c4 w v1 p2)
          (spacer 0

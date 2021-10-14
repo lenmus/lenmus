@@ -1,0 +1,47 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-05">
+<title>El compás como medida</title>
+
+<para>
+La mayoría de las piezas musicales tienen un ritmo que puede fácilmente percibirse. Es fácil identificar los 'pulsos' de la música: es lo que hacemos cuando damos palmas al ritmo de la música o cuando damos golpecitos con el pie. Estos pulsos son muy importantes y constituyen la base para organizar la música escrita.
+</para>
+
+<para>
+En la lección anterior hemos visto que la música se organiza dividiéndola en partes llamadas 'compases'. Aunque hay excepciones, en general todos los compases de una partitura tienen el mismo número de pulsos. Por ello, podemos decir que la música escrita se organiza agrupando pulsos en pequeños grupos, a los que llamamos 'compases'.
+</para>
+
+<para>
+Para saber cuántos pulsos tiene cada compás se coloca un 'símbolo de métrica' al comienzo de cada pentagrama, después de la clave. Este símbolo se representa mediante dos números que aparecen al principio, colocados uno encima de la tercera línea y el otro debajo. A este símbolo también se le denomina "compás".
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (text "Compás de 2/4" dx:0 dy:80)
+            (spacer 280)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+
+<para>
+El número de arriba indica cuántos pulsos tiene cada compás, y el número de abajo indica qué figura es la que ocupa cada pulso; por ahora basta con que conozcas que el número 4 significa 'negra'. Así pues, la métrica de 2/4 del ejemplo anterior está indicando que cada compás va a tener dos pulsos y que cada uno de ellos va a estar ocupado por una negra.
+</para>
+
+<para>
+La métrica es una forma de poder representar y entender el ritmo. Pero recuerda siempre que el ritmo es algo natural que existe por sí sólo.
+</para>
+
+
+<para>
+No todos los pulsos de un compás son igual de fuertes: hay pulsos fuertes (más sonoros) y pulsos débiles. El primer pulso de cada compás es normalmente el más fuerte y los restantes son siempre más débiles. La alternancia de pulsos fuertes y débiles es lo que crea distintos patrones rítmicos. Es importante que aprendas a distinguir la métrica de una melodía cuando escuches música. Requiere práctica y asiduidad, pero es de mucha utilidad para cualquiera que estudie música.
+</para>
+
+</theme>

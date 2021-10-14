@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-23 15:09+0200\n"
-"PO-Revision-Date: 2021-06-23 15:14+0200\n"
+"POT-Creation-Date: 2021-10-13 15:36+0200\n"
+"PO-Revision-Date: 2021-10-13 15:37+0200\n"
 "Last-Translator: Elif Öztürk <elif_ozturk23@hotmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: tr\n"
@@ -552,8 +552,8 @@ msgid "Start/resume play back. From selection of full score"
 msgstr "Notaya geçirmeyi tekrarla başlat/yeniden başlat"
 
 #: src/app/lenmus_main_frame.cpp:672 src/dialogs/lenmus_dlg_metronome.cpp:430
-#: src/exercises/constrains/lenmus_constrains.cpp:373
-#: src/exercises/constrains/lenmus_constrains.cpp:375
+#: src/exercises/constrains/lenmus_constrains.cpp:413
+#: src/exercises/constrains/lenmus_constrains.cpp:415
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 msgid "Stop"
@@ -651,35 +651,35 @@ msgstr ""
 msgid "Choose the file to open"
 msgstr "Kullanmak için dil seç:"
 
-#: src/app/lenmus_main_frame.cpp:896
+#: src/app/lenmus_main_frame.cpp:897
 #, fuzzy
 msgid "Errors in file "
 msgstr "XML dosyasındaki hataları takip et"
 
-#: src/app/lenmus_main_frame.cpp:1152
+#: src/app/lenmus_main_frame.cpp:1161
 #, fuzzy
 msgid "Start page"
 msgstr "Ölçü çizgisi"
 
-#: src/app/lenmus_main_frame.cpp:1165
+#: src/app/lenmus_main_frame.cpp:1174
 #, c-format
 msgid "File '%s' not found."
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:1166
+#: src/app/lenmus_main_frame.cpp:1175
 msgid "Error message"
 msgstr "Hata mesajı"
 
-#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
-#: src/app/lenmus_welcome_window.cpp:407
+#: src/app/lenmus_main_frame.cpp:1201 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:408
 msgid "Sorry: File not found!"
 msgstr ""
 
-#: src/app/lenmus_main_frame.cpp:1710
+#: src/app/lenmus_main_frame.cpp:1719
 msgid "Zooming? (10 to 800)"
 msgstr "Zoom yapılsınmı? (10 to 800)"
 
-#: src/app/lenmus_main_frame.cpp:1742
+#: src/app/lenmus_main_frame.cpp:1751
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -687,12 +687,12 @@ msgstr ""
 "Baskıda problem var.\n"
 "Belki güncel yazıcınız, doğru olarak  kurulmaz?"
 
-#: src/app/lenmus_main_frame.cpp:1742 src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1751 src/app/lenmus_main_frame.cpp:1753
 #, fuzzy
 msgid "Printing"
 msgstr "Yazdır"
 
-#: src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1753
 msgid "Printing cancelled"
 msgstr "Baımı iptal et"
 
@@ -700,37 +700,37 @@ msgstr "Baımı iptal et"
 msgid "Free software under GNU General Public License, version 3 or later."
 msgstr ""
 
-#: src/app/lenmus_welcome_window.cpp:105
+#: src/app/lenmus_welcome_window.cpp:106
 msgid "Welcome to LenMus"
 msgstr "Lenmus'a Hoşgeldiniz"
 
-#: src/app/lenmus_welcome_window.cpp:112
+#: src/app/lenmus_welcome_window.cpp:113
 #, c-format
 msgid "Version %s"
 msgstr "Sürüm% s"
 
-#: src/app/lenmus_welcome_window.cpp:150
+#: src/app/lenmus_welcome_window.cpp:151
 msgid "Get started"
 msgstr "Başlamak"
 
-#: src/app/lenmus_welcome_window.cpp:156
+#: src/app/lenmus_welcome_window.cpp:157
 msgid "Read about how to get the most out of LenMus."
 msgstr "LenMus'tan en iyi şekilde nasıl yararlanabileceğinizi okuyun."
 
-#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
-#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
-#: src/app/lenmus_welcome_window.cpp:264
+#: src/app/lenmus_welcome_window.cpp:163 src/app/lenmus_welcome_window.cpp:197
+#: src/app/lenmus_welcome_window.cpp:245 src/app/lenmus_welcome_window.cpp:255
+#: src/app/lenmus_welcome_window.cpp:265
 #: src/dialogs/lenmus_dlg_metronome.cpp:339
 #: src/dialogs/lenmus_dlg_metronome.cpp:425
 #, fuzzy
 msgid "Start"
 msgstr "Ölçü çizgisi"
 
-#: src/app/lenmus_welcome_window.cpp:184
+#: src/app/lenmus_welcome_window.cpp:185
 msgid "Train with LenMus"
 msgstr "LenMus ile tren"
 
-#: src/app/lenmus_welcome_window.cpp:190
+#: src/app/lenmus_welcome_window.cpp:191
 msgid ""
 "Develop your musical skills with progressive exercises that will help you "
 "assimilate the different contents. Set your own learning pace."
@@ -738,11 +738,11 @@ msgstr ""
 "Farklı içerikleri özümsemenize yardımcı olacak aşamalı alıştırmalarla müzik "
 "becerilerinizi geliştirin. Kendi öğrenme hızınızı belirleyin."
 
-#: src/app/lenmus_welcome_window.cpp:220
+#: src/app/lenmus_welcome_window.cpp:221
 msgid "Study and practice"
 msgstr "Çalışma ve uygulama"
 
-#: src/app/lenmus_welcome_window.cpp:226
+#: src/app/lenmus_welcome_window.cpp:227
 msgid ""
 "Study with the interactive LenMus music theory books. Start with the first "
 "of these two:"
@@ -750,19 +750,19 @@ msgstr ""
 "Etkileşimli LenMus müzik teorisi kitaplarıyla çalışın. Bu ikisinden ilkiyle "
 "başlayın:"
 
-#: src/app/lenmus_welcome_window.cpp:238
+#: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"
 msgstr "Müzik Okuma I"
 
-#: src/app/lenmus_welcome_window.cpp:248
+#: src/app/lenmus_welcome_window.cpp:249
 msgid "Music Reading II"
 msgstr "Müzik Okuma II"
 
-#: src/app/lenmus_welcome_window.cpp:258
+#: src/app/lenmus_welcome_window.cpp:259
 msgid "Theory and Harmony"
 msgstr "Teori ve Uyum"
 
-#: src/app/lenmus_welcome_window.cpp:293
+#: src/app/lenmus_welcome_window.cpp:294
 msgid "Acknowledgments:"
 msgstr "Teşekkür:"
 
@@ -1401,6 +1401,28 @@ msgstr "Kullanmak için dil seç:"
 msgid "OK"
 msgstr "Tamam"
 
+#: src/dialogs/lenmus_dlg_levels.cpp:57
+#, fuzzy
+#| msgid "Close all"
+msgid "Choose level"
+msgstr "Hepsini kapat"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:93
+msgid "Difficulty level:"
+msgstr "Zorluk seviyesi:"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:97
+msgid "Level 1"
+msgstr "Seviye 1"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:100
+msgid "Level 2"
+msgstr "Seviye 2"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:103
+msgid "Customized"
+msgstr "Özelleştirilmiş seviye"
+
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 #, fuzzy
 msgid "Metronome settings"
@@ -1548,7 +1570,7 @@ msgstr ""
 msgid "Quiz"
 msgstr ""
 
-#: src/exercises/constrains/lenmus_constrains.cpp:372
+#: src/exercises/constrains/lenmus_constrains.cpp:412
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1044
@@ -1561,17 +1583,17 @@ msgstr ""
 msgid "Play"
 msgstr "Oyna"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:374
+#: src/exercises/constrains/lenmus_constrains.cpp:414
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 msgid "Read"
 msgstr "Oku"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:376
+#: src/exercises/constrains/lenmus_constrains.cpp:416
 #, c-format
 msgid "Measure %d"
 msgstr "Ölçüm %d"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:377
+#: src/exercises/constrains/lenmus_constrains.cpp:417
 #, c-format
 msgid "Stop %d"
 msgstr "Dur %d"
@@ -2628,7 +2650,7 @@ msgid "The following notes:"
 msgstr ""
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
-msgid "B b / C"
+msgid "B # / C"
 msgstr ""
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:205
