@@ -863,9 +863,10 @@ void MainFrame::open_file()
 void MainFrame::on_open_book(wxCommandEvent& event)
 {
     wxString sFullpath = event.GetString();
+    set_exercises_level( event.GetInt() );
     string filename( to_std_string(sFullpath) );
     load_file(filename);
-    m_fileHistory.AddFileToHistory(sFullpath);
+    //m_fileHistory.AddFileToHistory(sFullpath);
 }
 
 //---------------------------------------------------------------------------------------
@@ -899,6 +900,14 @@ void MainFrame::load_file(const string& filename)
         dlg.ShowModal();
     }
     reporter.str(std::string());      //remove any previous content
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::set_exercises_level(int level)
+{
+    if (level == 0)
+        return;
+    m_appScope.set_exercises_level(level);
 }
 
 //---------------------------------------------------------------------------------------

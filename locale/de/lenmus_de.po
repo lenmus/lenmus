@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-22 17:34+0200\n"
-"PO-Revision-Date: 2021-06-22 17:34+0200\n"
+"POT-Creation-Date: 2021-10-13 14:14+0200\n"
+"PO-Revision-Date: 2021-10-13 14:16+0200\n"
 "Last-Translator: German <kde-i18n-doc@kde.org>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: de\n"
@@ -543,8 +543,8 @@ msgid "Start/resume play back. From selection of full score"
 msgstr "Starten/Fortsetzen der Wiedergabe der Auswahl"
 
 #: src/app/lenmus_main_frame.cpp:672 src/dialogs/lenmus_dlg_metronome.cpp:430
-#: src/exercises/constrains/lenmus_constrains.cpp:373
-#: src/exercises/constrains/lenmus_constrains.cpp:375
+#: src/exercises/constrains/lenmus_constrains.cpp:413
+#: src/exercises/constrains/lenmus_constrains.cpp:415
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 msgid "Stop"
@@ -640,33 +640,33 @@ msgstr "MNX Dateien"
 msgid "Choose the file to open"
 msgstr "Wählen Sie die zu importierende Datei"
 
-#: src/app/lenmus_main_frame.cpp:896
+#: src/app/lenmus_main_frame.cpp:897
 msgid "Errors in file "
 msgstr "Fehler in der Datei "
 
-#: src/app/lenmus_main_frame.cpp:1152
+#: src/app/lenmus_main_frame.cpp:1161
 msgid "Start page"
 msgstr "Startseite"
 
-#: src/app/lenmus_main_frame.cpp:1165
+#: src/app/lenmus_main_frame.cpp:1174
 #, c-format
 msgid "File '%s' not found."
 msgstr "Datei '%s' konnte nicht gefunden werden."
 
-#: src/app/lenmus_main_frame.cpp:1166
+#: src/app/lenmus_main_frame.cpp:1175
 msgid "Error message"
 msgstr "Fehlermeldung"
 
-#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
-#: src/app/lenmus_welcome_window.cpp:407
+#: src/app/lenmus_main_frame.cpp:1201 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:408
 msgid "Sorry: File not found!"
 msgstr "Entschuldigung: Datei konnte nicht gefunden werden!"
 
-#: src/app/lenmus_main_frame.cpp:1710
+#: src/app/lenmus_main_frame.cpp:1719
 msgid "Zooming? (10 to 800)"
 msgstr "Zoom-Faktor (10 bis 800)"
 
-#: src/app/lenmus_main_frame.cpp:1742
+#: src/app/lenmus_main_frame.cpp:1751
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -674,11 +674,11 @@ msgstr ""
 "Beim Drucken ist ein Fehler aufgetreten.\n"
 " Vielleicht ist der gewählte Drucker fehlerhaft eingestellt?"
 
-#: src/app/lenmus_main_frame.cpp:1742 src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1751 src/app/lenmus_main_frame.cpp:1753
 msgid "Printing"
 msgstr "Drucken"
 
-#: src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1753
 msgid "Printing cancelled"
 msgstr "Druckvorgang abgebrochen"
 
@@ -687,36 +687,36 @@ msgid "Free software under GNU General Public License, version 3 or later."
 msgstr ""
 "Freie Software unter der GNU General Public License Version 3 oder höher."
 
-#: src/app/lenmus_welcome_window.cpp:105
+#: src/app/lenmus_welcome_window.cpp:106
 msgid "Welcome to LenMus"
 msgstr "Willkommen bei LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:112
+#: src/app/lenmus_welcome_window.cpp:113
 #, c-format
 msgid "Version %s"
 msgstr "Version %s"
 
-#: src/app/lenmus_welcome_window.cpp:150
+#: src/app/lenmus_welcome_window.cpp:151
 msgid "Get started"
 msgstr "Loslegen"
 
-#: src/app/lenmus_welcome_window.cpp:156
+#: src/app/lenmus_welcome_window.cpp:157
 msgid "Read about how to get the most out of LenMus."
 msgstr "Lesen Sie, wie Sie LenMus optimal nutzen."
 
-#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
-#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
-#: src/app/lenmus_welcome_window.cpp:264
+#: src/app/lenmus_welcome_window.cpp:163 src/app/lenmus_welcome_window.cpp:197
+#: src/app/lenmus_welcome_window.cpp:245 src/app/lenmus_welcome_window.cpp:255
+#: src/app/lenmus_welcome_window.cpp:265
 #: src/dialogs/lenmus_dlg_metronome.cpp:339
 #: src/dialogs/lenmus_dlg_metronome.cpp:425
 msgid "Start"
 msgstr "Anfang"
 
-#: src/app/lenmus_welcome_window.cpp:184
+#: src/app/lenmus_welcome_window.cpp:185
 msgid "Train with LenMus"
 msgstr "Trainiere mit LenMus"
 
-#: src/app/lenmus_welcome_window.cpp:190
+#: src/app/lenmus_welcome_window.cpp:191
 msgid ""
 "Develop your musical skills with progressive exercises that will help you "
 "assimilate the different contents. Set your own learning pace."
@@ -725,11 +725,11 @@ msgstr ""
 "Ihnen helfen, die verschiedenen Inhalte zu verarbeiten. Legen Sie Ihr "
 "eigenes Lerntempo fest."
 
-#: src/app/lenmus_welcome_window.cpp:220
+#: src/app/lenmus_welcome_window.cpp:221
 msgid "Study and practice"
 msgstr "Studieren und üben"
 
-#: src/app/lenmus_welcome_window.cpp:226
+#: src/app/lenmus_welcome_window.cpp:227
 msgid ""
 "Study with the interactive LenMus music theory books. Start with the first "
 "of these two:"
@@ -737,19 +737,19 @@ msgstr ""
 "Lernen Sie mit den interaktiven LenMus-Musiktheoriebüchern. Beginnen Sie mit "
 "dem ersten dieser beiden:"
 
-#: src/app/lenmus_welcome_window.cpp:238
+#: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"
 msgstr "Musiklesen I"
 
-#: src/app/lenmus_welcome_window.cpp:248
+#: src/app/lenmus_welcome_window.cpp:249
 msgid "Music Reading II"
 msgstr "Musiklesen II"
 
-#: src/app/lenmus_welcome_window.cpp:258
+#: src/app/lenmus_welcome_window.cpp:259
 msgid "Theory and Harmony"
 msgstr "Theorie und Harmonie"
 
-#: src/app/lenmus_welcome_window.cpp:293
+#: src/app/lenmus_welcome_window.cpp:294
 msgid "Acknowledgments:"
 msgstr "Danksagungen:"
 
@@ -1370,6 +1370,26 @@ msgstr "Wählen Sie eine Sprache:"
 msgid "OK"
 msgstr "OK"
 
+#: src/dialogs/lenmus_dlg_levels.cpp:57
+msgid "Choose level"
+msgstr "Kies niveau"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:93
+msgid "Difficulty level:"
+msgstr "Moeilijkheidsgraad:"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:97
+msgid "Level 1"
+msgstr "Niveau 1"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:100
+msgid "Level 2"
+msgstr "Niveau 2"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:103
+msgid "Customized"
+msgstr "Op maat gemaakt"
+
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 msgid "Metronome settings"
 msgstr "Metronomeinstellungen"
@@ -1505,7 +1525,7 @@ msgstr "Prüfung"
 msgid "Quiz"
 msgstr "Quiz"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:372
+#: src/exercises/constrains/lenmus_constrains.cpp:412
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1044
@@ -1518,17 +1538,17 @@ msgstr "Quiz"
 msgid "Play"
 msgstr "Wiedergabe"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:374
+#: src/exercises/constrains/lenmus_constrains.cpp:414
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 msgid "Read"
 msgstr "Lesen"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:376
+#: src/exercises/constrains/lenmus_constrains.cpp:416
 #, c-format
 msgid "Measure %d"
 msgstr "Takt %d"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:377
+#: src/exercises/constrains/lenmus_constrains.cpp:417
 #, c-format
 msgid "Stop %d"
 msgstr "Stop %d"
@@ -2570,8 +2590,8 @@ msgid "The following notes:"
 msgstr "Die folgenden Noten:"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
-msgid "B b / C"
-msgstr "B / C"
+msgid "B # / C"
+msgstr "Bis / C"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:205
 msgid "C # / D b"
@@ -2599,7 +2619,7 @@ msgstr "Gis / As"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:246
 msgid "A # / B b"
-msgstr "Ais / B"
+msgstr "Ais / Bes"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:250
 msgid "B / C b"

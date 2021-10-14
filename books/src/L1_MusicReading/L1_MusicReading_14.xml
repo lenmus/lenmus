@@ -92,6 +92,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm14</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>34</time>
@@ -118,6 +119,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm14</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;c4;c6</clef>
     <key>C</key>
     <key>a</key>

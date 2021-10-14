@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -206,12 +206,31 @@ private:
 //---------------------------------------------------------------------------------------
 // The ScoreConstrains object
 //---------------------------------------------------------------------------------------
-
+enum EPickupOptions
+{
+    k_pickup_never = 0,
+    k_pickup_always,
+    k_pickup_random,
+};
 
 #define lmNO_DEFAULTS   false
 
 class ScoreConstrains
 {
+private:
+    ApplicationScope& m_appScope;
+    wxString    m_sSection;         // section name to save the constraints
+    int         m_nMaxInterval;     // max interval in two consecutive notes
+    long        m_nMM;              // metronome setting
+    int         m_pickupType;       // options to generate pickup measures
+    ENoteType   m_pickupMinNote;    // min mote to use in pickup measures
+    bool        m_pickupFraction;   // allow anacrusis to start in fraction
+
+    KeyConstrains         m_oValidKeys;           //allowed key signatures
+    ClefConstrains        m_oClefs;               //allowed clefs and scopes
+    TimeSignConstrains    m_oValidTimeSign;       //allowed time signatures
+    FragmentsTable        m_aFragmentsTable;      //allowed fragments
+
 public:
     ScoreConstrains(ApplicationScope& appScope);
     ~ScoreConstrains() {}
@@ -235,7 +254,18 @@ public:
     void SetMetronomeMM(long nValue) { m_nMM = nValue; }
     long GetMetronomeMM() { return m_nMM; }
 
+    inline void allow_pickup_measure(bool value) { m_pickupType = value; }
+    inline int pickup_measure_allowed() { return m_pickupType; }
+    inline void set_pickup_min_note(ENoteType value) { m_pickupMinNote = value; }
+    inline ENoteType get_pickup_min_note() { return m_pickupMinNote; }
+    inline void allow_pickup_fraction(bool value) { m_pickupFraction = value; }
+    inline bool pickup_fraction_allowed() { return m_pickupFraction; }
+
     void load_settings();
+    void load_settings_for_level_1();
+    void load_settings_for_level_2();
+    void load_settings_for_customized_level();
+
     void save_settings();
     wxString Verify();
 
@@ -252,16 +282,6 @@ public:
     inline void ChooseRandomFragment() { return m_aFragmentsTable.ChooseRandom(); }
     inline SegmentEntry* GetNextSegment() { return m_aFragmentsTable.GetNextSegment(); }
 
-private:
-    ApplicationScope& m_appScope;
-    wxString    m_sSection;         // section name to save the constraints
-    int         m_nMaxInterval;     // max interval in two consecutive notes
-    long        m_nMM;              // metronome setting
-
-    KeyConstrains         m_oValidKeys;           //allowed key signatures
-    ClefConstrains        m_oClefs;               //allowed clefs and scopes
-    TimeSignConstrains    m_oValidTimeSign;       //allowed time signatures
-    FragmentsTable        m_aFragmentsTable;      //allowed fragments
 };
 
 

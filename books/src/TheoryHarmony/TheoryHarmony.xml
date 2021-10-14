@@ -16,7 +16,7 @@
     <!ENTITY ch_intervals_240  SYSTEM "TheoryHarmony_240_chromatic-alterations.xml">
 -->
 
-    <!--<!ENTITY ch_g6t2_triads-chords  SYSTEM "TheoryHarmony_g6t2_triads-chords.xml">-->
+    <!ENTITY ch_chords  SYSTEM "TheoryHarmony_chords.xml">
 
     <!ENTITY ch_cadences  SYSTEM "TheoryHarmony_cadences.xml">
     <!ENTITY ch_terminal  SYSTEM "TheoryHarmony_terminal.xml">
@@ -35,7 +35,7 @@
     A collection of lessons and exercises on music theory.
     </abstract>
     <copyright>
-        <year>2007-2010</year>
+        <year>2007-2021</year>
         <holder>LenMus project</holder>
     </copyright>
     <legalnotice>
@@ -95,6 +95,11 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
 -->
         </itemizedlist> </listitem>
 
+    <listitem>Chords<sbr/>
+        <itemizedlist>
+            <listitem><link linkend="th1_chords">Basic ideas about chords</link></listitem>
+        </itemizedlist> </listitem>
+
     <listitem>Cadences<sbr/>
         <itemizedlist>
             <listitem><link linkend="th1_cadences">Cadences</link></listitem>
@@ -149,11 +154,11 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
 
 </chapter>
 
-<!--<chapter id="ch3">
+<chapter id="ch3">
 <titleabbrev>Chords</titleabbrev>
 <title>Chords</title>
 
-    &ch_g6t2_triads-chords;
+    &ch_chords;
 
 </chapter>-->
 

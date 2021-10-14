@@ -1,0 +1,149 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-11">
+<title>La corchea</title>
+
+<para>
+La siguiente figura que vamos a estudiar es la corchea. Se dibuja como la negra, pero con un corchete. La puedes ver en la siguiente imágen:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 40)
+            (n c5 e)
+            (spacer 40)
+            (n f4 e)
+            (spacer 40)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Muchas veces las notas corcheas van unidas por barras:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+            (n c4 e g+)(n g4 e g-)(n b4 e g+)(n e5 e g-)(barline double)
+            (n c5 e g+)(n e5 e)(n b4 e)(n d4 e g-)(barline double)
+            (n e4 e g+)(n g4 e)(n f4 e)(n a4 e g-)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+El barrado de las notas no se hace a capricho o al azar, sino que se siguen unas pautas que dependen de la métrica.
+</para>
+
+<para>
+Una negra dura lo mismo que dos corcheas y un silencio de negra lo mismo que dos silencios de corchea. Por tanto, en el compás de 2/4, una corchea dura medio pulso o, lo que es lo mismo, hay dos corcheas en un pulso. Por ello, en 2/4 las corcheas de un pulso se dibujan unidas por una barra.
+</para>
+
+<para>
+En esta lección vamos a comenzar el estudio de patrones rítmicos con corcheas. Toca el siguiente ejemplo y escucha los nuevos ritmos que aparecen en cada compás:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n g4 q)(n g4 e g+)(n g4 e g-)(barline)
+            (n g4 e g+)(n g4 e g-)(n g4 q)(barline)
+            (n g4 e g+)(n g4 e)(n g4 e)(n g4 e g-)(barline)
+            (n g4 q)(r q)
+            (barline end)
+        )))
+    </music>
+</score>
+
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-11_E1">Ejercicio 1</link> - Acostumbra el oído y practica los ritmos introducidos en esta lección.</para>
+
+<para>
+<link linkend="v2-11_E2">Ejercicio 2</link> - Practica la lectura musical con los patrones rítmicos estudiados en esta lección.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-11_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>La corchea</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-11</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;c4;c5</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * e g+)(n * e g-)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
+    <fragment>24;(n * e g+)(n * e g-)(n * q)</fragment>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Ejercicio 2  -->
+<!-- ====================== -->
+
+<theme id="v2-11_E2" toc="no">
+<titleabbrev>Tema %d. Ejercicio 2</titleabbrev>
+<title>La corchea</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-11</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;c4;c5</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * e g+)(n * e g-),(n * q)(r q)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * q),(r h)</fragment>
+    <fragment>24;(n * q)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e g-)(n * q),(n * h)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e g-)(n * q),(n * q)(n * q)</fragment>
+    <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q),(n * q l)(n * q)</fragment>
+</exercise>
+
+</theme>
+
+</content>

@@ -75,18 +75,16 @@ public:
     ~TheoMusicReadingCtrolParams();
 
     // Options for Music Reading Ctrol
-    void SetControlPlay(bool fValue, wxString sLabels = "")
-        {
-            fPlayCtrol = fValue;
-            if (sLabels != "")
-                set_labels(sLabels, &sPlayLabel, &sStopPlayLabel);
-        }
-    void SetControlSolfa(bool fValue, wxString sLabels = "")
-        {
-            fSolfaCtrol = fValue;
-            if (sLabels != "")
-                set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
-        }
+    inline void SetControlPlay(bool fValue, wxString sLabels = "") {
+        fPlayCtrol = fValue;
+        if (sLabels != "")
+            set_labels(sLabels, &sPlayLabel, &sStopPlayLabel);
+    }
+    inline void SetControlSolfa(bool fValue, wxString sLabels = "") {
+        fSolfaCtrol = fValue;
+        if (sLabels != "")
+            set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
+    }
 
 
     bool        fPlayCtrol;             //Instert "Play" link
@@ -100,6 +98,8 @@ public:
     bool        fBorder;
 
 
+
+
 protected:
     void do_final_settings();
     void process(ImoParamInfo* pParam) override;
@@ -110,7 +110,6 @@ protected:
     bool AnalyzeFragments(wxString sLine);
 
     void set_labels(wxString& sLabel, wxString* pStart, wxString* pStop);
-
 
     ScoreConstrains* m_pScoreConstrains;
 };
@@ -147,7 +146,7 @@ void TheoMusicReadingCtrolParams::process(ImoParamInfo* pParam)
     /*! @page MusicReadingCtrolParams
         @verbatim
 
-        Params for ScoreCtrol - html object type="Application/LenMusTheoMusicReading"
+        Params for ScoreCtrol - exercise type "TheoMusicReading""
 
 
         optional params to include controls: (not yet implemented marked as [])
@@ -173,40 +172,49 @@ void TheoMusicReadingCtrolParams::process(ImoParamInfo* pParam)
                         Value="MM number". Default: user value in metronome control
 
 
-        params to set up the score composer:
-        ------------------------------------
+        params to set up the score composer (ScoreConstrains)
+        ---------------------------------------------------------
 
-        fragment*   one param for each fragment to use
+        fragment*           One param for each fragment to use
 
-        clef*       one param for each allowed clef. It includes the pitch scope.
+        clef*               One param for each allowed clef. It includes the pitch scope.
 
-        time        a list of allowed time signatures, i.e.: "68,98,128"
+        time                A list of allowed time signatures, i.e.: "68,98,128"
 
-        key         keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+        key                 Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
 
-        max_interval    a number indicating the maximum allowed interval for two consecutive notes
-                        Default: 4
+        max_interval        A number indicating the maximum allowed interval for two consecutive notes
+                            Default: 4
 
-        TODO: update the example
+        pickup_measure      Keyword "always | never | random". By default, pickup measures will be
+                            randomly generated (pickup_measure = random)
+
+        pickup_min_note     Minimum note to use in anacrusis measure. It is the LDP character
+                            for note type "q | e | s". Default value is "e" (eighth note).
+
+        pickup_no_fraction  Do not start anacrusis in beat fraction. By default, pickup
+                            measure is allowed to start in beat fraction
+
+
         Example:
         ------------------------------------
 
-        <object type="Application/LenMusTheoMusicReading" width="100%" height="300" border="0">
-            <param name="control" value="play">
-            <param name="label_play" value="Play|Stop">
-            <param name="control" value="solfa">
-            <param name="mode" value="PersonalSettings">
-            <param name="mode" value="NotesReading">
-            <param name="fragment" value="68,98;(n * n)(n * c +l)(g (n * c)(n * c)(n * c))">
-	        <param name="fragment" value="68,98;(n * c)(n * n +l)(g (n * c)(n * c)(n * c))">
-	        <param name="fragment" value="68,98;(n * n)(n * c)">
-	        <param name="fragment" value="68,98;(g (n * c)(n * c)(n * c))">
-            <param name="clef" value="Sol;a3;a5">
-            <param name="clef" value="Fa4;a2;e4">
-            <param name="time" value="68,98,128">
-            <param name="key" value="all">
-            <param name="max_interval" value="4">
-        </object>
+        <exercise type="TheoMusicReading">
+            <control_go_back>v2-33</control_go_back>
+            <control_play />
+            <control_solfa />
+            <clef>G;a3;c6</clef>
+            <clef>F4;a2;e4</clef>
+            <key>C</key>
+            <key>a</key>
+            <key>G</key>
+            <key>e</key>
+            <time>68,98</time>
+            <fragment>68,98;(n * n)(n * c +l)(g (n * c)(n * c)(n * c))</fragment>
+	        <fragment>68,98;(n * c)(n * n +l)(g (n * c)(n * c)(n * c))</fragment>
+	        <fragment>68,98;(n * n)(n * c)</fragment>
+	        <fragment>68,98;(g (n * c)(n * c)(n * c))</fragment>
+        </exercise>
 
         @endverbatim
 
@@ -221,9 +229,47 @@ void TheoMusicReadingCtrolParams::process(ImoParamInfo* pParam)
 
     // control_solfa
     if (name == "control_solfa")
-    {
         pConstrains->SetControlSolfa(true, to_wx_string(value));
+
+    // "pickup_measure": options for generating pickup measures
+    else if (name == "pickup_measure")
+    {
+        if (value == "always")
+            m_pScoreConstrains->allow_pickup_measure(k_pickup_always);
+        else if (value == "never")
+            m_pScoreConstrains->allow_pickup_measure(k_pickup_never);
+        else if (value == "random")
+            m_pScoreConstrains->allow_pickup_measure(k_pickup_random);
+        else
+            error_invalid_param(name, value, "always | never | random");
     }
+
+    // "pickup_min_note": minimum note to use in anacrusis measure
+    else if (name == "pickup_min_note")
+    {
+        if (value == "q")
+            m_pScoreConstrains->set_pickup_min_note(k_quarter);
+        else if (value == "e")
+            m_pScoreConstrains->set_pickup_min_note(k_eighth);
+        else if (value == "s")
+            m_pScoreConstrains->set_pickup_min_note(k_16th);
+        else
+            error_invalid_param(name, value, "q | e | s");
+    }
+
+    // "pickup_no_fraction": do not start anacrusis in beat fraction
+    else if (name == "pickup_no_fraction")
+    {
+        m_pScoreConstrains->allow_pickup_fraction(false);
+    }
+
+    // control_settings
+    if ( name == "control_settings")
+    {
+        pConstrains->SetSettingsLink(true);
+        pConstrains->set_section(value);
+    }
+
 
     // metronome
     else if (name == "metronome")

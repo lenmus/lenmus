@@ -119,6 +119,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm2</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>G;d4;b4</clef>
     <key>C</key>
     <key>a</key>

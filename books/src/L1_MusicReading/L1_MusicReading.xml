@@ -25,7 +25,7 @@
     <!ENTITY theme16 SYSTEM "L1_MusicReading_6.xml">
     <!ENTITY theme17 SYSTEM "L1_MusicReading_7.xml">
     <!ENTITY theme18 SYSTEM "L1_MusicReading_8.xml">
-    <!-- <!ENTITY theme19 SYSTEM "L1_MusicReading_9.xml">  Anacrusis -->
+    <!ENTITY theme19 SYSTEM "L1_MusicReading_9.xml">
     <!ENTITY theme20 SYSTEM "L1_MusicReading_10.xml">
     <!ENTITY theme21 SYSTEM "L1_MusicReading_11.xml">
     <!ENTITY theme22 SYSTEM "L1_MusicReading_12.xml">
@@ -183,7 +183,7 @@ the newly introduced concepts.</listitem>
 &theme16;
 &theme17;
 &theme18;
-<!-- &theme19; -->
+&theme19;
 &theme20;
 &theme21;
 &theme22;

@@ -198,7 +198,7 @@ void DlgCfgIdfyNotes::create_controls()
 	wxBoxSizer* m_pColumn1Sizer;
 	m_pColumn1Sizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pChkC = LENMUS_NEW wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("B b / C"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkC = LENMUS_NEW wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("B # / C"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
 	m_pColumn1Sizer->Add( m_pChkC, 0, wxALIGN_LEFT|wxALL, 5 );
 

@@ -95,6 +95,7 @@ leger lines above fifth line.
     <control_go_back>mr1_thm3</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>G;c4;g4</clef>
     <key>C</key>
     <key>a</key>
@@ -122,6 +123,7 @@ leger lines above fifth line.
     <control_go_back>mr1_thm3</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>G;d5;a5</clef>
     <key>C</key>
     <key>a</key>

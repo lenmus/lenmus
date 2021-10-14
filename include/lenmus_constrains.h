@@ -76,7 +76,8 @@ extern int get_bottom_number_for(ETimeSignature nTimeSign);
 extern int get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign);
 extern TimeUnits get_ref_note_duration_for(ETimeSignature nTimeSign);
 extern TimeUnits get_measure_duration_for(ETimeSignature nTimeSign);
-
+extern bool is_compound_meter(ETimeSignature nTimeSign);
+extern int get_num_beats(ETimeSignature nTimeSign);
 
 //---------------------------------------------------------------------------------------
 // name of the intervals considered in exercises

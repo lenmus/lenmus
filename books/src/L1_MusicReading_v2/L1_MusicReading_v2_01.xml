@@ -1,0 +1,194 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-01">
+<title>El Pentagrama</title>
+
+<style name="normal-10">
+   <font-name>serif</font-name>
+   <font-size>10pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
+</style>
+<style name="normal-12">
+   <font-name>serif</font-name>
+   <font-size>12pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
+</style>
+
+<part>
+<title>Pentagramas</title>
+
+
+<para>En el sistema occidental de notación musical, la música se escribe en un papel especial, denominado 'papel pautado' (ver imagen):
+</para>
+
+<para role='center'>
+<imagedata fileref='manuscript_paper2.png' />
+</para>
+
+<para>El papel pautado consta de conjuntos de líneas horizontales, denominados 'pentagramas'. Un pentagrama es un grupo de cinco líneas horizontales, paralelas y equidistantes, numeradas de abajo hacia arriba; la línea inferior es la 'primera línea' y la superior es la 'quinta línea':
+</para>
+
+<!-- staff with labelled lines: 1,2,..5 -->
+<score>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (staves 1)
+            (staff 1 (staffType regular)(staffLines 5)(staffSpacing 250.00)
+                     (staffDistance 2000.00)(lineThickness 15.00))
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+              (spacer 230)
+              (graphic line 5 0  80 -20)
+              (graphic line 5 10 80 0)
+              (graphic line 5 20 80 20)
+              (graphic line 5 30 80 40)
+              (graphic line 5 40 80 60)
+              (text "línea 5" (style "normal-10") dx:90 dy:-15)
+              (text "línea 4" (style "normal-10") dx:90 dy:5)
+              (text "línea 3" (style "normal-10") dx:90 dy:25)
+              (text "línea 2" (style "normal-10") dx:90 dy:45)
+              (text "línea 1" (style "normal-10") dx:90 dy:65)
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+Los cuatro espacios entre las cinco líneas del pentagrama son importantes y también se numeran de abajo arriba:</para>
+
+<!-- staff with labelled spaces: 1,2,3,4 -->
+<score>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (staves 1)
+            (staff 1 (staffType regular)(staffLines 5)(staffSpacing 250.00)
+                     (staffDistance 2000.00)(lineThickness 15.00))
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+              (spacer 230)
+              (graphic line 5 5  80 -10)
+              (graphic line 5 15 80 10)
+              (graphic line 5 25 80 30)
+              (graphic line 5 35 80 50)
+              (text "espacio 4" (style "normal-10") dx:90 dy:-5)
+              (text "espacio 3" (style "normal-10") dx:90 dy:15)
+              (text "espacio 2" (style "normal-10") dx:90 dy:35)
+              (text "espacio 1" (style "normal-10") dx:90 dy:55)
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+Los símbolos musicales se escriben sobre el pentagrama y se leen de izquierda a derecha.
+</para>
+
+<para>
+Las notas se colocan sobre las líneas y los espacios, y el tono (agudo o grave) que el símbolo representa viene determinado por la línea o espacio sobre el que se sitúa: cuanto más agudo, más arriba se coloca en el pentagrama. Como ejemplo, pulsa el enlace 'Tocar' y escucha la siguiente escala:
+</para>
+
+<!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
+<score>
+    <control_play />
+    <metronome>320</metronome>
+    <music>
+        (score (vers 1.5)
+          (opt Staff.DrawLeftBarline no)
+          (opt Render.SpacingMethod 1)
+          (opt Render.SpacingValue 15)
+          (instrument
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+            (text "La nota es más aguda cuanto más arriba se coloca" (style "normal-12") dx:0 dy:80)
+            (spacer 25)
+            (n e4 w)(spacer 20)
+            (n f4 w)(spacer 20)
+            (n g4 w)(spacer 20)
+            (n a4 w)(spacer 20)
+            (n b4 w)(spacer 20)
+            (n c5 w)(spacer 20)
+            (n d5 w)(spacer 20)
+            (n e5 w)(spacer 20)
+            (n f5 w)(spacer 50)
+            (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+</part>
+
+
+<part>
+<title>Líneas adicionales</title>
+
+<para>
+Cuando necesitamos escribir sonidos (notas) más agudos o más graves que los que caben dentro del pentagrama, lo ampliamos creando nuevas líneas y espacios mediante “líneas adicionales”.
+</para>
+
+<!-- empty staff with ledger lines -->
+<score>
+    <music>
+        (score (vers 2.1)
+            (opt Render.SpacingMethod 1)
+            (opt Render.SpacingValue 50)
+            (opt Staff.DrawLeftBarline false)
+            (instrument (staves 1)
+                (staff 1 (staffType regular)(staffLines 5)(staffSpacing 200.00)
+                     (staffDistance 2000.00)(lineThickness 15.00))
+                (musicData
+                    (clef G (visible no))
+                    (spacer 40)
+                    (n f3 w (color #ffffff00))
+                    (n a3 w (color #ffffff00))
+                    (n c4 w (color #ffffff00))
+                    (spacer 150)
+                    (n a5 w (color #ffffff00))
+                    (n c6 w (color #ffffff00))
+                    (n e6 w (color #ffffff00))
+                    (barline end noVisible)
+            ))
+        )
+    </music>
+</score>
+
+<para>
+Son unas líneas cortas que se colocan por encima o por debajo del pentagrama para escribir las notas (sonidos) muy agudos o muy graves. Observa y escucha:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (opt Render.SpacingFactor 0.4)
+         (opt Staff.DrawLeftBarline false)
+         (instrument
+          (musicData (clef G noVisible)(key C)
+            (time 2 4 noVisible)
+            (n a3 q)(n b3 q)(barline simple noVisible)
+            (n c4 q)(n d4 q)(barline simple noVisible)
+            (n e4 q)(n f4 q)(barline simple noVisible)
+            (n g4 q)(n a4 q)(barline simple noVisible)
+            (n b4 q)(n c5 q)(barline simple noVisible)
+            (n d5 q)(n e5 q)(barline simple noVisible)
+            (n f5 q)(n g5 q)(barline simple noVisible)
+            (n a5 q)(n b5 q)(barline simple noVisible)
+            (n c6 q)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+</part>
+
+</theme>

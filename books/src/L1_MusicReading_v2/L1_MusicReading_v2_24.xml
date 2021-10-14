@@ -1,0 +1,144 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-24">
+<title>La síncopa (3)</title>
+<!-- <tocimage>img113.png</tocimage> -->
+
+<para>
+En esta lección continuamos con el estudio de las síncopas y vamos a practicar el patrón formado por una corchea seguida de una negra:</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 e g-)
+            (spacer 20)
+            (barline double)
+            (n a4 e)(n a4 q)(n a4 e)
+            (spacer 20)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Observa que la negra comienza en fracción débil (segunda mitad del pulso) y continúa en la primera mitad del siguiente pulso. Este es el fundamento de las síncopas.
+</para>
+
+<part>
+<title>Escucha y percibe las diferencias</title>
+
+<para>Escucha cada compás y observa los ritmos introducidos en esta lección:</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 e g-)
+            (spacer 20)
+            (barline simple)
+            (n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 e g-)
+            (spacer 20)
+            (barline simple)
+            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 e g-)
+            (spacer 20)
+            (barline simple)
+            (n a4 e)(n a4 q)(n a4 e)
+            (spacer 20)
+            (barline end)
+        )))
+    </music>
+</score>
+
+</part>
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-24_E1">Ejercicio 1</link> - Acostumbra el oído y practica los ritmos introducidos en esta lección.</para>
+
+<para>
+<link linkend="v2-24_E2">Ejercicio 2</link> - Practica la lectura musical con los patrones rítmicos estudiados en esta lección.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-24_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>La síncopa (3)</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-24</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_no_fraction />
+    <fragment>24;(n * e g+)(n * e l g-)(n * e g+)(n * e g-),(n * e)(n * q)(n * e)</fragment>
+    <clef>G;a3;a5</clef>
+    <clef>F4;a2;f4</clef>
+    <time>24</time>
+    <key>C</key>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Ejercicio 2  -->
+<!-- ====================== -->
+
+<theme id="v2-24_E2" toc="no">
+<titleabbrev>Tema %d. Ejercicio 2</titleabbrev>
+<title>La síncopa (3)</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-24</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_no_fraction />
+    <clef>G;c4;c6</clef>
+    <key>C</key>
+    <key>a</key>
+    <key>G</key>
+    <key>e</key>
+    <key>F</key>
+    <key>d</key>
+    <key>D</key>
+    <key>B-</key>
+    <key>g</key>
+    <key>b</key>
+    <time>24,34,44</time>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e)(n * q)(n * e)</fragment>
+    <fragment>24;(n * q.)(n * e),(n * e)(r e)(n * e)(r e),(n * e)(n * q)(n * e),(n * h)</fragment>
+    <fragment>24;(n * q l)(n * e g+)(n * e g-),(n * e)(r e)(n * e g+)(n * e l g-),(n * e g+)(n * e g-)(n * q),(n * h)</fragment>
+    <fragment>24;(n * e g+)(n * e)(n * e)(n * e g- l),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)</fragment>
+    <fragment>34;(n * q),(n * e)(n * q)(n * e)(n * e g+)(n * e g-),(n * q.)(n * e)(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>34;(n * q),(n * e g+)(n * e l g-)(n * e g+)(n * e g-)(n * e g+)(n * e g-),(n * e)(n * q)(n * e)(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>34;(n * e g+)(n * e l g-)(n * e g+)(n * e g-)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e)(n * q)</fragment>
+    <fragment>34;(n * e g+)(n * e)(n * e)(n * e)(n * e)(n * e g-),(n * q.)(n * e)(n * e g+)(n * e g- l),(n * e g+)(n * e g-)(n * q)</fragment>
+    <fragment>44;(n * q.)(n * e)(n * e)(r e)(n * e)(r e),(n * e)(n * q)(n * e)(n * h)</fragment>
+    <fragment>44;(n * q l)(n * e g+)(n * e g-)(n * e)(r e)(n * e g+)(n * e l g-),(n * e g+)(n * e g-)(n * q)</fragment>
+    <fragment>44;(n * e g+)(n * e)(n * e)(n * e g- l)(n * e g+)(n * e)(n * e)(n * e g-),(n * q)</fragment>
+</exercise>
+
+</theme>
+
+</content>

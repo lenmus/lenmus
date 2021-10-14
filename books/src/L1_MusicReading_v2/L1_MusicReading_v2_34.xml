@@ -1,0 +1,197 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-anx">
+<title>La anacrusa</title>
+
+<para>
+En esta lección vamos a seguir avanzando en el estudio de las partes fuertes y débiles (partes acentuadas y no acentuadas) del compás.
+</para>
+
+<para>
+En todos los ejemplos y ejercicios vistos hasta ahora las piezas comenzaban en la parte primera el compás, que siempre es acentuada. Pero no siempre tiene que ser así. 
+Una pieza musical (o una frase musical) puede comenzar en parte fuerte del compás o en parte débil. En función de esto, el comienzo de una pieza (o de una frase) puede ser: <emphasis>tético</emphasis>, <emphasis>acéfalo</emphasis> y en <emphasis>anacrusa (anacrúsico)</emphasis>.
+</para>
+
+<para>
+Es <emphasis>tético</emphasis> cuando comienza en la parte primera el compás (que siempre es acentuada). Por ejemplo:
+</para>
+
+<!-- score 01 -->
+<score>
+    <music>
+        (score (vers 1.6)
+         (instrument
+          (musicData (clef G)(key C)(time 2 4)
+            (n g4 q)(n e4 e g+)(n f4 e g-)
+            (barline)
+            (n g4 q)(n c5 q)
+            (barline)
+            (n b4 q)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+Es <emphasis>acéfalo</emphasis> cuando comienza después de una parte fuerte del compás (ocupando la parte entera). Por ejemplo:
+</para>
+
+<!-- score 02 -->
+<score>
+    <music>
+        (score (vers 1.6)
+         (instrument
+          (musicData (clef G)(key C)(time 3 4)
+            (n a4 q)(n b4 q)
+            (barline)
+            (n c5 h)(n b4 q)
+            (barline)
+            (n c5 h)(n b4 q)
+            (barline)
+            (n e5 h)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+Es en <emphasis>anacrusa (anacrúsico)</emphasis> cuando comienza en parte débil o en fracción débil de cualquier parte del compás. Ejemplos:
+</para>
+
+<!-- score 03 -->
+<score>
+    <music>
+        (score (vers 1.6)
+         (instrument
+          (musicData (clef G)(key C)(time 2 4)
+            (n c5 e)
+            (barline)
+            (n c5 e g+)(n b4 e g-)(n c5 e g+)(n a4 e g-)
+            (barline)
+            (n g4 q)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<!-- score 04 -->
+<score>
+    <music>
+        (score (vers 1.6)
+         (instrument
+          (musicData (clef G)(key C)(time 4 4)
+            (n e4 e)(n a4 e g+)(n b4 e g-)
+            (barline)
+            (n c5 q)(n c5 e g+)(n c5 e g-)(n e5 q)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<!-- score 05 -->
+<score>
+    <music>
+        (score (vers 1.6)
+         (instrument
+          (musicData (clef G)(key C)(time 3 4)
+            (n a4 e g+)(n b4 e g-)
+            (barline)
+            (n c5 q)(n a4 q)(n c5 q)
+            (barline)
+            (n b4 q)(n e4 q)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+Si te fijas bien, observarás que la anacrusa siempre precede a la primera barra divisoria de esa pieza o de esa frase musical); decimos entonces que la entrada de la pieza o la entrada de la frase están <emphasis>"en anacrusa"</emphasis>.  Podríamos definir la anacrusa como: "nota o grupo de notas que preceden al primer tiempo fuerte o acentuado de una pieza o de una frase musical".
+Observa que en el comienzo en anacrusa, al estar la primera nota en parte o fracción débil, en el comienzo de la pieza no se incluyen los silencios que preceden a la primera nota, por lo que 'parece' un compás incompleto. Además, este compás 'incompleto' no se cuenta al numerar los compases. Por ejemplo:
+</para>
+
+<!-- score 06 -->
+<para> </para>
+<score>
+    <music>
+        (score (vers 2.0)
+         (instrument
+          (musicData (clef G)(key C)(time 4 4)
+            (text "Anacrusa del" (dx -50)(dy -40))(text "compás 1" (dx -30)(dy -20))
+            (n e4 e g+)(n f4 e g-)
+            (barline)
+            (text "compás 1" (dx 10)(dy 80))
+            (n g4 q)(n e4 e g+)(n f4 e g-)
+            (n g4 q)(n g4 e g+)(n a4 e g-)
+            (barline)
+            (text "compás 2" (dx 10)(dy 80))
+            (n g4 q)(n e4 q)(n c4 q)(n c4 e g+)(n d4 e g-)
+            (barline)
+            (text "compás 3" (dx 10)(dy 80))
+            (text "Anacrusa del" (dx 120)(dy -40))(text "compás 4" (dx 150)(dy -20))
+            (n c4 h)(r e)(n g4 e)(n a4 e g+)(n b4 e g-)
+            (barline)
+            (text "compás 4" (dx 10)(dy 80))
+            (n c5 q)(n a4 q)(n f4 q)(n f4 e g+)(n a4 e g-)
+            (barline)
+            (text "compás 5" (dx 10)(dy 80))
+            (n d5 q)(n b4 q)(n c5 q)(n b4 e g+)(n a4 e g-)
+            (barline)
+            (text "compás 6" (dx 10)(dy 80))
+            (n g4 q)(n g4 e g+)(n a4 e g-)(n g4 e g+)(n +f4 e g-)
+            (barline)
+            (text "compás 7" (dx 10)(dy 80))
+            (n g4 h)(r h)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para> </para>
+<para> </para>
+
+<para>
+Para practicar la lectura, analiza ese compas inicial, imaginate los silencios que faltan al comienzo para que esté completo, y haz la lectura comenzando como siempre en el primer pulso del compas pero imaginando esos silencios que faltan y midiéndolos.
+</para>
+
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-anx_E1">Ejercicio 1</link> - Practica la lectura con comienzo en anacrusa.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-anx_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>La anacrusa</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura con comienzo en anacrusa.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-anx</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>always</pickup_measure>
+    <pickup_no_fraction />
+    <clef>G;c4;c5</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24,34,44</time>
+    <fragment>24,34,44;(n * q)(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e)(n * e)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-)(n * q)</fragment>
+</exercise>
+
+</theme>
+
+</content>

@@ -67,12 +67,15 @@ public:
 
 private:
     void load_settings();
+    void load_settings_for_level_1();
+    void load_settings_for_level_2();
+    void load_settings_for_customized_level();
 
-    bool                m_fValidNotes[12];
-    bool                m_fFromKeySignature;
-    EKeySignature    m_nKeySignature;
-    EClef         m_nClef;
-    int                 m_nOctaves;
+    bool            m_fValidNotes[12];
+    bool            m_fFromKeySignature;
+    EKeySignature   m_nKeySignature;
+    EClef           m_nClef;
+    int             m_nOctaves;
 
 };
 

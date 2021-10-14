@@ -480,6 +480,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_inline_wrapper] = "wrapper";
 
         // ImoDto, ImoSimpleObj (A)
+        m_TypeToName[k_imo_arpeggio_dto] = "arpeggio";
         m_TypeToName[k_imo_beam_dto] = "beam";
         m_TypeToName[k_imo_bezier_info] = "bezier";
         m_TypeToName[k_imo_border_dto] = "border";
@@ -556,6 +557,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_lyric] = "lyric";
 
         // ImoRelObj (A)
+        m_TypeToName[k_imo_arpeggio] = "arpeggio";
         m_TypeToName[k_imo_beam] = "beam";
         m_TypeToName[k_imo_chord] = "chord";
         m_TypeToName[k_imo_grace_relobj] = "grace-relobj";
@@ -2535,6 +2537,15 @@ void ImoDocument::delete_block_level_obj(ImoBlockLevelObj* pAt)
     delete pAt;
 
     set_dirty(true);
+}
+
+
+//=======================================================================================
+// ImoArpeggio implementation
+//=======================================================================================
+void ImoArpeggio::reorganize_after_object_deletion()
+{
+    //Nothing to do
 }
 
 
@@ -5146,19 +5157,6 @@ ImoPageInfo::ImoPageInfo()
     //defaults: DIN A4 (210.0 x 297.0 mm), portrait
 }
 
-//---------------------------------------------------------------------------------------
-ImoPageInfo::ImoPageInfo(ImoPageInfo& dto)
-    : ImoSimpleObj(k_imo_page_info)
-    , m_uLeftMargin( dto.get_left_margin() )
-    , m_uRightMargin( dto.get_right_margin() )
-    , m_uTopMargin( dto.get_top_margin() )
-    , m_uBottomMargin( dto.get_bottom_margin() )
-    , m_uBindingMargin( dto.get_binding_margin() )
-    , m_uPageSize( dto.get_page_size() )
-    , m_fPortrait( dto.is_portrait() )
-{
-}
-
 
 //=======================================================================================
 // ImoScoreText implementation
@@ -5292,17 +5290,6 @@ ImoSystemInfo::ImoSystemInfo()
     , m_rightMargin(0.0f)
     , m_systemDistance(0.0f)
     , m_topSystemDistance(0.0f)
-{
-}
-
-//---------------------------------------------------------------------------------------
-ImoSystemInfo::ImoSystemInfo(ImoSystemInfo& dto)
-    : ImoSimpleObj(k_imo_system_info)
-    , m_fFirst( dto.is_first() )
-    , m_leftMargin( dto.get_left_margin() )
-    , m_rightMargin( dto.get_right_margin() )
-    , m_systemDistance( dto.get_system_distance() )
-    , m_topSystemDistance( dto.get_top_system_distance() )
 {
 }
 

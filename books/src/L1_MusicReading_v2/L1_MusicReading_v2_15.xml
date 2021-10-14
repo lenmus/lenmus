@@ -1,0 +1,109 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-15">
+<title>El compás de 3/4. La blanca con puntillo</title>
+<!-- <tocimage>img108.png</tocimage> -->
+
+<para>
+En esta lección iniciamos el estudio del compás de 3/4. Como sabes (tema 5) el número de arriba indica cuántos pulsos tiene cada compás, y el número de abajo indica qué figura es la que ocupa cada pulso (el número 4 significa 'negra'). Así pues, la métrica de 3/4 corresponde a un ritmo en el que cada compás va a tener tres pulsos y cada uno de ellos va a estar ocupado por una negra. El primer pulso de cada compás es fuerte y los otros dos son débiles.
+</para>
+
+<para>
+Si cuentas los pulsos de cada compás, el tempo de 3/4 implica un ritmo tal como 'UNO-y-dos-y -tres-y-UNO-y-dos-y-tres-y-...', enfatizando la palabra UNO. Este ritmo es típico de los valses.
+</para>
+
+<score>
+    <control_play />
+    <metronome>90</metronome>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 3 4)
+            (metronome q 90)
+            (spacer 20)
+            (n a4 q)(n a4 q)(n a4 q)(barline)
+            (n a4 q)(n a4 q)(n a4 q)(barline)
+            (n a4 q)(n a4 q)(n a4 q)
+            (barline end)
+        )))
+    </music>
+</score>
+
+
+<para>
+En esta lección estudiamos un nuevo patrón rítmico: la blanca con puntillo. Equivale a una blanca ligada a una negra:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 3 4 noVisible)
+            (n a4 h.)(spacer 20)(barline double)
+            (n a4 h l)(n a4 q)(spacer 20)(barline double)
+            (r h.)(spacer 20)(barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Observa que en la métrica de 3/4,  la blanca con puntillo ocupa un compás completo.
+</para>
+
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-15_E1">Ejercicio 1</link> - Practica la lectura musical con los patrones rítmicos estudiados en esta lección.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-15_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>El compás de 3/4. La blanca con puntillo</title>
+
+<para>Pon el metrónomo en marcha. Pulsa 'Tocar' y escucha el ejemplo. Entrena tu oído y practica la lectura de ejemplos que contienen estos patrones rítmicos.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-15</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;c4;g5</clef>
+    <key>C</key>
+    <key>a</key>
+    <key>G</key>
+    <key>e</key>
+    <key>F</key>
+    <key>d</key>
+    <key>D</key>
+    <key>B-</key>
+    <key>g</key>
+    <key>b</key>
+    <time>34</time>
+    <fragment>34;(n * q)(n * q)(n * e g+)(n * e g-),(n * h.)</fragment>
+    <fragment>34;(n * e g+)(n * e)(n * e)(n * e g-)(n * e)(r e),(n * q)(n * e g+)(n * e g-)(n * e)(r e),(r h.)</fragment>
+    <fragment>34;(r q)(n * e g+)(n * e)(n * e)(n * e g-),(n * q.)(n * e)(n * e)(r e),(n * q)(r h)</fragment>
+    <fragment>34;(n * q)(n * e g+)(n * e g-)(n * q),(n * q.)(n * e)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e)(n * e)(r e),(r h.)</fragment>
+    <fragment>34;(n * e g+)(n * e)(n * e)(n * e g-)(n * e)(r e),(n * q)(r q)(n * e g+)(n * e g-),(n * q)(n * q)(n * e g+)(n * e g-),(n * h.)</fragment>
+    <fragment>34;(n * e g+)(n * e g-)(n * q)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e)(n * e g+)(n * e g-),(n * q.)(n * e)(n * q),(r q)(n * e g+)(n * e)(n * e)(n * e g-),(n * h.)</fragment>
+    <fragment>34;(n * e g+)(n * e)(n * e)(n * e)(n * e)(n * e g-),(n * q.)(n * e)(n * q),(n * h.)</fragment>
+    <fragment>34;(n * q l)(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q)(n * e)(r e),(n * h.)</fragment>
+    <fragment>34;(n * q)(n * q)(n * q),(n * h)(n * e g+)(n * e g-),(n * h)(r q),(n * h.)</fragment>
+</exercise>
+
+</theme>
+
+</content>

@@ -155,7 +155,7 @@ Look carefully at how many semitones there are between each note.
                  (n g4 w v1)
                  (n +f4 w v1)
                  (n e4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -193,7 +193,7 @@ Look carefully at how many semitones there are between each note.
                  (n f4 w v1)
                  (n e4 w v1)
                  (n d4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -235,7 +235,7 @@ Let's write again the E minor harmonic and D minor harmonic but using key signat
                  (n g4 w v1)
                  (n f4 w v1)
                  (n e4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -273,7 +273,7 @@ Let's write again the E minor harmonic and D minor harmonic but using key signat
                  (n f4 w v1)
                  (n e4 w v1)
                  (n d4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -331,7 +331,7 @@ they're the ones which change on the way down.
                  (n c4 w v1)
                  (n b3 w v1)
                  (n a3 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -378,7 +378,7 @@ Let's see two more examples, E minor melodic and D minor melodic:
                  (n g4 w v1)
                  (n +f4 w v1)
                  (n e4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -414,7 +414,7 @@ Let's see two more examples, E minor melodic and D minor melodic:
                  (n f4 w v1)
                  (n e4 w v1)
                  (n d4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -455,7 +455,7 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
                  (n g4 w v1)
                  (n f4 w v1)
                  (n e4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -491,7 +491,7 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
                  (n f4 w v1)
                  (n e4 w v1)
                  (n d4 w v1)
-                 (barline double)
+                 (barline end noVisible)
         )))
         </music>
     </score>

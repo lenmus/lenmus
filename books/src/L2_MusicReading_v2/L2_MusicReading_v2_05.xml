@@ -73,10 +73,10 @@
     <control_solfa />
     <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24,34,44;(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24,34,44;(r q),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24,34,44;(r q),(n * e g+)(n * e g-)</fragment>
     <clef>none;a4;a4</clef>
@@ -99,10 +99,10 @@
     <control_solfa />
     <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24,34,44;(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
-    <fragment>24,34,44;(n * q),(n * q),(n * e g+)(n * e g-)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
-    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
+    <fragment>24,34,44;(n * q),(n * e g+)(n * e g-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24,34,44;(r q),(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24,34,44;(r q),(n * e g+)(n * e g-)</fragment>
     <clef>G;a3;a5</clef>

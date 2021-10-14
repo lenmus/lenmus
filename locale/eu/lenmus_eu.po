@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-23 15:22+0200\n"
-"PO-Revision-Date: 2021-06-23 15:28+0200\n"
+"POT-Creation-Date: 2021-10-13 15:27+0200\n"
+"PO-Revision-Date: 2021-10-13 15:27+0200\n"
 "Last-Translator: Karlos del Olmo Serna <zumareus@yahoo.es>\n"
 "Language-Team: <s.cecilio@gmail.com>\n"
 "Language: eu\n"
@@ -552,8 +552,8 @@ msgid "Start/resume play back. From selection of full score"
 msgstr "Hasi/berrekin joaldia. Aukeratutik partitura osora."
 
 #: src/app/lenmus_main_frame.cpp:672 src/dialogs/lenmus_dlg_metronome.cpp:430
-#: src/exercises/constrains/lenmus_constrains.cpp:373
-#: src/exercises/constrains/lenmus_constrains.cpp:375
+#: src/exercises/constrains/lenmus_constrains.cpp:413
+#: src/exercises/constrains/lenmus_constrains.cpp:415
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 msgid "Stop"
@@ -661,35 +661,35 @@ msgstr "MusicXML formatua"
 msgid "Choose the file to open"
 msgstr "Aukeratu inportatu beharreko artxiboa"
 
-#: src/app/lenmus_main_frame.cpp:896
+#: src/app/lenmus_main_frame.cpp:897
 #, fuzzy
 msgid "Errors in file "
 msgstr "Errorea XML fitxategia kargatzean"
 
-#: src/app/lenmus_main_frame.cpp:1152
+#: src/app/lenmus_main_frame.cpp:1161
 msgid "Start page"
 msgstr "Hasiera orria"
 
-#: src/app/lenmus_main_frame.cpp:1165
+#: src/app/lenmus_main_frame.cpp:1174
 #, fuzzy, c-format
 msgid "File '%s' not found."
 msgstr "Errorea: '%s' txantiloia ez da aurkitu."
 
-#: src/app/lenmus_main_frame.cpp:1166
+#: src/app/lenmus_main_frame.cpp:1175
 msgid "Error message"
 msgstr "Errore mezua"
 
-#: src/app/lenmus_main_frame.cpp:1192 src/app/lenmus_welcome_window.cpp:373
-#: src/app/lenmus_welcome_window.cpp:407
+#: src/app/lenmus_main_frame.cpp:1201 src/app/lenmus_welcome_window.cpp:373
+#: src/app/lenmus_welcome_window.cpp:408
 #, fuzzy
 msgid "Sorry: File not found!"
 msgstr "Errorea: '%s' txantiloia ez da aurkitu."
 
-#: src/app/lenmus_main_frame.cpp:1710
+#: src/app/lenmus_main_frame.cpp:1719
 msgid "Zooming? (10 to 800)"
 msgstr "Zoomik? (10-800)"
 
-#: src/app/lenmus_main_frame.cpp:1742
+#: src/app/lenmus_main_frame.cpp:1751
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -697,11 +697,11 @@ msgstr ""
 "Inprimatze arazo bat dago.\n"
 "Beharbada aukeratu duzun inprimagailua ez dago ondo doituta?"
 
-#: src/app/lenmus_main_frame.cpp:1742 src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1751 src/app/lenmus_main_frame.cpp:1753
 msgid "Printing"
 msgstr "Inprimatzen"
 
-#: src/app/lenmus_main_frame.cpp:1744
+#: src/app/lenmus_main_frame.cpp:1753
 msgid "Printing cancelled"
 msgstr "Inprimatzea ezereztuta"
 
@@ -711,36 +711,36 @@ msgstr ""
 "GNU General Public License (3. bertsioa edo hurrengoa) lizentziapeko "
 "software askea"
 
-#: src/app/lenmus_welcome_window.cpp:105
+#: src/app/lenmus_welcome_window.cpp:106
 msgid "Welcome to LenMus"
 msgstr "Ongi etorri LenMus programara"
 
-#: src/app/lenmus_welcome_window.cpp:112
+#: src/app/lenmus_welcome_window.cpp:113
 #, c-format
 msgid "Version %s"
 msgstr "Bertsioa %s"
 
-#: src/app/lenmus_welcome_window.cpp:150
+#: src/app/lenmus_welcome_window.cpp:151
 msgid "Get started"
 msgstr "Hasi"
 
-#: src/app/lenmus_welcome_window.cpp:156
+#: src/app/lenmus_welcome_window.cpp:157
 msgid "Read about how to get the most out of LenMus."
 msgstr "Irakurri LenMus-i etekin handiena ateratzeko modua."
 
-#: src/app/lenmus_welcome_window.cpp:162 src/app/lenmus_welcome_window.cpp:196
-#: src/app/lenmus_welcome_window.cpp:244 src/app/lenmus_welcome_window.cpp:254
-#: src/app/lenmus_welcome_window.cpp:264
+#: src/app/lenmus_welcome_window.cpp:163 src/app/lenmus_welcome_window.cpp:197
+#: src/app/lenmus_welcome_window.cpp:245 src/app/lenmus_welcome_window.cpp:255
+#: src/app/lenmus_welcome_window.cpp:265
 #: src/dialogs/lenmus_dlg_metronome.cpp:339
 #: src/dialogs/lenmus_dlg_metronome.cpp:425
 msgid "Start"
 msgstr "Hasi"
 
-#: src/app/lenmus_welcome_window.cpp:184
+#: src/app/lenmus_welcome_window.cpp:185
 msgid "Train with LenMus"
 msgstr "Entrenatu LenMus-ekin"
 
-#: src/app/lenmus_welcome_window.cpp:190
+#: src/app/lenmus_welcome_window.cpp:191
 msgid ""
 "Develop your musical skills with progressive exercises that will help you "
 "assimilate the different contents. Set your own learning pace."
@@ -748,11 +748,11 @@ msgstr ""
 "Garatu zure musika gaitasunak eduki desberdinak bereganatzen lagunduko "
 "dizuten ariketa progresiboekin. Ezarri zure ikaskuntza erritmoa."
 
-#: src/app/lenmus_welcome_window.cpp:220
+#: src/app/lenmus_welcome_window.cpp:221
 msgid "Study and practice"
 msgstr "Aztertu eta landu"
 
-#: src/app/lenmus_welcome_window.cpp:226
+#: src/app/lenmus_welcome_window.cpp:227
 msgid ""
 "Study with the interactive LenMus music theory books. Start with the first "
 "of these two:"
@@ -760,19 +760,19 @@ msgstr ""
 "Aztertu LenMus musika teoria liburu interaktiboekin. Hasi bi hauetako "
 "lehenengoarekin:"
 
-#: src/app/lenmus_welcome_window.cpp:238
+#: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"
 msgstr "Musika irakurtzea I"
 
-#: src/app/lenmus_welcome_window.cpp:248
+#: src/app/lenmus_welcome_window.cpp:249
 msgid "Music Reading II"
 msgstr "Musika irakurtzea II"
 
-#: src/app/lenmus_welcome_window.cpp:258
+#: src/app/lenmus_welcome_window.cpp:259
 msgid "Theory and Harmony"
 msgstr "Teoria eta harmonia"
 
-#: src/app/lenmus_welcome_window.cpp:293
+#: src/app/lenmus_welcome_window.cpp:294
 msgid "Acknowledgments:"
 msgstr "Eskerrak:"
 
@@ -1395,6 +1395,29 @@ msgstr "Aukeratu erabili beharreko hizkuntza:"
 msgid "OK"
 msgstr "OK"
 
+#: src/dialogs/lenmus_dlg_levels.cpp:57
+#, fuzzy
+msgid "Choose level"
+msgstr "Itxi guztiak"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:93
+#, fuzzy
+#| msgid "Difficulty"
+msgid "Difficulty level:"
+msgstr "Zailtasuna"
+
+#: src/dialogs/lenmus_dlg_levels.cpp:97
+msgid "Level 1"
+msgstr ""
+
+#: src/dialogs/lenmus_dlg_levels.cpp:100
+msgid "Level 2"
+msgstr ""
+
+#: src/dialogs/lenmus_dlg_levels.cpp:103
+msgid "Customized"
+msgstr ""
+
 #: src/dialogs/lenmus_dlg_metronome.cpp:122
 #, fuzzy
 msgid "Metronome settings"
@@ -1539,7 +1562,7 @@ msgstr "Azterketa"
 msgid "Quiz"
 msgstr "Lehiaketa"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:372
+#: src/exercises/constrains/lenmus_constrains.cpp:412
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
 #: src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1044
@@ -1552,17 +1575,17 @@ msgstr "Lehiaketa"
 msgid "Play"
 msgstr "Jo"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:374
+#: src/exercises/constrains/lenmus_constrains.cpp:414
 #: src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 msgid "Read"
 msgstr "Irakurri"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:376
+#: src/exercises/constrains/lenmus_constrains.cpp:416
 #, c-format
 msgid "Measure %d"
 msgstr "Neurtu %d"
 
-#: src/exercises/constrains/lenmus_constrains.cpp:377
+#: src/exercises/constrains/lenmus_constrains.cpp:417
 #, c-format
 msgid "Stop %d"
 msgstr "Gelditu %d"
@@ -2610,8 +2633,8 @@ msgid "The following notes:"
 msgstr ""
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
-msgid "B b / C"
-msgstr "Si b / Do"
+msgid "B # / C"
+msgstr "Si # / Do"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:205
 msgid "C # / D b"

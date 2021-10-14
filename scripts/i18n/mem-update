@@ -81,7 +81,7 @@ if [ -z "$LANG" ]  # all languages
 then
     # all languages
     echo "Starting process for all languages"
-    LANGS="de es eu fr gl_ES it nl tr zh_CN"
+    LANGS="de el es eu fr gl_ES it nl tr zh_CN"
     for LANGUAGE in $LANGS; do
         COMP_PATH=/datos/cecilio/lm/projects/lenmus/lenmus/locale/$LANGUAGE
         BOOK_PATH=/datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/$LANGUAGE

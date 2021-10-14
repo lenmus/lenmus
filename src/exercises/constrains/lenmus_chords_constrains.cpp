@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -76,9 +76,8 @@ bool ChordConstrains::IsValidGroup(EChordGroup nGroup)
 //---------------------------------------------------------------------------------------
 void ChordConstrains::save_settings()
 {
-    //
-    // save settings in user configuration data file
-    //
+    if (m_appScope.get_exercises_level() != 100)
+        return;
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
@@ -86,7 +85,7 @@ void ChordConstrains::save_settings()
     for (int i=0; i < ect_MaxInExercises; i++)
     {
         wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/Chord%dAllowed",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Write(sKey, m_fValidChords[i]);
     }
 
@@ -94,7 +93,7 @@ void ChordConstrains::save_settings()
     for (int i=0; i < 3; i++)
     {
         wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/PlayMode%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Write(sKey, m_fAllowedModes[i]);
     }
 
@@ -102,34 +101,41 @@ void ChordConstrains::save_settings()
     bool fValid;
     for (int i=k_min_key; i <= k_max_key; i++) {
         wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/KeySignature%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
 
     // other settings
     wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/AllowInversions",
-                        m_sSection.wx_str());
+                        GetSection());
     pPrefs->Write(sKey, m_fAllowInversions);
-    sKey = wxString::Format("/Constrains/IdfyChord/%s/DisplayKey",
-                        m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyChord/%s/DisplayKey", GetSection());
     pPrefs->Write(sKey, m_fDisplayKey);
 }
 
 //---------------------------------------------------------------------------------------
 void ChordConstrains::load_settings()
 {
-    //
-    // load settings form user configuration data or default values
-    //
+    switch (m_appScope.get_exercises_level())
+    {
+        case 1: load_settings_for_level_1();        break;
+        case 2: load_settings_for_level_2();        break;
+        default:
+            load_settings_for_customized_level();
+    }
+}
 
+//---------------------------------------------------------------------------------------
+void ChordConstrains::load_settings_for_customized_level()
+{
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     // allowed chords. Default: four main triads
     for (int i=0; i < ect_MaxInExercises; i++)
     {
         wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/Chord%dAllowed",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
     }
 
@@ -137,7 +143,7 @@ void ChordConstrains::load_settings()
     for (int i=0; i < 3; i++)
     {
         wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/PlayMode%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Read(sKey, &m_fAllowedModes[i], (i == 0));
     }
 
@@ -146,7 +152,7 @@ void ChordConstrains::load_settings()
     for (int i=k_min_key; i <= k_max_key; i++)
     {
         wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/KeySignature%d",
-            m_sSection.wx_str(), i );
+            GetSection(), i );
         pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
@@ -155,11 +161,99 @@ void ChordConstrains::load_settings()
     //      Inversions - default: not allowed
     //      Display key - default: not allowed
     wxString sKey = wxString::Format("/Constrains/IdfyChord/%s/AllowInversions",
-                        m_sSection.wx_str());
+                        GetSection());
     pPrefs->Read(sKey, &m_fAllowInversions, false);
     sKey = wxString::Format("/Constrains/IdfyChord/%s/DisplayKey",
-                        m_sSection.wx_str());
+                        GetSection());
     pPrefs->Read(sKey, &m_fDisplayKey, false);
+}
+
+//---------------------------------------------------------------------------------------
+void ChordConstrains::load_settings_for_level_1()
+{
+//    if (GetSection() == "EarIdfyChord")
+//    {
+        // allowed chords
+        for (int i=0; i < ect_MaxInExercises; i++)
+            m_fValidChords[i] = false;
+
+        m_fValidChords[ect_MajorTriad] = true;
+        m_fValidChords[ect_MinorTriad] = true;
+        m_fValidChords[ect_DominantSeventh] = true;
+
+        // play modes
+        m_fAllowedModes[0] = true;      // 0-harmonic
+        m_fAllowedModes[1] = true;      // 1-melodic ascending
+        m_fAllowedModes[2] = false;     // 2-melodic descending
+
+        //key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+
+        //other settings:
+        m_fAllowInversions = false;     //inversions allowed?
+        m_fDisplayKey = true;           //display key signature?
+//    }
+//    else if (GetSection() == "TheoIdfyChord")
+//    {
+//    }
+//    else
+//        load_settings_for_customized_level();
+}
+
+//---------------------------------------------------------------------------------------
+void ChordConstrains::load_settings_for_level_2()
+{
+//    if (GetSection() == "EarIdfyChord")
+//    {
+        // allowed chords
+        for (int i=0; i < ect_MaxInExercises; i++)
+            m_fValidChords[i] = false;
+
+        m_fValidChords[ect_MajorTriad] = true;
+        m_fValidChords[ect_MinorTriad] = true;
+        m_fValidChords[ect_DominantSeventh] = true;
+        m_fValidChords[ect_AugTriad] = true;
+        m_fValidChords[ect_DimTriad] = true;
+        m_fValidChords[ect_MajorSeventh] = true;
+        m_fValidChords[ect_MinorSeventh] = true;
+
+        // play modes
+        m_fAllowedModes[0] = true;      // 0-harmonic
+        m_fAllowedModes[1] = true;      // 1-melodic ascending
+        m_fAllowedModes[2] = false;     // 2-melodic descending
+
+        //key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+        m_oValidKeys.SetValid(k_key_D, true);
+        m_oValidKeys.SetValid(k_key_b, true);
+        m_oValidKeys.SetValid(k_key_Bf, true);
+        m_oValidKeys.SetValid(k_key_g, true);
+
+        //other settings:
+        m_fAllowInversions = false;     //inversions allowed?
+        m_fDisplayKey = true;           //display key signature?
+//    }
+//    else if (GetSection() == "TheoIdfyChord")
+//    {
+//    }
+//    else
+//        load_settings_for_customized_level();
 }
 
 //---------------------------------------------------------------------------------------

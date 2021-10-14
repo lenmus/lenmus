@@ -33,7 +33,7 @@ echo -e "${enhanced}Local installation of LenMus program${reset}"
 #find new package name
 cd ${build_path}
 echo "Now in ${PWD}"
-app=`ls | grep 'lenmus-all_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
+app=`ls | grep 'lenmus-all_[0-9]*.[0-9]*.[0-9]*'`
 echo "New package to install: ${app}"
 
 #uninstall current version of LenMus, if installed

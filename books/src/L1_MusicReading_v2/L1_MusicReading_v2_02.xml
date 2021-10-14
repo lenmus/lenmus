@@ -1,0 +1,109 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-02">
+<title>La clave de Sol</title>
+
+<para>
+Los sonidos se representan mediante notas. Hay siete notas, llamadas, en el sistema latino, Do, Re, Mi, Fa, Sol, La y Si. En el sistema anglo-sajón se denominan usando las siete primeras letras del alfabeto: A, B, C, D, E, F y G. Para determinar qué sonido representa cada línea y espacio del pentagrama se utiliza la 'clave'. Esta es un símbolo que se coloca al comienzo del pentagrama. En este curso vamos a comenzar con el estudio de la clave de sol en 2ª línea, que corresponde al siguiente símbolo:
+</para>
+
+<!-- Empty staff with a G clef -->
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+<para>
+La serie de siete notas (Do, Re, Mi, etc.) se va superponiendo a medida que ascienden los sonidos, de manera que cuando termina una serie, comienza otra (se repiten los mismos nombres, pero con sonidos más agudos): Do, Re, Mi. Fa, Sol, La, Si, Do, Re, Mi, Fa, …
+</para>
+
+<para>
+Decimos que las notas son solo <emphasis>siete</emphasis>, y que dos notas de mismo nombre y <emphasis>distinta serie</emphasis> se encuentran a distancia de una <emphasis>octava</emphasis>:
+</para>
+
+<para role='center'>
+<imagedata fileref='t2-1-octaves.png' />
+</para>
+
+<para>La clave asigna una determinada línea con una determinada nota y todas las demás, ascendentes y descendentes, quedan entonces asignadas a los espacios y líneas por encima y por debajo de la elegida como referencia. En la clave de sol, el sonido sol se asigna a la segunda línea:
+</para>
+
+<!-- staff with a G clef -->
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (spacer 60)
+            (text "Sol" dx:0 dy:-10)
+            (n g4 w)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+Como consecuencia, todas las restantes líneas y los espacios quedan automáticamente asignados a notas consecutivas, como se muestra en el siguiente ejemplo:
+</para>
+
+<!-- staff with a G clef and notes on all spaces and lines, with their names -->
+<score>
+    <control_play />
+    <metronome>320</metronome>
+    <music>
+        (score (vers 1.5)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 50)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (text "Mi" dx:0 dy:-10)
+            (n e4 w)(barline simple noVisible)
+            (text "Fa" dx:0 dy:-10)
+            (n f4 w)(barline simple noVisible)
+            (text "Sol" dx:0 dy:-10)
+            (n g4 w)(barline simple noVisible)
+            (text "La" dx:0 dy:-10)
+            (n a4 w)(barline simple noVisible)
+            (text "Si" dx:0 dy:-10)
+            (n b4 w)(barline simple noVisible)
+            (text "Do" dx:0 dy:-10)
+            (n c5 w)(barline simple noVisible)
+            (text "Re" dx:0 dy:-10)
+            (n d5 w)(barline simple noVisible)
+            (text "Mi" dx:0 dy:-10)
+            (n e5 w)(barline simple noVisible)
+            (text "Fa" dx:0 dy:-10)
+            (n f5 w)(barline simple noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+Así pues, una escala natural partiendo de la nota Do en clave de Sol tendrá este aspecto y sonará así:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (n c4 q)(n d4 q)
+            (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
+            (barline end) )))
+    </music>
+</score>
+
+
+
+</theme>

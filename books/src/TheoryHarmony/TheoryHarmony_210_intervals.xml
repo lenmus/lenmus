@@ -216,7 +216,7 @@ The following score shows some examples of intervals within one octave:
                 (n c4 w
 	                (text _''8ve'' (style ''Normal text'') dx:15 dy:90))
                 (n c5 w)
-                (barline double)
+                (barline end)
               )
            )
         )

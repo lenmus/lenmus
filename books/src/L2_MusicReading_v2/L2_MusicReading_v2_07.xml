@@ -121,9 +121,11 @@
     <control_go_back>thm207</control_go_back>
     <control_play />
     <control_solfa />
+    <fragment>24,34,44;(n * q l)(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24,34,44;(r e)(n * e),(n * e g+ t3)(n * e)(n * e l g- t-),(n * e g+)(n * e g-),(n * q),(n * e)(r e)</fragment>
     <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+ t3)(n * e)(n * e l g- t-),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e l g- t-),(n * e g+)(n * e g-),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q),(n * e g+)(n * e g-),(n * q)</fragment>
+    <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24,34,44;(n * e)(n * q)(n * e),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q)</fragment>
     <fragment>24,34,44;(n * q.)(n * e),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q)</fragment>
     <fragment>24,34,44;(n * e g+ t3)(n * e)(n * e l g- t-),(n * q),(n * e g+ t3)(n * e)(n * e l g- t-),(n * q),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>

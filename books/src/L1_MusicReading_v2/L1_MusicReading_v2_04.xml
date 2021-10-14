@@ -1,0 +1,131 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-04">
+<title>Compases y líneas divisorias</title>
+
+<para>
+La música escrita se organiza, normalmente, dividiéndola en partes llamadas 'compases'. En el pentagrama, el final de cada compás se indica por una fina raya vertical, dibujada desde la línea superior hasta la inferior. Esta raya se denomina 'línea divisoria':
+</para>
+<para> </para>
+
+<!-- measure 01. bar lines -->
+<score>
+    <music>
+        (score (vers 2.0)
+         (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt normal) (color #0000AA))
+         (defineStyle ''Green'' (font ''Liberation Sans'' 10pt normal) (color #007700))
+         (opt Score.Center true)
+         (instrument
+          (musicData
+            (clef G
+              (line (startPoint dx:-20 dy:50)(endPoint dx:-10 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:-10 dy:65)(endPoint dx:122 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:122 dy:65)(endPoint dx:132 dy:50)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text "Compás" (style ''Blue'') dx:20 dy:90)
+            )
+            (key C)
+            (time 2 4 noVisible)
+            (spacer 100)
+            (barline simple
+              (line (startPoint dx:0 dy:-10)(endPoint dx:30 dy:-75)(width 1.0000)
+                    (color #007700)(lineStyle solid)(lineCapStart arrowhead)
+                    (lineCapEnd none)
+              )
+              (text "Línea divisoria" (style ''Green'') dx:30 dy:-80)
+              (line (startPoint dx:0 dy:50)(endPoint dx:10 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:10 dy:65)(endPoint dx:120 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:120 dy:65)(endPoint dx:130 dy:50)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text "Compás" (style ''Blue'') dx:20 dy:90)
+            )
+            (spacer 130)
+            (barline simple
+              (line (startPoint dx:0 dy:-10)(endPoint dx:20 dy:-50)(width 1.0000)
+                    (color #007700)(lineStyle solid)(lineCapStart arrowhead)
+                    (lineCapEnd none)
+              )
+              (text "Línea divisoria" (style ''Green'') dx:20 dy:-55)
+              (line (startPoint dx:0 dy:50)(endPoint dx:10 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:10 dy:65)(endPoint dx:120 dy:65)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:120 dy:65)(endPoint dx:130 dy:50)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text "Compás" (style ''Blue'') dx:20 dy:90)
+            )
+            (spacer 130)
+            (barline simple
+              (line (startPoint dx:0 dy:-10)(endPoint dx:7 dy:-25)(width 1.0000)
+                    (color #007700)(lineStyle solid)(lineCapStart arrowhead)
+                    (lineCapEnd none)
+              )
+              (text "Línea divisoria" (style ''Green'') dx:7 dy:-30)
+            )
+            (spacer 130)
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para> </para>
+
+<para>
+Hay distintos tipos de líneas divisorias, que se utilizan para distintas finalidades. Por ejemplo, el final del último compás de una pieza se indica mediante la 'barra final' (una línea fina seguida de una línea gruesa). Para separar secciones dentro de una pieza se utiliza la 'doble barra' (dos lineas finas consecutivas).
+</para>
+
+<!-- measure 02. bar lines -->
+<score>
+    <music>
+        (score (vers 2.0)
+         (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt normal) (color #000000))
+         (opt Score.Center true)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 70)(barline simple)
+            (graphic line 0 -5 30 -20)
+            (text "barra simple" (style ''Blue'') dx:35 dy:-20)
+            (spacer 70)(barline simple)
+            (spacer 70)(barline simple)
+            (spacer 70)
+            (barline double)
+            (graphic line 0 45 30 60)
+            (text "doble barra" (style ''Blue'') dx:35 dy:80)
+            (spacer 70)(barline simple)
+            (spacer 70)(barline simple)
+            (spacer 70)(barline simple)
+            (spacer 70)
+            (graphic line 10 -5 40 -20)
+            (text "barra final" (style ''Blue'') dx:45 dy:-20)
+            (barline end)
+        )))
+    </music>
+</score>
+
+
+</theme>
+

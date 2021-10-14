@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book [
+    <!ENTITY theme01 SYSTEM "L1_MusicReading_v2_01.xml">
+    <!ENTITY theme02 SYSTEM "L1_MusicReading_v2_02.xml">
+    <!ENTITY theme03 SYSTEM "L1_MusicReading_v2_03.xml">
+    <!ENTITY theme04 SYSTEM "L1_MusicReading_v2_04.xml">
+    <!ENTITY theme05 SYSTEM "L1_MusicReading_v2_05.xml">
+    <!ENTITY theme06 SYSTEM "L1_MusicReading_v2_06.xml">
+    <!ENTITY theme07 SYSTEM "L1_MusicReading_v2_07.xml">
+    <!ENTITY theme08 SYSTEM "L1_MusicReading_v2_08.xml">
+    <!ENTITY theme09 SYSTEM "L1_MusicReading_v2_09.xml">
+    <!ENTITY theme10 SYSTEM "L1_MusicReading_v2_10.xml">
+    <!ENTITY theme11 SYSTEM "L1_MusicReading_v2_11.xml">
+    <!ENTITY theme12 SYSTEM "L1_MusicReading_v2_12.xml">
+    <!ENTITY theme13 SYSTEM "L1_MusicReading_v2_13.xml">
+    <!ENTITY theme14 SYSTEM "L1_MusicReading_v2_14.xml">
+    <!ENTITY theme15 SYSTEM "L1_MusicReading_v2_15.xml">
+    <!ENTITY theme16 SYSTEM "L1_MusicReading_v2_16.xml">
+    <!ENTITY theme17 SYSTEM "L1_MusicReading_v2_34.xml">
+    <!ENTITY theme18 SYSTEM "L1_MusicReading_v2_17.xml">
+    <!ENTITY theme19 SYSTEM "L1_MusicReading_v2_18.xml">
+    <!ENTITY theme20 SYSTEM "L1_MusicReading_v2_19.xml">
+    <!ENTITY theme21 SYSTEM "L1_MusicReading_v2_20.xml">
+    <!ENTITY theme22 SYSTEM "L1_MusicReading_v2_21.xml">
+    <!ENTITY theme23 SYSTEM "L1_MusicReading_v2_22.xml">
+    <!ENTITY theme24 SYSTEM "L1_MusicReading_v2_23.xml">
+    <!ENTITY theme25 SYSTEM "L1_MusicReading_v2_24.xml">
+    <!ENTITY theme26 SYSTEM "L1_MusicReading_v2_25.xml">
+    <!ENTITY theme27 SYSTEM "L1_MusicReading_v2_26.xml">
+    <!ENTITY theme28 SYSTEM "L1_MusicReading_v2_27.xml">
+    <!ENTITY theme29 SYSTEM "L1_MusicReading_v2_28.xml">
+    <!ENTITY theme30 SYSTEM "L1_MusicReading_v2_29.xml">
+    <!ENTITY theme31 SYSTEM "L1_MusicReading_v2_30.xml">
+    <!ENTITY theme32 SYSTEM "L1_MusicReading_v2_31.xml">
+    <!ENTITY theme33 SYSTEM "L1_MusicReading_v2_32.xml">
+    <!ENTITY theme34 SYSTEM "L1_MusicReading_v2_33.xml">
+]>
+
+
+<book id="L1_MusicReading_v2">
+<bookinfo>
+    <title>Elementos del lenguaje musical. Libro 1</title>
+    <abstract>Este libro está orientado a la práctica de la lectura musical, proporcionando explicaciones y ejercicios adecuados para ir avanzando progresivamente y dominar la lectura.</abstract>
+    <copyright>
+        <year>2002-2021</year>
+        <holder>Proyecto LenMus</holder>
+    </copyright>
+    <legalnotice>
+        <para>Se concede permiso para copiar, distribuir y/o modificar este libro bajo los términos de la licencia Creative Commons Attribution-Share-Alike, versión 3.0 o posterior, con las excepción de aquellas páginas en las que otro autor o grupo de autores haya sido claramente señalado. El texto de la licencia Creative Commons Attribution-Share-Alike está disponible en <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
+        http://creativecommons.org/licenses/by-sa/3.0/</ulink>
+        </para>
+        <para role='center'>
+        <imagedata fileref='cc-by-sa.png' />
+        </para>
+    </legalnotice>
+</bookinfo>
+
+&theme01;
+&theme02;
+&theme03;
+&theme04;
+&theme05;
+&theme06;
+&theme07;
+&theme08;
+&theme09;
+&theme10;
+&theme11;
+&theme12;
+&theme13;
+&theme14;
+&theme15;
+&theme16;
+&theme17;
+&theme18;
+&theme19;
+&theme20;
+&theme21;
+&theme22;
+&theme23;
+&theme24;
+&theme25;
+&theme26;
+&theme27;
+&theme28;
+&theme29;
+&theme30;
+&theme31;
+&theme32;
+&theme33;
+&theme34;
+
+</book>

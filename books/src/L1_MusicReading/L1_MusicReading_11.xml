@@ -115,6 +115,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm11</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <fragment>24;(n * q l),(n * q)(n * q l),(n * q)(n * q l),(n * q)</fragment>
     <fragment>24;(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)</fragment>
     <clef>G;a3;a5</clef>
@@ -141,6 +142,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm11</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_no_fraction />
     <clef>G;c4;b5</clef>
     <key>C</key>
     <key>a</key>

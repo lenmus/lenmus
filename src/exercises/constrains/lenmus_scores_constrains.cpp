@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2018 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,6 +46,9 @@ ScoreConstrains::ScoreConstrains(ApplicationScope& appScope)
     , m_sSection("")
     , m_nMaxInterval(4)
     , m_nMM(0)              // zero means: no predefined setting
+    , m_pickupType(k_pickup_random)
+    , m_pickupMinNote(k_eighth)
+    , m_pickupFraction(true)
     , m_aFragmentsTable(appScope)
 {
     //ScoreConstrains objetc is used in MusicReading exercise and Dictation exercise.
@@ -63,6 +66,9 @@ ScoreConstrains::ScoreConstrains(ApplicationScope& appScope)
 //---------------------------------------------------------------------------------------
 void ScoreConstrains::save_settings()
 {
+    if (m_appScope.get_exercises_level() != 100)
+        return;
+
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     if (m_sSection == "")
@@ -109,24 +115,32 @@ void ScoreConstrains::save_settings()
         pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignature)i) );
     }
 
-    //TODO save remaining data: fragments
+    //TODO save remaining data: fragments, pickup measures
 }
 
 //---------------------------------------------------------------------------------------
 void ScoreConstrains::load_settings()
 {
-    wxConfigBase* pPrefs = m_appScope.get_preferences();
-
-     //When arriving here, default values are already stored in this object. So we must check
-     //if the section key is stored in the configuration file. If it is, then we have
-     //to load config data from there; otherwise, do nothing as default values are in place.
-
+    //When arriving here, default values are already stored in this object. So we must check
+    //if the section key is stored in the configuration file. If it is, then we have
+    //to load config data from there; otherwise, do nothing as default values are in place.
 
     if (m_sSection == "")
+        return;     //leave default values
+
+   switch (m_appScope.get_exercises_level())
     {
-        //leave default values
-        return;
+        case 1: load_settings_for_level_1();        break;
+        case 2: load_settings_for_level_2();        break;
+        default:
+            load_settings_for_customized_level();
     }
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreConstrains::load_settings_for_customized_level()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     //check if the section key is stored in the configuration file.
     wxString sKey = wxString::Format("/Constrains/ScoreConstrains/%s/HasData",
@@ -139,7 +153,7 @@ void ScoreConstrains::load_settings()
         return;
 
 
-     //Load confiuration data from config file. Default values are meaningless
+     //Load configuration data from config file. Default values are meaningless
      //as they never should be used
 
 
@@ -184,6 +198,85 @@ void ScoreConstrains::load_settings()
     }
 
     //TODO load remaining data: fragments
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreConstrains::load_settings_for_level_1()
+{
+    if (m_sSection == "single_clefs_reading")
+    {
+        //clefs
+        for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
+            m_oClefs.SetValid((EClef)i, false);
+
+        m_oClefs.SetValid(k_clef_G2, true);
+        m_oClefs.SetLowerPitch(k_clef_G2, "a3");
+        m_oClefs.SetUpperPitch(k_clef_G2, "a5");
+
+        //key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+
+        //max interval in two consecutive notes
+        m_nMaxInterval = 4;
+
+        //time signatures: only 2/4 is possible
+        for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
+            m_oValidTimeSign.SetValid((ETimeSignature)i, false);
+
+        m_oValidTimeSign.SetValid(k_time_4_4, true);
+    }
+    else
+        load_settings_for_customized_level();
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreConstrains::load_settings_for_level_2()
+{
+    if (m_sSection == "single_clefs_reading")
+    {
+        //clefs
+        for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
+            m_oClefs.SetValid((EClef)i, false);
+
+        m_oClefs.SetValid(k_clef_G2, true);
+        m_oClefs.SetLowerPitch(k_clef_G2, "a3");
+        m_oClefs.SetUpperPitch(k_clef_G2, "a5");
+        m_oClefs.SetValid(k_clef_F4, true);
+        m_oClefs.SetLowerPitch(k_clef_F4, "e2");
+        m_oClefs.SetUpperPitch(k_clef_F4, "c4");
+
+        //key signatures
+        for (int i=k_min_key; i <= k_max_key; i++)
+            m_oValidKeys.SetValid((EKeySignature)i, false);
+
+        m_oValidKeys.SetValid(k_key_C, true);
+        m_oValidKeys.SetValid(k_key_a, true);
+        m_oValidKeys.SetValid(k_key_G, true);
+        m_oValidKeys.SetValid(k_key_e, true);
+        m_oValidKeys.SetValid(k_key_F, true);
+        m_oValidKeys.SetValid(k_key_d, true);
+        m_oValidKeys.SetValid(k_key_D, true);
+        m_oValidKeys.SetValid(k_key_b, true);
+        m_oValidKeys.SetValid(k_key_Bf, true);
+        m_oValidKeys.SetValid(k_key_g, true);
+
+        //max interval in two consecutive notes
+        m_nMaxInterval = 8;
+
+        //time signatures: only 2/4 is possible
+        for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
+            m_oValidTimeSign.SetValid((ETimeSignature)i, false);
+
+        m_oValidTimeSign.SetValid(k_time_4_4, true);
+    }
+    else
+        load_settings_for_customized_level();
 }
 
 //---------------------------------------------------------------------------------------

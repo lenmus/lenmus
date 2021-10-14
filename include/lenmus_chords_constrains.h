@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2021 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,7 +23,6 @@
 
 //lenmus
 #include "lenmus_standard_header.h"
-//#include "lenmus_generators.h"
 #include "lenmus_chord.h"
 #include "lenmus_constrains.h"
 
@@ -81,6 +80,9 @@ public:
 
 private:
     void load_settings();
+    void load_settings_for_level_1();
+    void load_settings_for_level_2();
+    void load_settings_for_customized_level();
 
     bool    m_fAllowInversions;
     bool    m_fValidChords[ect_Max];

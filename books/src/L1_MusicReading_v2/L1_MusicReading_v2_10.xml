@@ -1,0 +1,118 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="v2-10">
+<title>Líneas adicionales</title>
+
+<para>
+Como ya se dijo en el tema 1, cuando hace falta escribir notas más graves o más agudas que las representadas por la primera y última línea del pentagrama, se pueden añadir líneas adicionales. Se dibujan como líneas cortas, ligeramente más largas que el ancho de la cabeza de las notas.
+</para>
+
+<para>
+Las líneas adicionales pueden añadirse en la parte baja o alta del pentagrama para poder incluir notas muy graves o muy agudas:
+</para>
+
+<score>
+    <control_play />
+    <music>
+        (score (vers 1.5)
+         (opt Render.SpacingFactor 0.4)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (n a3 q)(n b3 q)(barline simple noVisible)
+            (n c4 q)(n d4 q)(barline simple noVisible)
+            (n e4 q)(n f4 q)(barline simple noVisible)
+            (n g4 q)(n a4 q)(barline simple noVisible)
+            (n b4 q)(n c5 q)(barline simple noVisible)
+            (n d5 q)(n e5 q)(barline simple noVisible)
+            (n f5 q)(n g5 q)(barline simple noVisible)
+            (n a5 q)(n b5 q)(barline simple noVisible)
+            (n c6 q)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Como las notas escritas sobre líneas adicionales resultan más difíciles de leer, normalmente sólo se utilizan dos o tres líneas adicionales. Cuando el ámbito de la melodía requiere más líneas es preferible cambiar de clave en vez de manejar más líneas adicionales.
+</para>
+
+<para>
+En los ejercicios de esta lección vamos a comenzar leyendo pentagramas con una línea adicional. En las lecciones siguientes el rango se irá ampliando progresivamente.
+</para>
+
+<part>
+<title>Ejercicios</title>
+
+<para>
+<link linkend="v2-10_E1">Ejercicio 1</link> - Practica la lectura con líneas adicionales por debajo.
+</para>
+
+<para>
+<link linkend="v2-10_E2">Ejercicio 2</link> - Practica la lectura con líneas adicionales por encima.
+</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 1  -->
+<!-- ====================== -->
+
+<theme id="v2-10_E1" toc="no">
+<titleabbrev>Tema %d. Ejercicio 1</titleabbrev>
+<title>Líneas adicionales por debajo</title>
+
+<para>Practica la lectura de ejemplos con líneas adicionales por debajo.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-10</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;c4;g4</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(n * q)(n * q),(n * h),(r h)</fragment>
+</exercise>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Ejercicio 2  -->
+<!-- ====================== -->
+
+<theme id="v2-10_E2" toc="no">
+<titleabbrev>Tema %d. Ejercicio 2</titleabbrev>
+<title>Líneas adicionales por encima</title>
+
+<para>Practica la lectura de ejemplos con líneas adicionales por encima.</para>
+
+<exercise type="TheoMusicReading">
+    <control_go_back>v2-10</control_go_back>
+    <control_play />
+    <control_solfa />
+    <pickup_measure>never</pickup_measure>
+    <clef>G;d5;a5</clef>
+    <key>C</key>
+    <key>a</key>
+    <time>24</time>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(n * q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * q l)(n * q)</fragment>
+    <fragment>24;(r q)(n * q),(n * q)(n * q),(n * h)</fragment>
+    <fragment>24;(n * q)(n * q),(n * h),(r h)</fragment>
+</exercise>
+
+</theme>
+
+</content>

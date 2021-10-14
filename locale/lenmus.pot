@@ -772,7 +772,7 @@ msgid "B Major / G# minor"
 msgstr ""
 
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
-msgid "B b / C"
+msgid "B # / C"
 msgstr ""
 
 #: ../src/auxmusic/lenmus_utilities.cpp:772

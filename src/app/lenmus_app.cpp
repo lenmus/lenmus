@@ -452,7 +452,7 @@ void TheApp::load_user_preferences()
     pPrefs->Read("/Options/EnableAnswerSounds", &value, true);
     m_appScope.enable_answer_sounds(value);
 
-    pPrefs->Read("/Options/AutoNewProblem", &value, true);
+    pPrefs->Read("/Options/AutoNewProblem", &value, false);
     m_appScope.enable_auto_new_problem(value);
 
     pPrefs->Read("/Options/ExperimentalFeatures", &value, false);

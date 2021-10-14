@@ -1,0 +1,120 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="v2-07">
+<title>El tempo y el metronómo</title>
+
+<part>
+<title>El tempo</title>
+
+<para>
+El tempo de la música es su velocidad, esto es, lo rápido o lento que deben ir los pulsos del compás. Hemos visto en el tema 6 que la métrica nos indica cuantos pulsos hay en un compás pero la métrica no nos dice nada sobre la cadencia de los pulsos. En la música escrita hay dos formas de indicar el tempo. Tradicionalmente los compositores utilizaban descripciones verbales, escribiendo indicaciones como 'Lento', 'Muy rápido' o 'Pausado'. Estos términos normalmente se escriben en italiano y es muy frecuente encontrarlos, incluso en partituras modernas. Por ello, debes estar muy familiarizado con ellos y aprenderlos:
+</para>
+
+<itemizedlist>
+<listitem><emphasis>Largo</emphasis> - muy lento y espacioso</listitem>
+<listitem><emphasis>Larghetto</emphasis> - muy lento pero no tanto como 'Largo'</listitem>
+<listitem><emphasis>Lento</emphasis> - muy despacio</listitem>
+<listitem><emphasis>Adagio</emphasis> - despacio</listitem>
+<listitem><emphasis>Andante</emphasis> - literalmente 'andando', al ritmo que se lleva al caminar</listitem>
+<listitem><emphasis>Moderato</emphasis> - moderado</listitem>
+<listitem><emphasis>Allegretto</emphasis> - rápido pero no tanto como 'Allegro'</listitem>
+<listitem><emphasis>Allegro</emphasis> - rápido</listitem>
+<listitem><emphasis>Vivo, or Vivace</emphasis> - rápido y enérgico, con brío</listitem>
+<listitem><emphasis>Presto</emphasis> - muy deprisa</listitem>
+<listitem><emphasis>Prestissimo</emphasis> - muy, muy deprisa</listitem>
+</itemizedlist>
+
+
+<para>
+La forma moderna de especificar el tempo es indicando el número de pulsos por minuto. Esto se indica en la partitura mediante las letras 'm.m.' seguidas del número de pulsos por minuto. Normalmente se indica al comienzo:
+</para>
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)(time 2 4)
+            (metronome 60)
+            (spacer 50)
+            (n e4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(barline simple)
+            (n f4 q)(n c5 q)(barline end) )))
+    </music>
+</score>
+
+<para>
+En vez de las letras 'm.m' también se usan los símbolos de las notas:
+</para>
+
+
+<score>
+    <music>
+        (score (vers 1.5)
+         (instrument
+          (musicData (clef G)(key C)(time 2 4)
+            (metronome q 60)
+            (spacer 50)
+            (n e4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(barline simple)
+            (n f4 q)(n c5 q)(barline end) )))
+    </music>
+</score>
+
+</part>
+
+
+
+<part>
+<title>El metrónomo</title>
+
+<para>
+Es un instrumento que sirve para indicarnos la velocidad a la que debe ejecutarse una pieza musical. 
+Para ello, produce a intervalos regulares un sonido como un 'tic tac', y la frecuencia de repetición puede ajustarse fácilmente a la deseada. Fue inventado por Johann Mälzel en 1816 y las letras 'm.m.' para indicar el tempo significan 'Metrónomo Mälzel'.
+</para>
+
+<para>
+Los metrónomos tradicionales son mecánicos, basados en la oscilación de un péndulo con un pequeño peso deslizante. El péndulo oscila a derecha e izquierda, marcando el ritmo y produciendo un sonoro 'tic' en cada oscilación. Los metrónomos modernos son electrónicos. En la figura siguiente se muestra un ejemplo de metrónomo mecánico:
+</para>
+
+<para role='center'>
+<imagedata fileref='metronome_image.png' />
+</para>
+
+<para>
+A título orientativo, la siguiente tabla muestra la relación entre los términos utilizados y los valores del metrónomo:
+</para>
+
+<itemizedlist>
+<listitem><emphasis>Largo</emphasis>: 40-49</listitem>
+<listitem><emphasis>Adagio</emphasis>: 50-59</listitem>
+<listitem><emphasis>Andante</emphasis>: 60-79</listitem>
+<listitem><emphasis>Moderato</emphasis>: 80-99</listitem>
+<listitem><emphasis>Allegretto</emphasis>: 100-119</listitem>
+<listitem><emphasis>Allegro</emphasis>: 120-159</listitem>
+<listitem><emphasis>Presto</emphasis>: 160-179</listitem>
+<listitem><emphasis>Prestissimo</emphasis>: 180-200</listitem>
+</itemizedlist>
+
+</part>
+
+<part>
+<title>El metrónomo del programa LenMus</title>
+
+<para>
+El programa LenMus incorpora un metrónomo que puedes utilizar cuando quieras. Por ejemplo, al practicar con tu instrumento musical o cuando estés realizando ejercicios de solfeo. Y también para medir el tempo de una pieza que estés escuchando.
+</para>
+
+<para>
+Para abrir el metrónomo hay que ir a al menú 'Ver' y elegir 'Metrónomo'. Se abrirá la ventana del metrónomo y allí podrás elegir el tempo y ponerlo en marcha o detenerlo.
+</para>
+
+<para>
+Cuando el programa interpreta una partitura el tempo también está controlado por los ajustes del metrónomo. Basta con cambiar estos ajustes y el tempo con el que se interpreta la partitura se ajustará automáticamente al que establezcas en el metrónomo.
+</para>
+
+</part>
+
+</theme>
+

@@ -80,6 +80,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm7</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <fragment>24;(n * e)(r e)</fragment>
     <clef>G;c4;g5</clef>
     <clef>F4;d3;c4</clef>
@@ -111,6 +112,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm7</control_go_back>
     <control_play />
     <control_solfa />
+    <pickup_measure>never</pickup_measure>
     <clef>G;c4;g5</clef>
     <clef>F4;d3;c4</clef>
     <key>C</key>
