@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2020 LenMus project
+#  Copyright (c) 2002-2021 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -966,6 +966,7 @@ set(AUXMUSIC_FILES
 set(DIALOGS_FILES
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
+    ${SRC_DIR}/dialogs/lenmus_dlg_levels.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_metronome.cpp
 )
 
