@@ -1227,7 +1227,7 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/xrc  DESTINATION ${XRC_DIR}
 #        DESTINATION ${TEMPLATES_DIR}
 #        COMPONENT main
 #        FILES_MATCHING PATTERN "*.lms"
-)
+#)
 
 # text files in root folder (license, etc.) shared among all users (SHARED_DIR)
 install(FILES
