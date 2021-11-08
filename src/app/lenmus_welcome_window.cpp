@@ -71,9 +71,9 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
     Paths* pPaths = m_appScope.get_paths();
     if (pPaths->GetLanguageCode() == "es")
     {
-	    m_txtLevel1->SetLabel("Lectura musical I");
-        m_txtLevel2->SetLabel("Lectura musical II");
-        m_txtLevel3->SetLabel(L"Teoría y armonía");
+	    m_txtLevel1->SetLabel("Elementos del Lenguaje Musical I");
+        m_txtLevel2->SetLabel("Elementos del Lenguaje Musical II");
+        m_txtLevel3->SetLabel(L"Ejercicios de Lectura Rítmica");
     }
 
     //load icons
@@ -341,7 +341,7 @@ void WelcomeWindow::on_button_book_2(wxCommandEvent& UNUSED(event))
     Paths* pPaths = m_appScope.get_paths();
     wxString lang = pPaths->GetLanguageCode();
     if (lang == "es")
-        open_book("L2_MusicReading_v2.lmb");
+        open_book("TheoryHarmony.lmb");
     else
         open_book("L2_MusicReading.lmb");
 }
@@ -351,7 +351,10 @@ void WelcomeWindow::on_button_book_3(wxCommandEvent& UNUSED(event))
 {
     Paths* pPaths = m_appScope.get_paths();
     wxString lang = pPaths->GetLanguageCode();
-    open_book("TheoryHarmony.lmb");
+    if (lang == "es")
+        open_book("L2_MusicReading_v2.lmb");
+    else
+        open_book("TheoryHarmony.lmb");
 }
 
 //---------------------------------------------------------------------------------------

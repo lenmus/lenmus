@@ -126,21 +126,21 @@ void LevelsDlg::CreateControls()
 }
 
 //---------------------------------------------------------------------------------------
-void LevelsDlg::on_click_level1(wxCommandEvent& event)
+void LevelsDlg::on_click_level1(wxCommandEvent& UNUSED(event))
 {
     m_level = 1;
     EndModal(wxID_OK);
 }
 
 //---------------------------------------------------------------------------------------
-void LevelsDlg::on_click_level2(wxCommandEvent& event)
+void LevelsDlg::on_click_level2(wxCommandEvent& UNUSED(event))
 {
     m_level = 2;
     EndModal(wxID_OK);
 }
 
 //---------------------------------------------------------------------------------------
-void LevelsDlg::on_click_custom_level(wxCommandEvent& event)
+void LevelsDlg::on_click_custom_level(wxCommandEvent& UNUSED(event))
 {
     m_level = 100;
     EndModal(wxID_OK);
