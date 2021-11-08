@@ -158,7 +158,7 @@ void SoundOptionsPanel::on_reset_to_defaults(wxCommandEvent& WXUNUSED(event))
     pMidi->use_internal_synth(true);        //use internal synthesizer
     pMidi->VoiceChange(0, 0);               //channel 1, instr 1 (grand piano)
     pMidi->set_metronome_program(9, 0);     //channel 10, instrument 1
-    pMidi->set_metronome_tones(76, 77);     //76-High Wood Block, 77-Low Wood Block
+    pMidi->set_metronome_tones(61, 60);     //61-Low Bongo, 60-Hi Bongo
     FluidSynthesizer* pSynth = pMidi->get_internal_synth();
     if (pSynth)
         pSynth->reset_to_defaults();
@@ -691,8 +691,8 @@ OptMetronomePanel::OptMetronomePanel(ApplicationScope& appScope, wxWindow* paren
 	: OptionsTab(appScope, parent)
     , m_nOldMtrInstr(0)
     , m_nOldMtrChannel(9)
-    , m_nOldMtrTone1(76)
-    , m_nOldMtrTone2(77)
+    , m_nOldMtrTone1(61)
+    , m_nOldMtrTone2(60)
     , m_pMtrChannelCombo(nullptr)
     , m_pMtrInstr1Combo(nullptr)
     , m_pMtrInstr2Combo(nullptr)

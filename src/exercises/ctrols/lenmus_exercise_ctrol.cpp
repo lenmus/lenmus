@@ -31,6 +31,7 @@
 #include "lenmus_counters_ctrol.h"
 #include "lenmus_events.h"
 #include "lenmus_problem_displayer.h"
+#include "lenmus_midi_server.h"
 
 
 //lomse
@@ -1226,7 +1227,12 @@ void OneScoreCtrol::play(bool fVisualTracking)
         }
 
         //play the score
-        m_pPlayer->load_score(m_pScoreToPlay, this);
+        MidiServer* pMIDI = m_appScope.get_midi_server();
+        int channel = pMIDI->MtrChannel();
+        int instr = pMIDI->MtrInstr();
+        int tone1 = pMIDI->MtrTone1();
+        int tone2 = pMIDI->MtrTone2();
+        m_pPlayer->load_score(m_pScoreToPlay, this, channel, instr, tone1, tone2);
 
         set_play_mode(k_play_normal_instrument);
         fVisualTracking &= m_pDisplay->is_displayed(m_pScoreToPlay);

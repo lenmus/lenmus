@@ -456,8 +456,8 @@ MidiServer::MidiServer(ApplicationScope& appScope)
 	, m_nDefaultVoiceInstr(0)       //instr 1 (grand piano)
     , m_nMtrChannel(9)              //channel 10 for metronome;
     , m_nMtrInstr(0)                //instrument 1
-    , m_nMtrTone1(76)              // 76-High Wood Block)
-    , m_nMtrTone2(77)              // 77-Low Wood Block
+    , m_nMtrTone1(61)              // 61-Low Bongo
+    , m_nMtrTone2(60)              // 60-Hi Bongo
 {
     m_pFluidSynth = LENMUS_NEW FluidSynthesizer(m_appScope, this);
     m_pExtSynth = LENMUS_NEW ExternalSynthesizer(m_appScope, this);
@@ -554,8 +554,8 @@ void MidiServer::load_user_preferences()
 
     m_nMtrChannel = (int)pPrefs->Read("/Midi/MtrChannel", 9);        // 0 based. So this is channel 10
     m_nMtrInstr = (int)pPrefs->Read("/Midi/MtrInstr", (long)0);    // 0 based. So this is instrument 1 (grand piano)
-    m_nMtrTone1 = (int)pPrefs->Read("/Midi/MtrTone1", 76L);        // 76-High Wood Block
-    m_nMtrTone2 = (int)pPrefs->Read("/Midi/MtrTone2", 77L);        // 77-Low Wood Block
+    m_nMtrTone1 = (int)pPrefs->Read("/Midi/MtrTone1", 61L);        // 61-Low Bongo
+    m_nMtrTone2 = (int)pPrefs->Read("/Midi/MtrTone2", 60L);        // 60-Hi Bongo
 
 	m_nDefaultVoiceChannel = m_nVoiceChannel;
 	m_nDefaultVoiceInstr = m_nVoiceInstr;
