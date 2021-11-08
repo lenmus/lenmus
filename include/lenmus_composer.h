@@ -83,12 +83,12 @@ public:
 private:
     void GetNotesRange();
 
-    wxString CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompound, bool fFinal);
-    wxString CreateNote(int nNoteDuration, bool fCompound, bool fFinal) {
-        return CreateNoteRest(nNoteDuration, true, fCompound, fFinal);
+    wxString CreateNoteRest(int nNoteRestDuration, bool fNote);
+    wxString CreateNote(int nNoteDuration) {
+        return CreateNoteRest(nNoteDuration, true);
     }
-    wxString CreateRest(int nRestDuration, bool fCompound, bool fFinal) {
-        return CreateNoteRest(nRestDuration, false, fCompound, fFinal);
+    wxString CreateRest(int nRestDuration) {
+        return CreateNoteRest(nRestDuration, false);
     }
     wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
                                bool fOnlyQuarterNotes, TimeUnits rPickupDuration = 0.0);

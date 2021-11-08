@@ -254,7 +254,7 @@ public:
     void SetMetronomeMM(long nValue) { m_nMM = nValue; }
     long GetMetronomeMM() { return m_nMM; }
 
-    inline void allow_pickup_measure(bool value) { m_pickupType = value; }
+    inline void allow_pickup_measure(int value) { m_pickupType = value; }
     inline int pickup_measure_allowed() { return m_pickupType; }
     inline void set_pickup_min_note(ENoteType value) { m_pickupMinNote = value; }
     inline ENoteType get_pickup_min_note() { return m_pickupMinNote; }
