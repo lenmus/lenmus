@@ -860,7 +860,7 @@ It is customary to refer to the scale degrees by Roman numerals as well as by na
 <table>
 <col width="3500" />
 <col width="1200" />
-<col width="3500" />
+<col width="10500" />
 <tbody>
 <tr><td><emphasis>1st degree</emphasis></td><td>I</td><td>Tonic</td></tr>
 <tr><td><emphasis>2nd degree</emphasis></td><td>II</td><td>Supertonic</td></tr>
@@ -881,7 +881,7 @@ Here's a summary of the notes of the scales of C, D, G and F major:
 </para>
 
 <table>
-<col width="2000" />
+<col width="3000" />
 <col width="1500" />
 <col width="1500" />
 <col width="1500" />

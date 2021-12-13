@@ -240,6 +240,7 @@ public:
     void SetMaxNote(EClef nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
     void SetMinNote(EClef nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
     ClefConstrains* GetClefConstrains() { return &m_oClefs; }
+    bool is_notes_reading_exercise() { return m_sSection == "single_clefs_reading"; }
 
     inline void set_key_signature(EKeySignature key, bool fValid) {
             m_oValidKeys.SetValid(key, fValid); }

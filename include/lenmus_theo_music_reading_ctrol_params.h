@@ -149,7 +149,7 @@ void TheoMusicReadingCtrolParams::process(ImoParamInfo* pParam)
         Params for ScoreCtrol - exercise type "TheoMusicReading""
 
 
-        optional params to include controls: (not yet implemented marked as [])
+        optional params to include controls:
         --------------------------------------
 
         control_play    Include 'play' link. Default: do not include it.

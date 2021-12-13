@@ -143,6 +143,36 @@ private:
 };
 
 
+//---------------------------------------------------------------------------------------
+/** A simple composer for notes reading exercise
+*/
+class NotesReadingComposer
+{
+protected:
+    Document*   m_pDoc;
+    ADocument   m_doc;
+    int         m_midiVoice;        //midiVoice: 0..255
+    EClef               m_nClef;
+    ScoreConstrains*    m_pConstrains;
+
+    //variables to control note pitch generation
+    FPitch  m_fpMinPitch, m_fpMaxPitch;   // the valid range of notes to generate
+    int     m_nLastPitch = 0;
+
+public:
+    NotesReadingComposer(ADocument doc);
+
+    //score generation
+    ImoScore* generate_score(ScoreConstrains* pConstrains);
+
+protected:
+    void add_note(ImoInstrument* pInstr);
+    void get_notes_range();
+    DiatonicPitch random_pitch();
+
+};
+
+
 }   //namespace lenmus
 
 #endif    // __LENMUS_COMPOSER_H__

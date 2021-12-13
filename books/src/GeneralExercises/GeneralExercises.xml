@@ -57,6 +57,7 @@
 
 <chapter id='theory'>
 <title>Theory exercises</title>
+    &chClefsReading;
     &chTheoScales;
     &chIdfyIntervals;
     &chBuildIntervals;
@@ -65,11 +66,6 @@
     &chTheoCadences;
     <!--&chTheoHarmony;-->
 
-</chapter>
-
-<chapter id='other'>
-<title>Other exercises</title>
-    &chClefsReading;
 </chapter>
 
 </book>

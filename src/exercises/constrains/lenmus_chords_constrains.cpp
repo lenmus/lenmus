@@ -200,6 +200,8 @@ void ChordConstrains::load_settings_for_level_1()
         //other settings:
         m_fAllowInversions = false;     //inversions allowed?
         m_fDisplayKey = true;           //display key signature?
+
+        SetSettingsLink(false);
 //    }
 //    else if (GetSection() == "TheoIdfyChord")
 //    {
@@ -224,6 +226,7 @@ void ChordConstrains::load_settings_for_level_2()
         m_fValidChords[ect_DimTriad] = true;
         m_fValidChords[ect_MajorSeventh] = true;
         m_fValidChords[ect_MinorSeventh] = true;
+        m_fValidChords[ect_DimSeventh] = true;
 
         // play modes
         m_fAllowedModes[0] = true;      // 0-harmonic
@@ -248,6 +251,8 @@ void ChordConstrains::load_settings_for_level_2()
         //other settings:
         m_fAllowInversions = false;     //inversions allowed?
         m_fDisplayKey = true;           //display key signature?
+
+        SetSettingsLink(false);
 //    }
 //    else if (GetSection() == "TheoIdfyChord")
 //    {

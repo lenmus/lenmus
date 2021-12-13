@@ -203,6 +203,8 @@ void TheoIntervalsConstrains::load_settings_for_level_1()
 
         // problem type (da igual, no se usa)
         m_nProblemType = TheoIntervalsConstrains::k_both;
+
+        SetSettingsLink(false);
     }
     else if (GetSection() == "IdfyIntervals")
     {
@@ -229,7 +231,7 @@ void TheoIntervalsConstrains::load_settings_for_level_1()
         m_fTypeAllowed[2] = true;   // 2-melodic descending
 
         //problem level
-        m_nProblemLevel = 0;      //  0-Just name the interval number
+        m_nProblemLevel = 1;    //1-Perfect, major and minor intervals
 
         //ledger lines
         m_nLedgerAbove = 1;
@@ -241,6 +243,8 @@ void TheoIntervalsConstrains::load_settings_for_level_1()
 
         // problem type (da igual, no se usa)
         m_nProblemType = TheoIntervalsConstrains::k_both;
+
+        SetSettingsLink(false);
     }
     else
         load_settings_for_customized_level();
@@ -292,6 +296,8 @@ void TheoIntervalsConstrains::load_settings_for_level_2()
 
         // problem type (da igual, no se usa)
         m_nProblemType = TheoIntervalsConstrains::k_both;
+
+        SetSettingsLink(false);
     }
     else if (GetSection() == "IdfyIntervals")
     {
@@ -337,6 +343,8 @@ void TheoIntervalsConstrains::load_settings_for_level_2()
 
         // problem type (da igual, no se usa)
         m_nProblemType = TheoIntervalsConstrains::k_both;
+
+        SetSettingsLink(false);
     }
     else
         load_settings_for_customized_level();

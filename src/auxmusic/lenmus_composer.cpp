@@ -1941,4 +1941,106 @@ void Composer::set_pitch(ImoNote* pNote, FPitch fp)
 
 
 
+//=======================================================================================
+// NotesReadingComposer implementation
+//=======================================================================================
+NotesReadingComposer::NotesReadingComposer(ADocument doc)
+    : m_doc(doc)
+    , m_midiVoice(0)    //Acoustic Grand Piano
+{
+    m_pDoc = doc.internal_object();
+}
+
+//---------------------------------------------------------------------------------------
+ImoScore* NotesReadingComposer::generate_score(ScoreConstrains* pConstrains)
+{
+    //Save parameters
+    m_pConstrains = pConstrains;
+
+    //Generate a random clef satisfying the constrains
+    m_nClef = RandomGenerator::generate_clef(m_pConstrains->GetClefConstrains());
+    get_notes_range();
+
+
+    // prepare and initialize the score
+    stringstream sScore;            //source code for all measures except last one
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
+    ImoInstrument* pInstr = pScore->add_instrument();
+    pScore->set_version(200);
+    pScore->set_long_option("Render.SpacingMethod", 1L);  //fixed
+    pScore->set_float_option("Render.SpacingValue", 20);       //2 lines
+    pScore->set_long_option("Score.JustifyLastSystem", 3L);      //always
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+
+    pInstr->add_clef(m_nClef);
+    pInstr->add_key_signature(k_key_C);
+    pInstr->add_time_signature(4, 4, k_no_visible);
+
+    for (int i=0; i < 42; ++i)      //14 notes per system
+    {
+        if (i != 0)
+            pInstr->add_barline(k_barline_simple, k_no_visible);
+
+        add_note(pInstr);
+    }
+    pInstr->add_barline(k_barline_end);
+    pScore->end_of_changes();
+
+    // done
+    //pScore->Dump("lemus_score_dump.txt");
+    return pScore;
+}
+
+//---------------------------------------------------------------------------------------
+void NotesReadingComposer::add_note(ImoInstrument* pInstr)
+{
+//    pInstr->add_staff_objects("(n g4 w)");
+    static const string sNoteName[7] = { "c",  "d", "e", "f", "g", "a", "b" };
+
+    DiatonicPitch dp = random_pitch();
+    string ldp = "(n " + dp.get_ldp_name() + " w)";
+    pInstr->add_object( ldp );
+}
+
+//---------------------------------------------------------------------------------------
+void NotesReadingComposer::get_notes_range()
+{
+    ClefConstrains* pConst = m_pConstrains->GetClefConstrains();
+    wxString sMinPitch = pConst->GetLowerPitch(m_nClef);
+    m_fpMinPitch = FPitch( to_std_string(sMinPitch) );
+
+    wxString sMaxPitch = pConst->GetUpperPitch(m_nClef);
+    m_fpMaxPitch = FPitch( to_std_string(sMaxPitch) );
+}
+
+//---------------------------------------------------------------------------------------
+DiatonicPitch NotesReadingComposer::random_pitch()
+{
+    int nMinPitch = (int)m_fpMinPitch.to_diatonic_pitch();
+    int nMaxPitch = (int)m_fpMaxPitch.to_diatonic_pitch();
+
+    if (m_nLastPitch == 0)
+        m_nLastPitch = (nMinPitch + nMaxPitch) / 2;
+
+    int nRange = m_pConstrains->GetMaxInterval();
+   int nLowLimit = wxMax(m_nLastPitch - nRange, nMinPitch);
+    int nUpperLimit = wxMin(m_nLastPitch + nRange, nMaxPitch);
+    int nNewPitch;
+    if (nUpperLimit - nLowLimit < 2)
+        nNewPitch = nLowLimit;
+    else
+        nNewPitch = RandomGenerator::random_number(nLowLimit, nUpperLimit);
+
+    // save value
+    m_nLastPitch = nNewPitch;
+
+    return DiatonicPitch(nNewPitch);
+}
+
+
 }   //namespace lenmus

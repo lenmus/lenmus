@@ -85,6 +85,9 @@ void MusicReadingConstrains::load_settings()
         return;
 
     m_pScoreConstrains->load_settings();
+
+    if (m_appScope.get_exercises_level() == 1 || m_appScope.get_exercises_level() == 2)
+        SetSettingsLink(false);
 }
 
 

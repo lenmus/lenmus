@@ -149,7 +149,7 @@ chromatic scale:
                  (n a4 w v1)
                  (n +a4 w v1)
                  (n b4 w v1)
-                 (n +b4 w v1)
+                 (barline simple noVisible)
                  (n c5 w v1)
                  (barline end noVisible)
         )))
