@@ -181,6 +181,8 @@ void EarIntervalsConstrains::load_settings_for_level_1()
         //other
         m_fOnlyNatural = true;    // use only natural intervals of the scale
         m_fFirstEqual = true;     // first note equal in both intervals
+
+        SetSettingsLink(false);
     }
     else if (GetSection() == "EarIntervals")
     {
@@ -215,6 +217,8 @@ void EarIntervalsConstrains::load_settings_for_level_1()
         //other
         m_fOnlyNatural = true;    // use only natural intervals of the scale
         m_fFirstEqual = true;     //Not used. first note equal in both intervals
+
+        SetSettingsLink(false);
     }
     else
         load_settings_for_customized_level();
@@ -274,6 +278,8 @@ void EarIntervalsConstrains::load_settings_for_level_2()
         //other
         m_fOnlyNatural = true;    // use only natural intervals of the scale
         m_fFirstEqual = true;     // first note equal in both intervals
+
+        SetSettingsLink(false);
     }
     else if (GetSection() == "EarIntervals")
     {
@@ -324,6 +330,8 @@ void EarIntervalsConstrains::load_settings_for_level_2()
         //other
         m_fOnlyNatural = true;    // use only natural intervals of the scale
         m_fFirstEqual = true;     //Not used. first note equal in both intervals
+
+        SetSettingsLink(false);
     }
     else
         load_settings_for_customized_level();

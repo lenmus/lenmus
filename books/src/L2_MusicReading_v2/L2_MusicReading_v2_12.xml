@@ -32,8 +32,8 @@
       (opt Render.SpacingFopt 2.5)
       (instrument
         (musicData
-        (clef G)(key C)(time 2 8)(r e)(n a4 s g+)(n a4 s g-)(barline)
-        (n a4 s g+)(n a4 s g-)(r e)(barline end)
+        (clef G)(key C)(time 3 4)(n a4 q)(r e)(n a4 s g+)(n a4 s g-)(r e)(n a4 s g+)(n a4 s g-)(barline)
+        (n a4 q)(n a4 s g+)(n a4 s g-)(r e)(n a4 s g+)(n a4 s g-)(r e)(barline end)
     )))
     </music>
 </score>

@@ -83,12 +83,12 @@ public:
 private:
     void GetNotesRange();
 
-    wxString CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompound, bool fFinal);
-    wxString CreateNote(int nNoteDuration, bool fCompound, bool fFinal) {
-        return CreateNoteRest(nNoteDuration, true, fCompound, fFinal);
+    wxString CreateNoteRest(int nNoteRestDuration, bool fNote);
+    wxString CreateNote(int nNoteDuration) {
+        return CreateNoteRest(nNoteDuration, true);
     }
-    wxString CreateRest(int nRestDuration, bool fCompound, bool fFinal) {
-        return CreateNoteRest(nRestDuration, false, fCompound, fFinal);
+    wxString CreateRest(int nRestDuration) {
+        return CreateNoteRest(nRestDuration, false);
     }
     wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
                                bool fOnlyQuarterNotes, TimeUnits rPickupDuration = 0.0);
@@ -139,6 +139,36 @@ private:
     //debug
     void InstantiateWithNote(ImoScore* pScore, FPitch fp);
 
+
+};
+
+
+//---------------------------------------------------------------------------------------
+/** A simple composer for notes reading exercise
+*/
+class NotesReadingComposer
+{
+protected:
+    Document*   m_pDoc;
+    ADocument   m_doc;
+    int         m_midiVoice;        //midiVoice: 0..255
+    EClef               m_nClef;
+    ScoreConstrains*    m_pConstrains;
+
+    //variables to control note pitch generation
+    FPitch  m_fpMinPitch, m_fpMaxPitch;   // the valid range of notes to generate
+    int     m_nLastPitch = 0;
+
+public:
+    NotesReadingComposer(ADocument doc);
+
+    //score generation
+    ImoScore* generate_score(ScoreConstrains* pConstrains);
+
+protected:
+    void add_note(ImoInstrument* pInstr);
+    void get_notes_range();
+    DiatonicPitch random_pitch();
 
 };
 

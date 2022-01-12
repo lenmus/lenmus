@@ -176,6 +176,8 @@ void NotesConstrains::load_settings_for_level_1()
 
     //how many octaves. Default 1
     m_nOctaves = 1;
+
+    SetSettingsLink(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -203,6 +205,8 @@ void NotesConstrains::load_settings_for_level_2()
 
     //how many octaves: 2
     m_nOctaves = 2;
+
+    SetSettingsLink(false);
 }
 
 //---------------------------------------------------------------------------------------

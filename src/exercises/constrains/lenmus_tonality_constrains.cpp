@@ -124,6 +124,8 @@ void TonalityConstrains::load_settings_for_level_1()
 
     //answer buttons
     m_fUseMajorMinorButtons = true;
+
+    SetSettingsLink(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -148,6 +150,8 @@ void TonalityConstrains::load_settings_for_level_2()
 
     //answer buttons
     m_fUseMajorMinorButtons = false;
+
+    SetSettingsLink(false);
 }
 
 

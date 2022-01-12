@@ -83,7 +83,7 @@ Si, por ejemplo, una pieza musical está escrita utilizando la escala de Re mayo
 </score>
 
 <para>
-Tener que escribir muchas alteraciones en una partitura resulta incómodo. Por ello, para aligerar la escritura (y la lectura) las alteraciones correspondientes al Fa y al Do pueden escribirse al comienzo del pentagrama, justo detrás de la clave. Estas alteraciones afectan a toda la pieza y forman la 'armadura'. Las alteraciones de la armadura se aplican a todas las notas de igual nombre <emphasis>en cualquier escala</emphasis>. Por tanto, si la alteración está en la armadura ya no es necesario colocar alteraciones delante de cada nota. Así, usando armadura, el ejemplo anterior se escribiría como sigue:
+Tener que escribir muchas alteraciones en una partitura resulta incómodo. Por ello, para aligerar la escritura (y la lectura) las alteraciones correspondientes al Fa y al Do pueden escribirse al comienzo del pentagrama, justo detrás de la clave. Estas alteraciones afectan a toda la pieza y forman la 'armadura'. Las alteraciones de la armadura se aplican a todas las notas de igual nombre <emphasis>en cualquier octava</emphasis>. Por tanto, si la alteración está en la armadura ya no es necesario colocar alteraciones delante de cada nota. Así, usando armadura, el ejemplo anterior se escribiría como sigue:
 </para>
 
 <score>

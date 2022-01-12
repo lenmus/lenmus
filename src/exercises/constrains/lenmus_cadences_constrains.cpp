@@ -188,6 +188,9 @@ void CadencesConstrains::load_settings_for_level_1()
 
         //how to display the key
         m_nKeyDisplayMode = 1;      //Not used. 0-play A4 note. 1-play tonic chord
+
+        SetSettingsLink(false);
+
 //    }
 //    else if (GetSection() == "TheoIdfyCadence")
 //    {
@@ -239,6 +242,8 @@ void CadencesConstrains::load_settings_for_level_2()
 
         //how to display the key
         m_nKeyDisplayMode = 1;      //Not used. 0-play A4 note. 1-play tonic chord
+
+        SetSettingsLink(false);
 //    }
 //    else if (GetSection() == "TheoIdfyCadence")
 //    {

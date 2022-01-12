@@ -240,6 +240,7 @@ public:
     void SetMaxNote(EClef nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
     void SetMinNote(EClef nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
     ClefConstrains* GetClefConstrains() { return &m_oClefs; }
+    bool is_notes_reading_exercise() { return m_sSection == "single_clefs_reading"; }
 
     inline void set_key_signature(EKeySignature key, bool fValid) {
             m_oValidKeys.SetValid(key, fValid); }
@@ -254,7 +255,7 @@ public:
     void SetMetronomeMM(long nValue) { m_nMM = nValue; }
     long GetMetronomeMM() { return m_nMM; }
 
-    inline void allow_pickup_measure(bool value) { m_pickupType = value; }
+    inline void allow_pickup_measure(int value) { m_pickupType = value; }
     inline int pickup_measure_allowed() { return m_pickupType; }
     inline void set_pickup_min_note(ENoteType value) { m_pickupMinNote = value; }
     inline ENoteType get_pickup_min_note() { return m_pickupMinNote; }

@@ -148,18 +148,27 @@ void TheoMusicReadingCtrol::create_controls()
     pParaStyle1->margin_top(500.0f)->margin_bottom(0.0f);
     ImoParagraph* pLinksPara1 = m_pDyn->add_paragraph(pParaStyle1);
 
-    // "count off" check box
-    m_pChkCountOff =
-        LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
-                                 to_std_string(_("Start with count off")) );
-    pLinksPara1->add_control( m_pChkCountOff );
-    pLinksPara1->add_inline_box(2000.0f, pSpacerStyle);
+    if (m_pScoreConstrains->is_notes_reading_exercise())
+    {
+        m_pChkCountOff = nullptr;
+        m_pChkMetronome = nullptr;
+    }
+    else
+    {
+        // "count off" check box
+        m_pChkCountOff =
+            LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
+                                     to_std_string(_("Start with count off")) );
+        pLinksPara1->add_control( m_pChkCountOff );
+        pLinksPara1->add_inline_box(2000.0f, pSpacerStyle);
 
-    // "use metronome" check box
-    m_pChkMetronome =
-        LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
-                                 to_std_string(_("Play with metronome")) );
-    pLinksPara1->add_control( m_pChkMetronome );
+        // "use metronome" check box
+        m_pChkMetronome =
+            LENMUS_NEW CheckboxCtrl(*pLibScope, nullptr, m_pDoc,
+                                     to_std_string(_("Play with metronome")) );
+        pLinksPara1->add_control( m_pChkMetronome );
+    }
+
 
     //second line: links for go back, new problem and play
     ImoStyle* pParaStyle2 = m_pDoc->create_private_style("Default style");
@@ -253,8 +262,16 @@ wxString TheoMusicReadingCtrol::set_new_problem()
     }
 
     //Generate a random score
-    Composer composer(m_doc);
-    m_pProblemScore = composer.generate_score(m_pScoreConstrains);
+    if (m_pScoreConstrains->is_notes_reading_exercise())
+    {
+        NotesReadingComposer composer(m_doc);
+        m_pProblemScore = composer.generate_score(m_pScoreConstrains);
+    }
+    else
+    {
+        Composer composer(m_doc);
+        m_pProblemScore = composer.generate_score(m_pScoreConstrains);
+    }
     return "";
 }
 
@@ -267,13 +284,13 @@ void TheoMusicReadingCtrol::set_problem_space()
 //---------------------------------------------------------------------------------------
 bool TheoMusicReadingCtrol::metronome_status()
 {
-    return m_pChkMetronome->is_checked();
+    return m_pChkMetronome? m_pChkMetronome->is_checked() : false;
 }
 
 //---------------------------------------------------------------------------------------
 bool TheoMusicReadingCtrol::countoff_status()
 {
-    return m_pChkCountOff->is_checked();
+    return m_pChkCountOff ? m_pChkCountOff->is_checked() : false;
 }
 
 

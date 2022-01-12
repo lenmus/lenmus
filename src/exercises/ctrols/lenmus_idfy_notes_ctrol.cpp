@@ -314,24 +314,8 @@ wxString IdfyNotesCtrol::set_new_problem()
     EClef nClef = m_pConstrains->GetClef();
 
     //select octave
-    int nSecondOctave = m_pConstrains->GetOctaves() == 2 ? oGenerator.flip_coin() : 0;
-    int nOctave = 4;
-    switch (nClef)
-    {
-        case k_clef_G2:   nOctave = 4 + nSecondOctave;    break;  //4,5
-        case k_clef_F4:   nOctave = 3 - nSecondOctave;    break;  //3,2
-        case k_clef_F3:   nOctave = 3 - nSecondOctave;    break;  //3,2
-        case k_clef_C1:   nOctave = 4 - nSecondOctave;    break;  //4,3
-        case k_clef_C2:   nOctave = 4 - nSecondOctave;    break;  //4,3
-        case k_clef_C3:   nOctave = 4 - nSecondOctave;    break;  //4,3
-        case k_clef_C4:   nOctave = 3 + nSecondOctave;    break;  //3,4
-        default:
-        {
-            LOMSE_LOG_ERROR("Invalid clef %d", nClef);
-            nClef = k_clef_G2;
-            nOctave = 4 + nSecondOctave;
-        }
-    }
+    int nOctave = get_first_octave_for_clef(nClef);
+    nOctave += m_pConstrains->GetOctaves() == 2 ? oGenerator.flip_coin() : 0;
 
     // generate a random note and set m_nKey, nStep, nAcc and nNoteIndex
     int nNoteIndex = 0;
@@ -487,13 +471,51 @@ int IdfyNotesCtrol::get_first_octave_for_clef(EClef nClef)
 {
     switch (nClef)
     {
-        case k_clef_G2:   return 4;
-        case k_clef_F4:   return 3;
-        case k_clef_F3:   return 3;
-        case k_clef_C1:   return 4;
-        case k_clef_C2:   return 4;
-        case k_clef_C3:   return 4;
-        case k_clef_C4:   return 3;
+        case k_clef_G2:
+        {
+            EKeySignature key = m_pConstrains->GetKeySignature();
+            if (key == k_key_B || key == k_key_b || key == k_key_Bf || key == k_key_bf)
+                return 3;
+            else
+                return 4;
+        }
+
+        case k_clef_F4:
+        case k_clef_F3:
+        {
+            EKeySignature key = m_pConstrains->GetKeySignature();
+            if (key == k_key_G || key == k_key_g || key == k_key_Gf || key == k_key_gs ||
+                key == k_key_A || key == k_key_a || key == k_key_Af || key == k_key_af || key == k_key_as ||
+                key == k_key_B || key == k_key_b || key == k_key_Bf || key == k_key_bf
+               )
+                return 2;
+            else
+                return 3;
+        }
+
+        case k_clef_C1:
+        case k_clef_C2:
+        {
+            EKeySignature key = m_pConstrains->GetKeySignature();
+            if (key == k_key_A || key == k_key_a || key == k_key_Af || key == k_key_af || key == k_key_as ||
+                key == k_key_B || key == k_key_b || key == k_key_Bf || key == k_key_bf)
+                return 3;
+            else
+                return 4;
+        }
+
+        case k_clef_C3:
+        {
+            EKeySignature key = m_pConstrains->GetKeySignature();
+            if (key == k_key_C || key == k_key_c || key == k_key_Cf || key == k_key_Cs || key == k_key_cs ||
+                key == k_key_D || key == k_key_d || key == k_key_Df || key == k_key_ds)
+                return 4;
+            else
+                return 3;
+        }
+        case k_clef_C4:
+           return 3;
+
         default:
             return 4;
     }
@@ -533,77 +555,33 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();
-    // (g_pMidi->get_default_voice_channel(), g_pMidi->get_default_voice_instr(), "");
-    //ImoSystemInfo* pInfo = pScore->get_first_system_info();
-    //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
     pInstr->add_key_signature( k_key_C );
 
     //generate all valid notes
-    for (int i=0; i < 12; i++)
+    if (m_pConstrains->SelectNotesFromKeySignature())
     {
-        if (m_pConstrains->IsValidNote(i))
+        int step = KeyUtilities::get_step_for_root_note(m_pConstrains->GetKeySignature());
+        int octave = nFirstOctave;
+        int nAcc[7];
+        KeyUtilities::get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
+        for (int i=0; i < 8; ++i, ++step)
         {
-            FPitch fpNote;
-            if (m_pConstrains->SelectNotesFromKeySignature())
-            {
-                int nStep;
-                int nAcc[7];
-                KeyUtilities::get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
+            step = step % 7;
+            FPitch fpNote(step, octave, nAcc[step]);
+            pInstr->add_object( "(n " + fpNote.to_abs_ldp_name() + " w)" );
+            pInstr->add_barline(k_barline_simple, k_no_visible);
 
-                switch(i)
-                {
-                    case 0: //C or B#
-                        nStep = (nAcc[6] == 1 ? 6 : 0);
-                        break;
+            if (step == 6)
+                ++octave;
+        }
+    }
 
-                    case 1: //C# or Db
-                        nStep = (nAcc[1] == -1 ? 1 : 0);
-                        break;
-
-                    case 2: //D
-                        nStep = 1;
-                        break;
-
-                    case 3: //D# or Eb
-                        nStep = (nAcc[2] == -1 ? 2 : 1);
-                        break;
-
-                    case 4: //E or Fb
-                        nStep = (nAcc[3] == -1 ? 3 : 2);
-                        break;
-
-                    case 5: //E# or F
-                        nStep = (nAcc[2] == 1 ? 2 : 3);
-                        break;
-
-                    case 6: //F# or Gb
-                        nStep = (nAcc[3] == 1 ? 3 : 4);
-                        break;
-
-                    case 7: //G
-                        nStep = 4;
-                        break;
-
-                    case 8: //G# or Ab
-                        nStep = (nAcc[4] == 1 ? 4 : 5);
-                        break;
-
-                    case 9: //A
-                        nStep = 5;
-                        break;
-
-                    case 10: //A# or Bb
-                        nStep = (nAcc[5] == 1 ? 5 : 6);
-                        break;
-
-                    case 11: //B or Cb
-                        nStep = (nAcc[0] == -1 ? 0 : 6);
-                        break;
-                }
-                fpNote = FPitch(nStep, nFirstOctave, nAcc[nStep]);
-            }
-            else
+    else
+    {
+        for (int i=0; i < 12; ++i)
+        {
+            if (m_pConstrains->IsValidNote(i))
             {
                 int nStep;
                 int nAcc = 0;
@@ -662,12 +640,12 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
                         nStep = 6;
                         break;
                 }
-                fpNote = FPitch(nStep, nFirstOctave, nAcc);
-            }
+                FPitch fpNote(nStep, nFirstOctave, nAcc);
 
-            //add note
-            pInstr->add_object( "(n " + fpNote.to_abs_ldp_name() + " w)" );
-            pInstr->add_barline(k_barline_simple, k_no_visible);
+                //add note
+                pInstr->add_object( "(n " + fpNote.to_abs_ldp_name() + " w)" );
+                pInstr->add_barline(k_barline_simple, k_no_visible);
+            }
         }
     }
     pScore->end_of_changes();      //for generating StaffObjs collection

@@ -28,9 +28,83 @@ La serie de siete notas (Do, Re, Mi, etc.) se va superponiendo a medida que asci
 Decimos que las notas son solo <emphasis>siete</emphasis>, y que dos notas de mismo nombre y <emphasis>distinta serie</emphasis> se encuentran a distancia de una <emphasis>octava</emphasis>:
 </para>
 
-<para role='center'>
-<imagedata fileref='t2-1-octaves.png' />
-</para>
+
+<!-- dibujo de las notas y las octavas -->
+<score>
+    <music>
+        (score (vers 2.0)
+         (defineStyle ''Blue'' (font ''Liberation Sans'' 10pt bold) (color #0000AA))
+         (defineStyle ''Red'' (font ''Liberation Sans'' 10pt bold) (color #FF0000))
+         (defineStyle ''Black'' (font ''Liberation Sans'' 10pt normal) (color #000000))
+         (opt Score.Center true)
+         (opt Staff.DrawLeftBarline false)
+         (opt StaffLines.Hide true)
+         (instrument
+          (musicData
+            (spacer 40 (text "Do" (style ''Red'') dx:0 dy:30)
+              (line (startPoint dx:10 dy:10)(endPoint dx:20 dy:-5)(width 1.0000)
+                    (color #FF0000)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:20 dy:-5)(endPoint dx:276 dy:-5)(width 1.0000)
+                    (color #FF0000)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:276 dy:-5)(endPoint dx:286 dy:10)(width 1.0000)
+                    (color #FF0000)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text "8ª" (style ''Red'') dx:140 dy:-15)
+            )
+            (spacer 40 (text "Re" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Mi" (style ''Blue'') dx:0 dy:30)
+              (line (startPoint dx:10 dy:40)(endPoint dx:20 dy:55)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:20 dy:55)(endPoint dx:280 dy:55)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:280 dy:55)(endPoint dx:290 dy:40)(width 1.0000)
+                    (color #0000AA)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text "8ª" (style ''Blue'') dx:140 dy:80)
+            )
+            (spacer 40 (text "Fa" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Sol" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "La" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Si" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Do" (style ''Red'') dx:0 dy:30)
+              (line (startPoint dx:14 dy:10)(endPoint dx:24 dy:-5)(width 1.0000)
+                    (color #FF0000)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:24 dy:-5)(endPoint dx:280 dy:-5)(width 1.0000)
+                    (color #FF0000)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (line (startPoint dx:280 dy:-5)(endPoint dx:290 dy:10)(width 1.0000)
+                    (color #FF0000)(lineStyle solid)(lineCapStart none)
+                    (lineCapEnd none)
+              )
+              (text "8ª" (style ''Red'') dx:140 dy:-15)
+            )
+            (spacer 40 (text "Re" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Mi" (style ''Blue'') dx:0 dy:30))
+            (spacer 40 (text "Fa" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Sol" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "La" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Si" (style ''Black'') dx:0 dy:30))
+            (spacer 40 (text "Do" (style ''Red'') dx:0 dy:30))
+            (spacer 40 (text "..." (style ''Black'') dx:0 dy:30))
+            (barline end noVisible)
+        )))
+    </music>
+</score>
+
+<para> </para>
 
 <para>La clave asigna una determinada línea con una determinada nota y todas las demás, ascendentes y descendentes, quedan entonces asignadas a los espacios y líneas por encima y por debajo de la elegida como referencia. En la clave de sol, el sonido sol se asigna a la segunda línea:
 </para>
@@ -86,6 +160,7 @@ Como consecuencia, todas las restantes líneas y los espacios quedan automática
         )))
     </music>
 </score>
+<para> </para>
 
 <para>
 Así pues, una escala natural partiendo de la nota Do en clave de Sol tendrá este aspecto y sonará así:
@@ -93,14 +168,31 @@ Así pues, una escala natural partiendo de la nota Do en clave de Sol tendrá es
 
 <score>
     <control_play />
+    <metronome>320</metronome>
     <music>
         (score (vers 1.5)
+         (opt Render.SpacingMethod 1)
+         (opt Render.SpacingValue 50)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
-            (n c4 q)(n d4 q)
-            (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
-            (barline end) )))
+            (text "Do" dx:0 dy:-10)
+            (n c4 w)(barline simple noVisible)
+            (text "Re" dx:0 dy:-10)
+            (n d4 w)(barline simple noVisible)
+            (text "Mi" dx:0 dy:-10)
+            (n e4 w)(barline simple noVisible)
+            (text "Fa" dx:0 dy:-10)
+            (n f4 w)(barline simple noVisible)
+            (text "Sol" dx:0 dy:-10)
+            (n g4 w)(barline simple noVisible)
+            (text "La" dx:0 dy:-10)
+            (n a4 w)(barline simple noVisible)
+            (text "Si" dx:0 dy:-10)
+            (n b4 w)(barline simple noVisible)
+            (text "Do" dx:0 dy:-10)
+            (n c5 w)(barline simple noVisible)
+        )))
     </music>
 </score>
 

@@ -128,7 +128,7 @@ void ScoreConstrains::load_settings()
     if (m_sSection == "")
         return;     //leave default values
 
-   switch (m_appScope.get_exercises_level())
+    switch (m_appScope.get_exercises_level())
     {
         case 1: load_settings_for_level_1();        break;
         case 2: load_settings_for_level_2();        break;
@@ -203,7 +203,7 @@ void ScoreConstrains::load_settings_for_customized_level()
 //---------------------------------------------------------------------------------------
 void ScoreConstrains::load_settings_for_level_1()
 {
-    if (m_sSection == "single_clefs_reading")
+    if (is_notes_reading_exercise())
     {
         //clefs
         for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
@@ -218,9 +218,6 @@ void ScoreConstrains::load_settings_for_level_1()
             m_oValidKeys.SetValid((EKeySignature)i, false);
 
         m_oValidKeys.SetValid(k_key_C, true);
-        m_oValidKeys.SetValid(k_key_a, true);
-        m_oValidKeys.SetValid(k_key_G, true);
-        m_oValidKeys.SetValid(k_key_e, true);
 
         //max interval in two consecutive notes
         m_nMaxInterval = 4;
@@ -238,15 +235,15 @@ void ScoreConstrains::load_settings_for_level_1()
 //---------------------------------------------------------------------------------------
 void ScoreConstrains::load_settings_for_level_2()
 {
-    if (m_sSection == "single_clefs_reading")
+    if (is_notes_reading_exercise())
     {
         //clefs
         for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
             m_oClefs.SetValid((EClef)i, false);
 
-        m_oClefs.SetValid(k_clef_G2, true);
-        m_oClefs.SetLowerPitch(k_clef_G2, "a3");
-        m_oClefs.SetUpperPitch(k_clef_G2, "a5");
+//        m_oClefs.SetValid(k_clef_G2, true);
+//        m_oClefs.SetLowerPitch(k_clef_G2, "a3");
+//        m_oClefs.SetUpperPitch(k_clef_G2, "a5");
         m_oClefs.SetValid(k_clef_F4, true);
         m_oClefs.SetLowerPitch(k_clef_F4, "e2");
         m_oClefs.SetUpperPitch(k_clef_F4, "c4");
@@ -256,15 +253,6 @@ void ScoreConstrains::load_settings_for_level_2()
             m_oValidKeys.SetValid((EKeySignature)i, false);
 
         m_oValidKeys.SetValid(k_key_C, true);
-        m_oValidKeys.SetValid(k_key_a, true);
-        m_oValidKeys.SetValid(k_key_G, true);
-        m_oValidKeys.SetValid(k_key_e, true);
-        m_oValidKeys.SetValid(k_key_F, true);
-        m_oValidKeys.SetValid(k_key_d, true);
-        m_oValidKeys.SetValid(k_key_D, true);
-        m_oValidKeys.SetValid(k_key_b, true);
-        m_oValidKeys.SetValid(k_key_Bf, true);
-        m_oValidKeys.SetValid(k_key_g, true);
 
         //max interval in two consecutive notes
         m_nMaxInterval = 8;

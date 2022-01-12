@@ -224,7 +224,6 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     m_nClef = RandomGenerator::generate_clef(m_pConstrains->GetClefConstrains());
     m_nKey = RandomGenerator::generate_key(m_pConstrains->GetKeyConstrains());
     m_nTimeSign = RandomGenerator::GenerateTimeSign(m_pConstrains->GetTimeSignConstrains());
-    bool fCompound = get_num_ref_notes_per_pulse_for(m_nTimeSign) != 1;
 
     // prepare and initialize the score
     stringstream sScore;            //source code for all measures except last one
@@ -298,7 +297,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 
     // determine if anacrusis start, and create it
     TimeUnits rPickupDuration = 0;	// Pickup measure duration
-    LOMSE_LOG_INFO("Anacrusis measure allowed = %d", pConstrains->pickup_measure_allowed());
+//    LOMSE_LOG_INFO("Anacrusis measure allowed = %d", pConstrains->pickup_measure_allowed());
     if (pConstrains->pickup_measure_allowed() == k_pickup_always
         || (pConstrains->pickup_measure_allowed() == k_pickup_random && RandomGenerator::flip_coin())
         )
@@ -372,9 +371,9 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                 if (is_greater_time(rNoteTime, 0.0))
                 {
                     if (rConsumedBeatTime > 0.0)
-                        sMeasure += CreateNote((int)rNoteTime, fCompound, false /*not final note*/);
+                        sMeasure += CreateNote((int)rNoteTime);
                     else
-                        sMeasure += CreateRest((int)rNoteTime, fCompound, false /*not final rest*/);
+                        sMeasure += CreateRest((int)rNoteTime);
                 }
 
                 //add segment
@@ -400,7 +399,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                 if (nSegmentLoopCounter++ > 100)
                 {
                     //let's assume that no segment fits. Fill the measure with a note
-                    sMeasure += CreateNote((int)rTimeRemaining, fCompound, false /*not final note*/);
+                    sMeasure += CreateNote((int)rTimeRemaining);
                     rOccupiedDuration += rTimeRemaining;
                     nSegmentLoopCounter = 0;
                 }
@@ -533,8 +532,7 @@ void Composer::GetNotesRange()
 }
 
 //---------------------------------------------------------------------------------------
-wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompound,
-                                  bool fFinal)
+wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote)
 {
     //Returns a string with one or more LDP elements containing notes o rests up to a total
     //duration nNoteDuration. They will be notes if fNote==true; otherwise they will be rests.
@@ -544,153 +542,96 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
     int nDuration;
     int nTimeNeeded = nNoteRestDuration;
 
-    if (fCompound && fFinal)
+    while (nTimeNeeded > 0)
     {
-        while (nTimeNeeded > 0)
+        sElement += (fNote ? "(n * " : "(r " );
+        if (nTimeNeeded >= k_duration_whole_dotted)
         {
-            sElement += (fNote ? "(n * " : "(r " );
-            if (nTimeNeeded >= k_duration_whole_dotted)
-            {
-                sElement += "w.)";
-                nDuration = k_duration_whole_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_half_dotted)
-            {
-                sElement += "h.)";
-                nDuration = k_duration_half_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_quarter_dotted)
-            {
-                sElement += "q.)";
-                nDuration = k_duration_quarter_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_eighth_dotted)
-            {
-                sElement += "e.)";
-                nDuration = k_duration_eighth_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_16th_dotted)
-            {
-                sElement += "s.)";
-                nDuration = k_duration_16th_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_32nd_dotted)
-            {
-                sElement += "t.)";
-                nDuration = k_duration_32nd_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_64th_dotted)
-            {
-                sElement += "i.)";
-                nDuration = k_duration_64th_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_128th_dotted)
-            {
-                sElement += "o.)";
-                nDuration = k_duration_128th_dotted;
-            }
-            else
-            {
-                sElement += "f)";
-                nDuration = k_duration_256th;
-            }
-
-            nTimeNeeded -= nDuration;
+            sElement += "w.)";
+            nDuration = k_duration_whole_dotted;
         }
-    }
-    else
-    {
-        while (nTimeNeeded > 0)
+        else if (nTimeNeeded >= k_duration_whole)
         {
-            sElement += (fNote ? "(n * " : "(r " );
-            if (nTimeNeeded >= k_duration_whole_dotted)
-            {
-                sElement += "w.)";
-                nDuration = k_duration_whole_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_whole)
-            {
-                sElement += "w)";
-                nDuration = k_duration_whole;
-            }
-            else if (nTimeNeeded >= k_duration_half_dotted)
-            {
-                sElement += "h.)";
-                nDuration = k_duration_half_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_half)
-            {
-                sElement += "h)";
-                nDuration = k_duration_half;
-            }
-            else if (nTimeNeeded >= k_duration_quarter_dotted)
-            {
-                sElement += "q.)";
-                nDuration = k_duration_quarter_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_quarter)
-            {
-                sElement += "q)";
-                nDuration = k_duration_quarter;
-            }
-            else if (nTimeNeeded >= k_duration_eighth_dotted)
-            {
-                sElement += "e.)";
-                nDuration = k_duration_eighth_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_eighth)
-            {
-                sElement += "e)";
-                nDuration = k_duration_eighth;
-            }
-            else if (nTimeNeeded >= k_duration_16th_dotted)
-            {
-                sElement += "s.)";
-                nDuration = k_duration_16th_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_16th)
-            {
-                sElement += "s)";
-                nDuration = k_duration_16th;
-            }
-            else if (nTimeNeeded >= k_duration_32nd_dotted)
-            {
-                sElement += "t.)";
-                nDuration = k_duration_32nd_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_32nd)
-            {
-                sElement += "t)";
-                nDuration = k_duration_32nd;
-            }
-            else if (nTimeNeeded >= k_duration_64th_dotted)
-            {
-                sElement += "i.)";
-                nDuration = k_duration_64th_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_64th)
-            {
-                sElement += "i)";
-                nDuration = k_duration_64th;
-            }
-            else if (nTimeNeeded >= k_duration_128th_dotted)
-            {
-                sElement += "o.)";
-                nDuration = k_duration_128th_dotted;
-            }
-            else if (nTimeNeeded >= k_duration_128th)
-            {
-                sElement += "o)";
-                nDuration = k_duration_128th;
-            }
-            else
-            {
-                sElement += "f)";
-                nDuration = k_duration_256th;
-            }
-
-            nTimeNeeded -= nDuration;
+            sElement += "w)";
+            nDuration = k_duration_whole;
         }
+        else if (nTimeNeeded >= k_duration_half_dotted)
+        {
+            sElement += "h.)";
+            nDuration = k_duration_half_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_half)
+        {
+            sElement += "h)";
+            nDuration = k_duration_half;
+        }
+        else if (nTimeNeeded >= k_duration_quarter_dotted)
+        {
+            sElement += "q.)";
+            nDuration = k_duration_quarter_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_quarter)
+        {
+            sElement += "q)";
+            nDuration = k_duration_quarter;
+        }
+        else if (nTimeNeeded >= k_duration_eighth_dotted)
+        {
+            sElement += "e.)";
+            nDuration = k_duration_eighth_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_eighth)
+        {
+            sElement += "e)";
+            nDuration = k_duration_eighth;
+        }
+        else if (nTimeNeeded >= k_duration_16th_dotted)
+        {
+            sElement += "s.)";
+            nDuration = k_duration_16th_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_16th)
+        {
+            sElement += "s)";
+            nDuration = k_duration_16th;
+        }
+        else if (nTimeNeeded >= k_duration_32nd_dotted)
+        {
+            sElement += "t.)";
+            nDuration = k_duration_32nd_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_32nd)
+        {
+            sElement += "t)";
+            nDuration = k_duration_32nd;
+        }
+        else if (nTimeNeeded >= k_duration_64th_dotted)
+        {
+            sElement += "i.)";
+            nDuration = k_duration_64th_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_64th)
+        {
+            sElement += "i)";
+            nDuration = k_duration_64th;
+        }
+        else if (nTimeNeeded >= k_duration_128th_dotted)
+        {
+            sElement += "o.)";
+            nDuration = k_duration_128th_dotted;
+        }
+        else if (nTimeNeeded >= k_duration_128th)
+        {
+            sElement += "o)";
+            nDuration = k_duration_128th;
+        }
+        else
+        {
+            sElement += "f)";
+            nDuration = k_duration_256th;
+        }
+
+        nTimeNeeded -= nDuration;
     }
 
     #if (TRACE_COMPOSER == 1)
@@ -713,7 +654,6 @@ wxString Composer::CreateLastMeasure(int WXUNUSED(nNumMeasure), ETimeSignature n
     TimeUnits rPulseDuration = get_ref_note_duration_for(nTimeSign) *
                             get_num_ref_notes_per_pulse_for(nTimeSign);
     TimeUnits rNoteDuration = rPulseDuration;
-    bool fCompound = (get_num_ref_notes_per_pulse_for(nTimeSign) != 1);
     if (!fOnlyQuarterNotes && rMeasureDuration / rPulseDuration >= 2.0)
     {
         //flip coin to randomly add a one-beat note or a two-beats note
@@ -721,15 +661,10 @@ wxString Composer::CreateLastMeasure(int WXUNUSED(nNumMeasure), ETimeSignature n
             rNoteDuration += rPulseDuration;
     }
 
-    sMeasure += CreateNote((int)rNoteDuration, fCompound, true /*final note*/);
+    sMeasure += CreateNote((int)rNoteDuration);
     rNoteDuration = rMeasureDuration - rNoteDuration;
     if (is_greater_time(rNoteDuration, 0.0))
-#if (LENMUS_DEBUG_BUILD == 1)   //CAMILLA
-        sMeasure += CreateRest((int)rNoteDuration, fCompound, false /*final rest*/);
-		//'true' didn't work well with Pickup beats
-#else
-        sMeasure += CreateRest((int)rNoteDuration, fCompound, true /*final rest*/);
-#endif
+        sMeasure += CreateRest((int)rNoteDuration);
 
     sMeasure += "(barline end)";
     return sMeasure;
@@ -2004,6 +1939,108 @@ void Composer::set_pitch(ImoNote* pNote, FPitch fp)
     }
 }
 
+
+
+//=======================================================================================
+// NotesReadingComposer implementation
+//=======================================================================================
+NotesReadingComposer::NotesReadingComposer(ADocument doc)
+    : m_doc(doc)
+    , m_midiVoice(0)    //Acoustic Grand Piano
+{
+    m_pDoc = doc.internal_object();
+}
+
+//---------------------------------------------------------------------------------------
+ImoScore* NotesReadingComposer::generate_score(ScoreConstrains* pConstrains)
+{
+    //Save parameters
+    m_pConstrains = pConstrains;
+
+    //Generate a random clef satisfying the constrains
+    m_nClef = RandomGenerator::generate_clef(m_pConstrains->GetClefConstrains());
+    get_notes_range();
+
+
+    // prepare and initialize the score
+    stringstream sScore;            //source code for all measures except last one
+    AScore score = m_doc.create_object(k_obj_score).downcast_to_score();
+    ImoScore* pScore = score.internal_object();
+    ImoInstrument* pInstr = pScore->add_instrument();
+    pScore->set_version(200);
+    pScore->set_long_option("Render.SpacingMethod", 1L);  //fixed
+    pScore->set_float_option("Render.SpacingValue", 20);       //2 lines
+    pScore->set_long_option("Score.JustifyLastSystem", 3L);      //always
+    ImoSoundInfo* pSound = pInstr->get_sound_info(0);
+    ImoMidiInfo* pMidi = pSound->get_midi_info();
+    pMidi->set_midi_program(m_midiVoice);
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+
+    pInstr->add_clef(m_nClef);
+    pInstr->add_key_signature(k_key_C);
+    pInstr->add_time_signature(4, 4, k_no_visible);
+
+    for (int i=0; i < 42; ++i)      //14 notes per system
+    {
+        if (i != 0)
+            pInstr->add_barline(k_barline_simple, k_no_visible);
+
+        add_note(pInstr);
+    }
+    pInstr->add_barline(k_barline_end);
+    pScore->end_of_changes();
+
+    // done
+    //pScore->Dump("lemus_score_dump.txt");
+    return pScore;
+}
+
+//---------------------------------------------------------------------------------------
+void NotesReadingComposer::add_note(ImoInstrument* pInstr)
+{
+//    pInstr->add_staff_objects("(n g4 w)");
+    static const string sNoteName[7] = { "c",  "d", "e", "f", "g", "a", "b" };
+
+    DiatonicPitch dp = random_pitch();
+    string ldp = "(n " + dp.get_ldp_name() + " w)";
+    pInstr->add_object( ldp );
+}
+
+//---------------------------------------------------------------------------------------
+void NotesReadingComposer::get_notes_range()
+{
+    ClefConstrains* pConst = m_pConstrains->GetClefConstrains();
+    wxString sMinPitch = pConst->GetLowerPitch(m_nClef);
+    m_fpMinPitch = FPitch( to_std_string(sMinPitch) );
+
+    wxString sMaxPitch = pConst->GetUpperPitch(m_nClef);
+    m_fpMaxPitch = FPitch( to_std_string(sMaxPitch) );
+}
+
+//---------------------------------------------------------------------------------------
+DiatonicPitch NotesReadingComposer::random_pitch()
+{
+    int nMinPitch = (int)m_fpMinPitch.to_diatonic_pitch();
+    int nMaxPitch = (int)m_fpMaxPitch.to_diatonic_pitch();
+
+    if (m_nLastPitch == 0)
+        m_nLastPitch = (nMinPitch + nMaxPitch) / 2;
+
+    int nRange = m_pConstrains->GetMaxInterval();
+   int nLowLimit = wxMax(m_nLastPitch - nRange, nMinPitch);
+    int nUpperLimit = wxMin(m_nLastPitch + nRange, nMaxPitch);
+    int nNewPitch;
+    if (nUpperLimit - nLowLimit < 2)
+        nNewPitch = nLowLimit;
+    else
+        nNewPitch = RandomGenerator::random_number(nLowLimit, nUpperLimit);
+
+    // save value
+    m_nLastPitch = nNewPitch;
+
+    return DiatonicPitch(nNewPitch);
+}
 
 
 }   //namespace lenmus

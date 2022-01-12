@@ -196,6 +196,8 @@ void ScalesConstrains::load_settings_for_level_1()
         // other settings
         m_fDisplayKey = true;   //display key: yes
         m_nPlayMode = 0;        //0-ascending, 1-descending, 2-both
+
+        SetSettingsLink(false);
     }
     else if (GetSection() == "TheoIdfyScale")
     {
@@ -222,6 +224,8 @@ void ScalesConstrains::load_settings_for_level_1()
         // other settings
         m_fDisplayKey = true;   //display key: yes
         m_nPlayMode = 2;        //Not used. 0-ascending, 1-descending, 2-both
+
+        SetSettingsLink(false);
     }
     else
         load_settings_for_customized_level();
@@ -263,6 +267,8 @@ void ScalesConstrains::load_settings_for_level_2()
         // other settings
         m_fDisplayKey = true;   //display key: yes
         m_nPlayMode = 2;        //0-ascending, 1-descending, 2-both
+
+        SetSettingsLink(false);
     }
     else if (GetSection() == "TheoIdfyScale")
     {
@@ -297,6 +303,8 @@ void ScalesConstrains::load_settings_for_level_2()
         // other settings
         m_fDisplayKey = true;   //display key: yes
         m_nPlayMode = 2;        //Not used.  0-ascending, 1-descending, 2-both
+
+        SetSettingsLink(false);
     }
     else
         load_settings_for_customized_level();
