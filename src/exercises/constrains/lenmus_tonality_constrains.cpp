@@ -125,7 +125,7 @@ void TonalityConstrains::load_settings_for_level_1()
     //answer buttons
     m_fUseMajorMinorButtons = true;
 
-    SetSettingsLink(false);
+    SetSettingsLink(true);
 }
 
 //---------------------------------------------------------------------------------------
@@ -143,15 +143,11 @@ void TonalityConstrains::load_settings_for_level_2()
     m_oValidKeys.SetValid(k_key_d, true);
     m_oValidKeys.SetValid(k_key_D, true);
     m_oValidKeys.SetValid(k_key_b, true);
-    m_oValidKeys.SetValid(k_key_A, true);
-    m_oValidKeys.SetValid(k_key_fs, true);
-    m_oValidKeys.SetValid(k_key_E, true);
-    m_oValidKeys.SetValid(k_key_cs, true);
 
     //answer buttons
     m_fUseMajorMinorButtons = false;
 
-    SetSettingsLink(false);
+    SetSettingsLink(true);
 }
 
 
