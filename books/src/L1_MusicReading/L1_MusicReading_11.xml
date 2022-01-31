@@ -116,8 +116,8 @@ this rhythm.</para>
     <control_play />
     <control_solfa />
     <pickup_no_fraction />
-    <fragment>24;(n * q l),(n * q)(n * q l),(n * q)(n * q l),(n * q)</fragment>
-    <fragment>24;(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)</fragment>
+    <fragment>24;(n * q)(n * q l),(n * q)(n * q l),(n * q)(n * q l),(n * q)</fragment>
+    <fragment>24;(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)(n * q l),(n * e g+)(n * e g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>24</time>

@@ -134,7 +134,7 @@ de un grupo de tres (débil) con la primera del grupo siguiente (fuerte):</para>
     <fragment>68,98,128;(n * e g+)(r e)(n * e g-),(n * q)(n * e l),(n * e)(n * q)</fragment>
     <fragment>68,98,128;(n * q. l),(n * q)(n * e),(n * q)(n * e l),(n * e)(n * q),(n * q.)</fragment>
     <fragment>68,98,128;(r e)(n * e g+)(n * e g-),(n * q)(n * e l),(n * q)(n * e),(n * q.)</fragment>
-    <fragment>68,98,128;(n * q)(n * e l),(n * e l)(n * q),(n * q.),(n * q. l),(n * e g+)(r e)(n * e g-),(n * e)(n * q l),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
+    <fragment>68,98,128;(n * e l)(n * q),(n * q.),(n * q. l),(n * e g+)(r e)(n * e g-),(n * e)(n * q l),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>68,98,128;(n * q)(n * e l),(n * q)(n * e),(n * e g+)(n * e)(n * e l g-),(n * e g+)(n * e)(n * e g-),(n * q. l),(n * e g+)(r e)(n * e g-),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>68,98,128;(n * q)(n * e l),(n * q)(n * e),(n * e g+)(n * e)(n * e l g-),(n * q.)</fragment>
     <clef>G;a3;a5</clef>

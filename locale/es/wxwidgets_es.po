@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: wxWidgets 3.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-21 14:25+0200\n"
-"PO-Revision-Date: 2019-11-07 15:55+0100\n"
+"PO-Revision-Date: 2022-01-27 13:33+0100\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: wxWidgets translators <wx-translators@wxwidgets.org>\n"
 "Language: es\n"
@@ -3077,7 +3077,7 @@ msgstr "Falló la extracción de «%s» en «%s»."
 
 #: ../src/common/accelcmn.cpp:249 ../src/common/accelcmn.cpp:344
 msgid "F"
-msgstr "F"
+msgstr "Fa"
 
 #. TRANSLATORS: Label of font face name
 #: ../src/propgrid/advprops.cpp:672
