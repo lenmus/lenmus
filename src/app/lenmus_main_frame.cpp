@@ -885,9 +885,35 @@ void MainFrame::load_file(const string& filename)
     ostringstream& reporter = m_appScope.get_lomse_reporter();
     reporter.str(std::string());      //remove any previous content
 
+    //decide name for the tab
+    wxString tabname;
+    Paths* pPaths = m_appScope.get_paths();
+    if (pPaths->GetLanguageCode() == "es")
+    {
+        if (filename.find("L1_MusicReading_v2", 0) != string::npos)
+            tabname = "Elementos del Lenguaje Musical I";
+        else if (filename.find("L2_MusicReading_v2", 0) != string::npos)
+            tabname = L"Ejercicios de Lectura Rítmica";
+        else if (filename.find("TheoryHarmony", 0) != string::npos)
+            tabname = "Elementos del Lenguaje Musical II";
+        else
+            tabname = "Entrena con LenMus";
+    }
+    else
+    {
+        if (filename.find("L1_MusicReading", 0) != string::npos)
+            tabname = _("Music Reading I");
+        else if (filename.find("L2_MusicReading", 0) != string::npos)
+            tabname = _("Music Reading II");
+        else if (filename.find("TheoryHarmony", 0) != string::npos)
+            tabname = _("Theory and Harmony");
+        else
+            tabname = _("Train with LenMus");
+    }
+
     //create canvas and show document
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    loader.create_canvas(filename, VIEW_TYPE);
+    loader.create_canvas(filename, tabname, VIEW_TYPE);
     m_lastOpenFile = filename;
 
     //show errors, if any

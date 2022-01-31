@@ -71,7 +71,7 @@ public:
     DocumentLoader(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
     virtual ~DocumentLoader() {}
 
-    wxWindow* create_canvas(const string& filename, int viewType);
+    wxWindow* create_canvas(const string& filename, const wxString& tabname, int viewType);
     wxWindow* create_canvas_and_new_document(int viewType);
 
 };

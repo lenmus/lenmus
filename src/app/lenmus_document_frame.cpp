@@ -161,7 +161,8 @@ DocumentLoader::DocumentLoader(ContentWindow* parent, ApplicationScope& appScope
 }
 
 //---------------------------------------------------------------------------------------
-wxWindow* DocumentLoader::create_canvas(const string& filename, int viewType)
+wxWindow* DocumentLoader::create_canvas(const string& filename, const wxString& tabname,
+                                        int viewType)
 {
     //use filename (without path) as page title
     wxFileName document( to_wx_string(filename) );
@@ -171,7 +172,7 @@ wxWindow* DocumentLoader::create_canvas(const string& filename, int viewType)
     {
         DocumentFrame* pCanvas =
             LENMUS_NEW DocumentFrame(m_pContentWindow, m_appScope, m_lomse, viewType);
-        m_pContentWindow->add_canvas(pCanvas, document.GetName());
+        m_pContentWindow->add_canvas(pCanvas, tabname);
         pCanvas->display_document(filename, viewType);
         return pCanvas;
     }
