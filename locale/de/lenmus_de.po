@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-13 14:14+0200\n"
-"PO-Revision-Date: 2021-10-13 14:16+0200\n"
+"PO-Revision-Date: 2022-02-06 12:29+0100\n"
 "Last-Translator: German <kde-i18n-doc@kde.org>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: de\n"
@@ -730,12 +730,8 @@ msgid "Study and practice"
 msgstr "Studieren und üben"
 
 #: src/app/lenmus_welcome_window.cpp:227
-msgid ""
-"Study with the interactive LenMus music theory books. Start with the first "
-"of these two:"
-msgstr ""
-"Lernen Sie mit den interaktiven LenMus-Musiktheoriebüchern. Beginnen Sie mit "
-"dem ersten dieser beiden:"
+msgid "Study with the interactive LenMus music theory books:"
+msgstr "Lernen Sie mit den interaktiven LenMus-Musiktheoriebüchern:"
 
 #: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"

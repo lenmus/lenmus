@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-13 15:37+0200\n"
-"PO-Revision-Date: 2021-10-13 15:40+0200\n"
+"PO-Revision-Date: 2022-02-06 12:36+0100\n"
 "Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: zh_CN\n"
@@ -692,10 +692,8 @@ msgid "Study and practice"
 msgstr "學習與實踐"
 
 #: src/app/lenmus_welcome_window.cpp:227
-msgid ""
-"Study with the interactive LenMus music theory books. Start with the first "
-"of these two:"
-msgstr "學習交互式 LenMus 音樂理論書籍。 從這兩個中的第一個開始："
+msgid "Study with the interactive LenMus music theory books:"
+msgstr "學習交互式 LenMus 音樂理論書籍。"
 
 #: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"

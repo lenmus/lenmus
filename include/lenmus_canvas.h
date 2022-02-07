@@ -126,6 +126,10 @@ public:
     void close_all();
     void close_active_canvas();
 
+    size_t get_page_count() const { return GetPageCount(); }
+    wxString get_tab_name(size_t page) const { return GetPageText(page); }
+    void delete_canvas(size_t page) { DeletePage(page); }
+
 protected:
     void on_window_closing(wxAuiNotebookEvent& event);
 

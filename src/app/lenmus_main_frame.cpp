@@ -137,7 +137,9 @@ enum
     k_menu_file_close_all,
     k_menu_print,
     //k_menu_print_setup,    wxID_PRINT_SETUP is used instead
-
+    k_menu_file_open_old_books,
+    k_menu_file_open_old_L1,
+    k_menu_file_open_old_L2,
 
      // Menu View
     k_menu_view_welcome_page,
@@ -209,6 +211,7 @@ enum
     // Menu Help
     k_menu_help_visit_website,
     k_menu_check_for_updates,
+    k_menu_help_user_manual,
 
   // other IDs
     k_id_timer_metronome,
@@ -235,6 +238,8 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_file_close, MainFrame::on_update_UI_file)
     EVT_MENU      (k_menu_file_close_all, MainFrame::on_file_close_all)
     EVT_UPDATE_UI (k_menu_file_close_all, MainFrame::on_update_UI_file)
+    EVT_MENU      (k_menu_file_open_old_L1, MainFrame::on_open_old_L1)
+    EVT_MENU      (k_menu_file_open_old_L2, MainFrame::on_open_old_L2)
 
     EVT_MENU      (wxID_PRINT_SETUP, MainFrame::on_print_setup)
     EVT_UPDATE_UI (wxID_PRINT_SETUP, MainFrame::on_update_UI_file)
@@ -272,6 +277,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU      (k_menu_help_about, MainFrame::on_about)
     EVT_MENU      (k_menu_help_study_guide, MainFrame::on_show_study_guide)
     EVT_MENU      (k_menu_help_visit_website, MainFrame::on_visit_website)
+    EVT_MENU      (k_menu_help_user_manual, MainFrame::on_user_manual)
 
 
     //debug menu. Only visible in Debug mode or in Release test mode
@@ -526,6 +532,23 @@ void MainFrame::create_menu()
                 _("Close current document"), wxITEM_NORMAL);
     create_menu_item(pMenuFile, k_menu_file_close_all, _("Close all"),
                 _("Close all documents"), wxITEM_NORMAL);
+
+    Paths* pPaths = m_appScope.get_paths();
+    if (pPaths->GetLanguageCode() == "es")
+    {
+        //--Open previous version books submenu --
+        wxMenu* pSubmenuBooks = LENMUS_NEW wxMenu;
+
+        create_menu_item(pSubmenuBooks, k_menu_file_open_old_L1,
+                         wxString::FromUTF8("Lectura Rítmica 1") );
+        create_menu_item(pSubmenuBooks, k_menu_file_open_old_L2,
+                         wxString::FromUTF8("Lectura Rítmica 2") );
+
+        wxMenuItem* pItem = LENMUS_NEW wxMenuItem(pMenuFile, k_menu_file_open_old_books,
+                        "Abrir libros antiguos ...",
+                        "Abrir libros de la version anterior", wxITEM_NORMAL, pSubmenuBooks);
+        pMenuFile->Append(pItem);
+    }
     pMenuFile->AppendSeparator();
 
     create_menu_item(pMenuFile, k_menu_print, _("Print"),
@@ -687,6 +710,12 @@ void MainFrame::create_menu()
 
     create_menu_item(pMenuHelp, k_menu_help_study_guide,  _("Study guide"),
                 _("How to use LenMus in your studies"), wxITEM_NORMAL, "tool_study_guide");
+    if (pPaths->GetLanguageCode() == "es")
+    {
+        create_menu_item(pMenuHelp, k_menu_help_user_manual,
+                         wxString::FromUTF8("Manual de usuario") );
+    }
+
     pMenuHelp->AppendSeparator();
     create_menu_item(pMenuHelp, k_menu_help_visit_website,  _("Visit LenMus website"),
                 _("Open the Internet browser and go to LenMus website"), wxITEM_NORMAL,
@@ -870,6 +899,32 @@ void MainFrame::on_open_book(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_open_old_L1(wxCommandEvent& WXUNUSED(event))
+{
+    Paths* pPaths = m_appScope.get_paths();
+    wxString sPath = pPaths->GetBooksPath();
+    wxFileName oFile(sPath, "L1_MusicReading.lmb", wxPATH_NATIVE);
+    if (oFile.FileExists())
+    {
+        string filename( to_std_string(oFile.GetFullPath()) );
+        load_file(filename);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_open_old_L2(wxCommandEvent& WXUNUSED(event))
+{
+    Paths* pPaths = m_appScope.get_paths();
+    wxString sPath = pPaths->GetBooksPath();
+    wxFileName oFile(sPath, "L2_MusicReading.lmb", wxPATH_NATIVE);
+    if (oFile.FileExists())
+    {
+        string filename( to_std_string(oFile.GetFullPath()) );
+        load_file(filename);
+    }
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_file_reload(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pWnd = dynamic_cast<DocumentWindow*>( get_active_canvas() );
@@ -893,11 +948,28 @@ void MainFrame::load_file(const string& filename)
         if (filename.find("L1_MusicReading_v2", 0) != string::npos)
             tabname = "Elementos del Lenguaje Musical I";
         else if (filename.find("L2_MusicReading_v2", 0) != string::npos)
-            tabname = L"Ejercicios de Lectura Rítmica";
+            tabname = wxString::FromUTF8("Ejercicios de Lectura Rítmica");
         else if (filename.find("TheoryHarmony", 0) != string::npos)
             tabname = "Elementos del Lenguaje Musical II";
+        else if (filename.find("L1_MusicReading", 0) != string::npos)
+            tabname = wxString::FromUTF8("Lectura Rítmica. Nivel 1");
+        else if (filename.find("L2_MusicReading", 0) != string::npos)
+            tabname = wxString::FromUTF8("Lectura Rítmica. Nivel 2");
+        else if (filename.find("GeneralExercises", 0) != string::npos)
+        {
+            switch (m_appScope.get_exercises_level())
+            {
+                case 1: tabname = "Entrena con LenMus. Nivel 1";        break;
+                case 2: tabname = "Entrena con LenMus. Nivel 2";        break;
+                default:
+                    tabname = "Entrena con LenMus. Personalizado";
+            }
+        }
         else
-            tabname = "Entrena con LenMus";
+        {
+            wxFileName document( to_wx_string(filename) );
+            tabname = document.GetName();
+        }
     }
     else
     {
@@ -907,9 +979,25 @@ void MainFrame::load_file(const string& filename)
             tabname = _("Music Reading II");
         else if (filename.find("TheoryHarmony", 0) != string::npos)
             tabname = _("Theory and Harmony");
+        else if (filename.find("GeneralExercises", 0) != string::npos)
+        {
+            tabname = _("Train with LenMus") + ". ";
+            switch (m_appScope.get_exercises_level())
+            {
+                case 1: tabname += _("Level 1");    break;
+                case 2: tabname += _("Level 2");    break;
+                default:
+                    tabname += _("Customized");    break;
+            }
+        }
         else
-            tabname = _("Train with LenMus");
+        {
+            wxFileName document( to_wx_string(filename) );
+            tabname = document.GetName();
+        }
     }
+
+    close_book_if_already_open(tabname);
 
     //create canvas and show document
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
@@ -1231,6 +1319,16 @@ void MainFrame::on_show_study_guide(wxCommandEvent& WXUNUSED(event))
         }
     }
     ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_user_manual(wxCommandEvent& WXUNUSED(event))
+{
+    Paths* pPaths = m_appScope.get_paths();
+    wxString sPath = pPaths->GetLocalePath();
+    wxFileName oFile(sPath, "user-manual.htm", wxPATH_NATIVE);
+    if (oFile.FileExists())
+        ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1985,6 +2083,25 @@ bool MainFrame::is_welcome_page_displayed()
             m_pWelcomeWnd = nullptr;
     }
     return (m_pWelcomeWnd != nullptr);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::close_book_if_already_open(const wxString& tabname)
+{
+    if (m_pContentWindow)
+    {
+        for (size_t i=0; i < m_pContentWindow->get_page_count(); ++i)
+        {
+            wxString name = m_pContentWindow->get_tab_name(i);
+            if (name == tabname ||
+                 (tabname.StartsWith(_("Train with LenMus"))
+                  && name.StartsWith(_("Train with LenMus")) ))
+            {
+                m_pContentWindow->delete_canvas(i);
+                break;
+            }
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------

@@ -159,6 +159,7 @@ protected:
     void create_menu();
     void set_lomse_callbacks();
     void load_file(const string& filename);
+    void close_book_if_already_open(const wxString& tabname);
     void set_exercises_level(int level);
     Interactor* get_active_canvas_interactor();
     AScore get_active_score();
@@ -200,6 +201,8 @@ protected:
     void on_update_UI_file(wxUpdateUIEvent& event);
     void on_open_recent_file(wxCommandEvent& event);
     void on_open_book(wxCommandEvent& event);
+    void on_open_old_L1(wxCommandEvent& WXUNUSED(event));
+    void on_open_old_L2(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
@@ -267,6 +270,7 @@ protected:
     void on_about(wxCommandEvent& event);
     void on_show_study_guide(wxCommandEvent& event);
     void on_visit_website(wxCommandEvent& WXUNUSED(event));
+    void on_user_manual(wxCommandEvent& WXUNUSED(event));
 
     // Options menu
     void on_options(wxCommandEvent& WXUNUSED(event));
