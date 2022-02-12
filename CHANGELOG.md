@@ -1,10 +1,28 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.6.2
+[Since last version] 6.0.0
 =============================
 
 * None
+
+
+Version [6.0.0] (Feb 19th, 2022)
+==================================
+
+* Main window re-design to allow direct access to all content and to facilite
+  navigation. The toolbar has been removed, as was of little utilitty and made
+  it more complex, to new users, to find the relevant content.
+* The exercises has been sequenced in two levels with predefined configurations,
+  to help students configure them for their skill level.
+* Two new chapters added to the books: one about anacrux start and another one
+  on chords. Music reading exercises now will include anacrux start.
+* Extensive tests done and many bugs fixed.
+* The Spanish version of the music reading books have been reviewed and the
+  chapters reordered, to follow a different learning progression. The old books
+  they are stil available in File menu.
+* Removed experimental features whose development will not continue, such as
+  the score editor, to simplify the code and program maintenace.
 
 
 Version [5.6.2] (Apr 18th, 2020)
@@ -696,7 +714,8 @@ Version 1.0 (Jan/2004):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.6.2...HEAD
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_6.0.0...HEAD
+[6.0.0]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...Release_6.0.0
 [5.6.2]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...Release_5.6.2
 [5.6.1]: https://github.com/lenmus/lenmus/compare/Release_5.6.0...Release_5.6.1
 [5.6.0]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...Release_5.6.0

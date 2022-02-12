@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-13 15:36+0200\n"
-"PO-Revision-Date: 2021-10-13 15:37+0200\n"
+"PO-Revision-Date: 2022-02-06 12:34+0100\n"
 "Last-Translator: Elif Öztürk <elif_ozturk23@hotmail.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: tr\n"
@@ -743,12 +743,8 @@ msgid "Study and practice"
 msgstr "Çalışma ve uygulama"
 
 #: src/app/lenmus_welcome_window.cpp:227
-msgid ""
-"Study with the interactive LenMus music theory books. Start with the first "
-"of these two:"
-msgstr ""
-"Etkileşimli LenMus müzik teorisi kitaplarıyla çalışın. Bu ikisinden ilkiyle "
-"başlayın:"
+msgid "Study with the interactive LenMus music theory books:"
+msgstr "Etkileşimli LenMus müzik teorisi kitaplarıyla çalışın:"
 
 #: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"

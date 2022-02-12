@@ -321,13 +321,15 @@ wxString IdfyNotesCtrol::set_new_problem()
     int nNoteIndex = 0;
     int nStep = 0;
     int nAcc = 0;
+    string sNote;
     if (m_pConstrains->SelectNotesFromKeySignature())
     {
         m_nKey = m_pConstrains->GetKeySignature();
 
         //Generate a random root note
         FPitch fpRoot = oGenerator.get_best_root_note(nClef, m_nKey);
-        Scale scale(fpRoot, est_MajorNatural, m_nKey);
+        bool fMajor = KeyUtilities::is_major_key(m_nKey);
+        Scale scale(fpRoot, (fMajor ? est_MajorNatural : est_MinorNatural), m_nKey);
 
         //generate a random note, different from previous one
         static int iPrev = 0;
@@ -349,6 +351,15 @@ wxString IdfyNotesCtrol::set_new_problem()
             case 5: nNoteIndex = 9; break;
             case 6: nNoteIndex = 11; break;
         }
+        if (m_pConstrains->GetOctaves() == 2)
+        {
+            FPitch fp(nStep, nOctave, nAcc);
+            sNote = fp.to_abs_ldp_name();
+        }
+        else
+        {
+            sNote = fpNote.to_abs_ldp_name();
+        }
     }
     else
     {
@@ -358,19 +369,25 @@ wxString IdfyNotesCtrol::set_new_problem()
         static const int nNoteAcc[12] = { 0,1,0,1,0,0,1,0,1,0,1,0 };
         nStep = nNoteStep[nNoteIndex];
         nAcc = nNoteAcc[nNoteIndex];
+        FPitch fpNote(nStep, nOctave, nAcc);
+        sNote = fpNote.to_abs_ldp_name();
     }
-    FPitch fpNote(nStep, nOctave, nAcc);
-    string sNote = fpNote.to_abs_ldp_name();
 
     //prepare answer
     static const wxString sSteps = "CDEFGAB";
-    wxString sAnswer = sSteps.Mid(nStep, 1);
+    wxString sAnswer = wxGetTranslation(sSteps.Mid(nStep, 1));
     if (nAcc == 1)
-        sAnswer += " sharp";
+    {
+        sAnswer += " ";
+        sAnswer += wxGetTranslation("Sharp");
+    }
     else if (nAcc == -1)
-        sAnswer += " flat";
+    {
+        sAnswer += " ";
+        sAnswer += wxGetTranslation("Flat");
+    }
     m_sAnswer = _("The note is: ");
-    m_sAnswer += wxGetTranslation(sAnswer);
+    m_sAnswer += sAnswer;   //wxGetTranslation(sAnswer);
     m_sAnswer += ". --- ";
     m_sAnswer += _("Click on 'Continue' to listen a new note");
 
@@ -380,7 +397,7 @@ wxString IdfyNotesCtrol::set_new_problem()
     else
         prepare_score(nClef, sNote, &m_pProblemScore, &m_pSolutionScore);
 
-	//compute the index for the button that corresponds to the right answer
+	//index for the button that corresponds to the right answer
     m_nRespIndex = nNoteIndex;
 
     return _("Identify the following note:");
@@ -406,7 +423,8 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
-    pInstr->add_key_signature(m_nKey);
+    pInstr->add_key_signature( k_key_C );
+    //pInstr->add_key_signature(m_nKey);
     pInstr->add_object("(n " + sNotePitch + " w)");
     (*pProblemScore)->end_of_changes();      //for generating StaffObjs collection
 }

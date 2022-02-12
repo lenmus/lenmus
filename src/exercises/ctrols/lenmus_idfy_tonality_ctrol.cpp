@@ -403,9 +403,14 @@ wxString IdfyTonalityCtrol::prepare_score(EClef WXUNUSED(nClef), EKeySignature n
     pInstr->add_time_signature(2 ,4);
 
     //add A4 note
-    pInstr->add_object("(n =a4 w p1)");
-    pInstr->add_barline(k_barline_simple);
+    int nAcc[7];
+    KeyUtilities::get_accidentals_for_key(nKey, nAcc);
+    if (nAcc[k_step_A] == 0)
+        pInstr->add_object("(n a4 w p1)");
+    else
+        pInstr->add_object("(n =a4 w p1)");
 
+    pInstr->add_barline(k_barline_simple);
     pInstr->add_object("(r w)");
 
     // Loop to add chords

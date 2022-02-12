@@ -73,7 +73,7 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
     {
 	    m_txtLevel1->SetLabel("Elementos del Lenguaje Musical I");
         m_txtLevel2->SetLabel("Elementos del Lenguaje Musical II");
-        m_txtLevel3->SetLabel(L"Ejercicios de Lectura Rítmica");
+        m_txtLevel3->SetLabel( wxString::FromUTF8("Ejercicios de Lectura Rítmica") );
     }
 
     //load icons
@@ -224,7 +224,7 @@ void WelcomeWindow::create_controls()
 
 	sizerRight->Add( m_txtBooks, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	m_txtBooksText = new wxStaticText( this, wxID_ANY, _("Study with the interactive LenMus music theory books. Start with the first of these two:"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_txtBooksText = new wxStaticText( this, wxID_ANY, _("Study with the interactive LenMus music theory books:"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
 	m_txtBooksText->Wrap( 340 );
 	m_txtBooksText->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_INACTIVECAPTIONTEXT ) );
 

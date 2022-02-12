@@ -821,7 +821,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
 //            ImoNote* pNote = static_cast<ImoNote*>(pSO);
             int pos = k_off_beat;
             if (pTS)
-                pos = get_beat_position(cursor.time(), pTS, cursor.anacruxis_missing_time());
+                pos = get_beat_position(cursor.time(), pTS, cursor.anacrusis_missing_time());
 
             if(pos != k_off_beat)
                 nNumPoints++;   // on beat note
@@ -896,7 +896,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                 int pos = k_off_beat;
                 ImoTimeSignature* pTS = cursor2.get_applicable_time_signature();
                 if (pTS)
-                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacruxis_missing_time());
+                    pos = get_beat_position(cursor2.time(), pTS, cursor2.anacrusis_missing_time());
                 #if (TRACE_PITCH == 1)
                     LOMSE_LOG_INFO("note %d, pos=%d, time=%f, anacrusis.time=%f",
                         numNotes, pos, cursor2.time(), cursor2.anacrusis_missing_time());
@@ -1005,12 +1005,17 @@ FPitch Composer::RandomPitch()
     int nMaxPitch = (int)m_fpMaxPitch.to_diatonic_pitch();
     static int nLastPitch = 0;
 
-    if (nLastPitch == 0)
+    if (nLastPitch == 0 || nLastPitch > nMaxPitch || nLastPitch < nMinPitch)
         nLastPitch = (nMinPitch + nMaxPitch) / 2;
 
     int nRange = m_pConstrains->GetMaxInterval();
     int nLowLimit = wxMax(nLastPitch - nRange, nMinPitch);
     int nUpperLimit = wxMin(nLastPitch + nRange, nMaxPitch);
+    #if (TRACE_PITCH == 1)
+        LOMSE_LOG_INFO(
+            "random note. nMinPitch=%d, nMaxPitch=%d, nRange=%d, nLowLimit=%d, nUpperLimit=%d, nLastPitch=%d",
+            nMinPitch, nMaxPitch, nRange, nLowLimit, nUpperLimit, nLastPitch);
+    #endif
     int nNewPitch;
     if (nUpperLimit - nLowLimit < 2)
         nNewPitch = nLowLimit;
@@ -1876,7 +1881,7 @@ void Composer::PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote
             FPitch fp = apNewPitch;
             string sNoteName = fp.to_abs_ldp_name();
             LOMSE_LOG_INFO(
-                "Passing notes, note 0. Assigned pitch = %d (%s)",
+                "Passing notes, note %d. Assigned pitch = %d (%s)",
                 i, int(fp.to_diatonic_pitch()), sNoteName.c_str() );
         #endif
     }

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-13 15:22+0200\n"
-"PO-Revision-Date: 2021-10-13 15:25+0200\n"
+"PO-Revision-Date: 2022-02-06 12:31+0100\n"
 "Last-Translator: Avgeris Tsironis <avgeristsironis@gmail.com>\n"
 "Language-Team: Ελληνικά <avgeristsironis@gmail.com>\n"
 "Language: el\n"
@@ -739,12 +739,8 @@ msgid "Study and practice"
 msgstr "Μελέτη και πρακτική"
 
 #: src/app/lenmus_welcome_window.cpp:227
-msgid ""
-"Study with the interactive LenMus music theory books. Start with the first "
-"of these two:"
-msgstr ""
-"Μελέτη με τα διαδραστικά βιβλία θεωρίας της μουσικής LenMus. Ξεκινήστε με το "
-"πρώτο από αυτά τα δύο:"
+msgid "Study with the interactive LenMus music theory books:"
+msgstr "Μελέτη με τα διαδραστικά βιβλία θεωρίας της μουσικής LenMus:"
 
 #: src/app/lenmus_welcome_window.cpp:239
 msgid "Music Reading I"
