@@ -7,7 +7,7 @@
 * None
 
 
-Version [6.0.0] (Feb 19th, 2022)
+Version [6.0.0] (Feb 12th, 2022)
 ==================================
 
 * Main window re-design to allow direct access to all content and to facilite
