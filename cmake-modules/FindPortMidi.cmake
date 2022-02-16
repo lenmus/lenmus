@@ -62,8 +62,10 @@ if (UNIX)
     )
     #porttime is an independent package
     set(DISTROS_USING_PORTTIME
+        Arch
         Debian
         LinuxMint
+        ManjaroLinux
         Ubuntu
     )
 
