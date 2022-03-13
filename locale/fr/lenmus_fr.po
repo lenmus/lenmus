@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-13 15:28+0200\n"
-"PO-Revision-Date: 2022-02-06 12:33+0100\n"
+"PO-Revision-Date: 2022-03-13 11:38+0100\n"
 "Last-Translator: Carlos Alarcia <calarcia@cyltel.com>\n"
 "Language-Team: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language: fr_FR\n"
@@ -1218,35 +1218,35 @@ msgstr "Si Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:370
 msgid "F # Major"
-msgstr "Fa ♯ Majeur"
+msgstr "Fa # Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:371
 msgid "C # Major"
-msgstr "Do ♯ Majeur"
+msgstr "Do # Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:372
 msgid "C b Major"
-msgstr "Do ♭ Majeur"
+msgstr "Do b Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:373
 msgid "G b Major"
-msgstr "Sol ♭ Majeur"
+msgstr "Sol b Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:374
 msgid "D b Major"
-msgstr "Ré ♭ Majeur"
+msgstr "Ré b Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:375
 msgid "A b Major"
-msgstr "La ♭ Majeur"
+msgstr "La b Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:376
 msgid "E b Major"
-msgstr "Mi ♭ Majeur"
+msgstr "Mi b Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:377
 msgid "B b Major"
-msgstr "Si ♭ Majeur"
+msgstr "Si b Majeur"
 
 #: src/auxmusic/lenmus_utilities.cpp:378
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:219
@@ -1281,42 +1281,42 @@ msgstr "Si mineur"
 #: src/auxmusic/lenmus_utilities.cpp:383
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:126
 msgid "F # minor"
-msgstr "Fa ♯ mineur"
+msgstr "Fa # mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:384
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:127
 msgid "C # minor"
-msgstr "Do ♯ mineur"
+msgstr "Do # mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:385
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:128
 msgid "G # minor"
-msgstr "Sol ♯ mineur"
+msgstr "Sol # mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:386
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:129
 msgid "D # minor"
-msgstr "Ré ♯ mineur"
+msgstr "Ré # mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:387
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:130
 msgid "A # minor"
-msgstr "La ♯ mineur"
+msgstr "La # mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:388
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:131
 msgid "A b minor"
-msgstr "La ♭ mineur"
+msgstr "La b mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:389
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:132
 msgid "E b minor"
-msgstr "Mi ♭ mineur"
+msgstr "Mi b mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:390
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:133
 msgid "B b minor"
-msgstr "Si ♭ mineur"
+msgstr "Si b mineur"
 
 #: src/auxmusic/lenmus_utilities.cpp:391
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:134
@@ -1869,7 +1869,7 @@ msgstr "Do"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:197
 msgid "C#/Db"
-msgstr "Do ♯ / Ré ♭"
+msgstr "Do # / Ré b"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:198
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:560
@@ -1896,7 +1896,7 @@ msgstr "Fa"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:202
 msgid "F#/Gb"
-msgstr "Fa ♯ / Sol ♭"
+msgstr "Fa # / Sol b"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:203
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:563
@@ -1918,7 +1918,7 @@ msgstr "La"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:206
 msgid "A#/Bb"
-msgstr "La ♯ / Si ♭"
+msgstr "La # / Si b"
 
 #: src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:207
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:565
@@ -2040,87 +2040,87 @@ msgstr "Double dièse"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:568
 msgid "bb C"
-msgstr "Do ♭♭"
+msgstr "Do bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:569
 msgid "bb D"
-msgstr "Ré ♭♭"
+msgstr "Ré bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:570
 msgid "bb E"
-msgstr "Mi ♭♭"
+msgstr "Mi bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:571
 msgid "bb F"
-msgstr "Fa ♭♭"
+msgstr "Fa bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:572
 msgid "bb G"
-msgstr "Sol ♭♭"
+msgstr "Sol bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:573
 msgid "bb A"
-msgstr "La ♭♭"
+msgstr "La bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:574
 msgid "bb B"
-msgstr "Si ♭♭"
+msgstr "Si bb"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:576
 msgid "b C"
-msgstr "Do ♭"
+msgstr "Do b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:577
 msgid "b D"
-msgstr "Ré ♭"
+msgstr "Ré b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:578
 msgid "b E"
-msgstr "Mi ♭"
+msgstr "Mi b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:579
 msgid "b F"
-msgstr "Fa ♭"
+msgstr "Fa b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:580
 msgid "b G"
-msgstr "Sol ♭"
+msgstr "Sol b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:581
 msgid "b A"
-msgstr "La ♭"
+msgstr "La b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:582
 msgid "b B"
-msgstr "Si ♭"
+msgstr "Si b"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:592
 msgid "# C"
-msgstr "Do ♯"
+msgstr "Do #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:593
 msgid "# D"
-msgstr "Ré ♯"
+msgstr "Ré #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:594
 msgid "# E"
-msgstr "Mi ♯"
+msgstr "Mi #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:595
 msgid "# F"
-msgstr "Fa ♯"
+msgstr "Fa #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:596
 msgid "# G"
-msgstr "Sol ♯"
+msgstr "Sol #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:597
 msgid "# A"
-msgstr "La ♯"
+msgstr "La #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:598
 msgid "# B"
-msgstr "Si ♯"
+msgstr "Si #"
 
 #: src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:600
 msgid "x C"
@@ -2368,35 +2368,35 @@ msgstr "Si Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:113
 msgid "F # major"
-msgstr "Fa ♯ Majeur"
+msgstr "Fa # Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:114
 msgid "C # major"
-msgstr "Do ♯ Majeur"
+msgstr "Do # Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:115
 msgid "C b major"
-msgstr "Do ♭ Majeur"
+msgstr "Do b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:116
 msgid "G b major"
-msgstr "Sol ♭ Majeur"
+msgstr "Sol b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:117
 msgid "D b major"
-msgstr "Ré ♭ Majeur"
+msgstr "Ré b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:118
 msgid "A b major"
-msgstr "La ♭ Majeur"
+msgstr "La b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:119
 msgid "E b major"
-msgstr "Mi ♭ Majeur"
+msgstr "Mi b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:120
 msgid "B b major"
-msgstr "Si ♭ Majeur"
+msgstr "Si b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:121
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:454
@@ -2405,67 +2405,67 @@ msgstr "Fa Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:447
 msgid "C flat major"
-msgstr "Do ♭ Majeur"
+msgstr "Do b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:449
 msgid "C sharp major"
-msgstr "Do ♯ Majeur"
+msgstr "Do # Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:450
 msgid "D flat major"
-msgstr "Ré ♭ Majeur"
+msgstr "Ré b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:452
 msgid "E flat major"
-msgstr "Mi ♭ Majeur"
+msgstr "Mi b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:455
 msgid "F sharp major"
-msgstr "Fa ♯ Majeur"
+msgstr "Fa # Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:456
 msgid "G flat major"
-msgstr "Sol ♭ Majeur"
+msgstr "Sol b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:458
 msgid "A flat major"
-msgstr "La ♭ Majeur"
+msgstr "La b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:460
 msgid "B flat major"
-msgstr "Si ♭ Majeur"
+msgstr "Si b Majeur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:467
 msgid "C sharp minor"
-msgstr "Do ♯ mineur"
+msgstr "Do # mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:469
 msgid "D sharp minor"
-msgstr "Ré ♯ mineur"
+msgstr "Ré # mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:470
 msgid "E flat minor"
-msgstr "Mi ♭ mineur"
+msgstr "Mi b mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:473
 msgid "F sharp minor"
-msgstr "Fa ♯ mineur"
+msgstr "Fa # mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:475
 msgid "G sharp minor"
-msgstr "Sol ♯ mineur"
+msgstr "Sol # mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:476
 msgid "A flat minor"
-msgstr "La ♭ mineur"
+msgstr "La b mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:478
 msgid "A sharp minor"
-msgstr "La ♯ mineur"
+msgstr "La # mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:479
 msgid "B flat minor"
-msgstr "Si ♭ mineur"
+msgstr "Si b mineur"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:485
 msgid "No accidentals"
@@ -2473,59 +2473,59 @@ msgstr "Sans altérations"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:486
 msgid "1 #"
-msgstr "1 ♯"
+msgstr "1 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:487
 msgid "2 #"
-msgstr "2 ♯"
+msgstr "2 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:488
 msgid "3 #"
-msgstr "3 ♯"
+msgstr "3 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:489
 msgid "4 #"
-msgstr "4 ♯"
+msgstr "4 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:490
 msgid "5 #"
-msgstr "5 ♯"
+msgstr "5 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:491
 msgid "6 #"
-msgstr "6 ♯"
+msgstr "6 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:492
 msgid "7 #"
-msgstr "7 ♯"
+msgstr "7 #"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:493
 msgid "1 b"
-msgstr "1 ♭"
+msgstr "1 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:494
 msgid "2 b"
-msgstr "2 ♭"
+msgstr "2 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:495
 msgid "3 b"
-msgstr "3 ♭"
+msgstr "3 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:496
 msgid "4 b"
-msgstr "4 ♭"
+msgstr "4 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:497
 msgid "5 b"
-msgstr "5 ♭"
+msgstr "5 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:498
 msgid "6 b"
-msgstr "6 ♭"
+msgstr "6 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:499
 msgid "7 b"
-msgstr "7 ♭"
+msgstr "7 b"
 
 #: src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:522
 msgid "Problem. Identify the following key signature:"
@@ -2581,39 +2581,39 @@ msgstr "Les notes suivantes :"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:201
 msgid "B # / C"
-msgstr "Si ♯ / Do"
+msgstr "Si # / Do"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:205
 msgid "C # / D b"
-msgstr "Do ♯ / Ré ♭"
+msgstr "Do # / Ré b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:213
 msgid "D # / E b"
-msgstr "Ré ♯ / Mi b"
+msgstr "Ré # / Mi b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:217
 msgid "E / F b"
-msgstr "Mi / Fa ♭"
+msgstr "Mi / Fa b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:221
 msgid "E # / F"
-msgstr "Mi ♯ / Fa"
+msgstr "Mi # / Fa"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:230
 msgid "F # / G b"
-msgstr "Fa ♯ / Sol b"
+msgstr "Fa # / Sol b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:238
 msgid "G # / A b"
-msgstr "Sol ♯ / La ♭"
+msgstr "Sol # / La b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:246
 msgid "A # / B b"
-msgstr "La ♯ / Si b"
+msgstr "La # / Si b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:250
 msgid "B / C b"
-msgstr "Si / Do ♭"
+msgstr "Si / Do b"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:264
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:233
@@ -2713,82 +2713,82 @@ msgstr "Armures"
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:182
 #: xrc/xrc_strings.cpp:282
 msgid "F# Major"
-msgstr "Fa ♯ Majeur"
+msgstr "Fa # Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:186
 #: xrc/xrc_strings.cpp:283
 msgid "C# Major"
-msgstr "Do ♯ Majeur"
+msgstr "Do # Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:195
 #: xrc/xrc_strings.cpp:284
 msgid "Cb Major"
-msgstr "Do ♭ Majeur"
+msgstr "Do b Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:199
 #: xrc/xrc_strings.cpp:285
 msgid "Gb Major"
-msgstr "Sol ♭ Majeur"
+msgstr "Sol b Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:203
 #: xrc/xrc_strings.cpp:286
 msgid "Db Major"
-msgstr "Ré ♭ Majeur"
+msgstr "Ré b Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:207
 #: xrc/xrc_strings.cpp:287
 msgid "Ab Major"
-msgstr "La ♭ Majeur"
+msgstr "La b Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:211
 #: xrc/xrc_strings.cpp:288
 msgid "Eb Major"
-msgstr "Mi ♭ Majeur"
+msgstr "Mi b Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:215
 #: xrc/xrc_strings.cpp:289
 msgid "Bb Major"
-msgstr "Si ♭ Majeur"
+msgstr "Si b Majeur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:240
 #: xrc/xrc_strings.cpp:294
 msgid "F# minor"
-msgstr "Fa ♯ mineur"
+msgstr "Fa # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:244
 #: xrc/xrc_strings.cpp:295
 msgid "C# minor"
-msgstr "Do ♯ mineur"
+msgstr "Do # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:248
 #: xrc/xrc_strings.cpp:296
 msgid "G# minor"
-msgstr "Sol ♯ mineur"
+msgstr "Sol # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:252
 #: xrc/xrc_strings.cpp:297
 msgid "D# minor"
-msgstr "Ré ♯ mineur"
+msgstr "Ré # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:256
 #: xrc/xrc_strings.cpp:298
 msgid "A# minor"
-msgstr "La ♯ mineur"
+msgstr "La # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:265
 #: xrc/xrc_strings.cpp:299
 msgid "Ab minor"
-msgstr "La ♭ mineur"
+msgstr "La b mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:269
 #: xrc/xrc_strings.cpp:300
 msgid "Eb minor"
-msgstr "Mi ♭ mineur"
+msgstr "Mi b mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:273
 #: xrc/xrc_strings.cpp:301
 msgid "Bb minor"
-msgstr "Si ♭ mineur"
+msgstr "Si b mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:300
 #: xrc/xrc_strings.cpp:306
@@ -2875,66 +2875,66 @@ msgstr "Do Majeur / Si mineur"
 #: xrc/xrc_strings.cpp:39 xrc/xrc_strings.cpp:112 xrc/xrc_strings.cpp:159
 #: xrc/xrc_strings.cpp:215
 msgid "A Major / F# minor"
-msgstr "La Majeur / Fa ♯ mineur"
+msgstr "La Majeur / Fa # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:280
 #: xrc/xrc_strings.cpp:40 xrc/xrc_strings.cpp:113 xrc/xrc_strings.cpp:160
 #: xrc/xrc_strings.cpp:216
 msgid "E Major / C# minor"
-msgstr "Mi Majeur / Ré ♯ mineur"
+msgstr "Mi Majeur / Ré # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:284
 #: xrc/xrc_strings.cpp:41 xrc/xrc_strings.cpp:114 xrc/xrc_strings.cpp:161
 #: xrc/xrc_strings.cpp:217
 msgid "B Major / G# minor"
-msgstr "Si Majeur / Sol ♯ mineur"
+msgstr "Si Majeur / Sol # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:288
 #: xrc/xrc_strings.cpp:42 xrc/xrc_strings.cpp:115 xrc/xrc_strings.cpp:162
 #: xrc/xrc_strings.cpp:218
 msgid "F# Major / D# minor"
-msgstr "Fa ♯ Majeur / Ré ♯ mineur"
+msgstr "Fa # Majeur / Ré # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:292
 #: xrc/xrc_strings.cpp:43 xrc/xrc_strings.cpp:116 xrc/xrc_strings.cpp:163
 #: xrc/xrc_strings.cpp:219
 msgid "C# Major / A# minor"
-msgstr "Do ♯ Majeur / La ♯ mineur"
+msgstr "Do # Majeur / La # mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:301
 #: xrc/xrc_strings.cpp:44 xrc/xrc_strings.cpp:117 xrc/xrc_strings.cpp:164
 #: xrc/xrc_strings.cpp:220
 msgid "Cb Major / Ab minor"
-msgstr "Do ♭ Majeur / La ♭ mineur"
+msgstr "Do b Majeur / La b mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:305
 #: xrc/xrc_strings.cpp:45 xrc/xrc_strings.cpp:118 xrc/xrc_strings.cpp:165
 #: xrc/xrc_strings.cpp:221
 msgid "Gb Major / Eb minor"
-msgstr "Sol ♭ Majeur / Mi ♭ mineur"
+msgstr "Sol b Majeur / Mi b mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:309
 #: xrc/xrc_strings.cpp:222
 msgid "Db Major / Bb minor"
-msgstr "Ré ♭ Majeur / Si ♭ mineur"
+msgstr "Ré b Majeur / Si b mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:313
 #: xrc/xrc_strings.cpp:47 xrc/xrc_strings.cpp:120 xrc/xrc_strings.cpp:167
 #: xrc/xrc_strings.cpp:223
 msgid "Ab Major / F minor"
-msgstr "La ♭ Majeur / Fa mineur"
+msgstr "La b Majeur / Fa mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:317
 #: xrc/xrc_strings.cpp:48 xrc/xrc_strings.cpp:121 xrc/xrc_strings.cpp:168
 #: xrc/xrc_strings.cpp:224
 msgid "Eb Major / C minor"
-msgstr "Mi ♭ Majeur / Do mineur"
+msgstr "Mi b Majeur / Do mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:321
 #: xrc/xrc_strings.cpp:49 xrc/xrc_strings.cpp:122 xrc/xrc_strings.cpp:169
 #: xrc/xrc_strings.cpp:225
 msgid "Bb Major / G minor"
-msgstr "SI ♭ Majeur / Sol mineur"
+msgstr "SI b Majeur / Sol mineur"
 
 #: src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:325
 #: xrc/xrc_strings.cpp:50 xrc/xrc_strings.cpp:123 xrc/xrc_strings.cpp:170
