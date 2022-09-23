@@ -989,7 +989,11 @@ void ContentBoxCtrol::SetHTMLBackgroundColour(const wxColour& WXUNUSED(clr))
     // nothing to do
 }
 
+#if wxCHECK_VERSION(3, 1, 6)
+void ContentBoxCtrol::SetHTMLBackgroundImage(const wxBitmapBundle& WXUNUSED(bmpBg))
+#else
 void ContentBoxCtrol::SetHTMLBackgroundImage(const wxBitmap& WXUNUSED(bmpBg))
+#endif
 {
     // nothing to do
 }
