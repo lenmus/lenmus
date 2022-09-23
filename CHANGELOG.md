@@ -1,10 +1,16 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 6.0.0
+[Since last version] 6.0.1
 =============================
 
 * None
+
+
+Version [6.0.1] (Sep 23rd, 2022)
+==================================
+
+* Fixed compilation issue when building with wxWidgets >= 3.1.6
 
 
 Version [6.0.0] (Feb 12th, 2022)
@@ -714,8 +720,9 @@ Version 1.0 (Jan/2004):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_6.0.0...HEAD
-[6.0.0]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...Release_6.0.0
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_6.0.1...HEAD
+[6.0.1]: https://github.com/lenmus/lenmus/compare/Release_6.0.0...Release_6.0.1
+[6.0.0]: https://github.com/lenmus/lenmus/compare/Release_5.6.2...Release_6.0.0
 [5.6.2]: https://github.com/lenmus/lenmus/compare/Release_5.6.1...Release_5.6.2
 [5.6.1]: https://github.com/lenmus/lenmus/compare/Release_5.6.0...Release_5.6.1
 [5.6.0]: https://github.com/lenmus/lenmus/compare/Release_5.5.0...Release_5.6.0

@@ -129,7 +129,11 @@ public:
     wxWindow* GetHTMLWindow();
     wxColour GetHTMLBackgroundColour() const;
     void SetHTMLBackgroundColour(const wxColour& WXUNUSED(clr));
+#if wxCHECK_VERSION(3, 1, 6)
+    void SetHTMLBackgroundImage(const wxBitmapBundle& WXUNUSED(bmpBg));
+#else
     void SetHTMLBackgroundImage(const wxBitmap& WXUNUSED(bmpBg));
+#endif
     void SetHTMLStatusText(const wxString& WXUNUSED(text));
     wxCursor GetHTMLCursor(HTMLCursor type) const;
     wxPoint GetRootCellCoords(size_t n) const;
