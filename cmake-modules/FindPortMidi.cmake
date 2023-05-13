@@ -58,14 +58,14 @@ if (UNIX)
 
     #porttime is included in portmidi package
     set(DISTROS_NOT_USING_PORTTIME
+        Arch
         Fedora
+        ManjaroLinux
     )
     #porttime is an independent package
     set(DISTROS_USING_PORTTIME
-        Arch
         Debian
         LinuxMint
-        ManjaroLinux
         Ubuntu
     )
 
