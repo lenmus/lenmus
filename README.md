@@ -1,8 +1,12 @@
 # An app to study music theory and train you ear
 
+> ### This project is CANCELLED as of June/2023. This project is no longer maintained.
+
+> ### Maintenance is officially suspended and I'm not going to develop the project further. Nevertheless, sporadically there could be some maintenance to fix a bug. See #156 for more details and updates.
+
+
 [![Build Status](https://travis-ci.org/lenmus/lenmus.svg?branch=master)](https://travis-ci.org/lenmus/lenmus)
 [![Coverity Scan](https://scan.coverity.com/projects/7992/badge.svg)](https://scan.coverity.com/projects/lenmus)
-
 
 LenMus Phonascus, "the teacher of music", is a free program to help you
 in the study of music theory and for training your ear.
