@@ -978,8 +978,7 @@ CompareScoresCtrol::CompareScoresCtrol(long dynId, ApplicationScope& appScope,
 {
     m_pScore[0] = nullptr;
     m_pScore[1] = nullptr;
-    Connect(wxID_ANY, wxEVT_TIMER,
-        (wxObjectEventFunction)(void (wxEvtHandler::*)(wxTimerEvent&))&CompareScoresCtrol::on_timer_event);
+    Bind(wxEVT_TIMER, &CompareScoresCtrol::on_timer_event, this);
 }
 
 //---------------------------------------------------------------------------------------
