@@ -201,7 +201,7 @@ void Paths::initialize()
     wxFileName oSoundFonts(m_sPrefix);
     oSoundFonts.AppendDir("res");
     oSoundFonts.AppendDir("sounds");
-    
+
 
 
 #elif (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
@@ -226,7 +226,7 @@ void Paths::initialize()
     oSharedHome.AppendDir("lenmus");
     oSharedHome.AppendDir(sVersion);
 #endif
-    
+
     //Remaining configuration should be the same for Linux or Mac.
 
     //3. Configuration files, user & version dependent (CONFIG_DIR)
@@ -303,7 +303,7 @@ void Paths::initialize()
         oSoundFonts.AppendDir("res");
         oSoundFonts.AppendDir("sounds");
     }
-    oSoundFonts.Normalize();
+    oSoundFonts.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE );
 
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
@@ -460,7 +460,7 @@ void Paths::initialize()
 
     //Paths for tests and debug. Only valid in local debug builds
     path = wxFileName(LENMUS_SOURCE_ROOT);
-    path.Normalize();
+    path.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE );
     #if (LENMUS_PLATFORM_WIN32 == 1)
         //for replacing drive letter in Windows
         wxFileName drive(m_sBin);
@@ -469,7 +469,7 @@ void Paths::initialize()
     m_sSourceRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
     path = wxFileName(LENMUS_TEST_SCORES_PATH);
-    path.Normalize();
+    path.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE );
     #if (LENMUS_PLATFORM_WIN32 == 1)
         path.SetVolume( drive.GetVolume() );
     #endif
@@ -516,7 +516,7 @@ void Paths::determine_prefix()
     oPrefix.AssignDir(m_sBin);
     oPrefix.RemoveLastDir();    // bin
 #endif
-    oPrefix.Normalize();
+    oPrefix.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE );
     m_sPrefix = oPrefix.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 }
 
