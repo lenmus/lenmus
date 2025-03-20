@@ -1154,6 +1154,7 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 #if (LENMUS_PLATFORM_UNIX == 1 || LENMUS_PLATFORM_MAC == 1)
 
     //method get_font_filename() is not invoked in Linux
+    do { (void)(pRequest); } while (0); //to avoid warning: unused parameter pRequest
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
 
