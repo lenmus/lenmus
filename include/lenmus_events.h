@@ -49,7 +49,9 @@ class DlgCounters;
 //      due to an auto-scroll while the score is being played back.
 //---------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( lmEVT_UPDATE_VIEWPORT, -1 )
+//DECLARE_EVENT_TYPE( lmEVT_UPDATE_VIEWPORT, -1 )
+class lmUpdateViewportEvent;
+wxDECLARE_EVENT( lmEVT_UPDATE_VIEWPORT, lmUpdateViewportEvent );
 
 class lmUpdateViewportEvent : public wxEvent
 {
@@ -79,10 +81,10 @@ public:
 
 typedef void (wxEvtHandler::*UpdateViewportEventFunction)(lmUpdateViewportEvent&);
 
-#define LM_EVT_UPDATE_VIEWPORT(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( lmEVT_UPDATE_VIEWPORT, wxID_ANY, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( UpdateViewportEventFunction, & fn ), (wxObject *) nullptr ),
+#define UpdateViewportEventHandler(func) wxEVENT_HANDLER_CAST(UpdateViewportEventFunction, func)
+
+#define LM_EVT_UPDATE_VIEWPORT(func) \
+ 	wx__DECLARE_EVT1( lmEVT_UPDATE_VIEWPORT, wxID_ANY, UpdateViewportEventHandler(func))
 
 
 //---------------------------------------------------------------------------------------
@@ -91,7 +93,9 @@ typedef void (wxEvtHandler::*UpdateViewportEventFunction)(lmUpdateViewportEvent&
 //      highlighting / unhighlighting notes while they are being played.
 //---------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT, -1 )
+//DECLARE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT, -1 )
+class lmVisualTrackingEvent;
+wxDECLARE_EVENT( lmEVT_SCORE_HIGHLIGHT, lmVisualTrackingEvent );
 
 class lmVisualTrackingEvent : public wxEvent
 {
@@ -121,17 +125,19 @@ public:
 
 typedef void (wxEvtHandler::*VisualTrackingEventFunction)(lmVisualTrackingEvent&);
 
-#define LM_EVT_SCORE_HIGHLIGHT(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( lmEVT_SCORE_HIGHLIGHT, wxID_ANY, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( VisualTrackingEventFunction, & fn ), (wxObject *) nullptr ),
+#define VisualTrackingEventHandler(func) wxEVENT_HANDLER_CAST(VisualTrackingEventFunction, func)
+
+#define LM_EVT_SCORE_HIGHLIGHT(func) \
+ 	wx__DECLARE_EVT1( lmEVT_SCORE_HIGHLIGHT, wxID_ANY, VisualTrackingEventHandler(func))
 
 
 //---------------------------------------------------------------------------------------
 // lmEndOfPlaybackEvent: An event to signal end of playback
 //---------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( lmEVT_END_OF_PLAYBACK, -1 )
+//DECLARE_EVENT_TYPE( lmEVT_END_OF_PLAYBACK, -1 )
+class lmEndOfPlaybackEvent;
+wxDECLARE_EVENT( lmEVT_END_OF_PLAYBACK, lmEndOfPlaybackEvent );
 
 class lmEndOfPlaybackEvent : public wxEvent
 {
@@ -161,10 +167,11 @@ public:
 
 typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);
 
-#define LM_EVT_END_OF_PLAYBACK(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( lmEVT_END_OF_PLAYBACK, wxID_ANY, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( EndOfPlayEventFunction, & fn ), (wxObject *) nullptr ),
+#define EndOfPlayEventHandler(func) wxEVENT_HANDLER_CAST(EndOfPlayEventFunction, func)
+
+#define LM_EVT_END_OF_PLAYBACK(func) \
+ 	wx__DECLARE_EVT1( lmEVT_END_OF_PLAYBACK, wxID_ANY, EndOfPlayEventHandler(func))
+
 
 
 //---------------------------------------------------------------------------------------
@@ -172,7 +179,8 @@ typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);
 //      An event to signal different actions related to DlgCounters
 //---------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( EVT_COUNTERS_DLG, -1 )
+class CountersEvent;
+wxDECLARE_EVENT( EVT_COUNTERS_DLG, CountersEvent );
 
 class CountersEvent : public wxEvent
 {
@@ -216,17 +224,18 @@ public:
 
 typedef void (wxEvtHandler::*CountersEventFunction)(CountersEvent&);
 
-#define LM_EVT_COUNTERS_DLG(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( EVT_COUNTERS_DLG, wxID_ANY, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( CountersEventFunction, & fn ), (wxObject *) nullptr ),
+#define CountersEventHandler(func) wxEVENT_HANDLER_CAST(CountersEventFunction, func)
+
+#define LM_EVT_COUNTERS_DLG(func) \
+ 	wx__DECLARE_EVT1( EVT_COUNTERS_DLG, wxID_ANY, CountersEventHandler(func))
 
 
 //---------------------------------------------------------------------------------------
 // PageRequestEvent: An event for requesting to display an eBook page
 //---------------------------------------------------------------------------------------
 
-DECLARE_EVENT_TYPE( lmEVT_PAGE_REQUEST, -1 )
+class PageRequestEvent;
+wxDECLARE_EVENT( lmEVT_PAGE_REQUEST, PageRequestEvent );
 
 class PageRequestEvent : public wxEvent
 {
@@ -256,10 +265,10 @@ public:
 
 typedef void (wxEvtHandler::*PageRequestEventFunction)(PageRequestEvent&);
 
-#define LM_EVT_PAGE_REQUEST(fn) \
-    DECLARE_EVENT_TABLE_ENTRY( lmEVT_PAGE_REQUEST, wxID_ANY, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( PageRequestEventFunction, & fn ), (wxObject *) nullptr ),
+#define PageRequestEventHandler(func) wxEVENT_HANDLER_CAST(PageRequestEventFunction, func)
+
+#define LM_EVT_PAGE_REQUEST(func) \
+ 	wx__DECLARE_EVT1( lmEVT_PAGE_REQUEST, wxID_ANY, PageRequestEventHandler(func))
 
 
 }   // namespace lenmus

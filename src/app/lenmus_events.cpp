@@ -27,12 +27,19 @@
 namespace lenmus
 {
 
-DEFINE_EVENT_TYPE( lmEVT_UPDATE_VIEWPORT )
-DEFINE_EVENT_TYPE( lmEVT_SCORE_HIGHLIGHT )
-DEFINE_EVENT_TYPE( lmEVT_END_OF_PLAYBACK )
-DEFINE_EVENT_TYPE( lmEVT_MOVE_TEMPO_LINE )
-DEFINE_EVENT_TYPE( EVT_COUNTERS_DLG )
-DEFINE_EVENT_TYPE( lmEVT_PAGE_REQUEST )
+//DEFINE_EVENT_TYPE( lmEVT_MOVE_TEMPO_LINE )
+
+class lmUpdateViewportEvent;
+wxDEFINE_EVENT( lmEVT_UPDATE_VIEWPORT, lmUpdateViewportEvent );
+class lmVisualTrackingEvent;
+wxDEFINE_EVENT( lmEVT_SCORE_HIGHLIGHT, lmVisualTrackingEvent );
+class lmEndOfPlaybackEvent;
+wxDEFINE_EVENT( lmEVT_END_OF_PLAYBACK, lmEndOfPlaybackEvent );
+class CountersEvent;
+wxDEFINE_EVENT( EVT_COUNTERS_DLG, CountersEvent );
+class PageRequestEvent;
+wxDEFINE_EVENT( lmEVT_PAGE_REQUEST, PageRequestEvent);
+
 
 
 }   // namespace lenmus

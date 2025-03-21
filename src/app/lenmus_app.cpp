@@ -376,10 +376,12 @@ wxString TheApp::determine_exec_path()
         strncpy(newpath2, saved_pwd, sizeof(newpath2));
         newpath2[sizeof(newpath2)-1]=0;
 
-        strncat(newpath2, path_separator_as_string, sizeof(newpath2));
+        size_t remaining = sizeof(newpath2) - strlen(newpath2) - 1;
+        strncat(newpath2, path_separator_as_string, remaining);
         newpath2[sizeof(newpath2)-1]=0;
 
-        strncat(newpath2, saved_argv0, sizeof(newpath2));
+        remaining = sizeof(newpath2) - strlen(newpath2) - 1;
+        strncat(newpath2, saved_argv0, remaining);
         newpath2[sizeof(newpath2)-1]=0;
 
         res = realpath(newpath2, newpath);
@@ -411,10 +413,12 @@ wxString TheApp::determine_exec_path()
             strncpy(newpath2, pathitem, sizeof(newpath2));
             newpath2[sizeof(newpath2)-1]=0;
 
-            strncat(newpath2, path_separator_as_string, sizeof(newpath2));
+            size_t remaining = sizeof(newpath2) - strlen(newpath2) - 1;
+            strncat(newpath2, path_separator_as_string, remaining);
             newpath2[sizeof(newpath2)-1]=0;
 
-            strncat(newpath2, saved_argv0, sizeof(newpath2));
+            remaining = sizeof(newpath2) - strlen(newpath2) - 1;
+            strncat(newpath2, saved_argv0, remaining);
             newpath2[sizeof(newpath2)-1]=0;
 
             res = realpath(newpath2, newpath);
